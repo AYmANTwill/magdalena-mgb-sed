@@ -1,0 +1,5 @@
+numpy>=1.24
+matplotlib>=3.7
+jupyter
+nbformat
+# QGIS 3.44 LTR + plugins (IPH-HydroTools, MGB, MGB-SED) are installed separately, not via pip.
