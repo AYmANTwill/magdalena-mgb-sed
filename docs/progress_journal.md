@@ -4,6 +4,17 @@ Dated log of understanding and realization. **Updated at each new step.** Newest
 
 ---
 
+## 2026-07-27 — IDEAM sediment stations found (Q1 largely resolved)
+
+- Literature scan for the sediment-data feasibility (Q1). Findings recorded in `docs/06_ideam_stations.md`:
+  **Calamar** (downstream reference, 112 km from the mouth, records to ~2010, ~145–169 Mt/yr) and **Puerto Berrío**
+  (mid-basin, codes 23095010 / 23090110); an extensive IDEAM network (30–40+ sediment sites); all downloadable free via
+  the **DHIME** portal (+ National Station Catalogue on datos.gov.co).
+- **Q1 risk downgraded red → amber/green.** Remaining check: confirm suspended-sediment coverage for 2011 and 2015–2017.
+- Reasoning refined: the sediment-flux comparison points to a **downstream (near-ocean) integrating outlet** (Calamar),
+  which in turn defines the modelled domain; and MGB is a large-basin model normally run at ~90 m (MERIT Hydro), so the
+  30 m cell limit is not binding at the right resolution.
+
 ## 2026-07-27 — Study-area decision + data collection started
 
 - Advisor's brief specifies the **whole Magdalena** ("el río Magdalena"), no sub-basin given.

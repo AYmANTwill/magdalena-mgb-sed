@@ -8,7 +8,12 @@ These three decisions gate the project. Until resolved, downstream work carries 
 **Why it matters:** Without sediment calibration data, the sediment model cannot be calibrated — **no data, no project.**
 **Action:** Search the **DHIME** portal (`https://atencionciudadano.ideam.gov.co/`) for sediment stations; check
 record length and overlap with the candidate ENSO years.
-**Status:** OPEN — this is the immediate next step.
+**Update (2026-07-27):** literature scan confirms an extensive IDEAM suspended-sediment network (30–40+ sites), with
+**Calamar** (downstream reference, ~10.25° N, records to ~2010) and **Puerto Berrío** (mid-basin, codes 23095010 /
+23090110) as key gauges; data are free on DHIME. See `06_ideam_stations.md`. Risk downgraded red → amber/green.
+**Remaining check:** confirm suspended-sediment coverage for **2011** and **2015–2017** directly on DHIME (sediment is
+sampled less often than discharge).
+**Status:** LARGELY RESOLVED — network exists; only the year-specific coverage still to verify.
 
 ## Q2 — Confirm the study years
 

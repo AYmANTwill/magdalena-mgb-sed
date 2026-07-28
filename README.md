@@ -100,6 +100,7 @@ magdalena-mgb-sed/
 │   ├── 03_methodology.md
 │   ├── 04_model_structure.md
 │   ├── 05_data_collection_plan.md
+│   ├── 06_ideam_stations.md
 │   ├── open_questions.md         <- the 3 decisions to lock with the advisor
 │   └── progress_journal.md       <- dated log, UPDATED AT EACH STEP
 ├── notebooks/                    <- didactic notebooks (the maths behind each step)
