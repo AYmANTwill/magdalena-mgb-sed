@@ -29,7 +29,64 @@ Full description in [`docs/04_model_structure.md`](docs/04_model_structure.md). 
 - **MGB-SA** — hydrology + hydrodynamics (rainfall → runoff → discharge, floodplain routing).
 - **MGB-SED** — sediments (MUSLE erosion per catchment → channel transport by Exner/1D equations).
 
-The full input → sub-model → output chain is diagrammed in `docs/04_model_structure.md`.
+Full model graph (inputs → preprocessing → structure → sub-models → outputs; dashed arrows = calibration data):
+
+```mermaid
+flowchart TB
+    subgraph IN["Input data"]
+        DEM["DEM<br/>ALOS / Copernicus 30 m"]
+        SOIL["Soil map<br/>IGAC"]
+        LU["Land cover<br/>WorldCover / IDEAM"]
+        CLIM["Climate forcing<br/>ERA5 + IDEAM (daily)"]
+    end
+
+    subgraph PREP["Preprocessing — IPH-HydroTools"]
+        direction LR
+        FILL["Sink & Destroy"] --> FDIR["Flow direction D8"] --> FACC["Flow accumulation"]
+        FACC --> STR["Stream definition"] --> SEG["Segmentation"] --> CATd["Catchment delineation"]
+    end
+
+    subgraph STR2["Basin structure"]
+        MINI["Minibacias<br/>+ upstream-downstream topology"]
+        URH["URH<br/>soil x land cover fractions"]
+    end
+
+    subgraph SA["MGB-SA — hydrology"]
+        WB["Soil water balance<br/>per URH"]
+        WB --> DSUP["Surface runoff<br/>saturation-excess (b)"]
+        WB --> DINT["Interflow"]
+        WB --> DBAS["Baseflow<br/>recession (Kbas)"]
+        DSUP --> ROUT["Channel routing<br/>local-inertial + floodplain"]
+        DINT --> ROUT
+        DBAS --> ROUT
+    end
+
+    subgraph SED["MGB-SED — sediments"]
+        MUSLE["Hillslope erosion<br/>MUSLE (K, LS, C, P, alpha, beta)"]
+        EXNER["Channel transport<br/>Exner + 1D equations"]
+        MUSLE --> EXNER
+    end
+
+    OUTQ["Discharge hydrograph"]
+    OUTS["Suspended sediment<br/>concentration and load"]
+
+    DEM --> FILL
+    CATd --> MINI
+    SOIL --> URH
+    LU --> URH
+    MINI --> WB
+    URH --> WB
+    CLIM --> WB
+    ROUT --> OUTQ
+    OUTQ --> MUSLE
+    MINI --> MUSLE
+    EXNER --> OUTS
+
+    QOBS[("IDEAM discharge")] -. calibrates .-> ROUT
+    SOBS[("IDEAM sediment<br/>DHIME")] -. calibrates .-> EXNER
+```
+
+A second, more detailed pair of diagrams (this flow plus the preprocessing chain on its own) is in `docs/04_model_structure.md`.
 
 ## 4. Repository map
 
