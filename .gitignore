@@ -16,3 +16,7 @@ venv/
 # OS
 .DS_Store
 Thumbs.db
+
+# Secrets — never commit API keys
+cds_keys.txt
+.cdsapirc

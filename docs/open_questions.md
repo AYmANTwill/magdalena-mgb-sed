@@ -18,8 +18,14 @@ discharge only, **no suspended-sediment series**. **No lower-Magdalena mainstem 
 2011 and 2015–2016. Rich sediment records covering both years exist only on the **Sierra Nevada / Ciénaga Grande de
 Santa Marta rivers** (Fundación [29067120] 2002–2026; Puente Ferrocarril/Aracataca [29067130] 1984–2025) — not the
 Magdalena. See `progress_journal.md` for Paths A/B/C.
-**Status:** DECISION REQUIRED with advisor — sediment data does not exist on the lower Magdalena for the study years;
-choose Path A (calibrate-then-simulate), B (shift years), or C (pivot to the Ciénaga Grande rivers).
+**Update (2026-07-28) — self-service routes exhausted:** verified that the **Magdalena mainstem** suspended-sediment
+data is not publicly obtainable — DHIME exposes sediment only for **tributary** stations (Sogamoso/Lebrija, Cauca/Nechí,
+Cesar, Ciénaga Grande; several run to 2018), not the mainstem (Calamar, Puerto Berrío, Barrancabermeja, El Banco =
+discharge only). datos.gov.co has no IDEAM suspended-sediment measurement dataset (only "Muestreo Geoquímico Sedimentos",
+unrelated). No geoservice/WFS serves time series. The literature's Calamar sediment (1975–2010) therefore requires a
+**formal data request to IDEAM** (or the advisor's own data).
+**Status:** ESCALATED TO ADVISOR — memo drafted requesting mainstem sediment data + confirming years (2011 vs 2015–2016)
+and region. Decision (Path A vs B) depends on his answer.
 
 ## Q2 — Confirm the study years
 

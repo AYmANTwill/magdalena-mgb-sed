@@ -36,6 +36,26 @@ Findings from a literature scan on 2026-07-27. Data are downloaded from the IDEA
 - Restrepo & Kjerfve — *Magdalena River: interannual variability (1975–1995), revised water discharge and sediment load estimates.*
 - *Efectos naturales y antrópicos en la producción de sedimentos de la cuenca del río Magdalena* (Rev. Acad. Colomb. Cienc.).
 
+## Magdalena mainstem stations (catalogue sweep, 2026-07-28)
+
+Decision taken: **stay on the Magdalena** (Paths A/B only). Full mainstem gauge chain pulled from the IDEAM catalogue
+(`corriente = MAGDALENA`, source→mouth). Realistic **suspended-sediment candidate stations** (major, historically
+monitored) to check in DHIME for record coverage:
+
+| Station | Code | ~Lat | Notes |
+|---|---|---|---|
+| Puerto Salgar | 23037010 | 5.47 | Cundinamarca, mid basin |
+| Puerto Berrío | 23097030 | 6.49 | Antioquia, mid basin — classic sediment gauge |
+| Barrancabermeja | 23157030 | 7.06 | Santander, mid basin — classic sediment gauge |
+| Gamarra | 23217080 | 8.28 | Cesar, lower-mid |
+| El Banco | 25027020 | 8.99 | Magdalena dept, lower (near Cauca junction) |
+| Plato | 25027450 | 9.79 | Magdalena dept, lower |
+| Calamar | 29037020 | 10.24 | lower — **discharge only, no sediment (confirmed)** |
+
+**Still to determine (DHIME, per-station):** which of these has a suspended-sediment record, and its FechaIni/FechaFin.
+Literature (Restrepo, Higgins) suggests strong records but many ending ~2010 → if so, **Path B** (a pre-2010 ENSO pair)
+becomes the realistic route; if any reaches 2015–2016, **Path A** with current years stays open.
+
 ## Next action
 
 On DHIME: open the station catalogue, filter to the Magdalena for **sediment (transporte de sedimentos / concentración)**,

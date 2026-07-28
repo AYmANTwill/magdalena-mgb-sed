@@ -22,6 +22,18 @@ Investigated IDEAM DHIME + the national station catalogue for suspended-sediment
 - **Path C** — pivot the study to the **Sierra Nevada / Ciénaga Grande rivers** (Fundación, Aracataca…): observed
   sediment for BOTH events, steep high-yield catchments, ENSO-sensitive, tractable — but it is not the Magdalena River.
 
+## 2026-07-28 — Data verified + soils processed
+
+- **DEM** (`data/raw/dem/cop30_dem.tar.gz` → `output_hh.tif`) verified: lower-Magdalena box (W −75.4, E −73.7, S 8.2,
+  N 11.3), 30 m, EPSG:4326, **68 M cells** (under IPH limit), max elevation 5,583 m (Sierra Nevada de Santa Marta).
+  ⚠️ NoData not set → must force −9999 before IPH.
+- **Land cover:** 2 WorldCover 2021 tiles (N09W075 + N06W075) verified in `data/raw/landcover/worldcover_2021.zip`.
+- **Soils:** 8 departments merged → **18,217 polygons**. Fixed the missing CRS (export dropped it; assigned EPSG:9377),
+  reprojected to EPSG:4326 → `data/processed/soils_magdalena_merged_4326.gpkg`. PAISAJE categories need harmonizing
+  (casing/spelling) at the URH stage.
+- **Domain note:** the current DEM (8.2–11.3°N) does **not** reach the Sogamoso/Lebrija sediment-calibration tributaries
+  (~7°N). Once the advisor confirms the domain, re-download a larger DEM extending south. **Minibacias + URH held** until then.
+
 ## 2026-07-28 — Data collection started (lower-Magdalena pilot)
 
 - Downloaded into `data/raw/`: **DEM** (COP30 GeoTIFF, tar.gz), **land cover** (ESA WorldCover 2021, Terrascope zip),
