@@ -6,38 +6,63 @@ MGB-SED couples a hydrological/hydrodynamic core (**MGB-SA**) with a sediment mo
 Crucially, the sediment module consumes the **outputs of the hydrology** (runoff volume, peak flow), so the two
 must be calibrated in order: hydrology first, sediments second.
 
-## Input → sub-model → output flow
+## Full model graph (inputs → preprocessing → structure → sub-models → outputs)
+
+Dashed arrows = calibration data.
 
 ```mermaid
-flowchart TD
-    DEM[DEM / MNT<br/>ALOS or Copernicus]
-    SOIL[Soil map<br/>IGAC]
-    LU[Land cover<br/>WorldCover / IDEAM]
-    CLIM[Climate forcing<br/>ERA5 + IDEAM]
+flowchart TB
+    subgraph IN["Input data"]
+        DEM["DEM<br/>ALOS / Copernicus 30 m"]
+        SOIL["Soil map<br/>IGAC"]
+        LU["Land cover<br/>WorldCover / IDEAM"]
+        CLIM["Climate forcing<br/>ERA5 + IDEAM (daily)"]
+    end
 
-    MINI[Minibacias and network<br/>slopes, drainage areas]
-    URH[URH<br/>soil x land cover fractions]
+    subgraph PREP["Preprocessing — IPH-HydroTools"]
+        direction LR
+        FILL["Sink & Destroy"] --> FDIR["Flow direction D8"] --> FACC["Flow accumulation"]
+        FACC --> STR["Stream definition"] --> SEG["Segmentation"] --> CATd["Catchment delineation"]
+    end
 
-    DEM --> MINI
+    subgraph STR2["Basin structure"]
+        MINI["Minibacias<br/>+ upstream-downstream topology"]
+        URH["URH<br/>soil x land cover fractions"]
+    end
+
+    subgraph SA["MGB-SA — hydrology"]
+        WB["Soil water balance<br/>per URH"]
+        WB --> DSUP["Surface runoff<br/>saturation-excess (b)"]
+        WB --> DINT["Interflow"]
+        WB --> DBAS["Baseflow<br/>recession (Kbas)"]
+        DSUP --> ROUT["Channel routing<br/>local-inertial + floodplain"]
+        DINT --> ROUT
+        DBAS --> ROUT
+    end
+
+    subgraph SED["MGB-SED — sediments"]
+        MUSLE["Hillslope erosion<br/>MUSLE (K, LS, C, P, alpha, beta)"]
+        EXNER["Channel transport<br/>Exner + 1D equations"]
+        MUSLE --> EXNER
+    end
+
+    OUTQ["Discharge hydrograph"]
+    OUTS["Suspended sediment<br/>concentration and load"]
+
+    DEM --> FILL
+    CATd --> MINI
     SOIL --> URH
     LU --> URH
+    MINI --> WB
+    URH --> WB
+    CLIM --> WB
+    ROUT --> OUTQ
+    OUTQ --> MUSLE
+    MINI --> MUSLE
+    EXNER --> OUTS
 
-    MGBSA[[MGB-SA — hydrology<br/>discharge, runoff, peak flow]]
-    MINI --> MGBSA
-    URH --> MGBSA
-    CLIM --> MGBSA
-
-    MGBSED[[MGB-SED — sediments<br/>MUSLE + Exner routing]]
-    MGBSA --> MGBSED
-    MINI --> MGBSED
-
-    OUT[Suspended sediment flux<br/>concentration, load]
-    MGBSED --> OUT
-
-    QOBS[(Observed discharge<br/>IDEAM)]
-    SOBS[(Observed sediment<br/>IDEAM / DHIME)]
-    QOBS -. calibrates .-> MGBSA
-    SOBS -. calibrates .-> MGBSED
+    QOBS[("IDEAM discharge")] -. calibrates .-> ROUT
+    SOBS[("IDEAM sediment<br/>DHIME")] -. calibrates .-> EXNER
 ```
 
 ## Preprocessing chain (DEM → minibacias)
