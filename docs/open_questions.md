@@ -20,7 +20,10 @@ sampled less often than discharge).
 **Question:** La Niña **2011** vs El Niño **2015–2016** or **2017**?
 **Why it matters:** Determines forcing periods and the availability window of observed discharge/sediment data.
 **Constraint:** The chosen El Niño year must have adequate IDEAM coverage (ties to Q1).
-**Status:** OPEN — La Niña 2011 tentatively fixed; El Niño year TBC.
+**Update (2026-07-27):** ONI classification (see `07_enso_years.md`): 2010–2011 = **strong La Niña**;
+2015–2016 = **very strong El Niño**; **2017 = weak La Niña / neutral, NOT El Niño**. Recommend
+**La Niña 2011 vs El Niño 2015–2016** (drop 2017). Cleanest strong opposite-phase contrast in the recent record.
+**Status:** RECOMMENDATION READY — 2011 vs 2015–2016, to approve with the advisor.
 
 ## Q3 — Whole basin or sub-basin?
 

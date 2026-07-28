@@ -22,7 +22,7 @@ Living checklist of every dataset needed to build and calibrate MGB-SA on the Ma
 
 | # | Dataset | Used for | Source | Access | Native res | Status |
 |---|---------|----------|--------|--------|-----------|--------|
-| 1 | DEM | terrain → minibacias, slopes, LS | OpenTopography — Copernicus GLO-30 | API key | 30 m | to download |
+| 1 | DEM / hydrography | terrain → minibacias, slopes, LS | **whole basin:** MERIT Hydro (~90 m, standard for MGB); **pilot/QA:** OpenTopography COP30 (30 m) | key / download | 90 m or 30 m | to download |
 | 2 | Soils | URH; erodibility K | IGAC geoportal (Colombia) | web download | vector | to download |
 | 3 | Land cover | URH; cover factor C | ESA WorldCover | web / S3 | 10 m | to download |
 | 4 | Climate (daily) | forcing: precip, T, radiation, wind, humidity, pressure | Copernicus CDS — ERA5 | account + key | ~31 km | to download |

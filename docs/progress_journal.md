@@ -4,6 +4,15 @@ Dated log of understanding and realization. **Updated at each new step.** Newest
 
 ---
 
+## 2026-07-27 — ENSO years clarified + model data/resolution confirmed (research pass)
+
+- ENSO classification (see `07_enso_years.md`): 2010–2011 strong La Niña; 2015–2016 very strong El Niño;
+  **2017 = weak La Niña, NOT El Niño**. Recommend **La Niña 2011 vs El Niño 2015–2016** (Q2). Corrected the "2017?" placeholder.
+- Confirmed MGB-SED forcing variables: precipitation, air temperature, incident solar radiation, relative humidity,
+  wind speed, atmospheric pressure. Standard topography for MGB-SED AS = **MERIT Hydro ~90 m** (not 30 m) → whole basin
+  is feasible at the model's native resolution; noted HRUSed (hydro-sedimentological response units) refinement.
+- Copernicus ERA5: **not downloaded yet** — deferred until region + years are fixed; CDS account to be created now.
+
 ## 2026-07-27 — IDEAM sediment stations found (Q1 largely resolved)
 
 - Literature scan for the sediment-data feasibility (Q1). Findings recorded in `docs/06_ideam_stations.md`:
