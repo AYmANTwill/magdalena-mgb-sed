@@ -16,11 +16,11 @@ The project follows the MGB-SED workflow, phased. Hydrology is always calibrated
 ### 1a. DEM → hydrological structure (understood; see notebook 01)
 IPH-HydroTools turns a DEM into flow directions, network and minibacias by repeating one rule — water follows the
 steepest descent, cell by cell. Minibacias are the MGB computation units, linked by upstream→downstream topology.
-The maths of each transformation are worked out by hand in `notebooks/01_dem_preprocessing.ipynb`.
+The maths of each transformation are worked out by hand in `notebooks/01_dem.ipynb`.
 
 ### 1b. URH generation (understood; see notebook 02)
 Cross soil (IGAC) × land cover (WorldCover/IDEAM), cell by cell, on the aligned DEM grid → URH grid → per-minibacia
-URH fractions. Worked out in `notebooks/02_urh_soil_landuse.ipynb`.
+URH fractions. Worked out in `notebooks/02_urh.ipynb`.
 
 ### 1c. Convert minibacias to MGB format (`mini.gtb`) — TODO.
 

@@ -45,8 +45,9 @@ magdalena-mgb-sed/
 │   ├── open_questions.md         <- the 3 decisions to lock with the advisor
 │   └── progress_journal.md       <- dated log, UPDATED AT EACH STEP
 ├── notebooks/                    <- didactic notebooks (the maths behind each step)
-│   ├── 01_dem_preprocessing.ipynb
-│   └── 02_urh_soil_landuse.ipynb
+│   ├── 01_dem.ipynb
+│   ├── 02_urh.ipynb
+│   └── 03_hydrology.ipynb
 ├── src/                          <- reusable Python (future)
 ├── data/                         <- inputs (not versioned; see data/README.md)
 │   ├── raw/  processed/
@@ -62,7 +63,7 @@ magdalena-mgb-sed/
 |------|-------------|--------|
 | 0 | Environment setup (QGIS 3.44 LTR, IPH-HydroTools, MGB, MGB-SED), preprocessing tested on a ~3000 km² test zone (198 minibacias) | **Done** |
 | 1 | Data preparation: DEM → minibacias, and URH (soil × land use) | **Understood / in progress** |
-| 2 | Hydrological calibration on IDEAM discharge | Not started |
+| 2 | Hydrological calibration on IDEAM discharge | Mechanism understood (notebook 03); calibration not started |
 | 3 | Sediment calibration (MUSLE α, β; Fagundes rain/slope thresholds) | Not started |
 | 4 | Scenario comparison (La Niña 2011 vs El Niño) | Not started |
 | 5 | Analysis and reporting | Not started |

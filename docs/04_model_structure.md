@@ -56,8 +56,8 @@ flowchart LR
 ```
 
 Each transformation is derived by hand, with the maths and simple Python, in
-`notebooks/01_dem_preprocessing.ipynb`. The URH layer (the other structural input) is in
-`notebooks/02_urh_soil_landuse.ipynb`.
+`notebooks/01_dem.ipynb`. The URH layer (the other structural input) is in
+`notebooks/02_urh.ipynb`.
 
 ## Reference scheme
 
