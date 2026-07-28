@@ -4,6 +4,14 @@ Dated log of understanding and realization. **Updated at each new step.** Newest
 
 ---
 
+## 2026-07-27 — Scope decision: MGB-SA first, sediments deferred
+
+- Decided to **complete and calibrate MGB-SA (hydrology) before starting the sediment module**. Rationale:
+  (1) MUSLE consumes MGB-SA outputs (runoff volume, peak flow), so hydrology must work first;
+  (2) de-risks the internship — a calibrated hydrological model is a valid standalone result, and IDEAM discharge
+  data is far more available than sediment data; (3) clarifies exactly which outputs will later feed the sediment module.
+- The sediment blocks (MUSLE, α/β calibration) and the DHIME sediment-station search are postponed, not dropped.
+
 ## 2026-07-27 — MGB-SA hydrology block understood
 
 - Worked out the **rainfall-to-discharge** mechanism; notebook `03_hydrology.ipynb`:

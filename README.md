@@ -116,6 +116,10 @@ magdalena-mgb-sed/
 
 ## 5. Current progress (high level)
 
+> **Current focus:** complete and calibrate **MGB-SA (hydrology)** first. The sediment module (MUSLE, α/β) is
+> deferred until discharge calibration works — hydrology must be calibrated before sediments in any case.
+
+
 | Phase | Description | Status |
 |------|-------------|--------|
 | 0 | Environment setup (QGIS 3.44 LTR, IPH-HydroTools, MGB, MGB-SED), preprocessing tested on a ~3000 km² test zone (198 minibacias) | **Done** |
@@ -137,7 +141,9 @@ Details in [`docs/open_questions.md`](docs/open_questions.md).
 
 ## 7. Immediate next step
 
-Search IDEAM sediment stations on the Magdalena via the **DHIME** portal to assess calibration feasibility.
+Advance the **MGB-SA (hydrology)** track: (a) decide basin extent — sub-basin vs whole (Q3); (b) identify IDEAM
+**discharge** stations for the chosen area; (c) run the real preprocessing + URH on that basin; (d) run and
+**calibrate discharge** (NSE/KGE/PBIAS). The sediment-station (DHIME) search is deferred with the sediment module.
 
 ## 8. How this repository is maintained
 
