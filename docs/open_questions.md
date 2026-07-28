@@ -13,7 +13,13 @@ record length and overlap with the candidate ENSO years.
 23090110) as key gauges; data are free on DHIME. See `06_ideam_stations.md`. Risk downgraded red → amber/green.
 **Remaining check:** confirm suspended-sediment coverage for **2011** and **2015–2017** directly on DHIME (sediment is
 sampled less often than discharge).
-**Status:** LARGELY RESOLVED — network exists; only the year-specific coverage still to verify.
+**Update (2026-07-28) — DHIME investigated (pivotal):** **Calamar [29037020]** is on the Magdalena but Limnimétrica —
+discharge only, **no suspended-sediment series**. **No lower-Magdalena mainstem station** has sediment covering both
+2011 and 2015–2016. Rich sediment records covering both years exist only on the **Sierra Nevada / Ciénaga Grande de
+Santa Marta rivers** (Fundación [29067120] 2002–2026; Puente Ferrocarril/Aracataca [29067130] 1984–2025) — not the
+Magdalena. See `progress_journal.md` for Paths A/B/C.
+**Status:** DECISION REQUIRED with advisor — sediment data does not exist on the lower Magdalena for the study years;
+choose Path A (calibrate-then-simulate), B (shift years), or C (pivot to the Ciénaga Grande rivers).
 
 ## Q2 — Confirm the study years
 

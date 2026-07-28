@@ -4,6 +4,24 @@ Dated log of understanding and realization. **Updated at each new step.** Newest
 
 ---
 
+## 2026-07-28 — Sediment-data reality found on DHIME (pivotal for Q1/Q2)
+
+Investigated IDEAM DHIME + the national station catalogue for suspended-sediment coverage of 2011 and 2015–2016:
+
+- **Calamar [29037020]** — on the Magdalena mainstem (`corriente: MAGDALENA`, 10.24°N), but **Limnimétrica**:
+  discharge exists, **no suspended-sediment series in DHIME**.
+- **No lower-Magdalena mainstem station** has suspended-sediment covering BOTH 2011 and 2015–2016.
+- Rich sediment records DO exist nearby, but on the **Sierra Nevada de Santa Marta rivers draining to the Ciénaga
+  Grande de Santa Marta** (NOT the Magdalena): **Fundación [29067120]** (`corriente FUNDACIÓN`, 2002–2026, 8,437 records)
+  and **Puente Ferrocarril [29067130]** (`corriente ARACATACA`, 1984–2025, 15,276 records) — both span the study years.
+
+**Consequence — decision needed with the advisor (affects Q1, Q2, and the region):**
+- **Path A** — keep the Magdalena; calibrate sediment (α, β) on the best available Magdalena record (even pre-2010 /
+  another mainstem station), then *simulate* 2011 & 2015–2016 (comparison = model output; discharge anchors it).
+- **Path B** — shift the study years to an ENSO pair with Magdalena sediment data.
+- **Path C** — pivot the study to the **Sierra Nevada / Ciénaga Grande rivers** (Fundación, Aracataca…): observed
+  sediment for BOTH events, steep high-yield catchments, ENSO-sensitive, tractable — but it is not the Magdalena River.
+
 ## 2026-07-28 — Data collection started (lower-Magdalena pilot)
 
 - Downloaded into `data/raw/`: **DEM** (COP30 GeoTIFF, tar.gz), **land cover** (ESA WorldCover 2021, Terrascope zip),
