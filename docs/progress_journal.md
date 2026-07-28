@@ -4,6 +4,17 @@ Dated log of understanding and realization. **Updated at each new step.** Newest
 
 ---
 
+## 2026-07-28 — Data collection started (lower-Magdalena pilot)
+
+- Downloaded into `data/raw/`: **DEM** (COP30 GeoTIFF, tar.gz), **land cover** (ESA WorldCover 2021, Terrascope zip),
+  and **soils — Magdalena department** exported from the IGAC ArcGIS REST server to `data/raw/soils/suelos_magdalena.gpkg`
+  (2,483 polygons, EPSG:9377, soil-landscape classes: cuerpo de agua, lomerío, montaña, piedemonte, planicie, valle, zona urbana).
+- IGAC server is slow/timeout-prone: only Magdalena pushed through; **remaining departments (Atlántico, Bolívar, Cesar,
+  Sucre, Córdoba) to be filled with SoilGrids at the URH step** rather than fighting the portal.
+- Study region in use: **lower Magdalena near the sea** (box X −75.4/−73.7, Y 8.2/11.3) — interim focus pending advisor
+  confirmation of exact region/years.
+- Still to do: **DHIME** discharge + sediment (Calamar); ERA5 deferred until region + years fixed.
+
 ## 2026-07-27 — ENSO years clarified + model data/resolution confirmed (research pass)
 
 - ENSO classification (see `07_enso_years.md`): 2010–2011 strong La Niña; 2015–2016 very strong El Niño;
