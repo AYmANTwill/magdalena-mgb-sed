@@ -20,9 +20,15 @@ record length and overlap with the candidate ENSO years.
 ## Q3 — Whole basin or sub-basin?
 
 **Question:** Model the entire Magdalena, or a sub-basin?
-**Why it matters:** The full Magdalena at 30 m exceeds IPH-HydroTools' **~250 M cell** limit.
+**Why it matters:** The full Magdalena at 30 m exceeds IPH-HydroTools' **~250 M cell** limit
+(~257,000 km² → ~285 M cells; the 30 m ceiling is ~225,000 km²).
 **Options:** (a) sub-basin at 30 m; (b) whole basin at coarser resolution; (c) whole basin tiled.
-**Status:** OPEN — depends partly on where usable sediment stations are (Q1).
+**Working decision (2026-07-27):** target = **whole Magdalena** (as stated by the advisor: "el río Magdalena");
+build and validate the full MGB-SA workflow on a **substantial Andean pilot** first — upper + middle Magdalena down
+to a mid-basin gauge (~Puerto Berrío / Barrancabermeja), ~80,000–110,000 km², at full 30 m (well under the limit) —
+then scale to the whole basin (coarser resolution or tiling). Exact pilot outlet to be fixed when the calibration
+gauge is chosen from IDEAM. **To confirm with the advisor.**
+**Status:** DECISION PROPOSED — pilot-first at 30 m; full-basin scaling method still to confirm.
 
 ## Framing for the EMINES defense
 

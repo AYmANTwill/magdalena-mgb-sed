@@ -4,6 +4,16 @@ Dated log of understanding and realization. **Updated at each new step.** Newest
 
 ---
 
+## 2026-07-27 — Study-area decision + data collection started
+
+- Advisor's brief specifies the **whole Magdalena** ("el río Magdalena"), no sub-basin given.
+- **Decision:** target the whole basin, but build the full MGB-SA workflow on a **substantial Andean pilot** first
+  (upper + middle Magdalena to a mid-basin gauge, ~80,000–110,000 km², full 30 m, under IPH's ~250 M cell limit),
+  then scale. Not a tiny test catchment. Exact outlet to be fixed with the calibration gauge. To confirm with advisor.
+- Started the **data collection plan** (`docs/05_data_collection_plan.md`): DEM, soils, land cover, climate, discharge.
+- Confirmed approach: **Python** (pysheds / WhiteboxTools) for real-data exploration & QA; **IPH-HydroTools/MGB plugin**
+  for the official `mini.gtb` generation that MGB consumes (Python would otherwise require rebuilding the MGB file format).
+
 ## 2026-07-27 — Scope decision: MGB-SA first, sediments deferred
 
 - Decided to **complete and calibrate MGB-SA (hydrology) before starting the sediment module**. Rationale:
