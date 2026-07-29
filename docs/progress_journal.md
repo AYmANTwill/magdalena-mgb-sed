@@ -22,6 +22,31 @@ Investigated IDEAM DHIME + the national station catalogue for suspended-sediment
 - **Path C** — pivot the study to the **Sierra Nevada / Ciénaga Grande rivers** (Fundación, Aracataca…): observed
   sediment for BOTH events, steep high-yield catchments, ENSO-sensitive, tractable — but it is not the Magdalena River.
 
+## 2026-07-28 — Switched to whole basin @ 90 m; whole-basin data collected
+
+- **Decision:** model the **whole Magdalena-Cauca basin at 90 m** (30 m whole-basin exceeds IPH's cell limit;
+  90 m ≈ 62 M cells). Box: N 11.4, W −77.0, S 1.4, E −72.9. (Still to confirm formally with the advisor.)
+- **DEM:** Copernicus **GLO-90** for the basin box → `data/raw/dem/rasters_COP90.tar.gz` (verify locally in QGIS).
+- **Land cover:** WorldCover 2021, **8 tiles** (N00–N09 × W075/W078) → `data/raw/landcover/`.
+- **Soils:** switched from IGAC to **SoilGrids** — the IGAC national layer (`suelosdecolombiaaniveldeorden`) failed
+  (server 502/504, truncated to 32 polygons). Downloaded 5 properties (0–5 cm, 250 m, whole basin) via WCS:
+  `soilgrids_{clay,sand,silt,soc,bdod}.tif`. To derive: texture → hydrological soil groups + MUSLE **K**.
+  IGAC kept as the "official" option to revisit with the advisor if he requires it.
+- **Climate:** ERA5-Land re-downloading for the whole basin (`era5land_basin_*` naming, resumable script).
+- **Remaining:** IDEAM observed (discharge + sediment) — pending the calibration-station selection.
+
+## 2026-07-28 — Real-DEM EDA + reclassification (URH ingredients)
+
+- **DEM EDA** (`notebooks/04_real_dem_eda.ipynb`): inspected the real DEM, terrain hillshade, flow-accumulation attempt.
+  Found the lower box **cannot be delineated** — (1) the upstream basin is off-map (mainstem enters the south edge with
+  ~0 accumulated area), (2) the flat delta breaks D8 (the flats problem). → the **stream-definition threshold must be
+  chosen on the full-basin DEM**, not this box. Recorded the parameter checklist for the redo.
+- **Reclassification** (`notebooks/05_landcover_soils_reclass.ipynb`, extent-independent): land cover → 8 hydrological
+  classes; soils → 9 landscape/hydro groups (first-pass, landscape proxy — refine with texture/HSG or SoilGrids);
+  aligned both to the DEM grid and crossed into a real URH map. Outputs in `data/processed/`
+  (`landcover_hydro_30m.tif`, `soils_hydro_30m.tif`, `urh_30m.tif`).
+- Per-minibacia URH composition still pending the minibacias (DEM/IPH step, after domain confirmation).
+
 ## 2026-07-28 — Data verified + soils processed
 
 - **DEM** (`data/raw/dem/cop30_dem.tar.gz` → `output_hh.tif`) verified: lower-Magdalena box (W −75.4, E −73.7, S 8.2,

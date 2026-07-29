@@ -102,12 +102,17 @@ magdalena-mgb-sed/
 │   ├── 05_data_collection_plan.md
 │   ├── 06_ideam_stations.md
 │   ├── 07_enso_years.md
-│   ├── open_questions.md         <- the 3 decisions to lock with the advisor
+│   ├── 08_download_guide.md
+│   ├── 09_report_outline.md
+│   ├── git_workflow.md
+│   ├── open_questions.md         <- the decisions to lock with the advisor
 │   └── progress_journal.md       <- dated log, UPDATED AT EACH STEP
-├── notebooks/                    <- didactic notebooks (the maths behind each step)
+├── notebooks/                    <- didactic (01–03) + real-data (04–05)
 │   ├── 01_dem.ipynb
 │   ├── 02_urh.ipynb
-│   └── 03_hydrology.ipynb
+│   ├── 03_hydrology.ipynb
+│   ├── 04_real_dem_eda.ipynb
+│   └── 05_landcover_soils_reclass.ipynb
 ├── src/                          <- reusable Python (future)
 ├── data/                         <- inputs (not versioned; see data/README.md)
 │   ├── raw/  processed/
@@ -126,11 +131,11 @@ magdalena-mgb-sed/
 | Phase | Description | Status |
 |------|-------------|--------|
 | 0 | Environment setup (QGIS 3.44 LTR, IPH-HydroTools, MGB, MGB-SED), preprocessing tested on a ~3000 km² test zone (198 minibacias) | **Done** |
-| 1 | Data preparation: DEM → minibacias, and URH (soil × land use) | **Understood / in progress** |
+| 1 | Data preparation: DEM → minibacias, and URH (soil × land use) | Data collected & verified; soils + land cover reclassified → URH map (nb 04–05). **Minibacias pending domain decision** |
 | 2 | Hydrological calibration on IDEAM discharge | Mechanism understood (notebook 03); calibration not started |
-| 3 | Sediment calibration (MUSLE α, β; Fagundes rain/slope thresholds) | Not started |
-| 4 | Scenario comparison (La Niña 2011 vs El Niño) | Not started |
-| 5 | Analysis and reporting | Not started |
+| 3 | Sediment calibration (MUSLE α, β; Fagundes rain/slope thresholds) | **Blocked**: no mainstem sediment data → tributary-calibration plan sent to advisor (Path A/B) |
+| 4 | Scenario comparison (La Niña 2011 vs El Niño 2015–2016) | Not started |
+| 5 | Analysis and reporting | Report outline drafted (`docs/09`) |
 
 Detailed, dated progress in [`docs/progress_journal.md`](docs/progress_journal.md).
 

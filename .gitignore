@@ -13,9 +13,11 @@ __pycache__/
 venv/
 .ipynb_checkpoints/
 
-# OS
+# OS / Office temp files
 .DS_Store
 Thumbs.db
+~$*
+*.tmp
 
 # Secrets — never commit API keys
 cds_keys.txt
