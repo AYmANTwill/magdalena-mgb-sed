@@ -49,6 +49,27 @@ def texfam(t):
     return FAM.get(best, 0)
 
 
+def depth_cm(t):
+    """Effective soil depth from IGAC depth words -> representative cm (midpoint of the
+    standard IGAC/USDA depth class). 0 = not stated."""
+    t = str(t).lower()
+    # order matters: 'muy superficial' before 'superficial', 'muy profundo' before 'profundo'
+    for pat, cm in [(r"muy\s+superficial", 15), (r"superficial", 37),
+                    (r"moderadamente\s+profund", 75), (r"muy\s+profund", 150), (r"profund", 125)]:
+        if re.search(pat, t):
+            return cm
+    return 0
+
+
+def drain_cls(t):
+    """Drainage class from IGAC words -> 1 well/excessive, 2 moderate, 3 poor/imperfect. 0 = not stated."""
+    t = str(t).lower()
+    if re.search(r"pobremente|imperfectamente|mal\s+drenad|pantanos|encharca", t): return 3
+    if re.search(r"moderadamente\s+(bien\s+)?drenad|moderado", t):                 return 2
+    if re.search(r"excesivamente|bien\s+drenad|algo\s+excesiv", t):                return 1
+    return 0
+
+
 def pick_texcol(cols):
     """Name-guided selection of the soil-characteristics column.
 
@@ -76,7 +97,10 @@ def main():
         dep = os.path.basename(fp)[7:-5]
         if dep in SKIP:
             continue
-        g = gpd.read_file(fp)
+        try:
+            g = gpd.read_file(fp, engine="pyogrio")
+        except Exception:
+            g = gpd.read_file(fp)
         if g.crs is None:                       # older QGIS exports are MAGNA-SIRGAS Origen-Nacional
             g = g.set_crs(9377, allow_override=True)
         g = g.to_crs(4326)
@@ -84,12 +108,19 @@ def main():
         if not cand:
             print(f"  {dep}: no soil-characteristics column -> skipped"); continue
         col = max(cand, key=lambda c: (g[c].apply(texfam) > 0).mean())
-        g["fam"] = g[col].apply(texfam)
+        g["fam"]   = g[col].apply(texfam)
+        g["depth"] = g[col].apply(depth_cm)
+        g["drain"] = g[col].apply(drain_cls)
         cov = (g["fam"] > 0).mean()
-        print(f"  {dep:18} col={col:34} texture coverage {100*cov:4.0f}%")
-        frames.append(g[["fam", "geometry"]][g["fam"] > 0])
+        print(f"  {dep:18} col={col:34} texture {100*cov:3.0f}% depth {100*(g['depth']>0).mean():3.0f}% drain {100*(g['drain']>0).mean():3.0f}%")
+        frames.append(g[["fam", "depth", "drain", "geometry"]][g["fam"] > 0])
     ig = gpd.GeoDataFrame(pd.concat(frames, ignore_index=True), crs=4326)
     igr = rasterize(((geom, int(f)) for geom, f in zip(ig.geometry, ig.fam)),
+                    out_shape=(H, W), transform=tr, fill=0, dtype="uint8")
+    # depth (cm, float) and drainage (class) rasters — burn only where stated (>0)
+    dpr = rasterize(((geom, int(d)) for geom, d in zip(ig.geometry, ig.depth) if d > 0),
+                    out_shape=(H, W), transform=tr, fill=0, dtype="int16")
+    drr = rasterize(((geom, int(v)) for geom, v in zip(ig.geometry, ig.drain) if v > 0),
                     out_shape=(H, W), transform=tr, fill=0, dtype="uint8")
 
     # ---- 2. SoilGrids fallback (USDA triangle -> 3 families) ----
@@ -125,13 +156,22 @@ def main():
     inv = {1: "Coarse", 2: "Medium", 3: "Fine"}
     print("final basin family %:", {inv[k]: round(100*float(np.mean(final[bas]==k)), 1) for k in (1, 2, 3)})
 
-    # ---- 4. write (temp then copy: the mount forbids unlink-overwrite) ----
-    prof.update(count=1, dtype="uint8", nodata=0, compress="lzw")
-    tmp = str(pathlib.Path(tempfile.gettempdir()) / "soil_family_igac.tif")
-    with rasterio.open(tmp, "w", **prof) as d:
-        d.write(final, 1)
-    shutil.copyfile(tmp, OUT)
-    print("wrote", OUT)
+    # depth & drainage: mask to basin (no SoilGrids equivalent; gaps stay 0 = fill later per family)
+    dpr = np.where(bas, dpr, 0).astype("int16")
+    drr = np.where(bas, drr, 0).astype("uint8")
+    print(f"IGAC depth stated on {100*np.mean(dpr[bas] > 0):.1f}% of basin; drainage on {100*np.mean(drr[bas] > 0):.1f}%")
+
+    # ---- 4. write each raster (temp then copy: the mount forbids unlink-overwrite) ----
+    def _save(arr, name, dtype):
+        p = dict(prof); p.update(count=1, dtype=dtype, nodata=0, compress="lzw")
+        tmp = str(pathlib.Path(tempfile.gettempdir()) / name)
+        with rasterio.open(tmp, "w", **p) as d:
+            d.write(arr.astype(dtype), 1)
+        shutil.copyfile(tmp, REPO / "data" / "processed" / name)
+        print("wrote", REPO / "data" / "processed" / name)
+    _save(final, "soil_family_igac.tif", "uint8")
+    _save(dpr,   "soil_depth_igac.tif",  "int16")
+    _save(drr,   "soil_drainage_igac.tif", "uint8")
 
 
 if __name__ == "__main__":
