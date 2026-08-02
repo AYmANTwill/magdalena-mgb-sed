@@ -1,0 +1,380 @@
+# 16 — Forcing pipeline: audit, discoveries, errors and open items
+
+Complete record of the rainfall + PET forcing work: what was built, what was found wrong in the
+data, what was got wrong during development, and what is still outstanding.
+
+Organised by pipeline step. Read [§4 Discoveries](#4--discoveries-defects-found-in-the-data) and
+[§6 Traps](#6--traps-reference-things-that-silently-produce-plausible-wrong-numbers) first if you are
+picking this up cold — they contain the non-obvious knowledge.
+
+---
+
+## 1 — Current state
+
+| Component | State |
+|---|---|
+| Conventional gauges (IDEAM DHIME) | 294 stations, 2008-2018, **repaired** (see §4.1) |
+| Automatic gauges | 94 stations — assessed and **rejected** as forcing |
+| CHIRPS v2.0 daily | 2009-2017, 9 years, 0.05°, basin-clipped |
+| ERA5-Land | 108 basin + 108 strip → **108 mosaicked** `ext` files, 2009-2017, hourly |
+| Minibacias | 8672, 257,097 km² |
+| **Rainfall forcing** | 4018 days × 8672 minibacias, no gaps |
+| **PET forcing** | 3287 days × 8672 minibacias |
+| **Model period** | **2009-01-01 → 2017-12-31 (3287 days)** — bounded by ERA5, not rainfall |
+
+**Phase A (model inputs) is complete.** Phase B (water balance + discharge calibration) has not
+started. Phase C (sediment) remains blocked on mainstem SSC data.
+
+---
+
+## 2 — Pipeline order
+
+```
+DHIME downloads (two collaborators, by department)
+  └─ src/organize_precip_regions.py         consolidate → regions/<dept>/
+  └─ src/build_precip_gauges.py             QC: dedup, 0-400 mm screen, coords
+  └─ src/repair_precip_zero_suppression.py  NEW — see §4.1
+  └─ notebook 10                            dataset selection + preprocessing
+  └─ notebook 11                            per-minibacia forcing (rainfall + PET)
+
+ERA5-Land:  src/download_era5.py + download_era5_strip.py → src/mosaic_era5.py
+CHIRPS:     src/download_chirps.py
+```
+
+---
+
+## 3 — Per-step record
+
+### 3.1 `src/organize_precip_regions.py`
+
+Consolidates both collaborators' DHIME downloads into `regions/<department>/`.
+**98 CSVs across 20 departments.**
+
+- ⚠️ **Open bug.** It globs `BASE/*.zip` unconditionally. `regions.zip` now sits in that folder, so
+  re-running would create a phantom `regionszip` department with 98 duplicate CSVs. Guard the
+  filename or move the archive before re-running.
+- ⚠️ `_cordoba_x/descargaDhime.csv` is parked outside the working set by its underscore prefix.
+  Córdoba has only 1 CSV — the thinnest of 20 departments. Confirm the exclusion was deliberate.
+
+### 3.2 `src/build_precip_gauges.py`
+
+De-duplication, 0-400 mm/day screening, flatline/sparse station removal, out-of-basin filtering,
+coordinate backfill. Produces 294 stations / 686,752 station-days.
+
+- ❗ **Structural limitation.** It screens outlier *values*. It cannot detect *absent* records, which
+  is how the zero-suppression defect (§4.1) survived it.
+
+### 3.3 `src/repair_precip_zero_suppression.py` *(new)*
+
+Detects and repairs zero-suppressed series. Two complementary tests, either of which flags a station,
+both gated on `span_frac < 0.85`:
+
+| Test | Threshold | Rationale |
+|---|---|---|
+| Dry-day fraction | `< 0.15` | Healthy gauges here are dry on ~47 % of records |
+| Neighbour ratio | `> 1.8` | Station annual ÷ median of 6 nearest neighbours; healthy population ~0.9 |
+
+**Both are needed.** The dry-fraction test misses stations that retain *some* zeros — SAN LUIS
+`21130040` has a normal dry fraction of 0.40 yet is 2.5× its neighbours. The neighbour test would fail
+if a whole *region* were suppressed together (all ratios ≈ 1), which the dry-fraction test still
+catches.
+
+Results: **70 of 294 stations flagged (24 %)** — dry_frac 39, both 16, **neighbour-only 15**.
+
+### 3.4 `src/download_chirps.py` *(new)*
+
+Yearly global p05 netCDF (~1.15 GB each), clipped to the basin, global file deleted after subsetting
+(~8 MB/year kept). Three large downloads beat ~1100 daily GeoTIFFs.
+
+### 3.5 `src/mosaic_era5.py`
+
+Joins each basin file (−77.0…−72.9) with its east strip (−72.8…−72.3) → full corrected domain.
+108 files, grid 101 × 48. Requires `xarray` + `netCDF4`, which were **absent** and are now declared
+in `requirements.txt`.
+
+### 3.6 Notebook 10 — rainfall dataset selection and preprocessing
+
+| § | Content |
+|---|---|
+| 1 | The zero-suppression defect: diagnostic, repair, before/after |
+| 2 | Conventional vs automatic gauges |
+| 3 | CHIRPS vs gauges, 9 years, including the day-convention lag test |
+| 4 | **Our own IDW field measured with the identical metric** |
+| 5 | Verdict |
+
+### 3.7 Notebook 11 — per-minibacia forcing
+
+| § | Content |
+|---|---|
+| 1 | Gauge QC: availability heatmap, double-mass homogeneity |
+| 2 | Minibacia centroids from the label raster |
+| 3 | IDW `k`=6, per-day weight renormalisation, `k`=20 adaptive fallback |
+| 4 | Rainfall field maps + seasonal cycle + ENSO series |
+| 5 | Provenance flags |
+| 6 | LOOCV + spatial-consistency check |
+| 7 | FAO-56 Penman–Monteith PET |
+| 8 | Water balance and ENSO contrast |
+| 9 | Export |
+
+**Outputs** (`data/processed/`): `forcing_minibacia_precip.csv`, `forcing_minibacia_pet.csv`,
+`forcing_minibacia_provenance.csv` (`id,lon,lat,area_km2,fallback_days,d_nearest_km,flag`).
+
+---
+
+## 4 — Discoveries: defects found in the data
+
+### 4.1 Zero-suppressed gauge series ❗ *the significant one*
+
+**70 of 294 stations contained only rain days — their dry days were never exported by DHIME.**
+
+| | Flagged | Healthy |
+|---|---|---|
+| Dry-day fraction | 0.11 | 0.47 |
+| Neighbour ratio | 1.62 → **1.11** after repair | 0.88 |
+| Annual total | 3,863 → **1,794** mm/yr | 2,034 |
+
+Worst case GUACAMAYO `25020030` at **11,833 mm/yr** in a region receiving ~2,000-2,500.
+
+**Why it corrupted the forcing:** in IDW a gauge contributes only on days it reported. A
+zero-suppressed gauge therefore joins the weighted average exactly when it is raining there and is
+masked out when dry — it can only ever pull estimates **up**. This produced circular wet "bullseyes"
+in the mean-annual rainfall map.
+
+**Repair:** absent days inside each station's active span inserted as 0.0 mm, marked
+`Inferido_seco`. Gauge-mean annual **2,904 → 2,304 mm/yr**. 121,785 dry days inferred.
+
+**Validation:** the repair had to move totals into a plausible range *and* bring neighbour ratios
+down — and it does, landing flagged stations on top of the healthy population rather than anywhere
+arbitrary. That the correction predicts where they should end up is the strongest evidence the
+diagnosis is right.
+
+⚠️ **7 stations remain >1.8× their neighbours after repair** (1,978-4,557 mm/yr). Plausible
+magnitudes, so likely genuine orographic hotspots — but unverified.
+
+### 4.2 The `día pluviométrico` day offset
+
+Conventional gauges are read at 07:00 local, so a gauge "day" runs 07:00→07:00. Shifting CHIRPS
+against the gauges:
+
+| lag | median daily *r* |
+|---|---|
+| −2 | 0.093 |
+| **−1** | **0.304** |
+| 0 | 0.160 |
+| +1 | 0.136 |
+
+A one-day realignment **nearly doubles** correlation. This is a calendar artefact, not a skill
+deficit — any raw daily correlation quoted without it understates CHIRPS badly.
+
+**Does it matter for PET?** Measured: mean bias between UTC-day and 07:00-07:00 windows is
+**−0.000 mm/day**. The shift redistributes PET between adjacent days without changing totals
+(15.8 % day-to-day scatter, zero bias). Rainfall is spiky so its day definition matters; PET is
+smooth so it does not.
+
+⚠️ **Still matters for calibration.** Discharge is very likely midnight→midnight. Resolve before
+calibrating hydrographs, or routing and recession parameters will absorb a ~7 h timing error and look
+well-calibrated for the wrong reason.
+
+### 4.3 Interpolation inflates wet-day frequency
+
+| Metric | IDW (leave-one-out) | CHIRPS raw |
+|---|---|---|
+| P99 ratio vs gauge | 0.73 | 0.72 |
+| Wet-day frequency error | **+18.3 pts** | **−1.4 pts** |
+| Volume bias | +1.1 % | −5.8 % |
+| Daily *r* | 0.41 | 0.31 |
+
+**CHIRPS improved at every cleaning stage — which is itself evidence.** CHIRPS never changed; only
+the gauge reference did:
+
+| | Pre-repair | 55-station repair | 70-station repair |
+|---|---|---|---|
+| CHIRPS volume bias | −13.6 % | −7.6 % | **−5.8 %** |
+| CHIRPS wet-day error | −6.2 pts | −2.6 pts | **−1.4 pts** |
+
+Every time the reference got cleaner, CHIRPS looked better against it. That strongly suggests CHIRPS
+was closer to the truth throughout, and that the **residual −5.8 % may itself be leftover gauge error**
+— plausibly the untouched 5-20 % dry-fraction band (§7.6) and the 7 residual stations (§4.1) — rather
+than a CHIRPS deficiency. Do not treat −5.8 % as an established CHIRPS bias to correct against.
+
+**This reversed the notebook 10 verdict.** An earlier version rejected CHIRPS for damping extremes;
+our own field damps them identically. Averaging six gauges manufactures wet days — a day counts as
+wet if *any* contributor rained enough. CHIRPS is **7× better** on wet-day frequency.
+
+Nuance: MGB needs *areal* rainfall, and a true areal average legitimately has more wet days and lower
+peaks than a point gauge. Part of the smoothing is physically correct. We cannot separate correct
+areal smoothing from excessive interpolation smoothing.
+
+### 4.4 Automatic network under-catch
+
+**19 %** below the conventional network on co-located pairs (reported as 31 % before the repair — the
+inflated gauge totals exaggerated it). Physically expected: wind deflection, evaporation between tips,
+mechanical under-registration at high intensity.
+
+### 4.5 Non-issues, checked and cleared
+
+- **ENSO ratio vs gauge density.** Gauges/day differ (183 in 2011 vs 153 in 2015-16), but on a strict
+  fixed station set the ratio is 1.59× vs 1.57× on all pairs — a 1 % difference. Not a confound.
+- **The 6,841 mm/yr maximum.** IDW is an average and cannot exceed its inputs, so it faithfully
+  reproduced bad gauge data rather than inventing anything.
+
+---
+
+## 5 — Errors made during development, and their fixes
+
+Recorded because several were caught only by diagnostics, not by the sanity checks written for them.
+
+| # | Error | Consequence | Fix |
+|---|---|---|---|
+| 1 | Validation used `ds.time`; ERA5 coord is `valid_time` | **Deleted 30 valid mosaic files.** Recovered — sources intact | Check coord names before validating |
+| 2 | `isel` on `number`/`expver` (scalar *coords*, not dims) | Notebook run failed | `drop_vars` for scalar coords |
+| 3 | `\"\"\"` inside an `r"""…"""` generator string | Escapes landed literally; syntax error | Use `'''` inside raw strings |
+| 4 | `ssrd` daily total taken as max over the UTC day | **Radiation +7 %**, PET inflated with it | Exclude hour 0 (see §6.1) |
+| 5 | Zero-suppression keyed on `dry_frac` alone | Missed the worst stations entirely | Added neighbour-ratio test |
+| 6 | Claimed "QC was sound" from 0.372 % spatial-consistency | That test structurally cannot see missing zeros | Don't infer absence from an outlier test |
+| 7 | Predicted CHIRPS drizzle inflation before measuring | Verdict written against the data | Measure first |
+| 8 | Read a CSV mid-flush, reported it truncated | False alarm | Check field counts, not just line counts |
+| 9 | `| tail -25` on nbconvert masked a non-zero exit | "Executed" a notebook that never ran | Don't pipe commands whose exit code matters |
+| 10 | Repair script compared two different annual-total definitions | Printed a rise where there was a fall | Compare like with like |
+
+---
+
+## 6 — Traps reference: things that silently produce plausible wrong numbers
+
+### 6.1 ERA5-Land
+
+- **`valid_time`, not `time`.** Code written against `ds.time` fails outright.
+- **`number` / `expver` are scalar coords, not dims** → `drop_vars`, not `isel`.
+- **`ssrd` is accumulated from 00 UTC and resets — and the 00:00 stamp carries the *previous* day's
+  completed total.**
+
+  ```
+  01-01 00:00 : 18.68 MJ   <- the whole of 31 Dec
+  01-01 01:00 :  0.00      <- accumulation restarts
+  01-01 23:00 : 20.35      <- the real total for 01 Jan
+  01-02 00:00 : 20.35      <- carried into the next day
+  ```
+
+  | Method | MJ/m²/day | |
+  |---|---|---|
+  | Sum of hourly values | ~200 | ❌ ~10× too high |
+  | Max over the UTC day | 19.06 | ❌ +7 %, picks the carry-over |
+  | **Max over 01:00-23:00** | **17.82** | ✅ |
+  | Value at 00:00 next day | 17.83 | ✅ same answer |
+
+  ⚠️ The "18-22 MJ/m²/day is plausible for the tropics" sanity check **does not catch this** — the
+  inflated 19.06 sits comfortably inside the band. Only comparing methods against the raw hourly
+  series exposed it. A plausibility band catches gross errors, not 7 % ones.
+
+- **Hourly, not daily.** 744 timesteps for a 31-day month.
+
+### 6.2 DHIME / IDEAM
+
+- Missing values are blanks, **not zeros** — except in the zero-suppressed series where absent days
+  really are dry (§4.1). Opposite conventions in the same dataset.
+- `día pluviométrico` runs 07:00→07:00 local.
+- Approval levels: mostly *Definitivo*; some *Preliminar* / *En revisión*.
+
+### 6.3 IDW interpolation
+
+- **Weights must be renormalised per day** over the gauges that actually reported. The matrix is only
+  ~66 % filled; fixed weights let missing gauges contribute implicit zeros.
+- Averaging **inflates wet-day frequency** (§4.3) — inherent, not a bug.
+- IDW cannot exceed the maximum of its inputs. An implausible interpolated value always traces to an
+  implausible gauge.
+
+### 6.4 Tooling
+
+- **Python `zipfile` is ~32× slower than 7-Zip** on this machine (0.39 vs 12.4 MB/s) — 8 KB reads
+  through Defender's real-time scan. `Add-MpPreference -ExclusionPath 'C:\dev\magdalena-mgb-sed'`
+  (admin shell) fixes it permanently.
+- `jupyter nbconvert` is not on PATH; use `python -m nbconvert`.
+- Wide `to_csv` writes appear incomplete while flushing — verify field counts, not file size.
+
+---
+
+## 7 — Not done / open items
+
+### Blocking Phase B
+
+1. **Day-convention alignment between rainfall and discharge** (§4.2). Rainfall 07:00→07:00, discharge
+   likely midnight→midnight.
+2. **Discharge dataset QC.** Never audited. Given precipitation hid a defect this severe, apply the
+   same scrutiny — especially a neighbour-ratio equivalent.
+
+### Forcing improvements (v2)
+
+3. **CHIRPS quantile-map merge.** Stratify by elevation band and hydrographic zone (bias is
+   structured), then conditional merging so gauges dominate where they exist. Expected: wet-day error
+   18.1 → ~3 pts, better-constrained headwaters. **Validate by re-running the notebook 11 LOOCV** — if
+   it doesn't beat the baseline, say so.
+4. **Orographic correction.** Plain IDW ignores elevation; headwater rainfall is interpolated from
+   valley stations with no lapse adjustment. Material in an Andean basin.
+5. **The 7 residual >1.8× stations** (§4.1).
+6. **The 5-20 % dry-fraction band.** The 0.15 threshold is conservative; sensitivity untested.
+
+### Housekeeping
+
+7. **`regions.zip` glob bug** (§3.1).
+8. **Reference document deletion never executed** — the destructive-command guard blocked it four
+   times. `Protocolo_descarga_*.docx`, `Explanation_script_MGB_SA_Magdalena.pdf`,
+   `notebooks/06_data_inventory.html` and `delivery/` are still on disk.
+9. **`data_Final/` + `data_Final.zip`** (~14 GB) — gitignored, regenerate with
+   `python src/build_data_final.py all`.
+
+---
+
+## 8 — Proposed next steps, in order
+
+1. **Discharge dataset QC** — apply the §4.1 methodology (neighbour-relative anomaly detection, not
+   just value screening).
+2. **Notebook 12: MGB-SA water balance in Python** on this forcing → simulated discharge → calibrate
+   against IDEAM gauges. *Rationale:* LOOCV only shows how well gauges predict each other. NSE/KGE
+   against observed hydrographs is the first test of whether the rainfall is good enough **for its
+   purpose**. If discharge reproduces well, further forcing work is wasted; if it is systematically
+   biased, the CHIRPS merge becomes evidence-driven rather than argued.
+3. **CHIRPS merge (v2)** — only if step 2 shows rainfall-driven error.
+4. **Phase C sediment** — still blocked on mainstem SSC data.
+
+Note: MGB-SA proper runs as a **QGIS plugin** and needs `mini.gtb` plus MGB-format forcing files. The
+Python water balance in step 2 is a *diagnostic*, not a replacement for the production run.
+
+---
+
+## 9 — Key numbers
+
+Final values, after the 70-station repair and the `ssrd` radiation fix.
+
+| Quantity | Value |
+|---|---|
+| Basin area / minibacias | 257,097 km² / 8,672 |
+| Gauge matrix | 4018 days × 294 gauges, **68.4 % filled**, median 200 reporting/day |
+| Basin-mean rainfall | **2,206 mm/yr** (6.04 mm/day) |
+| Annual range across minibacias | 734 – 6,371 mm/yr |
+| Seasonal cycle | bimodal; driest Jan (2.7 mm/day), wettest Oct (8.6) |
+| Gap cells before fallback | 118,124 (0.34 %) → **0 after `k`=20 pass** |
+| Radiation | **17.2 MJ/m²/day** |
+| PET | **3.40 mm/day ≈ 1,255 mm/yr** |
+| Water balance | P 2,176 · PET 1,255 · **surplus 922 mm/yr** |
+| ENSO rainfall ratio 2011/(2015-16) | 1.54× · 98 % of minibacias wetter in 2011 |
+| ENSO PET | 1,167 mm/yr (2011) vs 1,303 (2015-16) — El Niño higher, amplifying the contrast |
+| Provenance | `G` 25.8 % · `GC` 57.1 % · `C` **17.1 %** of basin area |
+| LOOCV daily *r* | 0.467 (<10 km) · 0.398 (10-30) · **0.313 (>30 km)** |
+| LOOCV bias | +0.7 % (<10 km) · −0.4 % (10-30) · **+6.2 % (>30 km)** |
+| Spatial-consistency suspects | 2,700 station-days (0.336 %) |
+
+**Effect of the two late fixes** — the `>30 km` bias halved, which matters because that band *is* the
+ungauged headwaters:
+
+| | 55-station repair | **70-station + radiation fix** |
+|---|---|---|
+| Gap cells | 0.51 % | **0.34 %** |
+| Basin rainfall | 2,262 mm/yr | **2,206** |
+| Radiation | 18.7 MJ/m²/day | **17.2** |
+| PET | 3.62 mm/day | **3.40** |
+| LOOCV bias >30 km | +11.8 % | **+6.2 %** |
+
+⚠️ **Notebook 11 prints its radiation sanity band as "18-22 MJ/m²/day".** The corrected 17.2 now falls
+*below* it. 17.2 is right for a cloudy Andean basin — the 18-22 band describes clear tropical
+conditions. Widen the printed band to ~15-22, or the next reader will treat a correct value as a
+failure.
