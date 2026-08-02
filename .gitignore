@@ -6,6 +6,19 @@ data/processed/*
 results/*.tif
 results/*.gtb
 
+# Reorganized full-data copy + archive (~14 GB, regenerate with src/build_data_final.py)
+data_Final/
+data_Final.zip
+
+# Generated bundles, reference documents and their packaging scripts — not project source
+delivery/
+*.pdf
+notebooks/*.html
+Guia_descarga_suelos_IGAC.docx
+Protocolo_descarga_PRECIPITACION_OMAR.docx
+src/build_data_final.py
+src/package_precip_dataset.py
+
 # Python
 __pycache__/
 *.pyc

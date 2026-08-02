@@ -36,14 +36,22 @@ MIN_DAYS = 90
 
 def load_all():
     frames = []
-    for z in sorted(glob.glob(str(DHIME / "*.zip"))):
-        with zipfile.ZipFile(z) as zf:
-            for nm in zf.namelist():
-                if nm.lower().endswith(".csv"):
-                    frames.append(pd.read_csv(io.BytesIO(zf.read(nm)), dtype={"CodigoEstacion": str}))
-    # also any loose csvs
-    for c in glob.glob(str(DHIME / "*.csv")):
-        frames.append(pd.read_csv(c, dtype={"CodigoEstacion": str}))
+    regions = DHIME / "regions"
+    if regions.exists():
+        # preferred: the organized region folders (your zips + Youssef, via organize_precip_regions.py)
+        for c in glob.glob(str(regions / "**" / "*.csv"), recursive=True):
+            frames.append(pd.read_csv(c, dtype={"CodigoEstacion": str}))
+        print(f"reading organized regions/  ({len(frames)} csv files)")
+    else:
+        # fallback: raw zips + any Youssef csvs
+        for z in sorted(glob.glob(str(DHIME / "*.zip"))):
+            with zipfile.ZipFile(z) as zf:
+                for nm in zf.namelist():
+                    if nm.lower().endswith(".csv"):
+                        frames.append(pd.read_csv(io.BytesIO(zf.read(nm)), dtype={"CodigoEstacion": str}))
+        for c in glob.glob(str(DHIME / "**" / "*.csv"), recursive=True):
+            if "__MACOSX" not in c:
+                frames.append(pd.read_csv(c, dtype={"CodigoEstacion": str}))
     a = pd.concat(frames, ignore_index=True)
     print(f"loaded {len(frames)} files, {len(a):,} raw rows")
     return a

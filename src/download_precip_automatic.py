@@ -40,10 +40,21 @@ CODE_LO, CODE_HI = "0021", "0030"
 PRECIP_CATS = ["Pluviométrica", "Pluviográfica", "Climatológica Ordinaria",
                "Climatológica Principal", "Agrometeorológica",
                "Sinóptica Principal", "Sinóptica Secundaria"]
-# study-year months
-MONTHS = [(2011, m) for m in range(1, 13)] + \
-         [(2015, m) for m in range(1, 13)] + [(2016, m) for m in range(1, 13)]
+# study-year date windows — small windows keep each server-side aggregation fast (a whole
+# month basin-wide overruns Socrata's 180 s limit)
+import datetime as _dt
+WINDOW_DAYS = 3
+SPANS = [(_dt.date(2011, 1, 1), _dt.date(2011, 12, 31)),
+         (_dt.date(2015, 1, 1), _dt.date(2016, 12, 31))]
 MIN_INTERVALS = 100        # a day is valid only if >=100 of 144 ten-min slots reported
+
+def _windows():
+    for a, b in SPANS:
+        d = a
+        while d <= b:
+            e = min(d + _dt.timedelta(days=WINDOW_DAYS - 1), b)
+            yield d, e
+            d = e + _dt.timedelta(days=1)
 
 HEAD = {}
 if os.environ.get("SOCRATA_APP_TOKEN"):
@@ -63,6 +74,9 @@ def _get(url, params, tries=4):
 
 
 def dump_inventory():
+    out = os.path.join(OUTDIR, "stations_precip_catalog.csv")
+    if os.path.exists(out):
+        print(f"catalog: {out} already present — skipping"); return
     print("catalog: pulling basin precipitation stations ...")
     cats = ",".join("'%s'" % c for c in PRECIP_CATS)
     rows, off = [], 0
@@ -85,59 +99,70 @@ def dump_inventory():
 
 
 def download_automatic():
-    print("automatic precip: server-side daily aggregation, 2011 + 2015-16 ...")
-    frames = []
-    for (y, m) in MONTHS:
-        d0 = f"{y}-{m:02d}-01"
-        d1 = f"{y+(m//12)}-{(m%12)+1:02d}-01"          # first day of next month
+    print(f"automatic precip: daily totals in {WINDOW_DAYS}-day server-side windows (resumable) ...")
+    long_out = os.path.join(OUTDIR, "precip_auto_daily_long.csv")
+    done_path = os.path.join(OUTDIR, "_auto_done.txt")
+    done = set(open(done_path).read().split()) if os.path.exists(done_path) else set()
+    new_file = not os.path.exists(long_out)
+    fout = open(long_out, "a", newline="", encoding="utf-8"); w = csv.writer(fout)
+    if new_file:
+        w.writerow(["code", "date", "p_mm", "n", "valid"])
+    wins = list(_windows()); total = len(wins)
+    for i, (d0, d1) in enumerate(wins):
+        key = d0.isoformat()
+        if key in done:
+            continue
+        e_excl = (d1 + _dt.timedelta(days=1)).isoformat()
         off, got = 0, 0
         while True:
             js = _get(PRECIP, {
                 "$select": "codigoestacion,date_trunc_ymd(fechaobservacion) AS dia,"
                            "sum(valorobservado) AS p_mm,count(1) AS n",
                 "$where": f"codigoestacion between '{CODE_LO}' and '{CODE_HI}' "
-                          f"and fechaobservacion >= '{d0}' and fechaobservacion < '{d1}' "
+                          f"and fechaobservacion >= '{d0.isoformat()}' and fechaobservacion < '{e_excl}' "
                           f"and valorobservado >= 0 and valorobservado < 250",
                 "$group": "codigoestacion,date_trunc_ymd(fechaobservacion)",
                 "$order": "codigoestacion,dia", "$limit": 50000, "$offset": off})
-            frames += js
+            for rr in js:
+                n = int(float(rr.get("n", 0))); dd = str(rr["dia"])[:10]
+                w.writerow([rr["codigoestacion"], dd, rr.get("p_mm", ""), n, int(n >= MIN_INTERVALS)])
             got += len(js)
             if len(js) < 50000:
                 break
             off += 50000
-        print(f"  {y}-{m:02d}: {got} station-days", flush=True)
-        time.sleep(0.3)
-    df = pd.DataFrame(frames)
-    if df.empty:
-        print("  no data returned"); return
-    df["p_mm"] = pd.to_numeric(df["p_mm"], errors="coerce")
-    df["n"] = pd.to_numeric(df["n"], errors="coerce")
-    df["date"] = pd.to_datetime(df["dia"]).dt.date
-    df["code"] = df["codigoestacion"]
-    df["valid"] = df["n"] >= MIN_INTERVALS
-    df = df[["code", "date", "p_mm", "n", "valid"]].sort_values(["code", "date"])
-    long_out = os.path.join(OUTDIR, "precip_auto_daily_long.csv")
-    df.to_csv(long_out, index=False)
-    print(f"  wrote {long_out}  ({len(df)} station-days, {df['code'].nunique()} stations)")
+        fout.flush(); done.add(key); open(done_path, "a").write(key + "\n")
+        if i % 10 == 0 or i == total - 1:
+            print(f"  {key}  ({i+1}/{total})  +{got} station-days", flush=True)
+        time.sleep(0.2)
+    fout.close()
+    _summarise(long_out)
 
-    # station metadata + per-year valid-day coverage
-    meta = _get(PRECIP, {
-        "$select": "codigoestacion AS code,max(nombreestacion) AS name,max(latitud) AS lat,"
-                   "max(longitud) AS lon,max(departamento) AS dept,max(zonahidrografica) AS zona",
-        "$where": f"codigoestacion between '{CODE_LO}' and '{CODE_HI}' "
-                  f"and fechaobservacion >= '2011-01-01' and fechaobservacion < '2017-01-01'",
-        "$group": "codigoestacion", "$limit": 50000})
-    mt = pd.DataFrame(meta)
-    v = df[df["valid"]].copy(); v["yr"] = pd.to_datetime(v["date"]).dt.year
+
+def _summarise(long_out):
+    df = pd.read_csv(long_out, dtype={"code": str})
+    if df.empty:
+        print("  no data"); return
+    df["yr"] = pd.to_datetime(df["date"]).dt.year
+    v = df[df["valid"] == 1]
     cov = v.groupby("code").agg(
         n_valid_2011=("yr", lambda s: int((s == 2011).sum())),
         n_valid_2015_16=("yr", lambda s: int(s.isin([2015, 2016]).sum()))).reset_index()
-    st = mt.merge(cov, on="code", how="left").fillna({"n_valid_2011": 0, "n_valid_2015_16": 0})
+    cov["code"] = cov["code"].astype(str)
+    cat = os.path.join(OUTDIR, "stations_precip_catalog.csv")
+    if os.path.exists(cat):
+        meta = pd.read_csv(cat, dtype=str).rename(columns={
+            "codigo": "code", "nombre": "name", "latitud": "lat", "longitud": "lon",
+            "departamento": "dept", "zona_hidrografica": "zona"})
+        keep = [c for c in ["code", "name", "lat", "lon", "dept", "zona"] if c in meta.columns]
+        st = cov.merge(meta[keep], on="code", how="left")
+    else:
+        st = cov
     st_out = os.path.join(OUTDIR, "precip_auto_stations.csv")
     st.to_csv(st_out, index=False, encoding="utf-8")
+    print(f"  wrote {long_out}  ({len(df)} station-days, {df['code'].nunique()} stations)")
     print(f"  wrote {st_out}  ({len(st)} stations)")
-    print(f"  stations with >=300 valid days in 2011:        {int((st['n_valid_2011']>=300).sum())}")
-    print(f"  stations with >=600 valid days in 2015-16:     {int((st['n_valid_2015_16']>=600).sum())}")
+    print(f"  stations >=300 valid days in 2011:    {int((cov['n_valid_2011']>=300).sum())}")
+    print(f"  stations >=600 valid days in 2015-16: {int((cov['n_valid_2015_16']>=600).sum())}")
 
 
 if __name__ == "__main__":
