@@ -16,7 +16,7 @@ URL = "https://cds.climate.copernicus.eu/api"
 with open("cds_keys.txt") as fh:
     KEYS = [ln.strip() for ln in fh if ln.strip() and not ln.startswith("#")]
 
-YEARS  = [str(y) for y in range(2009, 2018)]                 # 2009-2017
+YEARS  = [str(y) for y in range(2008, 2019)]                 # 2008-2018 (2008 = spin-up, 2018 = validation; obs end 2018-12-31)
 CHUNKS = {f"M{m:02d}": [f"{m:02d}"] for m in range(1, 13)}   # one month per request
 AREA   = [11.4, -72.8, 1.4, -72.3]                           # N, W, S, E  — EAST STRIP only
 VARIABLES = ["total_precipitation", "2m_temperature", "2m_dewpoint_temperature",
