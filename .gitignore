@@ -35,3 +35,6 @@ Thumbs.db
 # Secrets — never commit API keys
 cds_keys.txt
 .cdsapirc
+
+# Claude Code: share project config, keep personal overrides local
+.claude/settings.local.json

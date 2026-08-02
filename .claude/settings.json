@@ -1,0 +1,15 @@
+{
+  "env": {
+    "ECC_GATEGUARD": "off"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(echo \"=== recent commits ===\")",
+      "Bash(curl -s https://api.github.com/repos/yben409/simulating-suspended-sediment-transport/commits?per_page=8)",
+      "Bash(python -c ' *)",
+      "Bash(curl -s https://raw.githubusercontent.com/yben409/simulating-suspended-sediment-transport/main/outputs/calibration/stage1_hydrology_params.json)",
+      "Bash(curl -s https://raw.githubusercontent.com/yben409/simulating-suspended-sediment-transport/main/outputs/calibration/stage1_search_history.csv)",
+      "Bash(curl -s https://raw.githubusercontent.com/yben409/simulating-suspended-sediment-transport/main/outputs/calibration/stage1_best_station_metrics.csv)"
+    ]
+  }
+}
