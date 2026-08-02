@@ -384,6 +384,11 @@ Recorded because each looked right before it was measured.
 | "The dry phase fails because of a constant water surplus divided by a smaller flow" | ❌ refuted | "other 09/10/17" carries the same +7.9 % excess and scores 0.446 against 0.193 (§4.5) |
 | "The model is worse than predicting the mean in El Niño" | ⚠️ **misleading** | True of NSE, but a day-of-year climatology also scores −0.062 there. The window's obs CV is the highest of the record (§4.1) |
 | "Most of the model's r is basin-wide seasonality" (nb14 §10.4 framing) | ⚠️ **overstated** | Removing the day-of-year climatology leaves r = 0.476 of 0.569 in El Niño. Seasonality is 13–17 % of r, not most of it |
+| "The zero-suppression repair fixed the reporting-density bias" | ⚠️ **half true** | It fixed the 70 stations it touched (dense-band selectivity stayed at 1.00 while that band grew 92 → 151 stations), but 139 of 294 remain rain-selective at 1.73 / 1.30. Incomplete in **coverage**, not defective in method (§9.3) |
+| "The 2.67× → 2.04× drop in the binned gradient measures the repair's effect" | ⚠️ **mostly composition** | Repaired stations crossed the density threshold and changed bin. The bias-controlled statistic barely moved: 1.777 → 1.734 (§9.3) |
+| "Sparse stations report more rain because they sit in wetter places" | ❌ refuted | A neighbour-only statistic — mean of the *neighbour* on the sparse station's reporting days vs on all days — reads 1.78, and reads 1.00 on 149 dense controls. Siting cannot produce that (§9.2) |
+| "Our basin rainfall is 2,304 mm/yr" | ⚠️ **not the comparable number** | That is a gauge mean; gauges cluster in populated valleys. Area-weighted is **2,206** mm/yr for 2008–2018 and 2,174 for 2009–2017 (§9.4) |
+| "Switching to CHIRPS will fix the water surplus" | ❌ refuted | CHIRPS at the same centroids with the same weights gives 2,140 mm/yr — only 3.1 % below our IDW, against a surplus of ~8 %. Justify the merge by the r ceiling, not by volume (§9.4) |
 | "`identifiability.csv` shows all 10 parameters identified" | ⚠️ **confounded** | `iqr_frac_of_range` is exactly 0.0 for 7 of 10 parameters. The top 5 % of a **DDS** archive is a neighbourhood of the optimum by construction, so this measures search concentration, not information in the data. Morris `mu*` is the trustworthy screen, and it says `k_bas`, `k_int`, `kc_mult` and `fint` are weak |
 
 ---
@@ -418,6 +423,108 @@ Recorded because each looked right before it was measured.
 | 1 | Re-fit with a recession-signature objective term, `k_int < k_bas` constraint, and a `k_bas` lower bound below 15 d | the ≈ +0.02 parameter gain, and store realism |
 | 2 | CHIRPS–gauge merged rainfall (nb11 → 12 → 13 → 14) | **r, and therefore the dry phase** |
 | 3 | Extend the model period to 2008–2018 — precipitation already spans it, ERA5 `era5land_ext_*` is 132/132 on disk, but `forcing_minibacia_pet.csv` still stops at 2017-12-31, so nb11 must be re-run first | 2008 spin-up + a 2018 validation year |
-| 4 | Local-inertial routing for the Mompós / La Mojana reach | celerity being used as a floodplain-storage surrogate |
+| 4 | Local-inertial routing for the Mompós / La Mojana reach. **Not to be implemented on current evidence** — celerity was swept 0.22 → 2.0 m/s and El Niño r moved < 0.016 (§4.6). Carry it as a named limitation: celerity 0.221 m/s is a floodplain-storage surrogate for the Mompós reach, not a physical velocity | honesty about what the routing represents |
 | 5 | PET review against the 49 mm/yr basin ET deficit | the +5.6 % outlet PBIAS floor and the 18 infeasible gauges |
-| 6 | `build_discharge_gauges.py:149-152` and `build_precip_gauges.py:62` rely on pandas date inference; use `src/dhime_dates.py` | latent day/month transposition on any non-ISO export |
+| 6 | ~~`build_discharge_gauges.py:149-152` and `build_precip_gauges.py:62` rely on pandas date inference~~ **DONE** — both now detect per file/part via `src/dhime_dates.py`. All 98 precip files and 45 discharge parts proved ISO year-first; outputs content-identical, so nothing was silently transposed in these corpora. Recorded so the null result is not read as the fix being unnecessary | closed |
+| 7 | **Finish the zero-suppression repair.** 139 of 294 stations still report rain-selectively (§9.3) and still feed the IDW | the +7.6 % areal rainfall surplus, and therefore §3's energy floor |
+| 8 | **Establish the provenance of the ~2,050 mm/yr basin reference** (§9.4). It is currently doing load-bearing work with no citation | using it as a validation target |
+| 9 | Advisor question, not a code question: the collaborator **drops** sparse gauges where we **repair** them. §4.7 makes gauge density the binding constraint on `r`, so his remedy worsens the quantity we identified as the ceiling, while ours retains stations that §9.3 shows are still biased. Neither approach is obviously right | the merge design in nb11 |
+
+---
+
+## 9 — The forcing surplus: independent replication, and the repair is only half done
+
+Added after the §4 diagnosis. §4.3 concluded the forcing supplies more water than the rivers
+carry. This section tests that from the gauge side, and cross-checks it against an independent
+implementation.
+
+### 9.1 An independent codebase found the same defect by the opposite route
+
+The collaborator (`github.com/yben409/simulating-suspended-sediment-transport`,
+`scripts/15_build_forcing_v2.py`) independently discovered the zero-suppression defect and
+measured a gradient we had never checked — mean rainfall rising as reporting density falls:
+
+| reporting density | his mm/day | his % zeros | **ours, pre-repair** | **ours, % zeros** |
+|---|---|---|---|---|
+| reports >90 % of days | 4.5 | 63 | **4.38** (92 stations) | **60.4** |
+| reports 50–90 % | 6.9 | 32 | **6.75** (119) | **26.9** |
+| reports <50 % | 13.0 | 24 | **11.69** (83) | **23.7** |
+
+Our pre-repair file reproduces his numbers closely on all six cells. Two codebases, written
+independently, measured the same defect in the same corpus. His downstream consequences —
+basin rainfall 2,420 mm/yr against a published ~2,050, actual ET 1,659 exceeding potential ET
+1,239, Calamar discharge 1.7× too high — are the same surplus our §4.3 found as
+*observed runoff coefficient below its energy floor at 18 of 18 failing gauges*. **Two
+implementations, two different diagnostics, one conclusion.**
+
+### 9.2 Separating suppression from geography — the control that was missing
+
+A binned mean cannot distinguish "sparse stations omit dry days" from "sparse stations sit in
+wetter places". Remote high-rainfall sites really are harder to maintain, so the second is not a
+strawman. The test that separates them uses **only the neighbour's data**:
+
+```
+selectivity(S) = mean(D | days S reports) / mean(D | all days)
+```
+
+for `D` = up to 5 dense (>90 %) neighbours within 60 km. If `S` reports on a fair sample of days,
+its reporting days are a random draw and selectivity = 1. If `S` reports preferentially when it
+rains, then `D` — a different instrument, in a different place — is also wetter on those days,
+because rainfall is regionally correlated. Selectivity > 1 is positive evidence of
+rain-day-selective reporting that no siting argument explains.
+
+| reporting density | selectivity, PRE-repair | selectivity, POST-repair | n post |
+|---|---|---|---|
+| reports >90 % | **1.001** | **1.003** | 149 |
+| reports 50–90 % | 1.332 | 1.299 | 94 |
+| reports <50 % | **1.777** | **1.734** | 45 |
+| Spearman ρ(density, selectivity) | −0.895 | −0.807 | |
+
+The dense band reads 1.001 / 1.003 — the metric returns exactly 1.00 on the population that
+should be unbiased, over 89 and then 149 stations. That is the null the statistic needed, and it
+passes. So the residual gradient is **selective reporting, not siting**.
+
+### 9.3 What the repair did, and did not, do
+
+`repair_precip_zero_suppression.py` inserted **109,129 inferred-dry station-days (13.7 % of the
+corpus) across 70 of 294 stations** (median 1,688 days per repaired station).
+
+Read the two tables together and the repair's true effect is not what the binned means suggest:
+
+* the binned gradient improved 2.67× → 2.04×, but **most of that is a composition effect** — the
+  >90 % band grew from 92 to 151 stations as repaired stations crossed the density threshold;
+* the dense band's selectivity stayed at ~1.00 while gaining 60 stations, so **the stations it
+  repaired genuinely became fair reporters**. The method works;
+* but the sparse band's selectivity barely moved, 1.777 → 1.734. **The repair is incomplete in
+  coverage, not defective in method.** 139 of 294 stations (45 below 50 % density at 1.734,
+  94 in the 50–90 % band at 1.299) still report rain-selectively and still feed the IDW.
+
+This is a falsifiable test of the repair that had never been run, and the repair fails it on
+coverage. `selectivity` is also a better detector than the ratio test that found the defect
+originally: it has a clean null at 1.00, validated here on 149 stations.
+
+### 9.4 Area-weighted basin rainfall — and why CHIRPS will not fix the volume
+
+Our often-quoted 2,304 mm/yr is a **gauge** mean and is not comparable to a published basin
+figure: gauges cluster in populated valleys. Only the areal figure is comparable.
+
+| quantity | mm/yr |
+|---|---|
+| unweighted mean of the 8,672 minibacia series | 2,218 |
+| **area-weighted basin mean, 2008–2018** | **2,206** |
+| area-weighted, 2009–2017 (reproduces `manifest.json` 2174.3 exactly) | 2,174 |
+| **CHIRPS, sampled at the same centroids, same weights, same days** | **2,140** |
+| reference (collaborator; **provenance not yet established**) | ~2,050 |
+
+* IDW exceeds the reference by **+156 mm/yr (+7.6 %)** — the same order as the +7.9 % / +8.4 %
+  flow excess in §4.5 and the +5.6 % outlet PBIAS floor in §3;
+* IDW exceeds CHIRPS by only **+66 mm/yr (+3.1 %)**, and CHIRPS itself is +4.4 % above the
+  reference.
+
+**Consequence for Phase 3:** swapping to CHIRPS moves the water volume by about 3 %, not by the
+~8 % the surplus needs. The CHIRPS merge must be justified by the **r ceiling of §4.7**, not by
+volume — and nobody should expect it to close the energy-floor gap. Fixing the volume means
+finishing the zero-suppression repair on the 139 stations in §9.3, or down-weighting them.
+
+The ~2,050 reference is doing real work in this argument and its provenance is unverified.
+**Ask the collaborator for the citation before it is used as a validation target.**
