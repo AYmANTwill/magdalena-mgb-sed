@@ -513,3 +513,29 @@ file yet.
 The single sentence to carry forward: **the IDEAM discharge series are internally consistent almost
 everywhere the plumbing is right — fix the gauge→minibacia plumbing and the forcing artefacts before
 letting MGB see any of it.**
+
+## Update: the gauge→minibacia plumbing is fixed
+
+`src/fix_gauge_minibacia_mapping.py` re-snaps every gauge whose current mapping gives an implausible
+runoff coefficient (RC = annual Q volume ÷ annual rainfall volume over the assigned upstream area) by
+searching minibacias within an expanding radius (3→20 km) of the gauge coordinate and picking the one
+whose RC is closest to the fleet's healthy median (0.435). The ten Brazo de Loba / Mompós
+distributary stations are excluded, not remapped — no re-snap can fix a topology that cannot
+represent a forking channel.
+
+| | Before | **After** |
+|---|---|---|
+| Stations with RC outside [0.03, 1.2] (severe) | 20 | **0** |
+| RC inside [0.1, 1.0] (QC clean-station band) | 105/149 | **120/149** |
+| RC inside [0.137, 0.724] (5–95% healthy band) | 87/149 | **99/149** |
+| Median RC (non-distributary) | 0.364 | 0.397 |
+
+20 stations remapped (median move 4.9 km — consistent with the "one raster cell off" mechanism the QC
+identified), 129 already plausible and left untouched, 10 excluded as distributaries. Examples:
+CANGREJO EL `26217040` RC 0.002 → 0.426; BUCHITOLO `26077060` RC 0.008 → 0.896; BOCAS `22017030`
+RC 0.022 → 0.629.
+
+`data/processed/gauge_minibacia.csv` is updated in place (backup at
+`gauge_minibacia_ORIG_backup.csv`); `gauge_minibacia_remap_report.csv` records every station's
+before/after RC and the action taken (kept / remapped / excluded_distributary), so any downstream
+user can audit exactly which mapping changed and why.

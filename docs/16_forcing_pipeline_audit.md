@@ -377,4 +377,100 @@ ungauged headwaters:
 ⚠️ **Notebook 11 prints its radiation sanity band as "18-22 MJ/m²/day".** The corrected 17.2 now falls
 *below* it. 17.2 is right for a cloudy Andean basin — the 18-22 band describes clear tropical
 conditions. Widen the printed band to ~15-22, or the next reader will treat a correct value as a
-failure.
+failure. *(Fixed — band widened to 15-22 in both the notebook 11 generator and its markdown prose.)*
+
+## 10 — Update: station-outage repair bug (found by the discharge QC pass)
+
+`repair_precip_zero_suppression.py` inserted a dry day for **every** raw-missing calendar day inside
+a flagged station's active span — including multi-month *station outages*, where the gauge reported
+nothing at all, wet or dry. ALGECIRAS `21105030` is the clean example: three genuine outages
+(2012-05→2013-12, 2015-07→2017-12, 2018-01→2018-08 — 20, 30, 8 months) were filled with `0.0`,
+fabricating a multi-year drought landing squarely inside the calibration window (annual mean read
+719 mm/yr; the neighbouring stations average ~1,400+).
+
+**Fix:** a `SILENCE_GAP_DAYS = 60` guard — raw-missing runs at or above it are left absent, not
+infilled; shorter runs (consistent with "reports rain, omits dry") are infilled as before.
+
+**Result:** 31 of 294 stations affected, 12,656 station-days excluded from infill.
+ALGECIRAS corrects **719 → 1,396 mm/yr**. ALBANIA `24050110` (the other SNHT-flagged repaired
+station) barely moves (99 days) — confirming its break is a **genuine unresolved anomaly**, not a
+repair artefact; it should be investigated separately, not assumed fixed by this change.
+Basin gauge-mean annual: 2,304 → **2,327 mm/yr**. Notebook 11 was re-run on the corrected data.
+
+## 11 — Does the zero-fill introduce bias? Yes. Measured, and bracketed.
+
+First, a distinction that matters: **station series are never interpolated in time.** Three separate
+operations are involved, and only one is interpolation at all.
+
+| Operation | What it does | Interpolation? |
+|---|---|---|
+| Zero-suppression repair | Writes `0.0` on missing days inside 70 flagged stations' spans | No — inserts **zeros** |
+| IDW (notebook 11) | Per minibacia-day, weighted mean over gauges *that reported that day*, weights renormalised daily | Yes — **spatial**, never temporal |
+| `k`=20 fallback | Widens the neighbour set when all 6 nearest are silent (0.36 % of cells) | Spatial |
+
+Imputing a station's own gaps and then treating the result as an observation would double-count the
+neighbours' information; that is why it is not done. But the zero-fill is a substantive assumption,
+and it can be tested.
+
+### The test: what do neighbours say fell on the days we write 0.0?
+
+For each flagged station, the leave-one-out IDW estimate from its 6 nearest neighbours, split by
+whether the station reported that day:
+
+| | Neighbour estimate |
+|---|---|
+| On days the station **did** report | 8.08 mm/day |
+| On days we **fill with 0.0** | **2.64 mm/day** |
+| Ratio | **0.30** |
+
+Those days were genuinely much drier — the fill is directionally right — **but they were not zero**:
+on 40 % of them neighbours indicate >1 mm.
+
+### Three independent signals show the fill over-corrects
+
+1. **Post-repair dry-day fraction overshoots**: flagged stations now sit at **0.532** against healthy
+   **0.465**. The repair made them drier than the population they should resemble.
+2. **Annual totals undershoot**: flagged **1,829** vs healthy **2,034** mm/yr → **−205 mm/yr**.
+3. **Bracketing**: filling with the *full* neighbour estimate instead would give 2,292 mm/yr —
+   overshooting by +258 in the other direction.
+
+So the truth is bracketed: **1,829 (fill 0) < ~2,034 < 2,292 (fill neighbour)**. Back-solving, the
+true expectation on filled days is ≈ **1.17 mm/day**, about 44 % of the neighbour estimate — i.e.
+roughly half the filled days were genuinely omitted zeros (the defect this repair targets), and
+roughly half were ordinary missing days on which rain fell.
+
+*Assumption behind the −205 figure:* that flagged stations are not climatologically drier than the
+healthy population. If they sit in genuinely drier locations the over-correction is smaller.
+
+**It remains a good trade.** Before the repair those stations carried a **+90 % wet bias**
+(3,863 vs 2,034); now they carry a **−10 % dry bias**. Basin-wide residual ≈ (70/294) × 205 ≈
+**−49 mm/yr (~−2 %)**, spatially concentrated around those 70 stations.
+
+### The more consequential finding: missingness is not random (MNAR)
+
+**Healthy, untouched stations show the same ratio (0.31 vs 0.30).** Network-wide, gaps fall on drier
+days — reporting is correlated with rainfall.
+
+This corrects a claim made earlier in this document. The per-day renormalised masked mean was
+described as the honest, unbiased way to handle gaps. **It is not unbiased.** On any given day the
+stations that are missing are disproportionately the dry ones, so the gauges that *do* report
+over-represent wet conditions, and the IDW estimate is biased slightly **wet** on gappy days. No
+amount of masking fixes this — it is a property of the sampling, not of the estimator.
+
+### The four measured forcing biases, together
+
+| Bias | Direction | Magnitude |
+|---|---|---|
+| Zero-fill over-correction | dry | −205 mm/yr on 70 stations (~−2 % basin) |
+| **MNAR gap selection** | **wet** | untested magnitude — partially offsets the above |
+| IDW wet-day inflation | more wet days | **+18.3 pts** |
+| IDW extreme damping | lower peaks | **P99 ratio 0.73** |
+
+The first two act in opposite directions, which is some comfort but not a justification.
+
+**Recommended handling:** document rather than re-impute. Re-imputation reintroduces the
+double-counting problem and would need its own validation. Two things genuinely help: (a) the CHIRPS
+merge (v2) is *independent of whether an IDEAM observer showed up*, so it does not share the MNAR
+mechanism — an argument for the merge beyond anything previously measured; and (b) down-weighting
+`Inferido_seco` days in the IDW rather than treating them as full observations, which the `approval`
+column already makes possible.
