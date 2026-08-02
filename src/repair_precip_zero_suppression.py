@@ -36,8 +36,18 @@ days inside its own active period), so a dense, genuinely wet gauge is never tou
 THE REPAIR
 ----------
 For flagged stations every missing calendar day inside the station's own active span is
-inserted as 0.0 mm and marked `Inferido_seco`. Nothing is invented outside the span, and
-healthy stations are untouched.
+inserted as 0.0 mm and marked `Inferido_seco` — with one exception (see below). Nothing
+is invented outside the span, and healthy stations are untouched.
+
+**Station outages must not be infilled as dry.** A gap of a single missed day is
+consistent with "reports rain, omits dry" — the pattern this repair targets. A gap of
+many *months* is not: it means the station reported nothing at all, wet or dry, and
+treating that as "dry" fabricates a drought. ALGECIRAS 21105030 is the clean example:
+raw records show three genuine outages (2012-05..2013-12, 2015-07..2017-12,
+2018-01..2018-08 — 20, 30 and 8 months of zero raw reports), and the first version of
+this repair filled all of them with 0.0, injecting an artificial multi-year drought into
+exactly the years the model calibrates on. `SILENCE_GAP_DAYS` draws the line: raw-missing
+runs at or above it are left absent (not infilled); shorter runs are infilled as before.
 
 Validation is built in: the repair must move a flagged station's annual total into a
 plausible range *and* bring its neighbour ratio down. Stations that stay anomalous are
@@ -67,6 +77,8 @@ RATIO_MAX = 1.8        # healthy population sits at ~1.0; offenders reach 2.5-3.
 SPAN_FRAC_MAX = 0.85   # a suppressed series is also missing days inside its own span
 N_NEIGHBOURS = 6
 PLAUSIBLE_MM = (400.0, 7000.0)
+SILENCE_GAP_DAYS = 60  # raw-missing runs this long or longer are a station outage, not
+                       # an omitted dry day; those days are left absent, never infilled
 
 
 def haversine_km(la1, lo1, la2, lo2):
@@ -111,22 +123,52 @@ def diagnose(daily: pd.DataFrame, inv: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def repair(daily: pd.DataFrame, diag: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series]:
-    """Insert dry days inside the active span of every flagged station."""
+def _missing_runs(all_days: pd.DatetimeIndex, have: set) -> list[np.ndarray]:
+    """Contiguous runs of days in `all_days` absent from `have`."""
+    missing_mask = np.array([d not in have for d in all_days])
+    runs, start = [], None
+    for i, is_missing in enumerate(missing_mask):
+        if is_missing and start is None:
+            start = i
+        elif not is_missing and start is not None:
+            runs.append(all_days[start:i])
+            start = None
+    if start is not None:
+        runs.append(all_days[start:])
+    return runs
+
+
+def repair(daily: pd.DataFrame, diag: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series, pd.Series]:
+    """Insert dry days inside the active span of every flagged station.
+
+    Raw-missing runs shorter than SILENCE_GAP_DAYS are infilled as dry (the pattern this
+    repair targets). Runs at or above it are a station outage and are left absent.
+    """
     added: dict[str, int] = {}
+    excluded: dict[str, int] = {}
     new_rows = []
     for code in diag.index[diag.zero_suppressed]:
         row = diag.loc[code]
         have = set(daily.loc[daily.code == code, "date"])
-        missing = [d for d in pd.date_range(row["first"], row["last"], freq="D")
-                   if d not in have]
-        added[code] = len(missing)
-        if missing:
-            new_rows.append(pd.DataFrame({"code": code, "date": missing,
+        all_days = pd.date_range(row["first"], row["last"], freq="D")
+        runs = _missing_runs(all_days, have)
+
+        fill_days, outage_days = [], 0
+        for run in runs:
+            if len(run) >= SILENCE_GAP_DAYS:
+                outage_days += len(run)
+            else:
+                fill_days.extend(run)
+
+        added[code] = len(fill_days)
+        excluded[code] = outage_days
+        if fill_days:
+            new_rows.append(pd.DataFrame({"code": code, "date": fill_days,
                                           "precip_mm": 0.0, "approval": "Inferido_seco"}))
     if new_rows:
         daily = pd.concat([daily] + new_rows, ignore_index=True)
-    return daily.sort_values(["code", "date"]).reset_index(drop=True), pd.Series(added, dtype="int64")
+    fixed = daily.sort_values(["code", "date"]).reset_index(drop=True)
+    return fixed, pd.Series(added, dtype="int64"), pd.Series(excluded, dtype="int64")
 
 
 def main() -> None:
@@ -149,7 +191,13 @@ def main() -> None:
     print(f"  annual mm/yr     : flagged {diag.loc[f,'ann_before'].median():.0f} -> "
           f"{diag.loc[f,'ann_after'].median():.0f}  (healthy {diag.loc[~f,'ann_before'].median():.0f})")
 
-    fixed, added = repair(daily, diag)
+    fixed, added, excluded = repair(daily, diag)
+    n_outage_stations = int((excluded > 0).sum())
+    if n_outage_stations:
+        print(f"\n  station outages found (>= {SILENCE_GAP_DAYS} d raw-missing, left absent, "
+              f"not infilled): {n_outage_stations} stations, {int(excluded.sum()):,} days total")
+        for c, d in excluded[excluded > 0].sort_values(ascending=False).items():
+            print(f"    {c}  {d:,} days excluded from infill")
 
     post = fixed.groupby("code").precip_mm.mean()*365.25
     bad = [c for c in diag.index[f]
@@ -171,6 +219,7 @@ def main() -> None:
             "ann_before", "ann_after", "why"]
     inv2 = inv.merge(diag[keep], left_on="code", right_index=True, how="left")
     inv2["n_infilled"] = inv2.code.map(added).fillna(0).astype(int)
+    inv2["n_outage_days"] = inv2.code.map(excluded).fillna(0).astype(int)
     inv2["ann_mean_mm"] = inv2.code.map(post)
     inv2["n_valid"] = inv2.code.map(fixed.groupby("code").size())
 

@@ -40,6 +40,8 @@ def main():
     # 1. your zips -> regions/<dept>/<zipstem>.csv
     for z in sorted(glob.glob(str(BASE / "*.zip"))):
         dep = dept_from_zip(z)
+        if dep in ("", "regions"):        # skip regions.zip (an archive of our own output) & unparseable names
+            continue
         out = REG / dep
         out.mkdir(exist_ok=True)
         stem = os.path.splitext(os.path.basename(z))[0]
