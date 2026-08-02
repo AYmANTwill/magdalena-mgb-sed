@@ -422,12 +422,12 @@ Recorded because each looked right before it was measured.
 |---|---|---|
 | 1 | Re-fit with a recession-signature objective term, `k_int < k_bas` constraint, and a `k_bas` lower bound below 15 d | the ≈ +0.02 parameter gain, and store realism |
 | 2 | CHIRPS–gauge merged rainfall (nb11 → 12 → 13 → 14) | **r, and therefore the dry phase** |
-| 3 | Extend the model period to 2008–2018 — precipitation already spans it, ERA5 `era5land_ext_*` is 132/132 on disk, but `forcing_minibacia_pet.csv` still stops at 2017-12-31, so nb11 must be re-run first | 2008 spin-up + a 2018 validation year |
+| 3 | Extend the model period to 2008–2018. **Scoped: this needs a re-run, not new code.** nb11 §7 has no date clamp — it builds PET from whatever `era5land_ext_*` mosaics exist, and its readiness gate was the literal `len(ext) >= 108` (9 years), which is the only reason `forcing_minibacia_pet.csv` stops at 2017-12-31. All 132 mosaics are now on disk and the gate is updated to 132 (generator edited, **notebook not yet re-executed** — same generator/notebook drift convention as doc 17 §2.5) | 2008 spin-up + a 2018 validation year |
 | 4 | Local-inertial routing for the Mompós / La Mojana reach. **Not to be implemented on current evidence** — celerity was swept 0.22 → 2.0 m/s and El Niño r moved < 0.016 (§4.6). Carry it as a named limitation: celerity 0.221 m/s is a floodplain-storage surrogate for the Mompós reach, not a physical velocity | honesty about what the routing represents |
 | 5 | PET review against the 49 mm/yr basin ET deficit | the +5.6 % outlet PBIAS floor and the 18 infeasible gauges |
 | 6 | ~~`build_discharge_gauges.py:149-152` and `build_precip_gauges.py:62` rely on pandas date inference~~ **DONE** — both now detect per file/part via `src/dhime_dates.py`. All 98 precip files and 45 discharge parts proved ISO year-first; outputs content-identical, so nothing was silently transposed in these corpora. Recorded so the null result is not read as the fix being unnecessary | closed |
 | 7 | **Finish the zero-suppression repair.** 139 of 294 stations still report rain-selectively (§9.3) and still feed the IDW | the +7.6 % areal rainfall surplus, and therefore §3's energy floor |
-| 8 | **Establish the provenance of the ~2,050 mm/yr basin reference** (§9.4). It is currently doing load-bearing work with no citation | using it as a validation target |
+| 8 | **Establish the provenance of the ~2,050 mm/yr basin reference** (§9.4) — uncited on both sides; his script says only "a published ~2,050". **And resolve the 9.5 % CHIRPS disagreement** (§9.5): his 1,955 mm/yr vs our 2,140 for the same product over the same basin. The two readings imply opposite conclusions about whether a merge fixes the volume | using either as a validation target |
 | 9 | Advisor question, not a code question: the collaborator **drops** sparse gauges where we **repair** them. §4.7 makes gauge density the binding constraint on `r`, so his remedy worsens the quantity we identified as the ceiling, while ours retains stations that §9.3 shows are still biased. Neither approach is obviously right | the merge design in nb11 |
 
 ---
@@ -527,4 +527,28 @@ volume — and nobody should expect it to close the energy-floor gap. Fixing the
 finishing the zero-suppression repair on the 139 stations in §9.3, or down-weighting them.
 
 The ~2,050 reference is doing real work in this argument and its provenance is unverified.
-**Ask the collaborator for the citation before it is used as a validation target.**
+**Ask the collaborator for the citation before it is used as a validation target.** His
+`scripts/15_build_forcing_v2.py` says only *"a published ~2,050"* with no reference attached, so
+the number is currently uncited on both sides.
+
+### 9.5 Two CHIRPS estimates of the same basin disagree by 9.5 % — unresolved
+
+Reading his script turned up a discrepancy that changes what Phase 3 should expect:
+
+| quantity | his figure | ours |
+|---|---|---|
+| CHIRPS basin mean | **1,955 mm/yr** | **2,140 mm/yr** |
+| gauge mean | 2,492 mm/yr | 2,218 (unweighted minibacia) |
+
+Two independent samplings of the *same satellite product over the same basin* differ by
+185 mm/yr. Candidate causes, none yet tested: different basin masks; different periods; and
+different sampling geometry — we sample CHIRPS at the 8,672 minibacia centroids and weight by
+minibacia area, which is not the same as a grid-cell mean over a basin polygon, especially where
+minibacias are small in steep headwaters.
+
+This matters because it flips the Phase 3 expectation. On **our** CHIRPS (2,140) the merge moves
+volume by 3 % and cannot close the ~8 % surplus. On **his** (1,955) CHIRPS sits *below* the
+~2,050 reference and a merge would close it and overshoot. The two readings recommend different
+work, so the discrepancy has to be resolved before either is used to justify a volume claim —
+and the r-ceiling justification for the merge (§4.7) is unaffected either way, which is one more
+reason to lead with it.

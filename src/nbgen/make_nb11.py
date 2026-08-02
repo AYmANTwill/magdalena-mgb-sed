@@ -418,11 +418,17 @@ and varies smoothly, whereas rainfall is spatially erratic and needs dense point
 Elevation for the clear-sky term comes from ERA5 surface pressure via the barometric formula,
 avoiding a 244 MB DEM read for a second-order correction.""")
 
-code(r"""ext = sorted(glob.glob(str(clim/'era5land_ext_*.nc')))
-print(f'ERA5 mosaicked files available: {len(ext)} / 108')
-PET_READY = len(ext) >= 108
+code(r"""# 132 = 11 years x 12 months, 2008-2018 - the span the rainfall gauges already cover.
+# Was 108 (2009-2017) when this notebook was last executed, which is the ONLY reason
+# forcing_minibacia_pet.csv stops at 2017-12-31 and the model period is bounded to
+# 2009-2017. There is no date clamp anywhere in this section: PET is built from
+# whatever mosaics exist, so re-running with all 132 present extends it by itself.
+ext = sorted(glob.glob(str(clim/'era5land_ext_*.nc')))
+print(f'ERA5 mosaicked files available: {len(ext)} / 132')
+PET_READY = len(ext) >= 132
 if not PET_READY:
-    print('  -> incomplete; run  python src/mosaic_era5.py  then re-run. Sections 1-6 are unaffected.')""")
+    print(f'  -> incomplete ({len(ext)}/132); run  python src/mosaic_era5.py  then re-run. '
+          'Sections 1-6 are unaffected.')""")
 
 code(r"""def esat(t_c):
     return 0.6108*np.exp(17.27*t_c/(t_c+237.3))
