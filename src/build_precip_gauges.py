@@ -24,6 +24,8 @@ Requires: pandas, geopandas not needed.
 import glob, os, re, zipfile, io, pathlib
 import numpy as np, pandas as pd
 
+from dhime_dates import parse_dhime_dates
+
 REPO = pathlib.Path(__file__).resolve().parents[1]
 DHIME = REPO / "data" / "raw" / "observed" / "precip" / "dhime"
 CATALOG = REPO / "data" / "raw" / "observed" / "precip" / "stations_precip_catalog.csv"
@@ -34,13 +36,32 @@ VMAX = 400.0
 MIN_DAYS = 90
 
 
+def _read_one(src, label, frames, evidence):
+    """Read one DHIME csv and date it FROM ITS OWN EVIDENCE, before concatenation.
+
+    Per-file is not a stylistic choice. `Fecha` layout is a property of the export,
+    not of the corpus: DHIME ships ISO in most parts and d/m/Y in others (docs/17,
+    src/dhime_dates.py). Detecting on the concatenated frame would either raise
+    `UnrecognisedDateFormat('mixed layouts')` on a corpus that is individually
+    well-formed, or - worse, with pandas inference - let one file's layout decide
+    another's. `parse_dhime_dates` raises rather than coercing, so an undecidable
+    file stops the build here instead of silently transposing day and month.
+    """
+    df = pd.read_csv(src, dtype={"CodigoEstacion": str})
+    dates, ev = parse_dhime_dates(df["Fecha"])
+    df["date"] = dates.dt.normalize()
+    frames.append(df)
+    evidence.append((label, ev))
+    return df
+
+
 def load_all():
-    frames = []
+    frames, evidence = [], []
     regions = DHIME / "regions"
     if regions.exists():
         # preferred: the organized region folders (your zips + Youssef, via organize_precip_regions.py)
         for c in glob.glob(str(regions / "**" / "*.csv"), recursive=True):
-            frames.append(pd.read_csv(c, dtype={"CodigoEstacion": str}))
+            _read_one(c, os.path.relpath(c, regions), frames, evidence)
         print(f"reading organized regions/  ({len(frames)} csv files)")
     else:
         # fallback: raw zips + any Youssef csvs
@@ -48,18 +69,27 @@ def load_all():
             with zipfile.ZipFile(z) as zf:
                 for nm in zf.namelist():
                     if nm.lower().endswith(".csv"):
-                        frames.append(pd.read_csv(io.BytesIO(zf.read(nm)), dtype={"CodigoEstacion": str}))
+                        _read_one(io.BytesIO(zf.read(nm)), f"{os.path.basename(z)}:{nm}",
+                                  frames, evidence)
         for c in glob.glob(str(DHIME / "**" / "*.csv"), recursive=True):
             if "__MACOSX" not in c:
-                frames.append(pd.read_csv(c, dtype={"CodigoEstacion": str}))
+                _read_one(c, os.path.relpath(c, DHIME), frames, evidence)
     a = pd.concat(frames, ignore_index=True)
     print(f"loaded {len(frames)} files, {len(a):,} raw rows")
+
+    fams = pd.Series([ev.family for _, ev in evidence]).value_counts().to_dict()
+    print(f"date formats detected per file: {fams}")
+    nondmy = [(lb, ev) for lb, ev in evidence if ev.family != "iso"]
+    for lb, ev in nondmy:
+        print(f"  NON-ISO  {lb}: fmt={ev.fmt!r} family={ev.family} "
+              f"n={ev.n_rows:,} first>12={ev.n_first_gt12:,} second>12={ev.n_second_gt12:,}")
+    if not nondmy:
+        print("  every file proved ISO year-first; no day/month ambiguity existed to resolve")
     return a
 
 
 def main():
     a = load_all()
-    a["date"] = pd.to_datetime(a["Fecha"], errors="coerce").dt.normalize()
     a["precip_mm"] = pd.to_numeric(a["Valor"], errors="coerce")
     a["code"] = a["CodigoEstacion"].str.lstrip("0")
     a["apr"] = a["NivelAprobacion"].map(APPROVAL).fillna(3).astype(int)

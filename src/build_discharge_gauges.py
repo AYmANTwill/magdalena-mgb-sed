@@ -42,6 +42,8 @@ import zipfile
 import numpy as np
 import pandas as pd
 
+from dhime_dates import parse_dhime_dates
+
 REPO = pathlib.Path(__file__).resolve().parents[1]
 CAUDAL = REPO / "data" / "raw" / "observed" / "caudal"
 COORDS = REPO / "data" / "processed" / "stations_discharge_coords.csv"
@@ -80,8 +82,20 @@ def dept_from_filename(path_like: str) -> str:
     return DEPT_ALIAS.get(key, key)
 
 
+DATE_EVIDENCE: list = []   # (source, DateEvidence) per part, printed by load_all
+
+
 def read_dhime_csv(raw: bytes, source: str) -> pd.DataFrame:
-    """Parse one descargaDhime CSV; utf-8 first, latin-1 fallback."""
+    """Parse one descargaDhime CSV; utf-8 first, latin-1 fallback.
+
+    The date is established here, PER PART, from that part's own field values.
+    `Fecha` layout is a property of the export (ISO in most DHIME parts, d/m/Y in
+    others - see src/dhime_dates.py), so it cannot be decided on the concatenated
+    frame without letting one part's layout speak for another's. `parse_dhime_dates`
+    raises on an undecidable part rather than coercing, which is the whole point:
+    a transposed day/month leaves the record's min/max span identical and is
+    invisible to every downstream range check.
+    """
     for enc in ("utf-8", "latin-1"):
         try:
             d = pd.read_csv(io.BytesIO(raw), dtype=str, encoding=enc)
@@ -91,6 +105,10 @@ def read_dhime_csv(raw: bytes, source: str) -> pd.DataFrame:
     else:  # pragma: no cover - latin-1 never raises UnicodeDecodeError
         raise ValueError(f"undecodable file: {source}")
     d["source"] = source
+    if "Fecha" in d.columns and len(d):
+        dates, ev = parse_dhime_dates(d["Fecha"])
+        d["date"] = dates.dt.normalize()
+        DATE_EVIDENCE.append((source, ev))
     return d
 
 
@@ -125,6 +143,14 @@ def load_all() -> tuple:
     a = pd.concat(frames, ignore_index=True)
     print(f"loaded {len(frames)} csv parts from {len(csvs)} csv files + {len(zips)} zips "
           f"-> {len(a):,} raw rows")
+    fams = pd.Series([ev.family for _, ev in DATE_EVIDENCE]).value_counts().to_dict()
+    print(f"date formats detected per part: {fams}")
+    noniso = [(s, ev) for s, ev in DATE_EVIDENCE if ev.family != "iso"]
+    for s, ev in noniso:
+        print(f"  NON-ISO  {s}: fmt={ev.fmt!r} family={ev.family} n={ev.n_rows:,} "
+              f"first>12={ev.n_first_gt12:,} second>12={ev.n_second_gt12:,}")
+    if not noniso:
+        print("  every part proved ISO year-first; no day/month ambiguity existed to resolve")
     if bad_schema:
         print(f"  WARNING: {len(bad_schema)} parts skipped for unexpected schema: {bad_schema}")
     if failures:
@@ -146,12 +172,13 @@ def main() -> None:
 
     # parse
     a["code"] = a["CodigoEstacion"].str.strip().str.lstrip("0")
-    a["date"] = pd.to_datetime(a["Fecha"], format="%Y-%m-%d %H:%M", errors="coerce").dt.normalize()
+    # `date` was set per part in read_dhime_csv() from that part's own evidence.
+    # The old ISO-format-then-infer pair here was the hazard dhime_dates
+    # test_naive_two_pass_month_gt12_case() demonstrates: on a d/m/Y part the ISO
+    # pass yields all-NaT and the inference fallback then picks the layout by luck.
     n_baddate = int(a["date"].isna().sum())
     if n_baddate:
-        a["date"] = a["date"].fillna(pd.to_datetime(a["Fecha"], errors="coerce").dt.normalize())
-        n_baddate = int(a["date"].isna().sum())
-        print(f"  {n_baddate} rows with unparseable Fecha dropped")
+        print(f"  {n_baddate} rows with null Fecha dropped")
         a = a.dropna(subset=["date"])
     a["q_m3s"] = pd.to_numeric(a["Valor"], errors="coerce")
     n_badval = int(a["q_m3s"].isna().sum())
