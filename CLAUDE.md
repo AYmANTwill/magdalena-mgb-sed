@@ -15,6 +15,10 @@ study: La Niña 2011 (wet) vs El Niño 2015–16 (dry). UMNG internship, advisor
 - `docs/18_hydrology_journal.md` — the Phase B record: verdict (§5), refuted claims (§6), traps
   (§7), open items (§8), and the forcing follow-up (§9–§12: surplus, zero-suppression repair,
   deterministic IDW, energy-floor gauge triage).
+- `docs/23_gauge_geometry.md` — gauge/interpolation geometry: the IDW was order-dependent (fixed,
+  §11), co-located gauges classified by evidence not distance (§11.2), the 14 energy-floor gauges
+  triaged (§12), and catchment areas shown unreliable per gauge in **both** implementations (§13.2)
+  — which any t/km²/yr sediment yield inherits one-for-one.
 - `docs/progress_journal.md` — chronological log.
 
 ## Phase status
