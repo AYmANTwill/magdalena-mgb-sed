@@ -390,6 +390,9 @@ Recorded because each looked right before it was measured.
 | "Our basin rainfall is 2,304 mm/yr" | ⚠️ **not the comparable number** | That is a gauge mean; gauges cluster in populated valleys. Area-weighted is **2,206** mm/yr for 2008–2018 and 2,174 for 2009–2017 (§9.4) |
 | "Switching to CHIRPS will fix the water surplus" | ❌ refuted | CHIRPS at the same centroids with the same weights gives 2,140 mm/yr — only 3.1 % below our IDW, against a surplus of ~8 %. Justify the merge by the r ceiling, not by volume (§9.4) |
 | "The CHIRPS disagreement is caused by sampling geometry (centroid+area-weight vs grid-cell mean)" | ❌ refuted | Three basin-restricted estimators agree to 0.1 % (2,140.1 / 2,140.4 / 2,141.4 mm/yr). Our estimator's own bias is +0.7 %. The gap is a period mismatch — interannual range ±21 %, and 2012–2015 reproduces his 1,955 to 2.7 mm/yr (§9.5) |
+| "The repair may be over-drying the field, since v2 falls below CHIRPS" | ❌ refuted | At independent neighbours the inserted days carry a wet-day rate of 0.171 against 0.328 overall (ratio 0.522) and 1.84 mm/day against 4.06 (ratio 0.414); only 2 of 83 stations show inserted days wetter than average. A bounded residual remains — neighbours did record rain on 17 % of them — so the true areal mean sits between 2,035.6 and 2,174.3, nearer the former (§10.4) |
+| "The 18 energy-floor failures are all explained by the wet-forcing surplus" | ⚠️ **splits in two** | Removing 6.4 % of basin rainfall recovers only 4 of 18. The worst two have P unchanged to 3 dp and would need P halved. The class verdict stands (18 of 18 fail with observed rc below floor) but the residual 14 are local, not basin-wide (§10.6) |
+| "The rebuilt IDW disagreed with the stored field because of k=20 fallback tie-breaking" | ❌ refuted | Only 20 of 134,797 differing cells were in the fallback set. The cause was three co-located gauge pairs tying in distance in the **k=6** pass, resolved by column order (§10.7) |
 | "`identifiability.csv` shows all 10 parameters identified" | ⚠️ **confounded** | `iqr_frac_of_range` is exactly 0.0 for 7 of 10 parameters. The top 5 % of a **DDS** archive is a neighbourhood of the optimum by construction, so this measures search concentration, not information in the data. Morris `mu*` is the trustworthy screen, and it says `k_bas`, `k_int`, `kc_mult` and `fint` are weak |
 
 ---
@@ -420,6 +423,16 @@ Recorded because each looked right before it was measured.
 9. **Interannual rainfall variability here is ±21 %** (1,731 mm/yr in 2015 to 2,619 in 2010).
    No basin-mean rainfall figure means anything without its window attached, and any
    cross-implementation comparison must fix the window first.
+10. **A detector needs a calibrated null before its threshold means anything.** `dry_frac` and the
+    neighbour `ratio` are statistics of the station's own series, so they confound suppression with
+    climate and orography and have to be thresholded loosely. Selectivity reads 1.001 on 89
+    known-good stations, so its threshold is a quantile of a measured null (§10.1).
+11. **Three gauge pairs share an exact lat/lon, so the IDW depends on gauge column order** (§10.7).
+    Sorting the gauge columns by code instead of inventory order moves 44 minibacias by up to
+    13.1 mm/day. Any re-implementation must reproduce nb11's ordering, or merge the pairs first.
+12. **A repair that fixes a bias statistic can still move the mean too far.** Selectivity passing at
+    1.040 does not prove the inserted days were dry; that needed its own neighbour test (§10.4).
+    Test the direction you moved the answer, not only the defect you set out to remove.
 
 ---
 
@@ -433,7 +446,9 @@ Recorded because each looked right before it was measured.
 | 4 | Local-inertial routing for the Mompós / La Mojana reach. **Not to be implemented on current evidence** — celerity was swept 0.22 → 2.0 m/s and El Niño r moved < 0.016 (§4.6). Carry it as a named limitation: celerity 0.221 m/s is a floodplain-storage surrogate for the Mompós reach, not a physical velocity | honesty about what the routing represents |
 | 5 | PET review against the 49 mm/yr basin ET deficit | the +5.6 % outlet PBIAS floor and the 18 infeasible gauges |
 | 6 | ~~`build_discharge_gauges.py:149-152` and `build_precip_gauges.py:62` rely on pandas date inference~~ **DONE** — both now detect per file/part via `src/dhime_dates.py`. All 98 precip files and 45 discharge parts proved ISO year-first; outputs content-identical, so nothing was silently transposed in these corpora. Recorded so the null result is not read as the fix being unnecessary | closed |
-| 7 | **Finish the zero-suppression repair.** 139 of 294 stations still report rain-selectively (§9.3) and still feed the IDW | the +7.6 % areal rainfall surplus, and therefore §3's energy floor |
+| 7 | ~~Finish the zero-suppression repair~~ **DONE (§10)** — selectivity detector with a threshold from the measured null; 153 stations repaired, 240,158 inferred-dry days; sparse-band selectivity 1.777 → **1.040**, dense band unmoved at 1.001; areal mean 2,174.3 → **2,035.6** mm/yr (−6.4 %); over-drying test passed. Energy floor 18 → **14**, target was ≤5 | partly closed — see item 10 |
+| 10 | **The 14 surviving energy-floor gauges are a different problem from the basin surplus** (§10.6). 23087200 and 26127100 have P unchanged by a 6.4 % basin-wide correction and would need P halved. Investigate gauge by gauge as catchment-delineation or rating error | the +5.6 % outlet PBIAS floor |
+| 11 | **Merge the three co-located gauge pairs before any nb11 re-run** (§10.7). They tie exactly in distance, so the k=6 IDW neighbour set depends on gauge column order (44 minibacias, up to 13.1 mm/day), and they double-weight their location | a reproducible nb11, and Phase C |
 | 8 | **Establish the provenance of the ~2,050 mm/yr basin reference** (§9.4) — uncited on both sides; his script says only "a published ~2,050", and CHIRPS itself sits +3.7 % above it. ~~Resolve the 9.5 % CHIRPS disagreement~~ **DONE (§9.5): our estimator is sound to 0.1 %; the gap is a period mismatch — interannual range is ±21 % and 2012–2015 gives 1,952 mm/yr. On the like-for-like window CHIRPS is 2,124.9 against IDW 2,174.3, +2.3 %, so a merge cannot close the ~8 % surplus** | using the reference as a validation target |
 | 9 | Advisor question, not a code question: the collaborator **drops** sparse gauges where we **repair** them. §4.7 makes gauge density the binding constraint on `r`, so his remedy worsens the quantity we identified as the ceiling, while ours retains stations that §9.3 shows are still biased. Neither approach is obviously right | the merge design in nb11 |
 
@@ -605,3 +620,184 @@ volume by 3 % and cannot close the ~8 % surplus. On **his** (1,955) CHIRPS sits 
 work, so the discrepancy has to be resolved before either is used to justify a volume claim —
 and the r-ceiling justification for the merge (§4.7) is unaffected either way, which is one more
 reason to lead with it.
+
+---
+
+## 10 — Phase B: finishing the zero-suppression repair
+
+§9.3 measured the v1 repair as incomplete in coverage: 70 of 294 stations touched, but
+139 still rain-selective and still feeding the IDW. This section extends the detection,
+then tests the result against the two basin-level numbers the surplus shows up in.
+
+New code: `src/repair_precip_selectivity.py`. It reuses `repair()` from
+`repair_precip_zero_suppression.py` unchanged, so the insertion mechanism — including the
+60-day station-outage guard that refuses to infill a real outage as dry — is identical.
+Outputs are written **alongside** v1 (`precip_gauges_daily_qc_v2.csv`,
+`precip_selectivity_report.csv`) so both remain available for attribution.
+
+### 10.1 Why a second detector, and why this one can set its own threshold
+
+Both v1 tests are uncontrolled statistics of the station's *own* series:
+
+* `dry_frac` confounds suppression with climate — a genuinely wet station has few dry days
+  because it rains there, not because zeros were dropped;
+* `ratio` (station annual total ÷ neighbour median) confounds suppression with orography —
+  a ridge station legitimately reports 2× its valley neighbours.
+
+Both therefore need a *loose* threshold to avoid firing on healthy wet stations, and a loose
+threshold is exactly what left 139 stations unrepaired.
+
+The §9.2 selectivity statistic is computed **entirely from the neighbour's data**, so the
+station's own wetness cannot enter it. That is what makes it usable as a detector, and it is
+why the threshold can be *measured* rather than chosen: the statistic has a known null.
+
+| null on the 89 dense, unflagged reference stations | |
+|---|---|
+| median | 1.0013 |
+| p90 / p95 | 1.0340 / 1.0629 |
+| p99 | **1.2885** |
+| max | 1.3435 |
+| robust 3σ (median + 3·1.4826·MAD) | 1.0159 |
+
+**Threshold = max(p99, robust 3σ) = 1.2885**, i.e. a ~1 % false-positive rate on healthy
+dense stations by construction. The null has a heavy right tail (p95 1.063 but max 1.343),
+so robust 3σ alone would have been far too tight; taking the larger of the two is the
+conservative choice, and it is reported rather than tuned.
+
+### 10.2 What it flagged
+
+| | stations |
+|---|---|
+| selective (> 1.2885) | **144** |
+| already caught by v1 | 60 |
+| **new, and repairable** (`span_frac` < 0.85) | **83** |
+| selective but essentially complete — cannot be fixed by infilling | 1 |
+| v1 flags → v2 flags | 70 → **153** |
+
+Two things worth naming. First, **10 of v1's 70 flags are not selective** — either
+`dry_frac`/`ratio` anomalies of another kind, or v1 false positives. They were kept: the
+flag sets are unioned, not replaced. Second, selectivity identifies a defect it cannot
+repair — a station that is selective *and* essentially complete has wrong values on days it
+*did* report, and infilling cannot fix that. Exactly one station is in that position and is
+reported for exclusion or down-weighting.
+
+Inserted: **240,158 inferred-dry station-days across 153 stations** (v1: 109,129 across 70),
+taking the corpus from 686,752 to 926,910 station-days. A further **33,953 days were left
+absent** as station outages by the ≥60-day guard.
+
+### 10.3 Success criteria — both pass
+
+Measured with §9.2's statistic against a **fixed** reference pool and **fixed** density bands
+taken from the *pre-repair* file. Recomputing the bands afterwards is what made the §9.3
+numbers hard to read (repaired stations change band), so both views are given.
+
+| band (pre-repair density) | before | after |
+|---|---|---|
+| reports >90 % (n=89) | 1.001 | **1.001** |
+| reports 50–90 % (n=113) | 1.332 | **1.009** |
+| reports <50 % (n=81) | **1.777** | **1.040** |
+
+| criterion | target | result | |
+|---|---|---|---|
+| sparse-band selectivity | < 1.15 | **1.040** | **PASS** (was 1.734) |
+| dense-band selectivity | ≈ 1.00 | **1.001** | **PASS** — no over-repair |
+| station-days inserted | reported | 240,158 on 153 stations | |
+
+The dense band not moving is the load-bearing control: it proves the repair did not invent
+dry days on healthy stations.
+
+### 10.4 The check the volume result demanded: did we over-dry?
+
+The areal mean fell 6.4 % and now sits *below* CHIRPS, so passing the selectivity criteria
+does not rule out over-correction — inserting dry days can only lower rainfall, and if the
+absent days were not really dry we have written false zeros. The falsification test is the
+mirror of the detector: ask the neighbours what happened **on the inserted days**.
+
+| at dense unflagged neighbours, over the 131,029 newly inserted days (83 stations) | |
+|---|---|
+| wet-day rate on inserted days | 0.171 |
+| wet-day rate on all days | 0.328 |
+| **ratio** | **0.522** |
+| mean mm/day on inserted days | 1.836 |
+| mean mm/day on all days | 4.056 |
+| **ratio** | **0.414** |
+| stations where inserted days were *wetter* than average | **2 of 83** |
+| stations with ratio > 1.2 (clear over-drying) | **1** |
+
+The inserted days were genuinely much drier than average at independent instruments, so the
+inference is sound and the repair is **not** over-drying. But the ratio is 0.52, not 0:
+neighbours still recorded rain on 17 % of the inserted days, averaging 1.8 mm/day, and
+setting those to exactly 0.0 removes a real residual. **The honest reading is that the true
+areal mean lies between the v2 and v1 figures, closer to v2** — a large step in the right
+direction with a bounded, measured over-correction, not an exact answer.
+
+### 10.5 Areal rainfall — and where it now sits
+
+The IDW was regenerated with nb11's interpolator (k=6, inverse-distance-squared, masked to
+observed gauges, k=20 fallback). **Reproduction gate first:** rebuilt from the *v1* gauge
+file it reproduces the stored `forcing_minibacia_precip.csv` with **0 of 34,844,096 cells
+differing** at that file's own 0.01 mm quantisation (max |ΔP| 0.0050 mm, exactly the
+rounding half-width), and 124,097 k=20 fallback cells — nb11's printed figure exactly.
+
+| area-weighted basin mean, mm/yr | v1 | v2 | change |
+|---|---|---|---|
+| 2009–2017 | 2,174.3 | **2,035.6** | **−138.7 (−6.4 %)** |
+| 2008–2018 | 2,206.0 | **2,072.3** | −133.7 (−6.1 %) |
+
+* v2 is now **4.2 % below CHIRPS** (2,124.9, Phase A) — it was +2.3 % above;
+* v2 lands **0.7 % below the uncited ~2,050 reference**, which is notable but is not
+  validation while that number has no citation (open item 8).
+
+### 10.6 The energy floor — real improvement, criterion not met
+
+| | |
+|---|---|
+| energy-floor failures, v1 field | **18** of 61 (reproduces the stored file) |
+| energy-floor failures, v2 field | **14** of 61 |
+| recovered by the repair | 4 |
+| newly failing | 0 |
+| median upstream P | 5.104 → 4.888 mm/day (−4.2 %) |
+| median observed runoff coefficient | 0.497 → 0.528 |
+| median `rc_floor` | 0.422 → 0.396 |
+
+**Target was ≤ 5. Result 14. FAIL.** The reason is informative: the worst offenders barely
+moved. 23087200 sits at 11.464 mm/day before and after (unchanged to 3 dp); 26127100 at
+6.377 both times. 23087200's observed runoff coefficient is 0.430 against a floor of 0.705 —
+closing that needs P to fall by roughly half, which no plausible suppression correction
+delivers.
+
+**So the ~8 % basin surplus and the worst energy-floor failures are two different problems.**
+The repair removed 6.4 % of basin-wide rainfall and recovered 4 gauges; the remaining 14 are
+local, and at the extreme end are more consistent with catchment-delineation or rating error
+than with forcing. The class verdict of §4.3 stands — 18 of 18 failed with observed rc *below*
+its floor, which is a wet-forcing signature — but it is now clear that the signature was
+basin-wide for only a minority of them.
+
+### 10.7 Three co-located gauge pairs make the IDW order-dependent
+
+Found while diagnosing why the first rebuild missed the stored field at 44 of 8,672
+minibacias by up to 13.1 mm/day, on nearly every day, with the *same* gauge set and the
+*same* coordinates. My first hypothesis — k=20 fallback tie-breaking — was wrong: only 20 of
+the 134,797 differing cells were in the fallback set.
+
+Three pairs share an **exact** lat/lon:
+
+| pair | lat, lon |
+|---|---|
+| CUCUNUBA `24010140` / CUCUNUBA-AUT `2401500040` | 5.219570, −73.78229 |
+| CERINZA `24030590` / CERINZA `24035420` | 5.962250, −72.93850 |
+| AEROPUERTO OLAYA HERRERA `27015070` / `27015330` | 6.224639, −75.58820 |
+
+Their distances to every minibacia tie exactly, so `np.argsort` resolves the k=6 neighbour
+set by **column index**. nb11 reindexes to the QC inventory's row order; sorting the columns
+by code instead — a change no reviewer would flag — moves 44 minibacias by up to 13.1 mm/day.
+Two defects in one:
+
+1. **the IDW is not order-invariant**, so it is not reproducible under a harmless refactor;
+2. **co-located gauges are double-weighted** — two instruments at one point each receive
+   `1/max(d,1)²`, so that location carries twice the influence of a single gauge. They should
+   be merged (highest approval level wins, as elsewhere in this pipeline) *before*
+   interpolation.
+
+Neither affects the basin aggregate (2,174.3 either way), so no conclusion above depends on
+it — but it must be fixed before nb11 is re-run, or Phase C inherits an arbitrary choice.
