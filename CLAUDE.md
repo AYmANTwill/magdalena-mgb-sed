@@ -19,14 +19,21 @@ study: La Niña 2011 (wet) vs El Niño 2015–16 (dry). UMNG internship, advisor
   §11), co-located gauges classified by evidence not distance (§11.2), the 14 energy-floor gauges
   triaged (§12), and catchment areas shown unreliable per gauge in **both** implementations (§13.2)
   — which any t/km²/yr sediment yield inherits one-for-one.
+- `docs/24_phase3_refit.md` — **the Phase 3 answer.** nb13 → nb14 re-run on the v2 forcing with a
+  revised objective (recession term, `k_int < k_bas`, `k_bas` bound below 15 d) and two
+  pre-registered cells. H2 − H1 settles it: the repair moved volume (β −0.044, PBIAS −4.4 pts) and
+  left correlation untouched (r +0.003), so volume and correlation are independent and the
+  CHIRPS-gauge merge is the only remaining lever. Read §5.1 before quoting any fitted parameter.
 - `docs/progress_journal.md` — chronological log.
 
 ## Phase status
 
 - **Phase A (model inputs): complete.** Minibacias (8,672) → URH (24 types, IGAC soils) → soil
   params (Wm, K) → rainfall + PET forcing (`data/processed/forcing_minibacia_*.csv`).
-- **Phase B (water balance + discharge calibration): next.** Notebook 12. MGB-SA proper runs as a
-  QGIS plugin; a Python water balance (derivation in `notebooks/03_hydrology.ipynb`) is the diagnostic.
+- **Phase B (water balance + discharge calibration): complete through the Phase 3 refit** (doc 24).
+  Notebooks 13 and 14 run on `model_inputs_v2/`; 2008 warms up, 2009-2018 is scored. MGB-SA proper
+  runs as a QGIS plugin; a Python water balance (derivation in `notebooks/03_hydrology.ipynb`) is
+  the diagnostic. Outputs in `sim_baseline_v2/` and `sim_calibrated_v2/`.
 - **Phase C (sediment): blocked** on mainstem SSC data.
 
 ## Pipeline commands
