@@ -639,8 +639,29 @@ _v1clim = {'CAL 2012-14': 0.227, 'VAL La Nina 11': 0.162, 'VAL El Nino 15-16': 0
            'VAL other 09/10/17': 0.173}
 print('docs/22 s4.1 recorded, on the same v1 gauges and windows: ' +
       ', '.join(f'{k.split()[-1]} {v:.3f}' for k, v in _v1clim.items()))
-_d = [abs(CLIM['H1'].clim_kge[k] - v) for k, v in _v1clim.items() if k in CLIM['H1'].index]
-print(f'H1 reproduces them to max |diff| {max(_d):.4f} - the benchmark is the same benchmark.')
+_d = {k: CLIM['H1'].clim_kge[k] - v for k, v in _v1clim.items() if k in CLIM['H1'].index}
+print('this notebook, same gauges and windows:            ' +
+      ', '.join(f'{k.split()[-1]} {CLIM["H1"].clim_kge[k]:.3f}' for k in _v1clim
+                if k in CLIM['H1'].index))
+print(f'\nTHESE DO NOT AGREE, and the difference is not small: this benchmark is HARDER by '
+      f'{min(_d.values()):+.3f} to {max(_d.values()):+.3f} KGE.')
+print('docs/22 s4.1 does not state how its climatology was built beyond "day-of-year ...  from')
+print('the whole record"; this one is the (month,day) MEAN over every scored year. A median, or')
+print('one built from a sub-window, is a weaker predictor and would score lower. No attempt is')
+print('made here to reverse-engineer which - the point is the CONSEQUENCE, and it is stated')
+print('rather than buried:')
+print('  * the primary criterion\'s absolute targets (El Nino >= +0.12, La Nina >= +0.24) were')
+print('    set against docs/22\'s benchmark, so passing or failing them on THIS benchmark is not')
+print('    a like-for-like test of the number that was pre-registered;')
+print('  * what IS like-for-like is the comparison BETWEEN the three configurations below, since')
+print('    all of them are scored against this same, internally consistent benchmark. The')
+print('    reference row re-scored here gives Config B La Nina '
+      f'{0.399 - float(CLIM["H1"].clim_kge["VAL La Nina 11"]):+.3f} and El Nino '
+      f'{0.193 - float(CLIM["H1"].clim_kge["VAL El Nino 15-16"]):+.3f}')
+print('    where docs/22 recorded +0.236 and +0.024 - the same ordering, uniformly harder.')
+print('  * so section 10 reports the criterion BOTH ways: the absolute form, flagged as being')
+print('    on a different yardstick, and the ratio form, which is what the criterion was')
+print('    really asking.')
 print(f'\nNote the mechanism docs/22 s4.1 identified, visible again in the obs_cv column: the '
       f'El Nino\nwindow has the highest observed CV, which is why its NSE is not comparable with '
       f'the others\nand why the model-minus-climatology DIFFERENCE is the statistic this notebook '
@@ -1004,7 +1025,8 @@ code(r"""def criteria(n):
     ln = float(s.skill_over_clim['VAL La Nina 11'])
     en = float(s.skill_over_clim['VAL El Nino 15-16'])
     out = []
-    out.append(('P  El Nino skill over climatology >= +0.12 AND La Nina >= +0.24',
+    out.append(('P  El Nino skill over climatology >= +0.12 AND La Nina >= +0.24  '
+                '[NOTE: harder benchmark than the one the target was set on - see s5.2]',
                 f'EN {en:+.3f}, LN {ln:+.3f}  (ratio EN/LN '
                 f'{en/ln if abs(ln) > 1e-9 else float("nan"):.2f})',
                 (en >= 0.12) and (ln >= 0.24)))
