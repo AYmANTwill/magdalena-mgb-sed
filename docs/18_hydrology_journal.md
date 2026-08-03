@@ -397,6 +397,9 @@ Recorded because each looked right before it was measured.
 | "The repair may be over-drying the field, since v2 falls below CHIRPS" | ❌ refuted | At independent neighbours the inserted days carry a wet-day rate of 0.171 against 0.328 overall (ratio 0.522) and 1.84 mm/day against 4.06 (ratio 0.414); only 2 of 83 stations show inserted days wetter than average. A bounded residual remains — neighbours did record rain on 17 % of them — so the true areal mean sits between 2,035.6 and 2,174.3, nearer the former (§10.4) |
 | "The 18 energy-floor failures are all explained by the wet-forcing surplus" | ⚠️ **splits in two** | Removing 6.4 % of basin rainfall recovers only 4 of 18. The worst two have P unchanged to 3 dp and would need P halved. The class verdict stands (18 of 18 fail with observed rc below floor) but the residual 14 are local, not basin-wide (§10.6) |
 | "The rebuilt IDW disagreed with the stored field because of k=20 fallback tie-breaking" | ❌ refuted | Only 20 of 134,797 differing cells were in the fallback set. The cause was three co-located gauge pairs tying in distance in the **k=6** pass, resolved by column order (§10.7) |
+| "The gauge-order defect affects 44 minibacias by up to 13.1 mm/day" | ⚠️ **understated** | That was one alternative ordering. Random shuffles move **52–83 minibacias** by up to **20.5 mm/day** (§11.1) |
+| "Gauges within 500 m of each other are duplicates and should be merged" | ❌ refuted | Of four pairs, two are duplicates (corr 1.000), one is a sequential instrument replacement (zero overlap), and one is a **coordinate error** — 1,470 shared days, corr 0.756, mean |diff| 1.9 mm at a nominal 5 cm. A distance-only merge rule would have averaged away a real gauge (§11.2) |
+| "Merging the co-located gauges is cosmetic — the basin mean barely moves" | ⚠️ **half true** | Basin mean +0.04 %, but **542 minibacias change by a median +5.03 %, max +33.5 %**. Gauges are scored locally, so this changes the objective. A basin-level check alone would have concluded "negligible" and been wrong (§11.3) |
 | "`identifiability.csv` shows all 10 parameters identified" | ⚠️ **confounded** | `iqr_frac_of_range` is exactly 0.0 for 7 of 10 parameters. The top 5 % of a **DDS** archive is a neighbourhood of the optimum by construction, so this measures search concentration, not information in the data. Morris `mu*` is the trustworthy screen, and it says `k_bas`, `k_int`, `kc_mult` and `fint` are weak |
 
 ---
@@ -434,6 +437,13 @@ Recorded because each looked right before it was measured.
 11. **Three gauge pairs share an exact lat/lon, so the IDW depends on gauge column order** (§10.7).
     Sorting the gauge columns by code instead of inventory order moves 44 minibacias by up to
     13.1 mm/day. Any re-implementation must reproduce nb11's ordering, or merge the pairs first.
+13. **Prove a defect is reproducible before claiming a fix.** The shuffle test is written to show the
+    OLD code path failing first (52–83 minibacias move) and only then the new one holding. A fix for a
+    defect you cannot summon on demand is untestable (§11.1).
+14. **`merge` is a DataFrame method.** A column named `merge` is returned as a bound method on
+    attribute access, so `df[df.merge]` raises instead of filtering. Cost an hour here; use `do_merge`.
+15. **Check basin-level AND local effects, and report both.** Merging the co-located gauges moves the
+    basin mean 0.04 % and 542 minibacias by a median 5 %. Either number alone misleads (§11.3).
 12. **A repair that fixes a bias statistic can still move the mean too far.** Selectivity passing at
     1.040 does not prove the inserted days were dry; that needed its own neighbour test (§10.4).
     Test the direction you moved the answer, not only the defect you set out to remove.
@@ -452,7 +462,9 @@ Recorded because each looked right before it was measured.
 | 6 | ~~`build_discharge_gauges.py:149-152` and `build_precip_gauges.py:62` rely on pandas date inference~~ **DONE** — both now detect per file/part via `src/dhime_dates.py`. All 98 precip files and 45 discharge parts proved ISO year-first; outputs content-identical, so nothing was silently transposed in these corpora. Recorded so the null result is not read as the fix being unnecessary | closed |
 | 7 | ~~Finish the zero-suppression repair~~ **DONE (§10)** — selectivity detector with a threshold from the measured null; 153 stations repaired, 240,158 inferred-dry days; sparse-band selectivity 1.777 → **1.040**, dense band unmoved at 1.001; areal mean 2,174.3 → **2,035.6** mm/yr (−6.4 %); over-drying test passed. Energy floor 18 → **14**, target was ≤5 | partly closed — see item 10 |
 | 10 | **The 14 surviving energy-floor gauges are a different problem from the basin surplus** (§10.6). 23087200 and 26127100 have P unchanged by a 6.4 % basin-wide correction and would need P halved. Investigate gauge by gauge as catchment-delineation or rating error | the +5.6 % outlet PBIAS floor |
-| 11 | **Merge the three co-located gauge pairs before any nb11 re-run** (§10.7). They tie exactly in distance, so the k=6 IDW neighbour set depends on gauge column order (44 minibacias, up to 13.1 mm/day), and they double-weight their location | a reproducible nb11, and Phase C |
+| 11 | ~~Merge the co-located gauge pairs~~ **DONE (§11)** — `src/idw_forcing.py`: deterministic lexsort tie-break proven by a shuffle test, and an evidence-based merge (2 duplicates + 1 sequential merged, 294→291 gauges; Catam refused as a **coordinate error**, corr 0.756 at 5 cm). Basin mean +0.04 %, but **542 minibacias move by a median +5 %** | closed; nb11 unblocked |
+| 12 | **EL DORADO CATAM `21205791` / AEROPUERTO CATAM `21206570` have one bad coordinate** (§11.2). They sit 5 cm apart in the catalogue yet disagree on 1,000 of 1,470 shared days (corr 0.756). Resolve against the IDEAM catalogue before either is trusted for interpolation | correct gauge geometry near Bogotá |
+| 13 | nb11 §3 must be switched to `src/idw_forcing.py` rather than keeping its own copy of the interpolator. Adopting it moves 69 minibacias vs the stored field (areal mean unchanged) — expected, since the stored field embodies an arbitrary tie-break | one interpolator, not three |
 | 8 | **Establish the provenance of the ~2,050 mm/yr basin reference** (§9.4) — uncited on both sides; his script says only "a published ~2,050", and CHIRPS itself sits +3.7 % above it. ~~Resolve the 9.5 % CHIRPS disagreement~~ **DONE (§9.5): our estimator is sound to 0.1 %; the gap is a period mismatch — interannual range is ±21 % and 2012–2015 gives 1,952 mm/yr. On the like-for-like window CHIRPS is 2,124.9 against IDW 2,174.3, +2.3 %, so a merge cannot close the ~8 % surplus** | using the reference as a validation target |
 | 9 | Advisor question, not a code question: the collaborator **drops** sparse gauges where we **repair** them. §4.7 makes gauge density the binding constraint on `r`, so his remedy worsens the quantity we identified as the ceiling, while ours retains stations that §9.3 shows are still biased. Neither approach is obviously right | the merge design in nb11 |
 
@@ -807,3 +819,99 @@ Two defects in one:
 
 Neither affects the basin aggregate (2,174.3 either way), so no conclusion above depends on
 it — but it must be fixed before nb11 is re-run, or Phase C inherits an arbitrary choice.
+
+---
+
+## 11 — Phase 0: the IDW blocker (open item 11 closed)
+
+New module `src/idw_forcing.py`, extracted from nb11 §3 so that the notebook, the
+diagnostics and any re-run share **one** interpolator instead of three copies. It fixes the
+two defects §10.7 found, which turned out to need different fixes.
+
+### 11.1 Order-invariance: the defect is larger than first reported
+
+| gate | result | |
+|---|---|---|
+| **G1** control — nb11 verbatim (`argsort` + inventory column order) vs the stored field | **0 of 34,844,096 cells differ**, 124,097 fallback cells (nb11's printed figure) | **PASS** |
+| **G2** the defect, reproduced on demand — same `argsort`, gauge columns shuffled | 145,531 / 179,458 / 248,528 cells differ; **52 / 61 / 83 minibacias**; max \|ΔP\| **19.5 / 20.5 / 17.8 mm** | **PASS** (defect confirmed) |
+| **G3** the fix — deterministic `lexsort` on (distance, gauge code), 5 shuffles | byte-identical field every time | **PASS** |
+
+§10.7 reported 44 minibacias and 13.1 mm from *one* alternative ordering (sorted by code).
+Random orderings are worse: up to **83 minibacias and 20.5 mm/day**. The earlier figure was
+a lower bound on an arbitrary choice, not the size of the defect.
+
+G2 matters as much as G3. A fix for a defect you cannot reproduce on demand is untestable,
+so the shuffle test is written to *first* show the old code path failing and only then show
+the new one holding. `assert_order_invariant()` in the module is the standing guarantee —
+the `lexsort` is only the mechanism, and without the assertion nothing stops a later edit
+reintroducing an order-dependent field.
+
+**Cost of adopting determinism (G4):** against the stored field the deterministic
+interpolator moves 194,081 cells across **69 minibacias**, max \|ΔP\| 20.47 mm — because the
+stored field embodies one arbitrary tie-break and this one embodies a reproducible rule.
+The **areal mean is unchanged: 2,174.3 mm/yr either way.** Anything that re-runs nb11
+inherits the new local values, which is the correct outcome but must not be mistaken for a
+data change.
+
+### 11.2 Co-located gauges: a blanket rule would have destroyed data
+
+Swept to 500 m as instructed and found a **fourth** pair the exact-tie search had missed.
+Then classified each pair by what the two records do on the days they **both** report —
+because that, not distance, is the evidence for whether they are one instrument or two:
+
+| pair | dist | n both | mean \|diff\| | corr | verdict |
+|---|---|---|---|---|---|
+| AEROPUERTO OLAYA HERRERA `27015070` / `27015330` | 0.000 m | 276 | 0.000 mm | 1.000 | **duplicate** → merge |
+| CUCUNUBA `24010140` / CUCUNUBA-AUT `2401500040` | 0.000 m | 366 | 0.003 mm | 1.000 | **duplicate** → merge |
+| CERINZA `24030590` / `24035420` | 0.000 m | **0** | — | — | **sequential** → merge |
+| EL DORADO CATAM `21205791` / AEROPUERTO CATAM `21206570` | 0.052 m | 1,470 | **1.915 mm** | **0.756** | **coordinate error** → **do NOT merge** |
+
+Three distinct situations, and only two of them are duplicates:
+
+* **duplicate** — one measurement filed under two codes. Merging is pure de-duplication.
+* **sequential** — CERINZA has *zero* overlap: `24030590` runs 2008-01→2009-06 and
+  `24035420` picks up 2009-07→2018-12. An instrument replacement, not a duplicate. Merging
+  reconstructs one continuous record from two fragments, which is strictly better than
+  interpolating across the join.
+* **coordinate error** — Catam's two records overlap on 1,470 days and *disagree*: only 470
+  identical, mean \|difference\| 1.9 mm, correlation **0.756**. At a nominal separation of
+  5 cm that is not physical — the true duplicates above read 1.000, and the basin-wide
+  inter-gauge correlation at 0–25 km is only 0.33 (§4.7), so 0.756 is neither. **These are
+  two real gauges and one of them has the wrong catalogue coordinates.** Merging them would
+  have averaged away a genuine second observation, silently. Left unmerged and flagged.
+
+**A distance-only rule would have destroyed that station.** The rule adopted is
+evidence-based per cluster; `data/processed/precip_colocated_gauges.csv` carries the
+classification with its numbers so the judgement is auditable rather than asserted.
+
+Merge mechanics: highest approval level wins the day (`Definitivo > En revisión >
+Preliminar`, the precedence `build_precip_gauges.py` already uses); the surviving code is
+the member with the most records, so provenance stays traceable.
+
+### 11.3 What the merge costs — negligible globally, material locally
+
+Gauges **294 → 291**; station-days 926,910 → 926,268; k=6 fallback cells **41,504 →
+41,180** (the merge *improves* coverage, because a reconstructed record fills days on which
+neither fragment alone reported).
+
+| area-weighted basin mean | v2 unmerged | v2 merged | change |
+|---|---|---|---|
+| 2009–2017 | 2,035.6 | 2,036.4 | **+0.8 mm/yr (+0.04 %)** |
+| 2008–2018 | 2,072.2 | 2,073.1 | +0.8 mm/yr (+0.04 %) |
+
+| local effect | |
+|---|---|
+| minibacias changed | **542** of 8,672 |
+| median mean \|ΔP\| among them | 0.225 mm/day |
+| **median relative change** | **+5.03 %** |
+| max relative change | **+33.48 %** |
+| largest single-day \|ΔP\| anywhere | 29.18 mm |
+
+**The basin mean is untouched and 542 minibacias move by a median 5 % — so this matters, and
+it would have been invisible in any basin-level check.** Gauges are scored locally, so a
+5–33 % change in catchment rainfall is a change in the calibration objective. 542 is also
+far more than the 69 minibacias affected by the tie-break alone: removing a gauge frees a
+`k=6` slot, so a *different* sixth gauge enters for every minibacia near a merged cluster.
+
+Both numbers had to be reported. Had only the basin mean been checked, the correct
+conclusion would have been "negligible" and it would have been wrong.
