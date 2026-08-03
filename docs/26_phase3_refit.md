@@ -1,4 +1,4 @@
-# 24 — Phase 3: the refit on the v2 forcing, and what H2 − H1 settled
+# 26 — Phase 3: the refit on the v2 forcing, and what H2 − H1 settled
 
 Executed 2026-08-03. Notebooks 13 and 14 re-run on `model_inputs_v2/` with a revised
 objective and two pre-registered forcing cells. Commits `74eb324` (nb13), `328f5e8`
