@@ -69,6 +69,11 @@ APPROVAL_RANK = {"Definitivo": 0, "En revisión": 1, "En revision": 1, "Prelimin
 COLOCATED_M = 500.0        # sweep radius; exact ties were only how the defect announced itself
 IDENTICAL_MM = 0.05        # mean |difference| below this on overlap days = one instrument
 IDENTICAL_CORR = 0.99
+# Pairs proven NOT to be duplicates, kept as a named guard so that loosening
+# IDENTICAL_MM / IDENTICAL_CORR can never silently resurrect the merge. EL DORADO CATAM
+# and AEROPUERTO CATAM sit 5 cm apart in the catalogue yet disagree on 1,000 of 1,470
+# shared days (corr 0.756): two real gauges, one with a bad coordinate. See doc 18 s11.2.
+NEVER_MERGE = {frozenset(("21205791", "21206570"))}
 
 
 def km(la1, lo1, la2, lo2):
@@ -90,13 +95,17 @@ def neighbour_order(D: np.ndarray, codes: list[str]) -> np.ndarray:
 
 
 def idw_field(W: pd.DataFrame, glat, glon, clat, clon, k: int = 6,
-              k_fallback: int = 20) -> tuple[np.ndarray, int]:
+              k_fallback: int = 20, return_detail: bool = False):
     """Masked inverse-distance-squared interpolation, nb11's scheme with a stable tie-break.
 
     `W` is (days x gauges); NaN means the gauge did not report, and only reporting gauges
     contribute on a given day, so a silent gauge neither propagates NaN nor implies zero.
     Cells where all `k` nearest gauges were silent are refilled from a `k_fallback` pass.
-    Returns (field, n_fallback_cells).
+
+    Returns `(field, n_fallback_cells)`, or with `return_detail=True`
+    `(field, n_fallback_cells, fallback_mask, neighbour_distances_km)` - the extra two are
+    what notebook 11 needs for its `fallback_days` and `d_nearest_km` columns, so that it
+    can use this function instead of keeping its own copy of the interpolator.
     """
     codes = list(W.columns)
     Gv = W.to_numpy("float32")
@@ -125,6 +134,8 @@ def idw_field(W: pd.DataFrame, glat, glon, clat, clon, k: int = 6,
     n_gap = int(gap.sum())
     if n_gap:
         P = np.where(gap, pass_k(k_fallback), P)
+    if return_detail:
+        return P, n_gap, gap, np.take_along_axis(D, srt[:, :k], 1)
     return P, n_gap
 
 
@@ -175,6 +186,8 @@ def classify_colocated(inv: pd.DataFrame, daily: pd.DataFrame,
             corr = float(sa.reindex(both).corr(sb.reindex(both))) if n_both > 2 else np.nan
             kind = ("duplicate" if mad <= IDENTICAL_MM
                     and (np.isnan(corr) or corr >= IDENTICAL_CORR) else "coord_error")
+        if frozenset((a, b)) in NEVER_MERGE:
+            kind = "coord_error"
         rows.append(dict(a=a, b=b, dist_m=float(D[i, j] * 1000), n_a=len(sa), n_b=len(sb),
                          n_both=n_both, mean_abs_diff_mm=mad, corr=corr, kind=kind,
                          do_merge=kind in ("duplicate", "sequential")))

@@ -276,8 +276,8 @@ Recorded because each looked right before it was measured.
 | 15 | **Hydropower-diversion hypothesis needs an external register** (§13.4). `is_intake` is a name regex (`BOCATOMA|CANAL`) plus a manual doc-17 list, so it structurally cannot flag a place-named gauge below a reservoir — PAILANIA is not called a canal. Data acquisition, not a code fix | the *reason* recorded for excluding the two gauges |
 | 16 | ~~Re-snap gauges with regional rc references (Phase 1c)~~ **NOT JUSTIFIED — do not run** (§13.1). The circularity charge was tested and refuted: remapped vs kept rc spread is identical (log-SD ratio 1.009, Levene p = 0.76) and the remapped group sits *further* from 0.435, not closer. Anyone reviving this must beat p = 0.76 | closed |
 | 11 | ~~Merge the co-located gauge pairs~~ **DONE (§11)** — `src/idw_forcing.py`: deterministic lexsort tie-break proven by a shuffle test, and an evidence-based merge (2 duplicates + 1 sequential merged, 294→291 gauges; Catam refused as a **coordinate error**, corr 0.756 at 5 cm). Basin mean +0.04 %, but **542 minibacias move by a median +5 %** | closed; nb11 unblocked |
-| 12 | **EL DORADO CATAM `21205791` / AEROPUERTO CATAM `21206570` have one bad coordinate** (§11.2). They sit 5 cm apart in the catalogue yet disagree on 1,000 of 1,470 shared days (corr 0.756). Resolve against the IDEAM catalogue before either is trusted for interpolation | correct gauge geometry near Bogotá |
-| 13 | nb11 §3 must be switched to `src/idw_forcing.py` rather than keeping its own copy of the interpolator. Adopting it moves 69 minibacias vs the stored field (areal mean unchanged) — expected, since the stored field embodies an arbitrary tie-break | one interpolator, not three |
+| 12 | **EL DORADO CATAM `21205791` / AEROPUERTO CATAM `21206570` have one bad coordinate** (§11.2) — 5 cm apart in the catalogue yet disagreeing on 1,000 of 1,470 shared days (corr 0.756). **Guarded** by `idw_forcing.NEVER_MERGE` so no threshold change can merge them (§11.4 G-B); still needs resolving against the IDEAM catalogue | correct gauge geometry near Bogotá |
+| 13 | ~~Switch nb11 §3 to `src/idw_forcing.py`~~ **DONE (§11.4)** — generator switched, `assert_order_invariant()` now runs inside the notebook, `return_detail=True` supplies the fallback mask and neighbour distances nb11 needed. **The notebook has not been re-executed** (Phase 2) | closed |
 | 8 | **Establish the provenance of the ~2,050 mm/yr basin reference** (§9.4) — uncited on both sides; his script says only "a published ~2,050", and CHIRPS itself sits +3.7 % above it. ~~Resolve the 9.5 % CHIRPS disagreement~~ **DONE (§9.5): our estimator is sound to 0.1 %; the gap is a period mismatch — interannual range is ±21 % and 2012–2015 gives 1,952 mm/yr. On the like-for-like window CHIRPS is 2,124.9 against IDW 2,174.3, +2.3 %, so a merge cannot close the ~8 % surplus** | using the reference as a validation target |
 | 9 | Advisor question, not a code question: the collaborator **drops** sparse gauges where we **repair** them. [doc 22 §4.7](22_dry_phase_diagnosis.md) makes gauge density the binding constraint on `r`, so his remedy worsens the quantity we identified as the ceiling, while ours retains stations that §9.3 shows are still biased. Neither approach is obviously right | the merge design in nb11 |
 
@@ -728,6 +728,37 @@ far more than the 69 minibacias affected by the tie-break alone: removing a gaug
 
 Both numbers had to be reported. Had only the basin mean been checked, the correct
 conclusion would have been "negligible" and it would have been wrong.
+
+---
+
+### 11.4 nb11 now imports the shared interpolator (open items 12 and 13 closed)
+
+`make_nb11.py` §3 no longer carries its own copy of the IDW. It imports
+`src/idw_forcing.py`, so the notebook, the diagnostics and any re-run share one
+implementation. `idw_field(..., return_detail=True)` returns the fallback mask and the
+neighbour distances as well as the field, which is what nb11 needed for its
+`fallback_days` and `d_nearest_km` columns — the reason it had a private copy.
+
+`assert_order_invariant()` is called **inside the notebook**, before the field is built,
+rather than sitting in a test file. A notebook that regenerates its own forcing should not
+be able to regress silently.
+
+| gate | result | |
+|---|---|---|
+| **G-A** `return_detail` API — mask matches `n_gap`, distances shaped (8672, 6) | 41,504 fallback cells both ways; nearest gauge median 16.3 km, max 71.5 km | PASS |
+| **G-B** `NEVER_MERGE` guard under deliberately absurd thresholds (`IDENTICAL_MM = 999`, `IDENTICAL_CORR = 0`) | CATAM still `coord_error`, `do_merge=False`, while every other pair flipped to merge | PASS |
+| **G-C** generator produces a valid notebook | 23 cells, 2 `idwf` references | PASS |
+
+G-B is open item 12. Refusing the CATAM merge on *evidence* is not enough on its own,
+because a later edit loosening `IDENTICAL_MM` or `IDENTICAL_CORR` would resurrect it. The
+named `NEVER_MERGE` set makes that impossible, and G-B is the proof: with thresholds set so
+loose that all three genuine duplicates merge, CATAM still does not.
+
+**Not yet done: the notebook has not been re-executed.** Only the generator was run
+(trap 10 — verify from executed outputs, never from the fact that a generator succeeded).
+Executing it is Phase 2, and when it runs it will produce the deterministic field, which
+differs from the stored one at 69 minibacias (§11.1) before the v2 gauge file and the merge
+are even applied.
 
 ---
 

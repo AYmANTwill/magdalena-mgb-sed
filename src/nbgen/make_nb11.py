@@ -31,7 +31,7 @@ than an assumed one.
 gauge, concentrated in the high headwaters that generate most of the sediment. Section 5 flags every
 minibacia so this stays visible instead of disappearing into a CSV.""")
 
-code(r"""import glob, pathlib
+code(r"""import glob, pathlib, sys
 import numpy as np, pandas as pd, rasterio
 import matplotlib.pyplot as plt
 from scipy import ndimage
@@ -43,6 +43,8 @@ for b in [pathlib.Path.cwd()] + list(pathlib.Path.cwd().parents):
     if (b/'data'/'processed'/'minibacias.tif').exists():
         REPO = b; break
 proc = REPO/'data'/'processed'; clim = REPO/'data'/'raw'/'climate'
+sys.path.insert(0, str(REPO/'src'))
+import idw_forcing as idwf          # the ONE interpolator: doc 18 s11, open item 13
 
 # repaired dataset: 55 zero-suppressed stations fixed by
 # src/repair_precip_zero_suppression.py (see notebook 10, section 1)
@@ -185,40 +187,23 @@ gauges were silent. MGB cannot accept NaN, so a second pass over $k=20$ fills on
 tight $k=6$ behaviour is preserved everywhere else, and the number of fallback cells is reported -
 they are lower-confidence by construction.""")
 
-code(r"""def km(la1, lo1, la2, lo2):
-    return np.sqrt(((la1-la2)*111.0)**2
-                   + ((lo1-lo2)*111.0*np.cos(np.radians((la1+la2)/2)))**2)
-
-G = W.copy()                                  # days x gauges (from the QC section)
+code(r"""G = W.copy()                                  # days x gauges (from the QC section)
 dates = G.index
-Gv = G.values.astype('float32')
-obs = ~np.isnan(Gv)
-Gf = np.where(obs, Gv, 0.0).astype('float32')
 
-D = km(cent.lat.values[:, None], cent.lon.values[:, None],
-       gauges.lat.values[None, :], gauges.lon.values[None, :])
-srt = np.argsort(D, axis=1)
+# The interpolator lives in src/idw_forcing.py so that this notebook, the diagnostics and any
+# re-run share ONE implementation. It is nb11's original scheme - masked inverse-distance-
+# squared over the k=6 nearest gauges, k=20 fallback - with one correction: the neighbour set
+# is chosen by lexsort on (distance, gauge code) rather than argsort on distance alone.
+# Four gauge pairs sit at the same coordinates, so their distances TIE, and plain argsort then
+# resolved the neighbour set by COLUMN ORDER: shuffling the gauge columns moved up to 83
+# minibacias by up to 20.5 mm/day (doc 18 s11.1). assert_order_invariant() is the guard, and
+# it runs here rather than in a test file so the notebook cannot silently regress.
+idwf.assert_order_invariant(G, gauges.lat.values, gauges.lon.values,
+                            cent.lat.values, cent.lon.values, n_shuffle=3)
+print('order-invariance: 3 gauge-column shuffles, byte-identical field each time')
 
-def idw(k):
-    nb = srt[:, :k]
-    dkm = np.take_along_axis(D, nb, 1)
-    wt = (1.0/np.maximum(dkm, 1.0)**2).astype('float32')
-    out = np.full((len(dates), len(cent)), np.nan, dtype='float32')
-    for a in range(0, len(cent), 500):
-        b = min(a+500, len(cent))
-        i2, w2 = nb[a:b], wt[a:b]
-        num = (Gf[:, i2]*w2).sum(2)
-        den = (obs[:, i2]*w2).sum(2)
-        with np.errstate(invalid='ignore', divide='ignore'):
-            out[:, a:b] = np.where(den > 0, num/den, np.nan)
-    return out, dkm
-
-P, dk6 = idw(6)
-gap = np.isnan(P)
-n_gap = int(gap.sum())
-if n_gap:
-    P20, _ = idw(20)
-    P = np.where(gap, P20, P)
+P, n_gap, gap, dk6 = idwf.idw_field(G, gauges.lat.values, gauges.lon.values,
+                                    cent.lat.values, cent.lon.values, return_detail=True)
 filled = int(n_gap - np.isnan(P).sum())
 
 print(f'forcing matrix: {P.shape[0]} days x {P.shape[1]} minibacias')
@@ -226,6 +211,8 @@ print(f'  k=6 NaN cells        : {n_gap:,} ({100*n_gap/P.size:.3f} %)')
 print(f'  filled by k=20 pass  : {filled:,}')
 print(f'  remaining NaN        : {int(np.isnan(P).sum()):,}')
 print(f'  basin-mean rainfall  : {np.nanmean(P):.2f} mm/day ({365.25*np.nanmean(P):.0f} mm/yr)')
+print('  NOTE basin-mean here is an UNWEIGHTED mean of minibacia series. The comparable areal')
+print('  figure is area-weighted; see doc 18 s9.4 and trap 9 (no rainfall figure without its window).')
 cent['fallback_days'] = gap.sum(0)""")
 
 # ---------------------------------------------------------------- 4 rainfall fields
