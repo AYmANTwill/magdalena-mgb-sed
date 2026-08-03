@@ -193,12 +193,12 @@ Recorded because each looked right before it was measured.
 | "The repair may be over-drying the field, since v2 falls below CHIRPS" | ❌ refuted | At independent neighbours the inserted days carry a wet-day rate of 0.171 against 0.328 overall (ratio 0.522) and 1.84 mm/day against 4.06 (ratio 0.414); only 2 of 83 stations show inserted days wetter than average. A bounded residual remains — neighbours did record rain on 17 % of them — so the true areal mean sits between 2,035.6 and 2,174.3, nearer the former (§10.4) |
 | "The 18 energy-floor failures are all explained by the wet-forcing surplus" | ⚠️ **splits in two** | Removing 6.4 % of basin rainfall recovers only 4 of 18. The worst two have P unchanged to 3 dp and would need P halved. The class verdict stands (18 of 18 fail with observed rc below floor) but the residual 14 are local, not basin-wide (§10.6) |
 | "The rebuilt IDW disagreed with the stored field because of k=20 fallback tie-breaking" | ❌ refuted | Only 20 of 134,797 differing cells were in the fallback set. The cause was three co-located gauge pairs tying in distance in the **k=6** pass, resolved by column order (§10.7) |
-| "The gauge-order defect affects 44 minibacias by up to 13.1 mm/day" | ⚠️ **understated** | That was one alternative ordering. Random shuffles move **52–83 minibacias** by up to **20.5 mm/day** (§11.1) |
-| "Gauges within 500 m of each other are duplicates and should be merged" | ❌ refuted | Of four pairs, two are duplicates (corr 1.000), one is a sequential instrument replacement (zero overlap), and one is a **coordinate error** — 1,470 shared days, corr 0.756, mean |diff| 1.9 mm at a nominal 5 cm. A distance-only merge rule would have averaged away a real gauge (§11.2) |
-| "Merging the co-located gauges is cosmetic — the basin mean barely moves" | ⚠️ **half true** | Basin mean +0.04 %, but **542 minibacias change by a median +5.03 %, max +33.5 %**. Gauges are scored locally, so this changes the objective. A basin-level check alone would have concluded "negligible" and been wrong (§11.3) |
-| "The residual energy-floor failures are our forcing's fault" | ⚠️ **only 2 of 14** | Two gauges have a selective precip gauge carrying 49–69 % of their catchment weight and are kept for that reason. The other 12 do not: 8 have no rating curve at all, and where curves exist R² runs 0.36–0.69 (§12.1) |
-| "The gauge remap injected RC_REFERENCE = 0.435, so the energy-floor test is circular" | ❌ refuted | Remapped and kept rc distributions have the same spread (log-SD 0.895 vs 0.886, ratio 1.009; Levene p = 0.76), and the remapped median distance from the reference is **larger** (0.435 vs 0.402). The rc target only breaks ties among a 3×3 window of candidates, so it cannot manufacture an rc no nearby minibacia produces (§13.1) |
-| "The 2.5× area gap at 23087200 means his network is wrong and ours is fine" | ⚠️ **neither is reliable per gauge** | Median ratio 0.991 over 85 gauges, but 31 of 85 differ by >2×; removing his 4 mainstem snaps still leaves only 28 of 81 within 25 %. Inverting the balance cannot reject his area either — it implies rc 0.17, the 27th percentile of the never-remapped distribution (§13.2–13.3) |
+| "The gauge-order defect affects 44 minibacias by up to 13.1 mm/day" | ⚠️ **understated** | That was one alternative ordering. Random shuffles move **52–83 minibacias** by up to **20.5 mm/day** ([doc 23 §11.1](23_gauge_geometry.md)) |
+| "Gauges within 500 m of each other are duplicates and should be merged" | ❌ refuted | Of four pairs, two are duplicates (corr 1.000), one is a sequential instrument replacement (zero overlap), and one is a **coordinate error** — 1,470 shared days, corr 0.756, mean |diff| 1.9 mm at a nominal 5 cm. A distance-only merge rule would have averaged away a real gauge ([doc 23 §11.2](23_gauge_geometry.md)) |
+| "Merging the co-located gauges is cosmetic — the basin mean barely moves" | ⚠️ **half true** | Basin mean +0.04 %, but **542 minibacias change by a median +5.03 %, max +33.5 %**. Gauges are scored locally, so this changes the objective. A basin-level check alone would have concluded "negligible" and been wrong ([doc 23 §11.3](23_gauge_geometry.md)) |
+| "The residual energy-floor failures are our forcing's fault" | ⚠️ **only 2 of 14** | Two gauges have a selective precip gauge carrying 49–69 % of their catchment weight and are kept for that reason. The other 12 do not: 8 have no rating curve at all, and where curves exist R² runs 0.36–0.69 ([doc 23 §12.1](23_gauge_geometry.md)) |
+| "The gauge remap injected RC_REFERENCE = 0.435, so the energy-floor test is circular" | ❌ refuted | Remapped and kept rc distributions have the same spread (log-SD 0.895 vs 0.886, ratio 1.009; Levene p = 0.76), and the remapped median distance from the reference is **larger** (0.435 vs 0.402). The rc target only breaks ties among a 3×3 window of candidates, so it cannot manufacture an rc no nearby minibacia produces ([doc 23 §13.1](23_gauge_geometry.md)) |
+| "The 2.5× area gap at 23087200 means his network is wrong and ours is fine" | ⚠️ **neither is reliable per gauge** | Median ratio 0.991 over 85 gauges, but 31 of 85 differ by >2×; removing his 4 mainstem snaps still leaves only 28 of 81 within 25 %. Inverting the balance cannot reject his area either — it implies rc 0.17, the 27th percentile of the never-remapped distribution ([doc 23 §13.2](23_gauge_geometry.md)–13.3) |
 | "`identifiability.csv` shows all 10 parameters identified" | ⚠️ **confounded** | `iqr_frac_of_range` is exactly 0.0 for 7 of 10 parameters. The top 5 % of a **DDS** archive is a neighbourhood of the optimum by construction, so this measures search concentration, not information in the data. Morris `mu*` is the trustworthy screen, and it says `k_bas`, `k_int`, `kc_mult` and `fint` are weak |
 
 ---
@@ -239,21 +239,21 @@ Recorded because each looked right before it was measured.
 16. **A tie-break is not an optimiser.** `fix_gauge_minibacia_mapping.py` scores candidates against a
     basin-wide rc reference, which looks like it must inject that reference into the data — but the
     candidate set is a 3×3 window, so the reference only orders a handful of geometrically fixed
-    options. Measured effect on the rc spread: none (§13.1). Check a mechanism's leverage before
+    options. Measured effect on the rc spread: none ([doc 23 §13.1](23_gauge_geometry.md)). Check a mechanism's leverage before
     assuming it has any.
 17. **Two independent D8 delineations of the same basin disagree by >2× on a third of a shared
-    85-gauge sample** (§13.2), while their medians agree to 1 %. A basin-level cross-check would
+    85-gauge sample** ([doc 23 §13.2](23_gauge_geometry.md)), while their medians agree to 1 %. A basin-level cross-check would
     have read as validation. Any per-gauge area-normalised quantity (t/km²/yr above all) needs an
     arbiter external to both networks.
-18. **`is_intake` is a name regex, not a regulation inventory** (§13.4). It fires on `BOCATOMA|CANAL`
+18. **`is_intake` is a name regex, not a regulation inventory** ([doc 23 §13.4](23_gauge_geometry.md)). It fires on `BOCATOMA|CANAL`
     in the station name, so a place-named gauge below a reservoir is invisible to it.
 13. **Prove a defect is reproducible before claiming a fix.** The shuffle test is written to show the
     OLD code path failing first (52–83 minibacias move) and only then the new one holding. A fix for a
-    defect you cannot summon on demand is untestable (§11.1).
+    defect you cannot summon on demand is untestable ([doc 23 §11.1](23_gauge_geometry.md)).
 14. **`merge` is a DataFrame method.** A column named `merge` is returned as a bound method on
     attribute access, so `df[df.merge]` raises instead of filtering. Cost an hour here; use `do_merge`.
 15. **Check basin-level AND local effects, and report both.** Merging the co-located gauges moves the
-    basin mean 0.04 % and 542 minibacias by a median 5 %. Either number alone misleads (§11.3).
+    basin mean 0.04 % and 542 minibacias by a median 5 %. Either number alone misleads ([doc 23 §11.3](23_gauge_geometry.md)).
 12. **A repair that fixes a bias statistic can still move the mean too far.** Selectivity passing at
     1.040 does not prove the inserted days were dry; that needed its own neighbour test (§10.4).
     Test the direction you moved the answer, not only the defect you set out to remove.
@@ -271,13 +271,13 @@ Recorded because each looked right before it was measured.
 | 5 | PET review against the 49 mm/yr basin ET deficit | the +5.6 % outlet PBIAS floor and the 18 infeasible gauges |
 | 6 | ~~`build_discharge_gauges.py:149-152` and `build_precip_gauges.py:62` rely on pandas date inference~~ **DONE** — both now detect per file/part via `src/dhime_dates.py`. All 98 precip files and 45 discharge parts proved ISO year-first; outputs content-identical, so nothing was silently transposed in these corpora. Recorded so the null result is not read as the fix being unnecessary | closed |
 | 7 | ~~Finish the zero-suppression repair~~ **DONE (§10)** — selectivity detector with a threshold from the measured null; 153 stations repaired, 240,158 inferred-dry days; sparse-band selectivity 1.777 → **1.040**, dense band unmoved at 1.001; areal mean 2,174.3 → **2,035.6** mm/yr (−6.4 %); over-drying test passed. Energy floor 18 → **14**, target was ≤5 | partly closed — see item 10 |
-| 10 | ~~Triage the 14 surviving energy-floor gauges~~ **DONE (§12)** — rule declared before the numbers: **2 EXCLUDE** (need P cut >25 %), **2 KEEP** (a selective gauge carries half their catchment weight — our defect, so it stays visible), **10 DOWN-WEIGHT**. 8 of 14 have no rating curve at all | closed; feeds the Phase 3 objective |
-| 14 | **Catchment areas are unreliable per gauge in BOTH networks** (§13.2) — median ratio 0.991 over 85 shared gauges but **31 of 85 differ by >2×**, and 4 of his are mainstem-snapping failures (up to 1,154×). Removing those 4 still leaves only 28 of 81 within 25 %. Needs an arbiter external to both DEMs: IDEAM's catalogue area, which is **not** in any local table | **any t/km²/yr sediment yield** |
-| 15 | **Hydropower-diversion hypothesis needs an external register** (§13.4). `is_intake` is a name regex (`BOCATOMA|CANAL`) plus a manual doc-17 list, so it structurally cannot flag a place-named gauge below a reservoir — PAILANIA is not called a canal. Data acquisition, not a code fix | the *reason* recorded for excluding the two gauges |
-| 16 | ~~Re-snap gauges with regional rc references (Phase 1c)~~ **NOT JUSTIFIED — do not run** (§13.1). The circularity charge was tested and refuted: remapped vs kept rc spread is identical (log-SD ratio 1.009, Levene p = 0.76) and the remapped group sits *further* from 0.435, not closer. Anyone reviving this must beat p = 0.76 | closed |
-| 11 | ~~Merge the co-located gauge pairs~~ **DONE (§11)** — `src/idw_forcing.py`: deterministic lexsort tie-break proven by a shuffle test, and an evidence-based merge (2 duplicates + 1 sequential merged, 294→291 gauges; Catam refused as a **coordinate error**, corr 0.756 at 5 cm). Basin mean +0.04 %, but **542 minibacias move by a median +5 %** | closed; nb11 unblocked |
-| 12 | **EL DORADO CATAM `21205791` / AEROPUERTO CATAM `21206570` have one bad coordinate** (§11.2) — 5 cm apart in the catalogue yet disagreeing on 1,000 of 1,470 shared days (corr 0.756). **Guarded** by `idw_forcing.NEVER_MERGE` so no threshold change can merge them (§11.4 G-B); still needs resolving against the IDEAM catalogue | correct gauge geometry near Bogotá |
-| 13 | ~~Switch nb11 §3 to `src/idw_forcing.py`~~ **DONE (§11.4)** — generator switched, `assert_order_invariant()` now runs inside the notebook, `return_detail=True` supplies the fallback mask and neighbour distances nb11 needed. **The notebook has not been re-executed** (Phase 2) | closed |
+| 10 | ~~Triage the 14 surviving energy-floor gauges~~ **DONE ([doc 23 §12](23_gauge_geometry.md))** — rule declared before the numbers: **2 EXCLUDE** (need P cut >25 %), **2 KEEP** (a selective gauge carries half their catchment weight — our defect, so it stays visible), **10 DOWN-WEIGHT**. 8 of 14 have no rating curve at all | closed; feeds the Phase 3 objective |
+| 14 | **Catchment areas are unreliable per gauge in BOTH networks** ([doc 23 §13.2](23_gauge_geometry.md)) — median ratio 0.991 over 85 shared gauges but **31 of 85 differ by >2×**, and 4 of his are mainstem-snapping failures (up to 1,154×). Removing those 4 still leaves only 28 of 81 within 25 %. Needs an arbiter external to both DEMs: IDEAM's catalogue area, which is **not** in any local table | **any t/km²/yr sediment yield** |
+| 15 | **Hydropower-diversion hypothesis needs an external register** ([doc 23 §13.4](23_gauge_geometry.md)). `is_intake` is a name regex (`BOCATOMA|CANAL`) plus a manual doc-17 list, so it structurally cannot flag a place-named gauge below a reservoir — PAILANIA is not called a canal. Data acquisition, not a code fix | the *reason* recorded for excluding the two gauges |
+| 16 | ~~Re-snap gauges with regional rc references (Phase 1c)~~ **NOT JUSTIFIED — do not run** ([doc 23 §13.1](23_gauge_geometry.md)). The circularity charge was tested and refuted: remapped vs kept rc spread is identical (log-SD ratio 1.009, Levene p = 0.76) and the remapped group sits *further* from 0.435, not closer. Anyone reviving this must beat p = 0.76 | closed |
+| 11 | ~~Merge the co-located gauge pairs~~ **DONE ([doc 23 §11](23_gauge_geometry.md))** — `src/idw_forcing.py`: deterministic lexsort tie-break proven by a shuffle test, and an evidence-based merge (2 duplicates + 1 sequential merged, 294→291 gauges; Catam refused as a **coordinate error**, corr 0.756 at 5 cm). Basin mean +0.04 %, but **542 minibacias move by a median +5 %** | closed; nb11 unblocked |
+| 12 | **EL DORADO CATAM `21205791` / AEROPUERTO CATAM `21206570` have one bad coordinate** ([doc 23 §11.2](23_gauge_geometry.md)) — 5 cm apart in the catalogue yet disagreeing on 1,000 of 1,470 shared days (corr 0.756). **Guarded** by `idw_forcing.NEVER_MERGE` so no threshold change can merge them ([doc 23 §11.4](23_gauge_geometry.md) G-B); still needs resolving against the IDEAM catalogue | correct gauge geometry near Bogotá |
+| 13 | ~~Switch nb11 §3 to `src/idw_forcing.py`~~ **DONE ([doc 23 §11.4](23_gauge_geometry.md))** — generator switched, `assert_order_invariant()` now runs inside the notebook, `return_detail=True` supplies the fallback mask and neighbour distances nb11 needed. **The notebook has not been re-executed** (Phase 2) | closed |
 | 8 | **Establish the provenance of the ~2,050 mm/yr basin reference** (§9.4) — uncited on both sides; his script says only "a published ~2,050", and CHIRPS itself sits +3.7 % above it. ~~Resolve the 9.5 % CHIRPS disagreement~~ **DONE (§9.5): our estimator is sound to 0.1 %; the gap is a period mismatch — interannual range is ±21 % and 2012–2015 gives 1,952 mm/yr. On the like-for-like window CHIRPS is 2,124.9 against IDW 2,174.3, +2.3 %, so a merge cannot close the ~8 % surplus** | using the reference as a validation target |
 | 9 | Advisor question, not a code question: the collaborator **drops** sparse gauges where we **repair** them. [doc 22 §4.7](22_dry_phase_diagnosis.md) makes gauge density the binding constraint on `r`, so his remedy worsens the quantity we identified as the ceiling, while ours retains stations that §9.3 shows are still biased. Neither approach is obviously right | the merge design in nb11 |
 
@@ -635,330 +635,16 @@ it — but it must be fixed before nb11 is re-run, or Phase C inherits an arbitr
 
 ---
 
-## 11 — Phase 0: the IDW blocker (open item 11 closed)
+## 11–13 — Gauge and interpolation geometry → [doc 23](23_gauge_geometry.md)
 
-New module `src/idw_forcing.py`, extracted from nb11 §3 so that the notebook, the
-diagnostics and any re-run share **one** interpolator instead of three copies. It fixes the
-two defects §10.7 found, which turned out to need different fixes.
+Moved to its own document when this one passed 65 KB. What it establishes, which the open
+items above depend on:
 
-### 11.1 Order-invariance: the defect is larger than first reported
-
-| gate | result | |
-|---|---|---|
-| **G1** control — nb11 verbatim (`argsort` + inventory column order) vs the stored field | **0 of 34,844,096 cells differ**, 124,097 fallback cells (nb11's printed figure) | **PASS** |
-| **G2** the defect, reproduced on demand — same `argsort`, gauge columns shuffled | 145,531 / 179,458 / 248,528 cells differ; **52 / 61 / 83 minibacias**; max \|ΔP\| **19.5 / 20.5 / 17.8 mm** | **PASS** (defect confirmed) |
-| **G3** the fix — deterministic `lexsort` on (distance, gauge code), 5 shuffles | byte-identical field every time | **PASS** |
-
-§10.7 reported 44 minibacias and 13.1 mm from *one* alternative ordering (sorted by code).
-Random orderings are worse: up to **83 minibacias and 20.5 mm/day**. The earlier figure was
-a lower bound on an arbitrary choice, not the size of the defect.
-
-G2 matters as much as G3. A fix for a defect you cannot reproduce on demand is untestable,
-so the shuffle test is written to *first* show the old code path failing and only then show
-the new one holding. `assert_order_invariant()` in the module is the standing guarantee —
-the `lexsort` is only the mechanism, and without the assertion nothing stops a later edit
-reintroducing an order-dependent field.
-
-**Cost of adopting determinism (G4):** against the stored field the deterministic
-interpolator moves 194,081 cells across **69 minibacias**, max \|ΔP\| 20.47 mm — because the
-stored field embodies one arbitrary tie-break and this one embodies a reproducible rule.
-The **areal mean is unchanged: 2,174.3 mm/yr either way.** Anything that re-runs nb11
-inherits the new local values, which is the correct outcome but must not be mistaken for a
-data change.
-
-### 11.2 Co-located gauges: a blanket rule would have destroyed data
-
-Swept to 500 m as instructed and found a **fourth** pair the exact-tie search had missed.
-Then classified each pair by what the two records do on the days they **both** report —
-because that, not distance, is the evidence for whether they are one instrument or two:
-
-| pair | dist | n both | mean \|diff\| | corr | verdict |
-|---|---|---|---|---|---|
-| AEROPUERTO OLAYA HERRERA `27015070` / `27015330` | 0.000 m | 276 | 0.000 mm | 1.000 | **duplicate** → merge |
-| CUCUNUBA `24010140` / CUCUNUBA-AUT `2401500040` | 0.000 m | 366 | 0.003 mm | 1.000 | **duplicate** → merge |
-| CERINZA `24030590` / `24035420` | 0.000 m | **0** | — | — | **sequential** → merge |
-| EL DORADO CATAM `21205791` / AEROPUERTO CATAM `21206570` | 0.052 m | 1,470 | **1.915 mm** | **0.756** | **coordinate error** → **do NOT merge** |
-
-Three distinct situations, and only two of them are duplicates:
-
-* **duplicate** — one measurement filed under two codes. Merging is pure de-duplication.
-* **sequential** — CERINZA has *zero* overlap: `24030590` runs 2008-01→2009-06 and
-  `24035420` picks up 2009-07→2018-12. An instrument replacement, not a duplicate. Merging
-  reconstructs one continuous record from two fragments, which is strictly better than
-  interpolating across the join.
-* **coordinate error** — Catam's two records overlap on 1,470 days and *disagree*: only 470
-  identical, mean \|difference\| 1.9 mm, correlation **0.756**. At a nominal separation of
-  5 cm that is not physical — the true duplicates above read 1.000, and the basin-wide
-  inter-gauge correlation at 0–25 km is only 0.33 ([doc 22 §4.7](22_dry_phase_diagnosis.md)), so 0.756 is neither. **These are
-  two real gauges and one of them has the wrong catalogue coordinates.** Merging them would
-  have averaged away a genuine second observation, silently. Left unmerged and flagged.
-
-**A distance-only rule would have destroyed that station.** The rule adopted is
-evidence-based per cluster; `data/processed/precip_colocated_gauges.csv` carries the
-classification with its numbers so the judgement is auditable rather than asserted.
-
-Merge mechanics: highest approval level wins the day (`Definitivo > En revisión >
-Preliminar`, the precedence `build_precip_gauges.py` already uses); the surviving code is
-the member with the most records, so provenance stays traceable.
-
-### 11.3 What the merge costs — negligible globally, material locally
-
-Gauges **294 → 291**; station-days 926,910 → 926,268; k=6 fallback cells **41,504 →
-41,180** (the merge *improves* coverage, because a reconstructed record fills days on which
-neither fragment alone reported).
-
-| area-weighted basin mean | v2 unmerged | v2 merged | change |
-|---|---|---|---|
-| 2009–2017 | 2,035.6 | 2,036.4 | **+0.8 mm/yr (+0.04 %)** |
-| 2008–2018 | 2,072.2 | 2,073.1 | +0.8 mm/yr (+0.04 %) |
-
-| local effect | |
+| finding | where |
 |---|---|
-| minibacias changed | **542** of 8,672 |
-| median mean \|ΔP\| among them | 0.225 mm/day |
-| **median relative change** | **+5.03 %** |
-| max relative change | **+33.48 %** |
-| largest single-day \|ΔP\| anywhere | 29.18 mm |
-
-**The basin mean is untouched and 542 minibacias move by a median 5 % — so this matters, and
-it would have been invisible in any basin-level check.** Gauges are scored locally, so a
-5–33 % change in catchment rainfall is a change in the calibration objective. 542 is also
-far more than the 69 minibacias affected by the tie-break alone: removing a gauge frees a
-`k=6` slot, so a *different* sixth gauge enters for every minibacia near a merged cluster.
-
-Both numbers had to be reported. Had only the basin mean been checked, the correct
-conclusion would have been "negligible" and it would have been wrong.
-
----
-
-### 11.4 nb11 now imports the shared interpolator (open items 12 and 13 closed)
-
-`make_nb11.py` §3 no longer carries its own copy of the IDW. It imports
-`src/idw_forcing.py`, so the notebook, the diagnostics and any re-run share one
-implementation. `idw_field(..., return_detail=True)` returns the fallback mask and the
-neighbour distances as well as the field, which is what nb11 needed for its
-`fallback_days` and `d_nearest_km` columns — the reason it had a private copy.
-
-`assert_order_invariant()` is called **inside the notebook**, before the field is built,
-rather than sitting in a test file. A notebook that regenerates its own forcing should not
-be able to regress silently.
-
-| gate | result | |
-|---|---|---|
-| **G-A** `return_detail` API — mask matches `n_gap`, distances shaped (8672, 6) | 41,504 fallback cells both ways; nearest gauge median 16.3 km, max 71.5 km | PASS |
-| **G-B** `NEVER_MERGE` guard under deliberately absurd thresholds (`IDENTICAL_MM = 999`, `IDENTICAL_CORR = 0`) | CATAM still `coord_error`, `do_merge=False`, while every other pair flipped to merge | PASS |
-| **G-C** generator produces a valid notebook | 23 cells, 2 `idwf` references | PASS |
-
-G-B is open item 12. Refusing the CATAM merge on *evidence* is not enough on its own,
-because a later edit loosening `IDENTICAL_MM` or `IDENTICAL_CORR` would resurrect it. The
-named `NEVER_MERGE` set makes that impossible, and G-B is the proof: with thresholds set so
-loose that all three genuine duplicates merge, CATAM still does not.
-
-**Not yet done: the notebook has not been re-executed.** Only the generator was run
-(trap 10 — verify from executed outputs, never from the fact that a generator succeeded).
-Executing it is Phase 2, and when it runs it will produce the deterministic field, which
-differs from the stored one at 69 minibacias (§11.1) before the v2 gauge file and the merge
-are even applied.
-
----
-
-## 12 — Phase 1: triage of the 14 residual energy-floor gauges (open item 10)
-
-14 of 61 is 23 % of the calibration objective, and both failure modes are real — leaving an
-impossible target in pulls parameters toward nonsense, while excluding a gauge whose problem
-is *our* local forcing hides our own defect. So the decision rule was declared **before the
-numbers were looked at**:
-
-| rule | condition | verdict |
-|---|---|---|
-| D1 | one precip gauge carries ≥40 % of the catchment's IDW weight **and** is rain-selective (> 1.2885) | **KEEP** — our forcing defect; fix the forcing, don't hide it |
-| D2 | flagged intake / distributary / nested inversion | **EXCLUDE** — hydrology the model does not represent |
-| D3 | needs P to fall > 25 % with no dominant selective gauge | **EXCLUDE** — impossible target |
-| D4 | rating curve R² < 0.90 or < 30 stage–discharge pairs | **DOWN-WEIGHT** |
-| D5 | anything else | **DOWN-WEIGHT** — unresolvable |
-
-Result: **2 EXCLUDE, 2 KEEP, 10 DOWN-WEIGHT** → 59 full-weight gauges, 10 down-weighted.
-Full table in `data/processed/energy_floor_triage.csv`.
-
-| code | area km² | P mm/d | Q mm/d | rc | floor | P cut needed | dominant precip gauge (share, selectivity) | rating R² (n) | verdict |
-|---|---|---|---|---|---|---|---|---|---|
-| 22017010 | 2,411 | 5.645 | 0.947 | 0.168 | 0.480 | **31.2 %** | 22010010 (0.39, —) | **0.359** (6,966) | EXCLUDE D3 |
-| 23087200 | 524 | 11.464 | 4.930 | 0.430 | 0.705 | **27.5 %** | 23080750 (0.61, **0.997**) | — (0) | EXCLUDE D3 |
-| 26107130 | 748 | 5.453 | 1.869 | 0.343 | 0.498 | 15.5 % | 26100670 (0.34, 1.258) | 0.536 (3,075) | DOWN-WEIGHT D4 |
-| **22077060** | 731 | 4.841 | 1.040 | 0.215 | 0.368 | 15.4 % | 22070030 (**0.49, 1.445**) | — (0) | **KEEP D1** |
-| 26027240 | 188 | 4.750 | 1.460 | 0.307 | 0.447 | 13.9 % | 26020460 (0.47, 1.001) | — (0) | DOWN-WEIGHT D5 |
-| 26197020 | 255 | 6.546 | 2.867 | 0.438 | 0.563 | 12.5 % | 26195020 (0.55, 1.020) | — (0) | DOWN-WEIGHT D5 |
-| 26237020 | 210 | 5.513 | 1.681 | 0.305 | 0.410 | 10.5 % | 27011110 (0.29, 1.311) | 0.455 (305) | DOWN-WEIGHT D4 |
-| 26127100 | 101 | 6.377 | 2.908 | 0.456 | 0.555 | 9.9 % | 26135040 (0.44, 1.000) | — (0) | DOWN-WEIGHT D5 |
-| 26167060 | 179 | 5.393 | 2.188 | 0.406 | 0.448 | 4.2 % | 26155110 (0.31, 1.000) | 0.685 (551) | DOWN-WEIGHT D4 |
-| **21107030** | 288 | 4.730 | 1.528 | 0.323 | 0.360 | 3.7 % | 21100070 (**0.69, 1.575**) | — (0) | **KEEP D1** |
-| 23087160 | 344 | 8.712 | 4.834 | 0.555 | 0.591 | 3.6 % | 27011230 (0.29, 1.285) | — (0) | DOWN-WEIGHT D5 |
-| 26027200 | 320 | 4.537 | 1.708 | 0.376 | 0.395 | 1.9 % | 26020460 (0.58, 1.001) | — (0) | DOWN-WEIGHT D5 |
-| 21237040 | 243 | 4.118 | 0.935 | 0.227 | 0.237 | 1.0 % | 21205670 (0.22, 1.664) | — (0) | DOWN-WEIGHT D5 |
-| 26207080 | 30,848 | 5.131 | 2.217 | 0.432 | 0.436 | 0.4 % | 26195020 (0.05, 1.020) | 0.644 (385) | DOWN-WEIGHT D4 |
-
-### 12.1 Only 2 of 14 are ours, and 8 of 14 cannot be checked at all
-
-Two gauges (22077060, 21107030) fail with a *selective* precip gauge carrying half to
-two-thirds of their catchment weight — 1.445 and 1.575 selectivity, and both were repaired,
-so what remains is residual local inflation from a gauge that was already treated. **These
-stay in the objective.** Excluding them would delete the evidence of our own forcing defect,
-and both need only a 4–15 % local P correction, which is within reach.
-
-Eight of the 14 have **no rating curve at all** (`n_pairs = 0`), so their discharge cannot be
-independently verified. That is not "unresolvable" in the sense of being fine — it is a
-measurement gap, and D5 down-weights rather than excludes precisely because we cannot tell
-the difference between a bad gauge and a bad catchment there.
-
-Where a rating curve *does* exist it is mostly poor: **R² 0.359 on 6,966 stage–discharge
-pairs** at 22017010, 0.455, 0.536, 0.644, 0.685 elsewhere. An R² of 0.36 over nearly seven
-thousand pairs is not noise, it is a rating relationship that does not hold — which is
-independent support for excluding that gauge.
-
-### 12.2 The two exclusions look like water leaving the catchment, not error
-
-23087200 is the interesting one, and the collaborator's independent run corroborates it: his
-second-worst station, PBIAS **+417 %**, KGE **−4.59**. Two implementations, two different
-forcing pipelines, the same station broken in the same direction — the model produces far
-more water than the river carries.
-
-But its dominant precip gauge is *healthy*: 23080750 carries 61 % of the catchment weight
-with selectivity **0.997** and was never repaired. So the rainfall is well supported, and
-11.46 mm/day (4,187 mm/yr) is high but entirely plausible on the Antioquia–Chocó flank. The
-observed runoff coefficient of 0.430 is what does not fit: that flank should run at 0.7+.
-
-**Hypothesis to check, not a conclusion: upstream hydropower diversion.** Both exclusions sit
-in Antioquia, where EPM and ISAGEN operate major reservoirs and inter-basin transfers. Water
-routed out of a catchment for generation makes observed Q genuinely far below P − ET, with no
-error anywhere in the data. If that is what these are, they are D2 (unrepresented hydrology)
-rather than D3 (bad data), and the verdict is the same — exclude — but the *reason* recorded
-in the paper would be different, and defensible. `is_intake` in `gauges.csv` does not flag
-them, so the flag list is incomplete rather than the gauges being clean.
-
-### 12.3 A 2.5× catchment-area disagreement between the two implementations
-
-For 23087200 we compute an upstream area of **524 km²**; the collaborator reports
-**1,324 km²**. That is not a rounding difference, and it cannot be reconciled by the ENSO
-window or the forcing — it is the drainage network. One of the two delineations is wrong, or
-the two are snapping the gauge to different reaches.
-
-It does not change this gauge's verdict (both implementations find it broken, and in the same
-direction) but it is a direct check on the doc-17 gauge re-snap that nobody has run, and it
-should be settled before any published area-normalised sediment yield. New open item 14.
-
----
-
-## 13 — Phase 1: the catchment-area disagreement, and the circularity that wasn't
-
-Open items 14 and 15, plus a pre-authorised re-snap (1c) that this section argues **should not
-be run**.
-
-### 13.1 The circularity test — REFUTED, and it saves the re-snap
-
-`src/fix_gauge_minibacia_mapping.py:161` scores candidate minibacias by
-`abs(log(rc) − log(RC_REFERENCE))` with `RC_REFERENCE = 0.435`, a single basin-wide median.
-The energy floor says the Antioquia–Chocó flank should run 0.7+, so the concern was that the
-mapping optimised toward a regionally wrong target and the energy-floor test is therefore not
-independent of the mapping it evaluates. That is a serious charge, and it is testable:
-`kept` stations (129) were never moved, so their rc spread is the natural one.
-
-| group | n | median rc | SD of log rc | IQR of log rc | median \|log(rc/0.435)\| | within ±10 % of 0.435 |
-|---|---|---|---|---|---|---|
-| kept | 129 | 0.378 | **0.886** | 1.252 | **0.402** | 14.7 % |
-| remapped | 20 | 0.463 | **0.895** | 0.748 | **0.435** | 25.0 % |
-
-* SD of log rc is **the same**: ratio 1.009. Levene's equal-variance test on log rc gives
-  **W = 0.095, p = 0.76** — no evidence the remapped group is tighter.
-* Distance from the reference is **larger** for the remapped group, not smaller: median
-  \|log(rc/0.435)\| is 0.435 against the kept group's 0.402.
-* Only the IQR narrows (ratio 0.598), and with n = 20 that is one or two stations; the SD and
-  Levene both contradict it.
-
-**The reference was not injected into the data.** The mechanism explains why: the candidate
-set is a 3×3 window of minibacias around the gauge, so the rc target only breaks ties among a
-handful of geometrically plausible options — it cannot manufacture an rc that no nearby
-minibacia produces. The tie-break is weak by construction.
-
-**Consequence: step 1c is not justified and was not run.** Re-snapping with regional rc
-references would have been a large, invalidating change to the gauge mapping, and the evidence
-for needing it is absent. Recorded here so the decision is auditable rather than silent — and
-so that anyone reviving the idea has to beat p = 0.76 first.
-
-### 13.2 Scope of the area disagreement — worse than "one bad station"
-
-Joined our upstream areas to the collaborator's 91-gauge table on station code: **85 gauges**
-in common.
-
-| ratio his/ours | |
-|---|---|
-| median | **0.991** |
-| p05 / p25 / p75 / p95 | 0.15 / 0.50 / 1.37 / 8.68 |
-| within 10 % | 22 of 85 (26 %) |
-| within 25 % | 28 of 85 (33 %) |
-| within 2× | 54 of 85 (64 %) |
-| **beyond 2×** | **31 of 85 (36 %)** |
-
-Four of his areas are unambiguous **mainstem-snapping failures** — he assigns 15–62 % of the
-entire 257,097 km² basin to gauges we place at 137–2,550 km²:
-
-| code | ours | his | ratio |
-|---|---|---|---|
-| 25027360 | 137 km² | 158,251 km² | **1,154×** |
-| 23187280 | 249 km² | 116,326 km² | 468× |
-| 23217030 | 1,006 km² | 119,627 km² | 119× |
-| 25027530 | 2,550 km² | 73,871 km² | 29× |
-
-But removing those four does **not** rescue the comparison: of the remaining 81 gauges only
-**28 agree within 25 %**, and the median is 0.988. So this is not "his network is broken and
-ours is fine". **The median agrees to ~1 % while individual gauges disagree wildly, which
-means neither derivation is trustworthy per gauge.** Two independent D8 delineations on
-different DEMs disagree by more than 2× on a third of a shared 85-gauge sample.
-
-That is the finding, and it is more uncomfortable than the one we set out to check. It bears
-directly on Phase C: **a sediment yield in t/km²/yr inherits this error one-for-one**, so no
-specific yield should be published per gauge until the area is verified against something
-external to both networks.
-
-### 13.3 23087200 specifically — brackets, does not resolve
-
-Inverting the water balance, holding the measured discharge (29.9 m³/s) and upstream
-P (11.464 mm/day) fixed and solving for the area that would give a target rc:
-
-| target rc | implied area |
-|---|---|
-| 0.435 (the mapping's reference) | 518 km² |
-| 0.600 | 376 km² |
-| 0.700 | 322 km² |
-| 0.800 | 282 km² |
-
-Our 524 km² sits almost exactly on the rc = 0.435 line — **but that is circular**, because the
-mapping chose this minibacia to bring rc near 0.435. It cannot be used to validate our area.
-
-Can it reject his 1,324 km²? That implies rc = 0.430 × 524/1324 = **0.17**. Against the
-never-remapped `kept` distribution (§13.1) — 10th percentile 0.067, 25th percentile 0.151,
-median 0.378 — an rc of 0.17 sits near the **27th percentile**. Low, but squarely inside the
-observed range. **So this test cannot reject his area either.** It brackets and stops there.
-
-`stations_discharge.csv` and `discharge_inventory.csv` carry **no published drainage area**, so
-the external arbiter 1d wanted is not available locally. Open item 14 stays open, narrowed:
-what is needed is IDEAM's catalogue area for this station, or a manual delineation check, not
-another derivation from either of our DEMs.
-
-### 13.4 `is_intake` is a name regex, not a regulation inventory (open item 15)
-
-`make_nb12.py:983`:
-
-```python
-G['is_intake'] = nm.str.contains(re.compile('BOCATOMA|CANAL', re.I)) | G.index.isin(DOC_INTAKE)
-```
-
-So the flag fires on gauges whose **name** contains *bocatoma* or *canal*, plus a manual list
-carried over from doc 17. It cannot see a gauge sitting downstream of a reservoir or an
-inter-basin transfer whose name is simply a place — which is exactly the situation of the two
-gauges §12.2 excluded. PAILANIA is not called a canal.
-
-**The flag list is a naming heuristic and was never a regulation inventory.** It is not wrong,
-it is narrower than its name suggests, and the EPM/ISAGEN diversion hypothesis cannot be tested
-against it. Testing that needs an external register of reservoirs and transfers in the
-Antioquia headwaters. Open item 15 restated accordingly — it is a data-acquisition task, not a
-code fix.
+| The IDW was **order-dependent**: shuffling gauge columns moved 52–83 minibacias by up to 20.5 mm/day. Fixed by a lexsort tie-break on (distance, gauge code) and proven by a shuffle test; nb11 now imports the shared `src/idw_forcing.py` and asserts invariance inside the notebook | [doc 23 §11.1](23_gauge_geometry.md), [doc 23 §11.4](23_gauge_geometry.md) |
+| Four co-located gauge pairs, classified by what their records do on shared days, not by distance: **2 duplicates + 1 sequential replacement merged** (294 → 291 gauges), **1 refused as a coordinate error** (CATAM, corr 0.756 at 5 cm) and guarded by `NEVER_MERGE` | [doc 23 §11.2](23_gauge_geometry.md), [doc 23 §11.4](23_gauge_geometry.md) |
+| The merge moved the areal mean **+0.04 %** and **542 minibacias by a median +5.03 %** — a basin-level check alone would have called it negligible | [doc 23 §11.3](23_gauge_geometry.md) |
+| The 14 residual energy-floor gauges: **2 EXCLUDE, 2 KEEP, 10 DOWN-WEIGHT**, rule declared before the numbers. Only 2 of 14 are our forcing; 8 of 14 have no rating curve; where curves exist R² runs 0.36–0.69 | [doc 23 §12](23_gauge_geometry.md) |
+| The **rc-reference circularity charge is refuted** — remapped and kept rc spreads are identical (log-SD ratio 1.009, Levene p = 0.76). The pre-authorised regional re-snap is therefore **not justified** | [doc 23 §13.1](23_gauge_geometry.md) |
+| **Catchment areas are unreliable per gauge in both implementations**: median ratio 0.991 over 85 shared gauges but 31 of 85 beyond 2×. Any t/km²/yr yield inherits this one-for-one | [doc 23 §13.2](23_gauge_geometry.md) |
