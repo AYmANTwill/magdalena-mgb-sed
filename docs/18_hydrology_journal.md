@@ -389,6 +389,7 @@ Recorded because each looked right before it was measured.
 | "Sparse stations report more rain because they sit in wetter places" | ❌ refuted | A neighbour-only statistic — mean of the *neighbour* on the sparse station's reporting days vs on all days — reads 1.78, and reads 1.00 on 149 dense controls. Siting cannot produce that (§9.2) |
 | "Our basin rainfall is 2,304 mm/yr" | ⚠️ **not the comparable number** | That is a gauge mean; gauges cluster in populated valleys. Area-weighted is **2,206** mm/yr for 2008–2018 and 2,174 for 2009–2017 (§9.4) |
 | "Switching to CHIRPS will fix the water surplus" | ❌ refuted | CHIRPS at the same centroids with the same weights gives 2,140 mm/yr — only 3.1 % below our IDW, against a surplus of ~8 %. Justify the merge by the r ceiling, not by volume (§9.4) |
+| "The CHIRPS disagreement is caused by sampling geometry (centroid+area-weight vs grid-cell mean)" | ❌ refuted | Three basin-restricted estimators agree to 0.1 % (2,140.1 / 2,140.4 / 2,141.4 mm/yr). Our estimator's own bias is +0.7 %. The gap is a period mismatch — interannual range ±21 %, and 2012–2015 reproduces his 1,955 to 2.7 mm/yr (§9.5) |
 | "`identifiability.csv` shows all 10 parameters identified" | ⚠️ **confounded** | `iqr_frac_of_range` is exactly 0.0 for 7 of 10 parameters. The top 5 % of a **DDS** archive is a neighbourhood of the optimum by construction, so this measures search concentration, not information in the data. Morris `mu*` is the trustworthy screen, and it says `k_bas`, `k_int`, `kc_mult` and `fint` are weak |
 
 ---
@@ -413,6 +414,12 @@ Recorded because each looked right before it was measured.
    parameter configurations left r inside 0.016 of each other. That flatness *is* the finding.
 7. The harness in any re-run must reproduce the stored `q_sim_B_m3s` before its output is
    interpreted — 9.1×10⁻⁹ median relative error was the bar used here.
+8. **`data/raw/climate/chirps_basin_*.nc` is a bounding box, not a basin clip.** The name says
+   otherwise. Averaging it unmasked reads +14.1 % high because it includes the Pacific slope
+   and the Caribbean (§9.5). Any areal statistic from those files needs an explicit mask.
+9. **Interannual rainfall variability here is ±21 %** (1,731 mm/yr in 2015 to 2,619 in 2010).
+   No basin-mean rainfall figure means anything without its window attached, and any
+   cross-implementation comparison must fix the window first.
 
 ---
 
@@ -427,7 +434,7 @@ Recorded because each looked right before it was measured.
 | 5 | PET review against the 49 mm/yr basin ET deficit | the +5.6 % outlet PBIAS floor and the 18 infeasible gauges |
 | 6 | ~~`build_discharge_gauges.py:149-152` and `build_precip_gauges.py:62` rely on pandas date inference~~ **DONE** — both now detect per file/part via `src/dhime_dates.py`. All 98 precip files and 45 discharge parts proved ISO year-first; outputs content-identical, so nothing was silently transposed in these corpora. Recorded so the null result is not read as the fix being unnecessary | closed |
 | 7 | **Finish the zero-suppression repair.** 139 of 294 stations still report rain-selectively (§9.3) and still feed the IDW | the +7.6 % areal rainfall surplus, and therefore §3's energy floor |
-| 8 | **Establish the provenance of the ~2,050 mm/yr basin reference** (§9.4) — uncited on both sides; his script says only "a published ~2,050". **And resolve the 9.5 % CHIRPS disagreement** (§9.5): his 1,955 mm/yr vs our 2,140 for the same product over the same basin. The two readings imply opposite conclusions about whether a merge fixes the volume | using either as a validation target |
+| 8 | **Establish the provenance of the ~2,050 mm/yr basin reference** (§9.4) — uncited on both sides; his script says only "a published ~2,050", and CHIRPS itself sits +3.7 % above it. ~~Resolve the 9.5 % CHIRPS disagreement~~ **DONE (§9.5): our estimator is sound to 0.1 %; the gap is a period mismatch — interannual range is ±21 % and 2012–2015 gives 1,952 mm/yr. On the like-for-like window CHIRPS is 2,124.9 against IDW 2,174.3, +2.3 %, so a merge cannot close the ~8 % surplus** | using the reference as a validation target |
 | 9 | Advisor question, not a code question: the collaborator **drops** sparse gauges where we **repair** them. §4.7 makes gauge density the binding constraint on `r`, so his remedy worsens the quantity we identified as the ceiling, while ours retains stations that §9.3 shows are still biased. Neither approach is obviously right | the merge design in nb11 |
 
 ---
@@ -531,7 +538,53 @@ The ~2,050 reference is doing real work in this argument and its provenance is u
 `scripts/15_build_forcing_v2.py` says only *"a published ~2,050"* with no reference attached, so
 the number is currently uncited on both sides.
 
-### 9.5 Two CHIRPS estimates of the same basin disagree by 9.5 % — unresolved
+### 9.5 Two CHIRPS estimates of the same basin disagreed by 9.5 % — RESOLVED
+
+**Verdict: our estimator is sound; the gap is a period mismatch, and the sampling-geometry
+hypothesis is refuted.** All three candidate causes were tested on our own data, so the
+comparison is controlled.
+
+Four estimators of the same areal mean, CHIRPS, mm/yr. Basin fraction per CHIRPS cell was
+built by area-summing `minibacias.tif` (EPSG:4326, 0.006667°, same bounding box, so each
+0.05° CHIRPS cell is exactly 7.5 × 7.5 raster cells) — not by nearest-neighbour. The implied
+basin area is 258,404 km² against the true 257,097, a 0.5 % check on the mask itself.
+
+| estimator | 2008–2018 | 2009–2017 | vs E3 |
+|---|---|---|---|
+| **E1** minibacia centroids × minibacia area — **ours** | 2,140.1 | 2,123.8 | −0.1 % |
+| **E2** CHIRPS cells whose centre is in the basin, cos-lat weighted | 2,140.4 | 2,124.0 | −0.0 % |
+| **E3** CHIRPS cells × basin fraction × cos-lat — **rigorous** | 2,141.4 | **2,124.9** | — |
+| **E4** the whole bounding box, unmasked | 2,443.0 | 2,436.9 | **+14.1 %** |
+
+* **A3 sampling geometry — refuted.** The brief expected this to be the most likely cause. All
+  three basin-restricted estimators agree to **0.1 %**. Our centroid-and-area-weight estimator
+  carries a bias of +15 mm/yr (+0.7 %) against the rigorous basin-fraction mean. It is sound,
+  and so is the same estimator applied to the IDW field.
+* **A1 basin mask — the right magnitude, but the wrong sign.** `chirps_basin_*.nc` is a
+  **bounding box**, not a polygon clip (202 × 96 cells, lat 1.4–11.4, lon −77.0 to −72.3), and
+  using it unmasked costs **+14.1 %** — it sweeps in the Pacific slope and the Caribbean. That
+  is the only tested mechanism large enough to explain 8.7 %, but it inflates. It cannot make
+  *his* figure lower than ours. Worth recording as a trap regardless: the filename says
+  `basin` and the contents are a rectangle.
+* **A2 period — small between the two spans, but decisive overall.** 2009–2017 → 2008–2018 moves
+  the mean by only +0.77 %. But **interannual variability is ±21 %** (1,731 mm/yr in 2015 to
+  2,619 in 2010), so any window mismatch dominates an 8.7 % gap by itself. Several short
+  contiguous windows reproduce his 1,955 almost exactly:
+
+  | window | CHIRPS mean | vs his 1,955 |
+  |---|---|---|
+  | 2012–2015 | 1,952.3 | −2.7 |
+  | 2012–2016 | 1,952.2 | −2.8 |
+  | 2015–2017 | 1,958.2 | +3.2 |
+
+**Consequence.** On the like-for-like 2009–2017 window, CHIRPS is **2,124.9** against our IDW's
+**2,174.3** — the two products differ by only **+2.3 %**, tighter than the +3.1 % first
+reported. §9.4's conclusion survives and is now on firmer ground: **the CHIRPS merge cannot
+close the ~8 % surplus, and must be justified by the r ceiling of §4.7.** CHIRPS itself sits
++3.7 % above the uncited ~2,050 reference, so both products are above it — one more reason not
+to treat that number as a target until it has a citation.
+
+### 9.5b Superseded: the original statement of the discrepancy
 
 Reading his script turned up a discrepancy that changes what Phase 3 should expect:
 
