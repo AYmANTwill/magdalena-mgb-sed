@@ -260,6 +260,24 @@ def blend(k1, k2, e_rec=None, sel=None,
     return float(per_gauge[good].mean()) if good.any() else np.nan
 
 
+def blend_v1(k1, k2, w=0.5, sel=None):
+    """The v1 objective, reproduced EXACTLY, including its NaN handling.
+
+    v1 formed v = (1-w)*C2M(k1) + w*C2M(k2) per gauge - which is NaN if EITHER term is -
+    and averaged the finite entries.  The new `blend` instead renormalises over the terms
+    that exist, so a gauge with a usable log-KGE but no plain KGE still contributes.  That
+    is a better rule, but it is a DIFFERENT rule, so the old function is kept verbatim: it
+    is the only way to put the new cells on the same axis as the F = 0.2429 already on
+    record for Config B, and a re-derived "old" number that did not reproduce
+    F(prior) = 0.1276369667 would mean the comparison was never like-for-like.
+    """
+    v = (1 - w) * c2m(np.asarray(k1, float)) + w * c2m(np.asarray(k2, float))
+    if sel is not None:
+        v = v[sel]
+    ok = np.isfinite(v)
+    return float(v[ok].mean()) if ok.any() else np.nan
+
+
 def doy_climatology(Q, dates):
     """Day-of-year climatology of each column, built from the WHOLE record.
 
@@ -274,15 +292,35 @@ def doy_climatology(Q, dates):
     uk = np.unique(key)
     Q = np.asarray(Q, dtype=float)
     clim = np.empty((uk.size, Q.shape[1]))
-    for i, k in enumerate(uk):
-        with np.errstate(invalid='ignore'):
-            clim[i] = np.nanmean(np.where(np.isfinite(Q[key == k]), Q[key == k], np.nan),
-                                 axis=0)
+    import warnings as _w
+    with _w.catch_warnings():
+        # a (gauge, month-day) bin with no observation in any year yields NaN, which is
+        # the right answer - the benchmark simply has nothing to say on that day. numpy
+        # warns about the empty slice; the NaN is intended, so the warning is suppressed
+        # rather than the NaN being filled with something invented.
+        _w.simplefilter('ignore', RuntimeWarning)
+        for i, k in enumerate(uk):
+            clim[i] = np.nanmean(Q[key == k], axis=0)
     return clim[np.searchsorted(uk, key)]
 
 
 # ============================================================ DDS
-def dds(fun, x0, lo, hi, budget, seed, r_pert=0.2, log=None):
+def dds(fun, x0, lo, hi, budget, seed, r_pert=0.2, log=None,
+        replay=None, checkpoint=None, every=25):
+    """Dynamically Dimensioned Search with exact, verified resumption.
+
+    RESUMPTION, and why it is exact rather than approximate.  These searches are long
+    enough that a killed process must not cost the work already done, but a naive restart
+    would draw a different random stream and stop being the same search.  Instead the RNG
+    is re-created from the same seed and the first `len(replay)` iterations are replayed
+    with their STORED objective values in place of calling `fun`, so every draw, every
+    acceptance and every best-so-far is reproduced exactly.  The replay is not trusted:
+    each replayed proposal is compared with the stored parameter vector and a mismatch
+    raises, so a resume from a checkpoint written by different code, a different seed or a
+    different budget fails loudly instead of silently continuing a different search.
+    (`budget` enters the perturbation probability p = 1 - ln i / ln M, so resuming with a
+    different budget really would be a different search.)
+    """
     """Dynamically Dimensioned Search (Tolson & Shoemaker 2007), MAXIMISING.
 
     Unchanged from notebook 14 v1 so the search algorithm is not a confound in H1.
@@ -294,8 +332,17 @@ def dds(fun, x0, lo, hi, budget, seed, r_pert=0.2, log=None):
     lo = np.asarray(lo, float)
     hi = np.asarray(hi, float)
     d = x0.size
+    rx, rf, rex = (replay if replay is not None else (None, None, None))
+    n_replay = 0 if rx is None else len(rf)
+    if n_replay:
+        print(f'    resuming: replaying {n_replay} stored evaluations', flush=True)
+
     xb = x0.copy()
-    fb, extra = fun(xb)
+    if n_replay:
+        assert np.allclose(rx[0], xb, rtol=0, atol=1e-12), 'checkpoint start point differs'
+        fb, extra = float(rf[0]), rex[0]
+    else:
+        fb, extra = fun(xb)
     arch = [(xb.copy(), fb, extra)]
     hist = [fb]
     for i in range(1, budget):
@@ -314,11 +361,21 @@ def dds(fun, x0, lo, hi, budget, seed, r_pert=0.2, log=None):
                 xn[j] = hi[j] - (xn[j] - hi[j])
                 if xn[j] < lo[j]:
                     xn[j] = hi[j]
-        fn, extra = fun(xn)
+        if i < n_replay:
+            assert np.allclose(rx[i], xn, rtol=0, atol=1e-10), (
+                f'replay diverged at evaluation {i} - the checkpoint was written by a '
+                f'different seed, budget or code path; refusing to continue a different '
+                f'search')
+            fn, extra = float(rf[i]), rex[i]
+        else:
+            fn, extra = fun(xn)
         arch.append((xn.copy(), fn, extra))
         if fn > fb:
             xb, fb = xn, fn
         hist.append(fb)
+        if i >= n_replay and checkpoint is not None and (i % every == 0
+                                                         or i == budget - 1):
+            checkpoint(arch)
         if log and (i % log == 0 or i == budget - 1):
             print(f'    eval {i+1:5d}/{budget}  best {fb:.5f}  p_pert {p:.3f}', flush=True)
     return dict(x=xb, f=fb, hist=np.array(hist), archive=arch)
@@ -350,7 +407,11 @@ class Cell:
         self.D_FULL = pd.date_range(WU_SPAN[0], spec['scored'][1], freq='D')
         self.D_SC = pd.date_range(spec['scored'][0], spec['scored'][1], freq='D')
         self.NWU = len(self.D_FULL) - len(self.D_SC)
-        cdates = pd.DatetimeIndex(np.load(CACHE / f'{name}_dates.npy'))
+        # cast the unit: the cache stores datetime64[D] and date_range yields [ns];
+        # DatetimeIndex.equals compares resolution, so without this the two are unequal
+        # while printing identically.
+        cdates = pd.DatetimeIndex(np.load(CACHE / f'{name}_dates.npy')
+                                  .astype('datetime64[ns]'))
         assert cdates.equals(self.D_FULL), (
             f'{name}: cache date axis {cdates[0].date()}..{cdates[-1].date()} '
             f'({len(cdates)}) != declared {self.D_FULL[0].date()}..'
@@ -665,6 +726,16 @@ def get_cell(name):
     return _CELL_CACHE[name]
 
 
+def _arch_arrays(arch):
+    return (np.array([a[0] for a in arch], dtype=np.float64),
+            np.array([a[1] for a in arch], dtype=np.float64),
+            np.array([a[2]['k1'] for a in arch], dtype=np.float32),
+            np.array([a[2]['k2'] for a in arch], dtype=np.float32),
+            np.array([a[2]['k_sim'] for a in arch], dtype=np.float32),
+            np.array([a[2]['rc'] for a in arch], dtype=np.float64),
+            np.array([a[2]['resid'] for a in arch], dtype=np.float64))
+
+
 def run_dds_cell(job):
     """Worker entry point.  One (cell, seed) search.  Must stay module level: Windows
     spawns a fresh interpreter per worker and pickles this by qualified name."""
@@ -676,9 +747,41 @@ def run_dds_cell(job):
         x, ro, so = unpack(cell, z)
         return cell.F_of(x, ro, so)
 
+    # --- checkpoint / resume -----------------------------------------------------------
+    part = job.get('part')
+    replay = None
+    if part is not None:
+        part = pathlib.Path(part)
+        if part.exists():
+            try:
+                z = np.load(part, allow_pickle=True)
+                if int(z['budget'][0]) == budget and int(z['seed'][0]) == seed \
+                        and str(z['cell'][0]) == name:
+                    ex = [dict(k1=z['arch_k1'][i], k2=z['arch_k2'][i],
+                               k_sim=z['arch_ks'][i], rc=float(z['arch_rc'][i]),
+                               resid=float(z['arch_resid'][i]))
+                          for i in range(z['arch_f'].size)]
+                    replay = (z['arch_x'], z['arch_f'], ex)
+                else:
+                    print(f'    checkpoint present but for a different '
+                          f'(cell, seed, budget) - ignoring it', flush=True)
+            except Exception as e:                       # a truncated npz is not fatal
+                print(f'    checkpoint unreadable ({e}) - starting from scratch', flush=True)
+
+    def _save(arch):
+        ax, af, k1, k2, ks, rc, rs = _arch_arrays(arch)
+        tmp = part.with_suffix('.tmp.npz')
+        np.savez_compressed(tmp, cell=np.array([name]), seed=np.array([seed]),
+                            budget=np.array([budget]), arch_x=ax, arch_f=af,
+                            arch_k1=k1, arch_k2=k2, arch_ks=ks, arch_rc=rc,
+                            arch_resid=rs)
+        tmp.replace(part)          # atomic: a kill mid-write cannot leave a torn file
+
     import time
     t0 = time.perf_counter()
-    r = dds(F, z0, lo, hi, budget, seed=seed)
+    r = dds(F, z0, lo, hi, budget, seed=seed, log=job.get('log', 25),
+            replay=replay, checkpoint=None if part is None else _save,
+            every=job.get('every', 25))
     wall = time.perf_counter() - t0
     return dict(cell=name, seed=seed, budget=budget, wall_s=wall,
                 names=pnames, x=r['x'], f=float(r['f']), hist=r['hist'],
@@ -687,3 +790,43 @@ def run_dds_cell(job):
                 arch_k1=np.array([a[2]['k1'] for a in r['archive']], dtype=np.float32),
                 arch_k2=np.array([a[2]['k2'] for a in r['archive']], dtype=np.float32),
                 arch_ks=np.array([a[2]['k_sim'] for a in r['archive']], dtype=np.float32))
+
+
+# ============================================================ CLI worker
+def _main():
+    """One (cell, seed) search as its own OS process.
+
+    Run as a subprocess rather than through ProcessPoolExecutor inside the notebook.
+    Reason: on Windows multiprocessing uses `spawn`, and spawning from a Jupyter kernel
+    has to reconstruct a `__main__` that does not exist as a file - it usually works and
+    occasionally hangs, and a hang two hours into a four-way search is not a failure mode
+    worth accepting. Separate processes also give one log file each, so progress is
+    visible while they run, and a crashed worker cannot take the kernel with it.
+    """
+    import argparse
+    import time
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--cell', required=True, choices=sorted(CELLS))
+    ap.add_argument('--seed', type=int, required=True)
+    ap.add_argument('--budget', type=int, required=True)
+    ap.add_argument('--out', required=True)
+    a = ap.parse_args()
+    out = pathlib.Path(a.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    part = out.with_name(out.stem + '.part.npz')
+    print(f'{a.cell} seed {a.seed} budget {a.budget}  checkpoint {part.name}', flush=True)
+    r = run_dds_cell(dict(cell=a.cell, seed=a.seed, budget=a.budget, part=str(part)))
+    np.savez_compressed(
+        out, cell=np.array([r['cell']]), seed=np.array([r['seed']]),
+        budget=np.array([r['budget']]), wall_s=np.array([r['wall_s']]),
+        names=np.array(r['names']), x=r['x'], f=np.array([r['f']]), hist=r['hist'],
+        arch_x=r['arch_x'], arch_f=r['arch_f'], arch_k1=r['arch_k1'],
+        arch_k2=r['arch_k2'], arch_ks=r['arch_ks'])
+    if part.exists():
+        part.unlink()
+    print(f'DONE {a.cell} seed {a.seed}: F {r["f"]:.6f} in {r["wall_s"]/60:.1f} min '
+          f'({r["wall_s"]/a.budget:.2f} s/eval) -> {out}', flush=True)
+
+
+if __name__ == '__main__':
+    _main()
