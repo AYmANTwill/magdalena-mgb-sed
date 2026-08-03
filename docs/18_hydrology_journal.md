@@ -12,6 +12,10 @@ Read §4 first if you are picking this up cold: **all three standing hypotheses 
 failure are wrong, and one of them is backwards.** The binding constraint is the daily correlation
 `r ≈ 0.57`, which no parameter in the model can move.
 
+§9–§10 are the forcing follow-up: the wet bias is real and independently replicated, the
+zero-suppression repair is now finished (basin rainfall −6.4 %), and the surviving energy-floor
+failures turn out to be a *separate, local* problem rather than the basin-wide surplus.
+
 ---
 
 ## 1 — Current state
@@ -454,7 +458,9 @@ Recorded because each looked right before it was measured.
 
 ---
 
-## 9 — The forcing surplus: independent replication, and the repair is only half done
+## 9 — The forcing surplus: independent replication, and the repair audited
+
+*(§9.3 found the repair half done. §10 finishes it — read the two together.)*
 
 Added after the §4 diagnosis. §4.3 concluded the forcing supplies more water than the rivers
 carry. This section tests that from the gauge side, and cross-checks it against an independent
