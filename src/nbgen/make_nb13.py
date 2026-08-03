@@ -40,7 +40,7 @@ that the calibration that follows knows what it is being asked to fix.
 
 **The four questions this notebook has to answer.**
 
-1. Does the model conserve mass on 8,672 minibacias over 3,287 days? (Section 4 - if this fails,
+1. Does the model conserve mass on 8,672 minibacias over 3,652 scored days? (Section 4 - if this
    nothing after it means anything.)
 2. Is the initial state forgotten? (Section 3 - a warm-up is only long enough if the answer
    stops depending on where it started.)
@@ -67,14 +67,29 @@ md(r"""## 0.1 - Prerequisites
 | Prerequisite | What it provides | Checked below |
 |---|---|---|
 | `src/mgb_hydrology.py` | the water-balance engine: `build_topology`, `MgbParams`, `MgbState`, `simulate` | version + import |
-| `data/processed/model_inputs/topology.npz` | routing graph, own/upstream area, `reach_km`, centroids | shapes vs manifest |
-| `data/processed/model_inputs/parameters.npz` | `Wm_mm`, 24 URH fractions, flags | shapes vs manifest |
-| `data/processed/model_inputs/forcing.npz` | P and PET, 2009-01-01..2017-12-31 | no NaN, no negatives |
-| `data/processed/model_inputs/discharge.npz` | observed Q, `q_valid`, calibration-set flags | used only from s.5 |
-| `data/processed/forcing_minibacia_precip.csv` | the **2008** rainfall the bundle deliberately excludes | needed for warm-up (s.3) |
+| `data/processed/model_inputs_v2/topology.npz` | routing graph, own/upstream area, `reach_km`, centroids | shapes vs manifest |
+| `data/processed/model_inputs_v2/parameters.npz` | `Wm_mm`, 24 URH fractions, flags | shapes vs manifest |
+| `data/processed/model_inputs_v2/forcing.npz` | P and PET, 2008-01-01..2018-12-31 | no NaN, no negatives, **date axis vs an independently declared period** |
+| `data/processed/model_inputs_v2/discharge.npz` | observed Q, `q_valid`, calibration-set flags | used only from s.5 |
+| `data/processed/forcing_minibacia_precip_v2.csv` | the human-auditable rainfall table | re-parsed in s.4.3 as a second reader |
 | `data/processed/minibacias.tif` | label raster, for maps | used only for figures |
 
-If any of these is missing this notebook stops - it does not improvise a substitute.""")
+If any of these is missing this notebook stops - it does not improvise a substitute.
+
+**This is the v2 bundle, and the period changed.** The v1 bundle ran 2009-01-01..2017-12-31 (3,287
+d) and kept 2008 rainfall *outside* it because no 2008 PET existed - only 108 of the 132 ERA5-Land
+mosaics had been built. All 132 now exist (one, `2008_M06`, was internally corrupt at a plausible
+43.69 MB and was rebuilt), so the v2 bundle spans **2008-01-01..2018-12-31, 4,018 days**, and
+`manifest.json` records `warmup_available_days = 0`: nothing precedes the period, so the spin-up
+must be taken from *inside* it. **2008 is the warm-up year and 2009-2018 is scored.** That decision
+is the manifest's, not this notebook's, and it is not re-argued here.
+
+**The check that is not optional.** `pd.read_csv` on these 4,018 x 8,673 / 180 MB tables silently
+returned 1,309 and then 3,630 rows on separate calls from a provably complete file, with no
+exception. The cut is a contiguous *prefix*, so length, monotonicity, duplicate and calendar-hole
+tests all pass on the truncated data. The only test that catches it is one against a period declared
+**independently of the file**, which is why `assert DATES.equals(WANT)` appears in the cell below and
+is never loosened to make something else pass.""")
 
 code(r"""import json, pathlib, sys, time, hashlib, warnings
 import numpy as np, pandas as pd, rasterio
@@ -91,13 +106,13 @@ for b in [pathlib.Path.cwd()] + list(pathlib.Path.cwd().parents):
 if REPO is None:
     raise SystemExit('cannot locate the repository root')
 PROC = REPO / 'data' / 'processed'
-MI = PROC / 'model_inputs'
+MI = PROC / 'model_inputs_v2'
 sys.path.insert(0, str(REPO / 'src'))
 
 need = ['topology.npz', 'parameters.npz', 'forcing.npz', 'discharge.npz', 'manifest.json']
 missing = [f for f in need if not (MI / f).exists()]
 missing += [str(p) for p in [REPO / 'src' / 'mgb_hydrology.py',
-                             PROC / 'forcing_minibacia_precip.csv',
+                             PROC / 'forcing_minibacia_precip_v2.csv',
                              PROC / 'minibacias.tif'] if not p.exists()]
 if missing:
     raise SystemExit(f'PREREQUISITES MISSING, stopping rather than improvising: {missing}')
@@ -134,11 +149,39 @@ if bad:
 print(f'manifest check  every array in 4 npz matches its declared shape '
       f'({sum(len(MAN["files"][f]["arrays"]) for f in MAN["files"] if f.endswith("npz"))} arrays)')
 
-DATES = pd.DatetimeIndex(FRC['dates'])
+# TRAP, and it cost a run. FRC['dates'] is datetime64[D]; pandas 2.x keeps that resolution,
+# while pd.date_range produces datetime64[ns]. DatetimeIndex.equals compares resolution too,
+# so the two are UNEQUAL while printing identically ("2008-01-01..2018-12-31, 4018 d" on both
+# sides of the failed assertion). Cast the unit explicitly; do not weaken the comparison.
+DATES_ALL = pd.DatetimeIndex(np.asarray(FRC['dates'], dtype='datetime64[ns]'))
 MB_IDS = TOP['minibacia_id']
-NDAYS, NMB = FRC['precip_mm'].shape
-print(f'model period    {DATES[0].date()} .. {DATES[-1].date()}  {NDAYS} days, {NMB} minibacias')
-assert len(DATES) == NDAYS and MB_IDS.size == NMB""")
+NDAYS_ALL, NMB = FRC['precip_mm'].shape
+
+# --- the assertion that catches a silent truncation -----------------------------------
+# WANT is declared here, from two literal dates, NOT read from the file. A reader that
+# returns a contiguous prefix passes every self-consistency test there is; only a
+# comparison with an independently declared period fails. Do not loosen this.
+WANT = pd.date_range('2008-01-01', '2018-12-31', freq='D')
+assert len(DATES_ALL) == NDAYS_ALL and MB_IDS.size == NMB
+assert DATES_ALL.equals(WANT), (
+    f'bundle date axis is {DATES_ALL[0].date()}..{DATES_ALL[-1].date()} ({len(DATES_ALL)} d), '
+    f'declared period is {WANT[0].date()}..{WANT[-1].date()} ({len(WANT)} d)')
+print(f'bundle period   {DATES_ALL[0].date()} .. {DATES_ALL[-1].date()}  {NDAYS_ALL} days, '
+      f'{NMB} minibacias   (matches the independently declared period)')
+print(f'manifest says   warmup_available_days = {MAN["model_period"]["warmup_available_days"]}, '
+      f'days = {MAN["model_period"]["days"]}')
+assert MAN['model_period']['days'] == NDAYS_ALL
+
+# --- the split the manifest prescribes: 2008 warms up, 2009-2018 is scored -------------
+WU_MASK = DATES_ALL.year == 2008
+SC_MASK = ~WU_MASK
+D_WU = DATES_ALL[WU_MASK]
+DATES = DATES_ALL[SC_MASK]
+NDAYS = int(SC_MASK.sum())
+NWU = int(WU_MASK.sum())
+assert NWU == 366 and NDAYS == 3652 and NWU + NDAYS == NDAYS_ALL
+print(f'warm-up         {D_WU[0].date()} .. {D_WU[-1].date()}  {NWU} days   (discarded)')
+print(f'scored period   {DATES[0].date()} .. {DATES[-1].date()}  {NDAYS} days')""")
 
 # ============================================================ 0.2 formulation
 md(r"""## 0.2 - The model, restated
@@ -211,22 +254,18 @@ Section 4.2 requires this to close to $\le 10^{-6}$ relative.""")
 md(r"""## 0.3 - Smoke tests on synthetic cases, before any basin data
 
 The engine is already tested (`src/test_mgb_hydrology.py`, 59/59). What is **new in this notebook**
-is two helpers, so those are what get tested here:
+is one helper, so that is what gets tested here:
 
 * `kge_parts` - KGE and its decomposition, NSE, PBIAS. Every assertion below has a closed-form
   answer, so a sign slip or a `ddof` slip cannot hide.
-* `pet_climatology` - the PET stand-in for the 2008 warm-up (section 3).
 
-**The trap `pet_climatology` is built to avoid.** The obvious key is day-of-year. It is wrong:
-2008 is a leap year, so its day-of-year 60 is 29-February, while in a non-leap year day-of-year 60
-is 1-March. Keying on day-of-year therefore shifts most of the warm-up by one calendar day. Test T2
-below *measures* how many days that would misplace instead of asserting it in prose. The helper keys
-on `(month, day)`, which gives 29-February its own bin (fed by 2012 and 2016).
-
-Rejected alternative for the climatology statistic: the **mean**. The median is used because
-`docs/16` documents that this project's PET has already carried a systematic radiation error, and a
-single contaminated year moves a 9-sample mean by ~11 % while leaving the median untouched - test T3
-demonstrates exactly that on a synthetic contaminated year.""")
+**What used to be here and is now retired.** The v1 run needed a `pet_climatology` helper, because
+the v1 bundle had 2008 rainfall but no 2008 PET, so the warm-up had to invent a PET stand-in from a
+(month, day) median of 2009-2017. The v2 bundle carries **real, measured** 2008 PET for all 366
+days, so the stand-in and its leap-year trap are gone: section 3 warms up on measured forcing on
+both fields. Removing the helper rather than leaving it defined-but-unused is deliberate - a tested
+helper sitting next to prose describing a PET that no longer has to be invented is a false
+statement about what the run did.""")
 
 code(r"""def kge_parts(sim, obs):
     '''Kling-Gupta efficiency with its decomposition, plus NSE and PBIAS.
@@ -259,29 +298,6 @@ code(r"""def kge_parts(sim, obs):
     out['nse'] = float(1 - ((s - o)**2).sum() / den) if den > 0 else np.nan
     out['pbias'] = float(100 * (s - o).sum() / o.sum()) if o.sum() > 0 else np.nan
     return out
-
-
-def pet_climatology(pet, dates, target_dates):
-    '''Median PET per (month, day), evaluated on target_dates.
-
-    (month, day) NOT day-of-year: doy 60 is 29-Feb in a leap year and 01-Mar otherwise,
-    so a doy key shifts most of a leap-year warm-up by one calendar day (test T2).
-    Median not mean: robust to one contaminated year out of nine (test T3).
-    Raises if any target (month, day) has no source day - never silently extrapolates.
-    '''
-    dates = pd.DatetimeIndex(dates)
-    tgt = pd.DatetimeIndex(target_dates)
-    key = np.asarray(dates.month) * 100 + np.asarray(dates.day)
-    tkey = np.asarray(tgt.month) * 100 + np.asarray(tgt.day)
-    uk = np.unique(key)
-    miss = sorted(set(tkey.tolist()) - set(uk.tolist()))
-    if miss:
-        raise KeyError(f'no source days for (month*100+day) = {miss}')
-    clim = np.empty((uk.size, pet.shape[1]), dtype=np.float64)
-    for i, k in enumerate(uk):
-        clim[i] = np.median(pet[key == k], axis=0)
-    counts = np.bincount(np.searchsorted(uk, key), minlength=uk.size)
-    return clim[np.searchsorted(uk, tkey)], uk, counts
 
 
 _OK = []
@@ -330,45 +346,13 @@ chk('NaN pairs dropped, not zero-filled', 0, 0,
 chk('too few pairs -> NaN, not a lucky number', 0, 0,
     cond=np.isnan(kge_parts(o[:29], o[:29])['kge']))
 
-print('pet_climatology - leap-year and robustness cases')
-dsrc = pd.date_range('2009-01-01', '2017-12-31', freq='D')
-dtgt = pd.date_range('2008-01-01', '2008-12-31', freq='D')
-
-
-def seasonal(idx):
-    k = np.asarray(idx.month) * 100 + np.asarray(idx.day)
-    return 3.0 + 1.0 * np.sin(2 * np.pi * k / 1231.0)
-
-
-Ps = np.tile(seasonal(dsrc).reshape(-1, 1), (1, 4))
-cl, uk, cnt = pet_climatology(Ps, dsrc, dtgt)
-chk('T1 recovers a (month,day) signal exactly', 0, 0,
-    cond=np.max(np.abs(cl - np.tile(seasonal(dtgt).reshape(-1, 1), (1, 4)))) < 1e-13)
-chk('T1 366 distinct (month,day) bins', uk.size, 366)
-chk('T1 bin 29-Feb fed by exactly 2 years (2012, 2016)',
-    int(cnt[list(uk).index(229)]), 2)
-chk('T1 bin 01-Mar fed by 9 years', int(cnt[list(uk).index(301)]), 9)
-doy = np.asarray(dsrc.dayofyear)
-udoy = np.unique(doy)
-cl_doy = np.stack([np.median(Ps[doy == k], axis=0) for k in udoy])
-cl_doy = cl_doy[np.searchsorted(udoy, np.asarray(dtgt.dayofyear))]
-n_off = int((np.abs(cl_doy[:, 0] - seasonal(dtgt)) > 1e-9).sum())
-chk(f'T2 day-of-year keying WOULD misplace {n_off}/366 warm-up days', 0, 0, cond=n_off > 300)
-Pc = Ps.copy()
-Pc[np.asarray(dsrc.year) == 2015] = 300.0
-cl2, _, _ = pet_climatology(Pc, dsrc, dtgt)
-mean_shift = 100 * abs(np.mean(Pc, axis=0)[0] - np.mean(Ps, axis=0)[0]) / np.mean(Ps, axis=0)[0]
-chk(f'T3 median unmoved by 1 bad year of 9 (a mean would move {mean_shift:.0f}%)', 0, 0,
-    cond=np.max(np.abs(cl2 - cl)) < 1e-13)
-Pi = np.tile(np.arange(4, dtype=float), (len(dsrc), 1))
-cl3, _, _ = pet_climatology(Pi, dsrc, dtgt)
-chk('T4 columns stay independent (no cross-minibacia mixing)', 0, 0,
-    cond=np.allclose(cl3, np.tile(np.arange(4.0), (366, 1))))
-try:
-    pet_climatology(Ps, dsrc[:40], dtgt)
-    chk('T5 refuses to extrapolate a missing (month,day)', 0, 0, cond=False)
-except KeyError:
-    chk('T5 refuses to extrapolate a missing (month,day)', 0, 0, cond=True)
+print('period split - the arithmetic the rest of the notebook depends on')
+chk('warm-up is exactly 2008 and 366 days (leap)', 0, 0,
+    cond=NWU == 366 and set(D_WU.year) == {2008})
+chk('scored period is exactly 2009..2018 and 3,652 days', 0, 0,
+    cond=NDAYS == 3652 and set(DATES.year) == set(range(2009, 2019)))
+chk('the two partitions are disjoint and exhaust the bundle', 0, 0,
+    cond=D_WU.append(DATES).equals(WANT))
 
 print(f'\nsmoke tests: {sum(_OK)}/{len(_OK)} passed')
 assert all(_OK), 'a smoke test failed - stopping before any basin data is touched'""")
@@ -441,17 +425,35 @@ assert rel_e.max() < 1e-6 and np.abs(fs - 1.0).max() < 1e-6
 
 A_MB = TOPO.area_km2
 A_TOT = A_MB.sum()
-P_ALL = FRC['precip_mm'].astype(np.float64)
-E_ALL = FRC['pet_mm'].astype(np.float64)
+_P = FRC['precip_mm']
+_E = FRC['pet_mm']
+P_WU = _P[WU_MASK].astype(np.float64)       # 2008, warm-up, MEASURED on both fields
+E_WU = _E[WU_MASK].astype(np.float64)
+P_ALL = _P[SC_MASK].astype(np.float64)      # 2009-2018, scored
+E_ALL = _E[SC_MASK].astype(np.float64)
+del _P, _E
 YEARS = NDAYS / 365.25
+YEARS_WU = NWU / 365.25
 p_bas = (P_ALL * A_MB).sum(1) / A_TOT
 e_bas = (E_ALL * A_MB).sum(1) / A_TOT
-print(f'\nforcing: basin-mean P {p_bas.sum()/YEARS:,.1f} mm/yr, PET {e_bas.sum()/YEARS:,.1f} mm/yr '
-      f'(manifest says {MAN["validation"]["basin_mean_P_mm_yr"]}, '
-      f'{MAN["validation"]["basin_mean_PET_mm_yr"]})')
-print(f'  NaN {int(np.isnan(P_ALL).sum())+int(np.isnan(E_ALL).sum())}, '
-      f'negatives {int((P_ALL<0).sum())+int((E_ALL<0).sum())}, '
-      f'P max cell-day {P_ALL.max():.1f} mm, PET max {E_ALL.max():.2f} mm')""")
+p_wu_bas = (P_WU * A_MB).sum(1) / A_TOT
+e_wu_bas = (E_WU * A_MB).sum(1) / A_TOT
+p_full = (p_bas.sum() + p_wu_bas.sum()) / (NDAYS_ALL / 365.25)
+e_full = (e_bas.sum() + e_wu_bas.sum()) / (NDAYS_ALL / 365.25)
+print(f'\nforcing, basin mean:')
+print(f'  scored 2009-2018   P {p_bas.sum()/YEARS:,.1f} mm/yr   PET {e_bas.sum()/YEARS:,.1f} mm/yr')
+print(f'  warm-up 2008       P {p_wu_bas.sum()/YEARS_WU:,.1f} mm/yr   '
+      f'PET {e_wu_bas.sum()/YEARS_WU:,.1f} mm/yr')
+print(f'  whole bundle       P {p_full:,.1f} mm/yr   PET {e_full:,.1f} mm/yr   '
+      f'(manifest declares {MAN["validation"]["basin_mean_P_mm_yr"]}, '
+      f'{MAN["validation"]["basin_mean_PET_mm_yr"]} over the same 4,018 days)')
+print(f'  RECHECK 1d  bundle-wide P recomputed here vs the manifest: '
+      f'{abs(p_full-MAN["validation"]["basin_mean_P_mm_yr"]):.2f} mm/yr apart '
+      f'({100*abs(p_full-MAN["validation"]["basin_mean_P_mm_yr"])/p_full:.3f} %)')
+print(f'  NaN {int(np.isnan(P_ALL).sum())+int(np.isnan(E_ALL).sum())+int(np.isnan(P_WU).sum())+int(np.isnan(E_WU).sum())}, '
+      f'negatives {int((P_ALL<0).sum())+int((E_ALL<0).sum())+int((P_WU<0).sum())+int((E_WU<0).sum())}, '
+      f'P max cell-day {max(P_ALL.max(), P_WU.max()):.1f} mm, '
+      f'PET max {max(E_ALL.max(), E_WU.max()):.2f} mm')""")
 
 code(r"""with rasterio.open(PROC / 'minibacias.tif') as src:
     LAB = src.read(1); BN = src.bounds
@@ -686,32 +688,28 @@ print(f'  ET = kc PET W/Wm is proportional to W/Wm, so a soil kept dry cannot ev
       f'adr\n  is the first knob calibration should turn. Section 5 tests that prediction.')""")
 
 # ============================================================ 3 warm-up
-md(r"""## 3 - Warm-up: 2008, and the PET that does not exist
+md(r"""## 3 - Warm-up: 2008, taken from inside the bundle
 
-`manifest.json` is blunt about the problem: *"rainfall exists for 2008 but PET does NOT; no 2008 PET
-was invented here. A spin-up must state its own PET assumption."* So here is the assumption, stated.
+`manifest.json` states the situation and the decision: `warmup_available_days = 0`, because the
+model period now *starts* at the start of the rainfall record. **That is not a gap.** The spin-up is
+taken from inside the period: 2008 warms up, 2009-2018 is scored. Nothing is invented.
 
-**What is used.** Warm-up = 2008-01-01..2008-12-31 (366 days), with
+**What changed against v1, and why it is strictly better.** The v1 run had 366 days of 2008 rainfall
+sitting outside a 2009-2017 bundle and **no 2008 PET at all** (only 108 of the 132 ERA5-Land mosaics
+existed), so its warm-up ran real rainfall against a (month, day)-median PET climatology - a stated,
+defensible, but invented input. All 132 mosaics now exist, so 2008 PET is **measured**, and the
+warm-up runs measured forcing on both fields. The climatology helper, its leap-year trap and its
+median-vs-mean argument are therefore retired rather than carried along.
 
-* **real** rainfall, read from `forcing_minibacia_precip.csv` (the bundle deliberately excludes it);
-* **PET = the median of 2009-2017 for the same (month, day)**, per minibacia.
+**Rejected alternatives, still.**
 
-**Why a (month, day) median climatology.**
-
-* *Why any climatology at all* - the alternative is to shorten the model period by using 2009 as its
-  own warm-up, which costs a whole year of the ENSO record (2010-11 La Nina) that `docs/17` says is
-  the most valuable part of the calibration signal. Warm-up PET only has to settle the state; it is
-  never scored.
-* *Why (month, day) and not day-of-year* - the leap-year trap, quantified in test T2 of section 0.3.
-* *Why the median and not the mean* - robustness to a single contaminated year, quantified in test T3.
-* *Rejected: PET from a temperature-based method (Hargreaves) on 2008 station data.* It would be a
-  genuinely independent estimate, but it would be a **different PET product** from the Penman-Monteith
-  ERA5-Land series used in 2009-2017, so the warm-up would carry a method discontinuity into the run.
-  A climatology of the same product has no such discontinuity.
-* *Rejected: PET = the 2009-2017 annual mean, constant.* It removes the seasonal cycle, which is
-  precisely what has to be right for the state to enter 2009 on the correct limb of the hydrograph.
-* *Rejected: no warm-up at all (cold start into 2009).* Section 3.3 shows how long the state takes to
-  forget its initial value; a cold start would put that transient inside the scored period.
+* *A cold start into 2009 with no warm-up.* Section 3.3 measures how long the state takes to forget
+  its initial value; a cold start puts that transient inside the scored period.
+* *Warming up on 2008 and also scoring it.* The warm-up year cannot be scored without the score
+  depending on the initial condition, which is precisely what 3.3 exists to eliminate. One year is
+  the price, and the record is long enough to pay it.
+* *Two warm-up years (2008-2009), scoring 2010-2018.* It would settle the groundwater store harder,
+  but it costs the 2009 half of the 2009-2010 El Nino and buys nothing 3.3 does not already prove.
 
 **The real risk, and how it is handled.** 366 days is only ~6 e-folding times of the $K_{bas}=60$ d
 groundwater reservoir, so the slowest state is the one most likely to still be drifting. Two things
@@ -720,68 +718,56 @@ are therefore done rather than assumed: the drift over the last 90 warm-up days 
 whether 2009 discharge depends on any of them (3.3). Rule 5: a warm-up that merely *looks* settled is
 the classic way to ship a bias.""")
 
-code(r"""t0 = time.perf_counter()
-_pc = pd.read_csv(PROC / 'forcing_minibacia_precip.csv', parse_dates=['date'])
-print(f'read forcing_minibacia_precip.csv: {time.perf_counter()-t0:.1f} s, shape {_pc.shape}')
-_pc = _pc.set_index('date')
-# reindex columns by minibacia id rather than trusting the file order (docs/16 lesson:
-# column order agreeing today does not make it a contract)
-want = [str(i) for i in TOPO.ids]
-missing_cols = [c for c in want if c not in _pc.columns]
-if missing_cols:
-    raise SystemExit(f'{len(missing_cols)} minibacia columns absent from the precip CSV')
-print(f'  column order already matched TOPO.ids: '
-      f'{[c for c in _pc.columns] == want}  (reindexed regardless)')
-_pc = _pc[want]
+code(r"""print(f'warm-up window {D_WU[0].date()} .. {D_WU[-1].date()}  {len(D_WU)} days '
+      f'(leap year: 29-Feb present = '
+      f'{(229 in set((np.asarray(D_WU.month)*100+np.asarray(D_WU.day)).tolist()))})')
+print(f'  both fields MEASURED - no climatology, no stand-in')
+print(f'  NaN P {int(np.isnan(P_WU).sum())} PET {int(np.isnan(E_WU).sum())}, '
+      f'negatives P {int((P_WU<0).sum())} PET {int((E_WU<0).sum())}, '
+      f'max cell-day P {P_WU.max():.1f} mm  PET {E_WU.max():.2f} mm')
 
-WU = _pc.loc['2008']
-D_WU = pd.DatetimeIndex(WU.index)
-P_WU = WU.to_numpy(np.float64)
-del _pc
-# the model period read back from the SAME csv - an independent check that the bundle's
-# precip_mm is the same data (different reader, different dtype path)
-print(f'warm-up window {D_WU[0].date()} .. {D_WU[-1].date()}  {len(D_WU)} days '
-      f'(leap year: 29-Feb present = {(229 in set((np.asarray(D_WU.month)*100+np.asarray(D_WU.day)).tolist()))})')
-print(f'  NaN {int(np.isnan(P_WU).sum())}, negatives {int((P_WU<0).sum())}, '
-      f'max cell-day {P_WU.max():.1f} mm')
-
-E_WU, uk_wu, cnt_wu = pet_climatology(E_ALL, DATES, D_WU)
-p_wu_bas = (P_WU * A_MB).sum(1) / A_TOT
-e_wu_bas = (E_WU * A_MB).sum(1) / A_TOT
 print(f'\nwarm-up forcing (basin mean):  P {p_wu_bas.sum():,.0f} mm/yr  '
-      f'(2009-17 mean {p_bas.sum()/YEARS:,.0f})')
+      f'(2009-18 mean {p_bas.sum()/YEARS:,.0f})')
 print(f'                               PET {e_wu_bas.sum():,.0f} mm/yr  '
-      f'(2009-17 mean {e_bas.sum()/YEARS:,.0f})   '
+      f'(2009-18 mean {e_bas.sum()/YEARS:,.0f})   '
       f'difference {100*(e_wu_bas.sum()/(e_bas.sum()/YEARS)-1):+.2f} %')
-print(f'  climatology bins: {uk_wu.size}, samples per bin min {cnt_wu.min()} '
-      f'(29-Feb) max {cnt_wu.max()}')
-print(f'  2008 was {100*(p_wu_bas.sum()/(p_bas.sum()/YEARS)-1):+.1f} % wetter than the '
-      f'2009-17 mean - a WET warm-up, so the state enters 2009 on the wet side')
+_wetdry = 'wetter' if p_wu_bas.sum() > p_bas.sum() / YEARS else 'drier'
+print(f'  2008 was {100*(p_wu_bas.sum()/(p_bas.sum()/YEARS)-1):+.1f} % {_wetdry} than the '
+      f'2009-18 mean, so the state enters 2009 on the '
+      f'{"wet" if _wetdry == "wetter" else "dry"} side')
+print(f'  RECHECK 3z  ERA5-Land PET sanity for the warm-up year: basin-mean daily PET '
+      f'{e_wu_bas.mean():.3f} mm/day')
+print(f'              (the scored period runs {e_bas.mean():.3f} mm/day; a warm-up year '
+      f'differing by more than\n              a few per cent would say the 2008 mosaics are not '
+      f'the same product as the rest)')
 
 fig, ax = plt.subplots(1, 3, figsize=(14.5, 3.4))
-ax[0].plot(D_WU, p_wu_bas, lw=.5, color='#1F6FB2', label='P 2008 (real)')
-ax[0].plot(D_WU, e_wu_bas, lw=.8, color='#B0412B', label='PET 2008 (climatology)')
-ax[0].set_ylabel('mm/day'); ax[0].legend(fontsize=8); ax[0].set_title('Warm-up forcing')
-ax[1].plot(range(1, 367), e_wu_bas, lw=1.0, color='#B0412B', label='(month,day) median')
-for y in range(2009, 2018):
+ax[0].plot(D_WU, p_wu_bas, lw=.5, color='#1F6FB2', label='P 2008 (measured)')
+ax[0].plot(D_WU, e_wu_bas, lw=.8, color='#B0412B', label='PET 2008 (measured)')
+ax[0].set_ylabel('mm/day'); ax[0].legend(fontsize=8); ax[0].set_title('Warm-up forcing, both measured')
+ax[1].plot(np.arange(1, len(e_wu_bas) + 1), e_wu_bas, lw=1.2, color='#B0412B', label='2008')
+for y in range(2009, 2019):
     s = pd.Series(e_bas, index=DATES)
     s = s[s.index.year == y]
     ax[1].plot(np.arange(1, len(s) + 1), s.values, lw=.35, color='0.6', zorder=0)
-ax[1].plot([], [], lw=.35, color='0.6', label='individual years 2009-17')
-ax[1].set_xlabel('day of warm-up year'); ax[1].set_ylabel('PET mm/day')
-ax[1].set_title('Climatology vs the 9 source years'); ax[1].legend(fontsize=8)
+ax[1].plot([], [], lw=.35, color='0.6', label='individual years 2009-18')
+ax[1].set_xlabel('day of year'); ax[1].set_ylabel('PET mm/day')
+ax[1].set_title('The warm-up year against the scored ones'); ax[1].legend(fontsize=8)
 sc = ax[2].scatter(E_ALL.mean(0), E_WU.mean(0), s=2, c=TOP['centroid_lat'], cmap='viridis')
 lim = [min(E_ALL.mean(0).min(), E_WU.mean(0).min()), max(E_ALL.mean(0).max(), E_WU.mean(0).max())]
 ax[2].plot(lim, lim, 'k--', lw=.8)
-ax[2].set_xlabel('PET 2009-17 mean (mm/d)'); ax[2].set_ylabel('warm-up climatology mean (mm/d)')
-ax[2].set_title('Per-minibacia: climatology preserves\nthe spatial pattern')
+ax[2].set_xlabel('PET 2009-18 mean (mm/d)'); ax[2].set_ylabel('PET 2008 mean (mm/d)')
+ax[2].set_title('Per-minibacia: the 2008 mosaics carry\nthe same spatial field')
 plt.colorbar(sc, ax=ax[2], shrink=.8, label='lat')
 for a in ax: a.grid(alpha=.25)
 plt.tight_layout(); plt.show()
 r_sp = np.corrcoef(E_ALL.mean(0), E_WU.mean(0))[0, 1]
-print(f'spatial correlation between the climatology mean and the real 2009-17 mean: '
-      f'r = {r_sp:.6f}  (must be ~1: the climatology is a temporal statistic, so it '
-      f'cannot alter the spatial field)')""")
+print(f'spatial correlation between the 2008 mean PET field and the 2009-18 mean: '
+      f'r = {r_sp:.6f}')
+print(f'  This is a REAL check now, not a tautology. In v1 the warm-up PET was a temporal median of')
+print(f'  the scored years, so r ~ 1 was guaranteed by construction. Here 2008 is an independent')
+print(f'  year of ERA5-Land, and a low r would mean the rebuilt 2008 mosaics (including the one')
+print(f'  found internally corrupt and rebuilt) are not spatially consistent with the rest.')""")
 
 md(r"""### 3.1 - The initial state, and the closed form behind $S_{bas}$
 
@@ -1029,9 +1015,9 @@ plt.tight_layout(); plt.show()
 WARM_STATE = WU_RES[base_key].state""")
 
 # ============================================================ 4 full run
-md(r"""## 4 - The full run, 2009-2017
+md(r"""## 4 - The full run, 2009-2018
 
-The warm-up end-state from 3.3 (baseline start) is handed straight to a single 3,287-day call.
+The warm-up end-state from 3.3 (baseline start) is handed straight to a single 3,652-day call.
 Nothing about the run depends on observed discharge; `discharge.npz` is not opened until section 5.
 
 Three checks, in decreasing order of "if this fails, stop":
@@ -1040,7 +1026,7 @@ Three checks, in decreasing order of "if this fails, stop":
    relative. This is not a diagnostic, it is a precondition.
 2. **4.3 Independent recomputation.** The outlet volume is obtained a second way (from the recorded
    `q_m3s` column, a different code path from the internal accumulator), the run is repeated in
-   nine one-year chunks to give nine independent per-year balances plus a restart-exactness check,
+   ten one-year chunks to give ten independent per-year balances plus a restart-exactness check,
    and the whole thing is re-routed with the NumPy backend instead of numba.
 3. **4.4 The registered prediction** of section 2.2 is confronted with the result.""")
 
@@ -1110,24 +1096,60 @@ print(f'  relative difference                            {abs(q_rec_mm-q_ser_mm)
       f'  (float32 storage of q_m3s has ~{np.finfo(np.float32).eps:.1e} resolution)')
 assert abs(q_rec_mm - q_ser_mm) / q_ser_mm < 1e-6
 
-# --- (b) rainfall volume from the raw wide CSV, a completely different reader ----------
+# --- (b) rainfall volume by RE-PARSING the wide CSV text -------------------------------
+# What this is and is not. The bundle's precip_mm came from forcing_precip_v2.npy, which
+# src/forcing_npy.py produced from this same CSV, so this is NOT an independent measurement
+# of the rainfall - it is an independent check that the CSV -> npy -> npz chain moved every
+# row and every column without loss. It is worth doing precisely because the failure mode
+# on this file is a SILENT contiguous-prefix truncation by pd.read_csv, which is invisible
+# to length, monotonicity and calendar-hole tests. So the parse is chunked (the C parser
+# stays well inside memory) and the row count is checked against the file's own byte line
+# count, which no parser is involved in producing.
 t0 = time.perf_counter()
-_chk = pd.read_csv(PROC / 'forcing_minibacia_precip.csv', parse_dates=['date'],
-                   index_col='date')[[str(i) for i in TOPO.ids]].loc['2009':'2017']
-p_csv_mm = float((_chk.to_numpy(np.float64) * A_MB).sum() / BAL['covered_area_km2'])
-del _chk
-print(f'\nRECHECK 4b  rainfall depth, two readers ({time.perf_counter()-t0:.1f} s)')
+_src = PROC / 'forcing_minibacia_precip_v2.csv'
+_nlines, _ncommas = 0, None
+with open(_src, 'rb') as _fh:
+    for _raw in _fh:
+        if _ncommas is None:
+            _ncommas = _raw.count(b',')
+        _nlines += 1
+_rows_declared = _nlines - 1
+want_cols = [str(i) for i in TOPO.ids]
+_acc = 0.0
+_nrows = 0
+_dates_seen = []
+for _ck in pd.read_csv(_src, index_col=0, chunksize=200):
+    if _nrows == 0 and list(_ck.columns) != want_cols:
+        raise SystemExit('CSV column order is not TOPO.ids order - would mis-weight by area')
+    _d = pd.to_datetime(_ck.index, format='%Y-%m-%d')
+    _dates_seen.append(_d)
+    _keep = (_d.year >= 2009)
+    if _keep.any():
+        _acc += float((_ck.to_numpy(np.float64)[_keep] * A_MB).sum())
+    _nrows += len(_ck)
+_d_all = pd.DatetimeIndex(np.concatenate([d.to_numpy() for d in _dates_seen]))
+p_csv_mm = _acc / BAL['covered_area_km2']
+print(f'\nRECHECK 4b  rainfall depth, bundle vs a re-parse of the CSV '
+      f'({time.perf_counter()-t0:.0f} s)')
+print(f'  CSV byte line count says {_rows_declared:,} data rows, {_ncommas:,} data columns; '
+      f'the parser returned {_nrows:,} rows')
+assert _nrows == _rows_declared, (
+    f'the CSV reader returned {_nrows} of {_rows_declared} rows - it truncated again')
+assert _d_all.equals(WANT), 'the CSV date axis is not the declared period'
+print(f'  parsed date axis equals the independently declared '
+      f'{WANT[0].date()}..{WANT[-1].date()}: True')
 print(f'  from the bundle (forcing.npz, float32)   {BAL["p_mm"]:.6f} mm')
-print(f'  from the raw wide CSV (float64)          {p_csv_mm:.6f} mm')
+print(f'  from the re-parsed CSV (float64)         {p_csv_mm:.6f} mm')
 print(f'  relative difference                      {abs(p_csv_mm-BAL["p_mm"])/BAL["p_mm"]:.3e}')
 assert abs(p_csv_mm - BAL['p_mm']) / BAL['p_mm'] < 1e-6
+del _dates_seen, _d_all
 
-# --- (c) nine one-year chunks: per-year balance + restart exactness --------------------
-print('\nRECHECK 4c  nine one-year chunks, chained')
+# --- (c) ten one-year chunks: per-year balance + restart exactness ---------------------
+print('\nRECHECK 4c  ten one-year chunks, chained')
 st_c = WARM_STATE.copy()
 chunk_q = []
 rows = []
-for y in range(2009, 2018):
+for y in range(2009, 2019):
     m = np.flatnonzero(DATES.year == y)
     rc = mgb.simulate(TOPO, PARAMS, P_ALL[m], E_ALL[m], state=st_c,
                       record_ids=[OUT_ID], dates=DATES[m])
@@ -1151,7 +1173,7 @@ q_chunk = np.concatenate(chunk_q)
 dqc = np.abs(q_chunk - Q_OUT)
 print(f'  chunked vs single-shot outlet Q: max |dQ| {dqc.max():.3e} m3/s '
       f'({dqc.max()/Q_OUT.mean():.2e} of mean) -> restart is exact')
-print(f'  sum of the nine chunk P depths {YRB.P_mm.sum():.6f} mm vs single run '
+print(f'  sum of the ten chunk P depths {YRB.P_mm.sum():.6f} mm vs single run '
       f'{BAL["p_mm"]:.6f} mm (diff {abs(YRB.P_mm.sum()-BAL["p_mm"]):.2e})')
 assert YRB.resid_rel.max() <= TOL and dqc.max() / Q_OUT.mean() < 1e-6""")
 
@@ -1299,8 +1321,14 @@ with different knobs.""")
 
 code(r"""GC = np.asarray(DIS['gauge_code']).astype(str)
 GMB = DIS['gauge_minibacia_id'].astype(int)
-QOBS = DIS['q_m3s'].astype(np.float64)
-QVAL = DIS['q_valid']
+assert pd.DatetimeIndex(np.asarray(DIS['dates'], dtype='datetime64[ns]')).equals(WANT), \
+    'discharge date axis is not the bundle period'
+# the observations are sliced with the SAME mask as the forcing, so the warm-up year is
+# never scored. Slicing here rather than at every use site is the only way to be sure.
+QOBS = DIS['q_m3s'][SC_MASK].astype(np.float64)
+QVAL = DIS['q_valid'][SC_MASK]
+print(f'observations sliced to the scored period: {QOBS.shape} '
+      f'({int(DIS["q_valid"][WU_MASK].sum()):,} valid 2008 gauge-days discarded with the warm-up)')
 PRIM = DIS['is_calibration_safe']
 WIDE = DIS['in_rc_band_only_set']
 G_AREA = DIS['gauge_upstream_area_km2']
@@ -1666,7 +1694,7 @@ print(f'  a single-thread D8 network with no abstraction must be monotone; a vio
       f'locally.')
 assert viol == 0
 
-# local (unrouted) generation per minibacia = routed out minus the sum routed in. Over 3,287
+# local (unrouted) generation per minibacia = routed out minus the sum routed in. Over 3,652
 # days the channel-storage change is negligible, so this recovers local runoff without having
 # to store the per-minibacia local flux.
 has_down = TOPO.down >= 0
@@ -1809,7 +1837,7 @@ baseline without re-running, and (b) anyone can reproduce the run from the store
 | `q_gauge.npz` | daily simulated Q at all gauge minibacias, plus the observed series and `q_valid` actually used | the calibration target, self-contained: a future reader does not have to re-derive the masking |
 | `q_minibacia_daily.npz` | daily Q at all 8,672 minibacias, float32, compressed | the field itself. It is regenerable in well under a minute from the stored parameters, so it is stored for convenience, not as the source of truth |
 | `q_minibacia_summary.csv` | per minibacia: mean/median/p95/max Q, specific runoff, local generation | the part that is awkward to recompute without re-running, and the input to any map |
-| `q_minibacia_monthly.npz` | 108 monthly-mean Q per minibacia | a compact form that survives being copied around |
+| `q_minibacia_monthly.npz` | 120 monthly-mean Q per minibacia | a compact form that survives being copied around |
 | `metrics_gauge.csv` | every metric of section 5 per gauge, plus the diagnostics of section 6 | the baseline table calibration must beat |
 | `parameters.json` | every parameter value, its class (DATA/PRIOR) and its source | so the run is reproducible and the priors stay auditable |
 | `balance.json` | the mass balance, per-year balance, warm-up convergence and timings | the evidence that the run is sound |
@@ -1818,7 +1846,10 @@ baseline without re-running, and (b) anyone can reproduce the run from the store
 **Deliberately not written:** any per-URH state (`W`, `S_c`) time series. It is 32,782 columns and
 nothing downstream consumes it; the final state is enough to restart, and it is stored.""")
 
-code(r"""OUTD = PROC / 'sim_baseline'
+code(r"""# sim_baseline_v2, NOT sim_baseline: the v1 directory is the baseline of the v1 forcing on
+# the v1 period, and notebook 14's pre-registered cell H1 (v1 forcing + new objective) still
+# needs it. Overwriting it would destroy the only artefact that makes H2 - H1 measurable.
+OUTD = PROC / 'sim_baseline_v2'
 OUTD.mkdir(parents=True, exist_ok=True)
 gcols = np.array([COL[int(m)] for m in GMB])
 QSIM_G = RES.q_m3s[:, gcols]
@@ -1829,7 +1860,7 @@ np.savez_compressed(
     gauge_upstream_area_km2=G_AREA, model_upstream_area_km2=UPA,
     gauge_lon=DIS['gauge_lon'], gauge_lat=DIS['gauge_lat'],
     q_sim_m3s=QSIM_G.astype(np.float32),
-    q_obs_m3s=DIS['q_m3s'], q_valid=QVAL,
+    q_obs_m3s=DIS['q_m3s'][SC_MASK], q_valid=QVAL,
     is_calibration_safe=PRIM, in_rc_band_only_set=WIDE)
 
 t0 = time.perf_counter()
@@ -1872,11 +1903,12 @@ PARJSON = {
                'sha256': hashlib.sha256(eng_src).hexdigest()},
     'status': 'UNCALIBRATED BASELINE - no parameter was fitted to observed discharge',
     'model_period': {'start': str(DATES[0].date()), 'end': str(DATES[-1].date()), 'days': NDAYS},
+    'bundle': 'data/processed/model_inputs_v2',
     'warmup': {'start': str(D_WU[0].date()), 'end': str(D_WU[-1].date()), 'days': len(D_WU),
-               'precip': 'real, forcing_minibacia_precip.csv',
-               'pet': 'median of 2009-2017 by (month, day), per minibacia',
-               'pet_rationale': 'no 2008 PET exists; (month,day) not day-of-year because 2008 '
-                                'is a leap year; median not mean for robustness to one bad year',
+               'precip': 'measured, from inside the v2 bundle (forcing.npz)',
+               'pet': 'measured, from inside the v2 bundle (forcing.npz)',
+               'pet_rationale': 'all 132 ERA5-Land mosaics now exist, so 2008 PET is real; the v1 '
+                                '(month,day)-median climatology stand-in is retired',
                'initial_state': {'w_frac': W_FRAC0,
                                  's_bas_mm': 'closed-form equilibrium per minibacia',
                                  's_int_mm': 'closed-form equilibrium per minibacia',
@@ -2014,11 +2046,12 @@ print(f'     mean the month grouping or the day weights are wrong)')
 assert rel_mon.max() < 1e-4
 print('  all round-trip checks passed')
 
-README = f'''# sim_baseline - the UNCALIBRATED MGB-SA baseline run
+README = f'''# sim_baseline_v2 - the UNCALIBRATED MGB-SA baseline run, v2 forcing
 
 Written by `notebooks/13_baseline_run.ipynb` from `src/mgb_hydrology.py`
 (sha256 {hashlib.sha256(eng_src).hexdigest()[:16]}) on the
-`data/processed/model_inputs/` bundle.
+`data/processed/model_inputs_v2/` bundle (4,018 d, 2008-01-01..2018-12-31).
+The v1 counterpart in `sim_baseline/` is left untouched: notebook 14's cell H1 needs it.
 
 **Nothing here is calibrated.** No parameter was fitted to observed discharge; section 5.5 of the
 notebook audits the code path to show that no observation can reach the model.
@@ -2027,7 +2060,7 @@ notebook audits the code path to show that no observation can reach the model.
 
 | | |
 |---|---|
-| warm-up (discarded) | {D_WU[0].date()} .. {D_WU[-1].date()} ({len(D_WU)} d), real rainfall + (month,day)-median PET climatology |
+| warm-up (discarded) | {D_WU[0].date()} .. {D_WU[-1].date()} ({len(D_WU)} d), measured rainfall AND measured PET, taken from inside the bundle |
 | scored run | {DATES[0].date()} .. {DATES[-1].date()} ({NDAYS} d) |
 | minibacias / URH cells | {TOPO.n_mini:,} / {TOPO.n_cells:,} |
 | wall time | {RES.wall_time_s:.1f} s ({RES.routing_backend} router), {NDAYS/RES.wall_time_s:,.0f} model days/s |
@@ -2040,8 +2073,8 @@ notebook audits the code path to show that no observation can reach the model.
 | mass balance, worst single year | {YRB.resid_rel.max():.2e} |
 | negative-W guard fired | {BAL['clip_volume_mm_km2']:.1e} mm.km2 |
 | outlet volume, 2 code paths | agree to {abs(q_rec_mm-q_ser_mm)/q_ser_mm:.1e} |
-| rainfall volume, 2 readers | agree to {abs(p_csv_mm-BAL['p_mm'])/BAL['p_mm']:.1e} |
-| 9 chained 1-year chunks vs 1 call | max dQ {dqc.max():.1e} m3/s |
+| rainfall volume, bundle vs a re-parse of the CSV | agree to {abs(p_csv_mm-BAL['p_mm'])/BAL['p_mm']:.1e}, on {_rows_declared:,} rows counted from the raw bytes |
+| 10 chained 1-year chunks vs 1 call | max dQ {dqc.max():.1e} m3/s |
 | numpy vs numba router | max dQ {dmax:.1e} m3/s |
 | mean flow monotone downstream | {viol} violations of {int((TOPO.down>=0).sum())} edges |
 | initial condition forgotten | worst {worst:.3f} % of mean flow across 3 incompatible starts |
@@ -2108,11 +2141,12 @@ md(r"""## Summary
 
 | | |
 |---|---|
-| Deliverable | `data/processed/sim_baseline/` - 6 arrays/tables + `parameters.json` + `balance.json` + README |
+| Deliverable | `data/processed/sim_baseline_v2/` - 6 arrays/tables + `parameters.json` + `balance.json` + README |
+| Bundle | `model_inputs_v2`, 4,018 d; **2008 warms up, 2009-2018 is scored**, and the date axis is asserted against a period declared independently of the file |
 | Engine | `src/mgb_hydrology.py`, unmodified; the notebook 03 formulation, `reservoir='exact'`, `percolation='linear'`, numba router with the NumPy router as an independent cross-check |
-| Warm-up | 2008, real rainfall + (month,day)-median PET climatology; proven to erase a factor-of-many spread in initial storage to well under 1 % of mean flow |
-| Mass balance | closes to round-off over the whole run and in every one of the nine years; the negative-W guard never fired |
-| Rechecks | outlet volume 2 code paths, rainfall 2 readers, 9 chained chunks vs 1 call, 366 single-day restarts vs 1 call, 2 independent routers, downstream monotonicity, upstream area vs notebook 12 |
+| Warm-up | 2008, measured rainfall **and measured PET** - the v1 climatology stand-in is retired because all 132 ERA5-Land mosaics now exist; proven to erase a factor-of-many spread in initial storage to well under 1 % of mean flow |
+| Mass balance | closes to round-off over the whole run and in every one of the ten years; the negative-W guard never fired |
+| Rechecks | outlet volume 2 code paths, rainfall bundle vs a byte-verified re-parse of the CSV, 10 chained chunks vs 1 call, 366 single-day restarts vs 1 call, 2 independent routers, downstream monotonicity, upstream area vs notebook 12 |
 | Registered prediction | the runoff coefficient was derived from the parameters alone, with no time loop, *before* the run, and the run confirmed it |
 | Skill | uncalibrated and poor, as expected; bias is one-signed, which is what makes a single global correction the right first calibration move |
 | Leak test | engine source contains no read of observed flow; a mean-normalised permutation null shows most of the apparent correlation skill is basin-wide seasonality, not gauge-specific |
