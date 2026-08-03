@@ -400,6 +400,7 @@ Recorded because each looked right before it was measured.
 | "The gauge-order defect affects 44 minibacias by up to 13.1 mm/day" | ⚠️ **understated** | That was one alternative ordering. Random shuffles move **52–83 minibacias** by up to **20.5 mm/day** (§11.1) |
 | "Gauges within 500 m of each other are duplicates and should be merged" | ❌ refuted | Of four pairs, two are duplicates (corr 1.000), one is a sequential instrument replacement (zero overlap), and one is a **coordinate error** — 1,470 shared days, corr 0.756, mean |diff| 1.9 mm at a nominal 5 cm. A distance-only merge rule would have averaged away a real gauge (§11.2) |
 | "Merging the co-located gauges is cosmetic — the basin mean barely moves" | ⚠️ **half true** | Basin mean +0.04 %, but **542 minibacias change by a median +5.03 %, max +33.5 %**. Gauges are scored locally, so this changes the objective. A basin-level check alone would have concluded "negligible" and been wrong (§11.3) |
+| "The residual energy-floor failures are our forcing's fault" | ⚠️ **only 2 of 14** | Two gauges have a selective precip gauge carrying 49–69 % of their catchment weight and are kept for that reason. The other 12 do not: 8 have no rating curve at all, and where curves exist R² runs 0.36–0.69 (§12.1) |
 | "`identifiability.csv` shows all 10 parameters identified" | ⚠️ **confounded** | `iqr_frac_of_range` is exactly 0.0 for 7 of 10 parameters. The top 5 % of a **DDS** archive is a neighbourhood of the optimum by construction, so this measures search concentration, not information in the data. Morris `mu*` is the trustworthy screen, and it says `k_bas`, `k_int`, `kc_mult` and `fint` are weak |
 
 ---
@@ -461,7 +462,9 @@ Recorded because each looked right before it was measured.
 | 5 | PET review against the 49 mm/yr basin ET deficit | the +5.6 % outlet PBIAS floor and the 18 infeasible gauges |
 | 6 | ~~`build_discharge_gauges.py:149-152` and `build_precip_gauges.py:62` rely on pandas date inference~~ **DONE** — both now detect per file/part via `src/dhime_dates.py`. All 98 precip files and 45 discharge parts proved ISO year-first; outputs content-identical, so nothing was silently transposed in these corpora. Recorded so the null result is not read as the fix being unnecessary | closed |
 | 7 | ~~Finish the zero-suppression repair~~ **DONE (§10)** — selectivity detector with a threshold from the measured null; 153 stations repaired, 240,158 inferred-dry days; sparse-band selectivity 1.777 → **1.040**, dense band unmoved at 1.001; areal mean 2,174.3 → **2,035.6** mm/yr (−6.4 %); over-drying test passed. Energy floor 18 → **14**, target was ≤5 | partly closed — see item 10 |
-| 10 | **The 14 surviving energy-floor gauges are a different problem from the basin surplus** (§10.6). 23087200 and 26127100 have P unchanged by a 6.4 % basin-wide correction and would need P halved. Investigate gauge by gauge as catchment-delineation or rating error | the +5.6 % outlet PBIAS floor |
+| 10 | ~~Triage the 14 surviving energy-floor gauges~~ **DONE (§12)** — rule declared before the numbers: **2 EXCLUDE** (need P cut >25 %), **2 KEEP** (a selective gauge carries half their catchment weight — our defect, so it stays visible), **10 DOWN-WEIGHT**. 8 of 14 have no rating curve at all | closed; feeds the Phase 3 objective |
+| 14 | **Check the 2.5× catchment-area disagreement at 23087200** (§12.3): ours 524 km², the collaborator's 1,324 km². A direct test of the doc-17 gauge re-snap that has never been run, and it bears on any area-normalised sediment yield | published specific yields |
+| 15 | **Test the hydropower-diversion hypothesis for the two exclusions** (§12.2). Both sit in Antioquia (EPM / ISAGEN reservoirs and inter-basin transfers). 23087200's dominant precip gauge is healthy (selectivity 0.997), so its rc of 0.430 on a 0.7+ flank points at water leaving the catchment, not at bad data. `is_intake` does not flag them, so that flag list is incomplete | the *reason* recorded for excluding them |
 | 11 | ~~Merge the co-located gauge pairs~~ **DONE (§11)** — `src/idw_forcing.py`: deterministic lexsort tie-break proven by a shuffle test, and an evidence-based merge (2 duplicates + 1 sequential merged, 294→291 gauges; Catam refused as a **coordinate error**, corr 0.756 at 5 cm). Basin mean +0.04 %, but **542 minibacias move by a median +5 %** | closed; nb11 unblocked |
 | 12 | **EL DORADO CATAM `21205791` / AEROPUERTO CATAM `21206570` have one bad coordinate** (§11.2). They sit 5 cm apart in the catalogue yet disagree on 1,000 of 1,470 shared days (corr 0.756). Resolve against the IDEAM catalogue before either is trusted for interpolation | correct gauge geometry near Bogotá |
 | 13 | nb11 §3 must be switched to `src/idw_forcing.py` rather than keeping its own copy of the interpolator. Adopting it moves 69 minibacias vs the stored field (areal mean unchanged) — expected, since the stored field embodies an arbitrary tie-break | one interpolator, not three |
@@ -915,3 +918,89 @@ far more than the 69 minibacias affected by the tie-break alone: removing a gaug
 
 Both numbers had to be reported. Had only the basin mean been checked, the correct
 conclusion would have been "negligible" and it would have been wrong.
+
+---
+
+## 12 — Phase 1: triage of the 14 residual energy-floor gauges (open item 10)
+
+14 of 61 is 23 % of the calibration objective, and both failure modes are real — leaving an
+impossible target in pulls parameters toward nonsense, while excluding a gauge whose problem
+is *our* local forcing hides our own defect. So the decision rule was declared **before the
+numbers were looked at**:
+
+| rule | condition | verdict |
+|---|---|---|
+| D1 | one precip gauge carries ≥40 % of the catchment's IDW weight **and** is rain-selective (> 1.2885) | **KEEP** — our forcing defect; fix the forcing, don't hide it |
+| D2 | flagged intake / distributary / nested inversion | **EXCLUDE** — hydrology the model does not represent |
+| D3 | needs P to fall > 25 % with no dominant selective gauge | **EXCLUDE** — impossible target |
+| D4 | rating curve R² < 0.90 or < 30 stage–discharge pairs | **DOWN-WEIGHT** |
+| D5 | anything else | **DOWN-WEIGHT** — unresolvable |
+
+Result: **2 EXCLUDE, 2 KEEP, 10 DOWN-WEIGHT** → 59 full-weight gauges, 10 down-weighted.
+Full table in `data/processed/energy_floor_triage.csv`.
+
+| code | area km² | P mm/d | Q mm/d | rc | floor | P cut needed | dominant precip gauge (share, selectivity) | rating R² (n) | verdict |
+|---|---|---|---|---|---|---|---|---|---|
+| 22017010 | 2,411 | 5.645 | 0.947 | 0.168 | 0.480 | **31.2 %** | 22010010 (0.39, —) | **0.359** (6,966) | EXCLUDE D3 |
+| 23087200 | 524 | 11.464 | 4.930 | 0.430 | 0.705 | **27.5 %** | 23080750 (0.61, **0.997**) | — (0) | EXCLUDE D3 |
+| 26107130 | 748 | 5.453 | 1.869 | 0.343 | 0.498 | 15.5 % | 26100670 (0.34, 1.258) | 0.536 (3,075) | DOWN-WEIGHT D4 |
+| **22077060** | 731 | 4.841 | 1.040 | 0.215 | 0.368 | 15.4 % | 22070030 (**0.49, 1.445**) | — (0) | **KEEP D1** |
+| 26027240 | 188 | 4.750 | 1.460 | 0.307 | 0.447 | 13.9 % | 26020460 (0.47, 1.001) | — (0) | DOWN-WEIGHT D5 |
+| 26197020 | 255 | 6.546 | 2.867 | 0.438 | 0.563 | 12.5 % | 26195020 (0.55, 1.020) | — (0) | DOWN-WEIGHT D5 |
+| 26237020 | 210 | 5.513 | 1.681 | 0.305 | 0.410 | 10.5 % | 27011110 (0.29, 1.311) | 0.455 (305) | DOWN-WEIGHT D4 |
+| 26127100 | 101 | 6.377 | 2.908 | 0.456 | 0.555 | 9.9 % | 26135040 (0.44, 1.000) | — (0) | DOWN-WEIGHT D5 |
+| 26167060 | 179 | 5.393 | 2.188 | 0.406 | 0.448 | 4.2 % | 26155110 (0.31, 1.000) | 0.685 (551) | DOWN-WEIGHT D4 |
+| **21107030** | 288 | 4.730 | 1.528 | 0.323 | 0.360 | 3.7 % | 21100070 (**0.69, 1.575**) | — (0) | **KEEP D1** |
+| 23087160 | 344 | 8.712 | 4.834 | 0.555 | 0.591 | 3.6 % | 27011230 (0.29, 1.285) | — (0) | DOWN-WEIGHT D5 |
+| 26027200 | 320 | 4.537 | 1.708 | 0.376 | 0.395 | 1.9 % | 26020460 (0.58, 1.001) | — (0) | DOWN-WEIGHT D5 |
+| 21237040 | 243 | 4.118 | 0.935 | 0.227 | 0.237 | 1.0 % | 21205670 (0.22, 1.664) | — (0) | DOWN-WEIGHT D5 |
+| 26207080 | 30,848 | 5.131 | 2.217 | 0.432 | 0.436 | 0.4 % | 26195020 (0.05, 1.020) | 0.644 (385) | DOWN-WEIGHT D4 |
+
+### 12.1 Only 2 of 14 are ours, and 8 of 14 cannot be checked at all
+
+Two gauges (22077060, 21107030) fail with a *selective* precip gauge carrying half to
+two-thirds of their catchment weight — 1.445 and 1.575 selectivity, and both were repaired,
+so what remains is residual local inflation from a gauge that was already treated. **These
+stay in the objective.** Excluding them would delete the evidence of our own forcing defect,
+and both need only a 4–15 % local P correction, which is within reach.
+
+Eight of the 14 have **no rating curve at all** (`n_pairs = 0`), so their discharge cannot be
+independently verified. That is not "unresolvable" in the sense of being fine — it is a
+measurement gap, and D5 down-weights rather than excludes precisely because we cannot tell
+the difference between a bad gauge and a bad catchment there.
+
+Where a rating curve *does* exist it is mostly poor: **R² 0.359 on 6,966 stage–discharge
+pairs** at 22017010, 0.455, 0.536, 0.644, 0.685 elsewhere. An R² of 0.36 over nearly seven
+thousand pairs is not noise, it is a rating relationship that does not hold — which is
+independent support for excluding that gauge.
+
+### 12.2 The two exclusions look like water leaving the catchment, not error
+
+23087200 is the interesting one, and the collaborator's independent run corroborates it: his
+second-worst station, PBIAS **+417 %**, KGE **−4.59**. Two implementations, two different
+forcing pipelines, the same station broken in the same direction — the model produces far
+more water than the river carries.
+
+But its dominant precip gauge is *healthy*: 23080750 carries 61 % of the catchment weight
+with selectivity **0.997** and was never repaired. So the rainfall is well supported, and
+11.46 mm/day (4,187 mm/yr) is high but entirely plausible on the Antioquia–Chocó flank. The
+observed runoff coefficient of 0.430 is what does not fit: that flank should run at 0.7+.
+
+**Hypothesis to check, not a conclusion: upstream hydropower diversion.** Both exclusions sit
+in Antioquia, where EPM and ISAGEN operate major reservoirs and inter-basin transfers. Water
+routed out of a catchment for generation makes observed Q genuinely far below P − ET, with no
+error anywhere in the data. If that is what these are, they are D2 (unrepresented hydrology)
+rather than D3 (bad data), and the verdict is the same — exclude — but the *reason* recorded
+in the paper would be different, and defensible. `is_intake` in `gauges.csv` does not flag
+them, so the flag list is incomplete rather than the gauges being clean.
+
+### 12.3 A 2.5× catchment-area disagreement between the two implementations
+
+For 23087200 we compute an upstream area of **524 km²**; the collaborator reports
+**1,324 km²**. That is not a rounding difference, and it cannot be reconciled by the ENSO
+window or the forcing — it is the drainage network. One of the two delineations is wrong, or
+the two are snapping the gauge to different reaches.
+
+It does not change this gauge's verdict (both implementations find it broken, and in the same
+direction) but it is a direct check on the doc-17 gauge re-snap that nobody has run, and it
+should be settled before any published area-normalised sediment yield. New open item 14.
