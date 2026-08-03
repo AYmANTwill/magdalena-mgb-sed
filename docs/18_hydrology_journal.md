@@ -122,225 +122,21 @@ CALAMAR needs 1,300 mm/yr of ET against an ERA5-Land PET of 1,251 mm/yr — a de
 
 ---
 
-## 4 — The dry-phase diagnosis
+## 4 — The dry-phase diagnosis → [doc 22](22_dry_phase_diagnosis.md)
 
-The study is a wet-vs-dry ENSO contrast and only the wet half worked. Three hypotheses were
-standing when this diagnosis began. All three are now refuted, and one is backwards.
+Moved to its own document when this one passed 65 KB. **Read
+[doc 22](22_dry_phase_diagnosis.md) before touching calibration.** The findings it
+establishes, which the rest of this document depends on:
 
-Everything below was produced by rebuilding the adopted Config B parameters in memory from
-`sim_calibrated/minibacia_params.npz` and re-running the engine one factor at a time. The harness
-reproduces the stored `q_sim_B_m3s` to a **median relative error of 9.1×10⁻⁹** — it was not allowed
-to interpret anything until it did.
-
-### 4.1 First: the yardstick is not symmetric
-
-`NSE = −0.078` was being read as "worse than predicting the mean". Before accepting that, the same
-window was scored for a **day-of-year climatology** benchmark built from the whole record — the
-thing a hydrologist would actually have to beat:
-
-| period | model KGE | model NSE | climatology KGE | climatology NSE | obs CV | model − clim (KGE) |
-|---|---|---|---|---|---|---|
-| CAL 2012–14 | 0.291 | +0.045 | 0.227 | +0.141 | 0.657 | +0.064 |
-| La Niña 2011 | 0.399 | +0.225 | 0.162 | +0.021 | 0.617 | **+0.236** |
-| El Niño 2015–16 | 0.193 | −0.078 | 0.168 | **−0.062** | **0.799** | **+0.024** |
-| other 09/10/17 | 0.446 | +0.170 | 0.173 | +0.135 | 0.709 | +0.274 |
-
-A perfect seasonal climatology *also* scores NSE −0.062 in the El Niño window, because that window
-has the highest observed CV (0.799) and NSE's benchmark variance changes with it. **NSE is not
-comparable across these windows.** About a third of the headline gap is the metric.
-
-The honest statement of the deficit is the last column: the model adds **+0.024** KGE over
-climatology in El Niño against **+0.236** in La Niña. That is still a real and large failure — it
-is just not "worse than the mean".
-
-### 4.2 Which term collapses: α, not β
-
-Repairing each KGE term in turn, median over gauges:
-
-| period | KGE as-is | + bias removed | + variance matched (= r) |
-|---|---|---|---|
-| CAL 2012–14 | 0.291 | 0.381 | 0.522 |
-| La Niña 2011 | 0.399 | 0.496 | 0.653 |
-| **El Niño 2015–16** | **0.193** | 0.294 | **0.569** |
-| other 09/10/17 | 0.446 | 0.480 | 0.650 |
-
-Bias is worth +0.101; **variance is worth +0.275**. And the error is concentrated at low flow —
-bias by observed-flow quantile bin, as % of observed:
-
-| bin | CAL | La Niña | **El Niño** | other |
-|---|---|---|---|---|
-| Q0–10 | +152 | +127 | **+244** | +164 |
-| Q10–30 | +89 | +76 | +115 | +79 |
-| Q30–50 | +59 | +47 | +80 | +56 |
-| Q50–70 | +36 | +31 | +49 | +37 |
-| Q70–90 | +11 | +15 | +14 | +16 |
-| Q90–100 | −25 | −12 | −27 | −12 |
-
-The model triples the lowest flows in the dry phase, and undershoots the highest ones. That single
-pattern produces both α < 1 and β > 1.
-
-### 4.3 Hypothesis (b) is backwards — CONFIRMED
-
-The brief recorded the 18 energy-floor gauges as *"observed dry-season Q exceeds what P − PET can
-supply, which points at gauge/rating error"*. `feasibility_gauge.csv` says the opposite:
-
-```
-18 of 61 gauges fail the energy test.
-  observed rc BELOW its floor (model forced too WET) : 18
-  observed rc ABOVE its floor                        :  0
-  mass_ok False (obs Q exceeds P)                    :  1
-```
-
-All 18 fail because the observed runoff coefficient is **below** the minimum the forcing permits —
-the forcing supplies more water than the rivers carry. Worst case is 22017010: rc 0.161 against a
-floor of 0.500, a +210 % PBIAS floor. This is the signature of **too much precipitation or too
-little PET**, not of gauges under-reporting. Exactly one gauge in 61 has observed Q exceeding P.
-
-That surplus is real, and those 18 gauges are genuinely worse in the dry phase (median β 1.756
-against 0.922 for the feasible ones). But it does not explain the ENSO contrast — see §4.5.
-
-### 4.4 Hypothesis (a): the recession defect is real, and it is not the cause — CONFIRMED
-
-Fitting a linear-reservoir constant to ≥3-day monotone declines below the 40th flow percentile:
-
-| period | observed k | simulated k | ratio |
-|---|---|---|---|
-| CAL 2012–14 | 13.2 d | 51.7 d | 3.9× |
-| La Niña 2011 | 13.6 d | 33.9 d | 2.5× |
-| El Niño 2015–16 | 15.0 d | 63.3 d | 4.2× |
-| other 09/10/17 | 13.2 d | 44.8 d | 3.4× |
-
-**The simulated recession is 3–4× too slow in every period** — a defect not previously recorded.
-Observed spread across gauges is p10 7.7 d / median 13.9 d / p90 26.8 d; by region 13.5 / 9.0 /
-15.9 d. So there *is* regional structure, but it spans 1.8×, while the global level is wrong by
-3.5×. **The problem is the level, not the missing regionalisation.**
-
-Then the direct test — sweep `k_bas`, everything else frozen at Config B, 10 full runs:
-
-| configuration | CAL | La Niña | **El Niño** | other | sim k |
-|---|---|---|---|---|---|
-| Config B as adopted (68.6 d) | 0.291 | 0.399 | **0.193** | 0.446 | 48.6 d |
-| k_bas = 12 d | 0.283 | 0.386 | 0.217 | 0.437 | 25.5 d |
-| k_bas = 25 d | 0.305 | 0.400 | **0.227** | 0.461 | 33.5 d |
-| k_bas = 45 d | 0.314 | 0.385 | 0.208 | 0.455 | 43.1 d |
-| k_bas = 100 d | 0.286 | 0.397 | 0.184 | 0.427 | 52.7 d |
-| k_bas regionalised to **observed** recession | 0.281 | 0.387 | 0.214 | 0.444 | 24.9 d |
-
-Correcting `k_bas` to the value the observations imply buys **+0.021** KGE in El Niño. The best
-value found anywhere in the sweep buys **+0.034**. The gap to La Niña is 0.206. **Hypothesis (a)
-closes at most 16 % of it.**
-
-Why the objective never found this: Morris `mu*` for `k_bas` is **0.044**, rank 5 of 10 and five
-times below `k_sup` (0.228) and `adr` (0.225). The daily-KGE objective barely sees the parameter,
-so the fitted 68.6 d is essentially the 60 d prior default carried through.
-
-Note also that `k_bas`'s **lower bound is 15 d while the observations imply 13.9 d** — the search
-space excludes the right answer.
-
-### 4.5 Hypothesis (c): the inflation is real and period-invariant — CONFIRMED
-
-Doc 16 §11 measured +18.3 pts of IDW wet-day inflation and the brief expected it to *"bite hardest
-in the dry season"*. Leave-one-out IDW (k=6, inverse distance squared) at the 294 QC'd precip
-gauges — observations only, so this cannot inherit an error from the forcing pipeline:
-
-| window | gauges | LOO r | LOO bias % | wet-day obs % | wet-day IDW % | **inflation pts** |
-|---|---|---|---|---|---|---|
-| La Niña 2011 | 207 | 0.45 | +4.9 | 49.1 | 68.0 | **+18.9** |
-| El Niño 2015–16 | 217 | 0.40 | +3.6 | 36.7 | 54.4 | **+17.7** |
-| neutral 2012–14 | 240 | 0.38 | +0.7 | 41.3 | 60.2 | **+18.9** |
-
-The inflation is **+17.7 to +18.9 pts in every window** and is, if anything, marginally *smaller*
-in the El Niño window. It cannot explain an ENSO contrast.
-
-The volume story fails the same way. Mean `sim − obs` per gauge, converted to mm/yr of catchment:
-
-| period | observed mm/yr | excess mm/yr | excess % |
-|---|---|---|---|
-| CAL 2012–14 | 925 | +0.6 | +0.1 |
-| La Niña 2011 | 1,474 | −30 | −2.0 |
-| El Niño 2015–16 | 630 | +38 | **+8.4** |
-| other 09/10/17 | 1,037 | +62 | **+7.9** |
-
-**"other 09/10/17" carries the same relative excess as El Niño (+7.9 % vs +8.4 %) and scores KGE
-0.446 against 0.193.** Volume bias is not the discriminator.
-
-And every knob that removes water fixes β at α's expense — 11 more full runs:
-
-| configuration | CAL | La Niña | **El Niño** | other | EN α | EN β |
-|---|---|---|---|---|---|---|
-| Config B as adopted | 0.291 | 0.399 | **0.193** | 0.446 | 0.793 | 1.084 |
-| P × 0.90 | 0.277 | 0.365 | 0.212 | 0.347 | 0.649 | 0.915 |
-| P × 0.85 | 0.299 | 0.315 | 0.257 | 0.324 | 0.583 | 0.833 |
-| P zeroed below 2.0 mm/d | 0.280 | 0.380 | 0.179 | 0.423 | 0.774 | 1.024 |
-| kc × 1.20 (`kc_mult` → 2.40) | 0.286 | 0.383 | 0.177 | 0.427 | 0.766 | 1.015 |
-
-Drizzle removal below 2 mm/d strips only 3.0 % of total precipitation and moves nothing. P × 0.85
-does raise El Niño to 0.257 — by destroying La Niña (0.399 → 0.315) and the other years
-(0.446 → 0.324). There is no water-volume setting that improves the contrast.
-
-### 4.6 What the calibration actually did: compensating errors
-
-Where the search left each parameter inside its own range:
-
-| parameter | prior | fitted B | range | position |
-|---|---|---|---|---|
-| `kc_mult` | 1.00 | **1.9994** | 0.50 – 2.00 | **100.0 % — railed** |
-| `k_int` | 8.0 | **117.39** | 1.5 – 120 | **99.5 % — railed** |
-| `lai_mult` | 1.00 | 4.400 | 0.0 – 5.0 | 88.0 % |
-| `adr` | 0.060 | 0.0689 | 5e-4 – 0.30 | 77.0 % |
-| `k_sup` | 1.50 | 6.634 | 0.20 – 20.0 | 76.0 % |
-| `k_bas` | 60.0 | 68.64 | 15 – 600 | 41.2 % |
-| `celerity` | 1.00 | **0.221** | 0.05 – 4.00 | 33.9 % |
-| `fint` | 0.60 | **0.0868** | 0.05 – 0.95 | **4.1 % — near floor** |
-
-Read together: **every water-disposal knob is at its ceiling and every damping knob is pushed
-toward maximum damping.** `kc_mult` and `lai_mult` are the two ways the model can evaporate more,
-and both are pinned. `k_int` is railed at 120 d — *slower than* `k_bas` at 68.6 d, which is
-physically inverted, interflow being by definition the faster path. `fint` then sits near its floor,
-starving that inverted store and partly undoing the rail. Celerity is 4.5× below its prior, which
-nb14 §4.3 already identified as a floodplain-storage surrogate for the Mompós reach.
-
-This is a compensating-error structure: the forcing supplies more water than the rivers carry
-(§4.3), the search evaporated as much as its bounds allowed, and smeared the residue out in time so
-the peaks would not overshoot. Smearing costs variance. In neutral years α lands at 0.866, which is
-tolerable. In the dry phase, when true flow is low and spiky, the same smearing is fatal.
-
-De-damping directly, 8 more runs:
-
-| configuration | CAL | La Niña | **El Niño** | other | EN r | EN α | sim k |
-|---|---|---|---|---|---|---|---|
-| Config B as adopted | 0.291 | 0.399 | **0.193** | 0.446 | 0.569 | 0.793 | 48.6 d |
-| k_int = 15 d | 0.294 | 0.395 | 0.201 | 0.450 | 0.570 | 0.806 | 45.8 d |
-| celerity = 1.0 m/s | 0.282 | 0.399 | 0.195 | 0.451 | 0.569 | 0.802 | 45.4 d |
-| **k_int 15 + k_bas 25** | **0.307** | 0.399 | **0.216** | **0.462** | 0.564 | **0.890** | 31.0 d |
-| k_int 15 + k_bas 25 + celerity 1.0 | 0.310 | 0.391 | 0.217 | 0.434 | 0.564 | 0.895 | 28.7 d |
-
-De-damping the stores recovers most of the α gap (0.793 → 0.890) and improves **three of four
-periods at once** — CAL +0.016, El Niño +0.023, other +0.016, La Niña unchanged. It is free skill.
-It is also small.
-
-### 4.7 The binding constraint: r ≈ 0.57, and nothing moves it
-
-Across **all 12 parameter configurations** tested in §4.4–§4.6 — `k_bas` from 8 to 100 d, `k_int`
-from 5 to 117 d, celerity from 0.22 to 2.0 m/s, `fint`, `kc`, and P scaled from 0.80 to 1.00 — the
-El Niño correlation stayed inside **0.556 – 0.572**.
-
-Once α and β are repaired, KGE *is* r (§4.2). So r = 0.57 is the ceiling on the dry phase, and it
-is not a parameter property.
-
-Two measurements locate it in the forcing:
-
-* **Anomaly correlation.** Removing the day-of-year climatology from both observed and simulated
-  flow leaves r = 0.476 in El Niño against 0.541 in La Niña. Only 16 % of r is seasonality, so this
-  is genuine daily skill — and it is genuinely lower in the dry phase.
-* **The rainfall field's own ceiling.** LOO IDW skill at the gauges is r = 0.40 in the El Niño
-  window against 0.45 in La Niña (§4.5). Inter-gauge correlation of daily rainfall is 0.33 even at
-  0–25 km separation, and 0.25 at 25–50 km — against a mean gauge spacing of roughly 30 km.
-
-The model's catchment-scale anomaly correlation (0.476) sits just above the point-scale skill of
-the rainfall field driving it (0.40). **The model is at its input's ceiling.** No parameter set can
-exceed it, and the 0.05 drop in field skill from La Niña to El Niño is the same order as the 0.065
-drop in the model's anomaly correlation.
+| finding | evidence |
+|---|---|
+| All three standing hypotheses for the dry-phase failure are **refuted**, and hypothesis (b) was **backwards** | 30 full model runs; harness reproduced the stored `q_sim_B_m3s` to 9.1×10⁻⁹ before anything was interpreted |
+| ~⅓ of the headline gap is the **NSE yardstick**, not the model | a day-of-year climatology also scores NSE −0.062 in that window; obs CV 0.799 is the record's highest |
+| The collapsing term is **α, not β** — variance is worth +0.275 KGE, bias only +0.101 | repair ladder, §4.2 of doc 22 |
+| The model triples the **lowest** flows in the dry phase (+244 % in Q0–10) and undershoots the highest | bias by flow quantile |
+| `k_bas` is **not** the cause — correcting it to the observed 13.9 d recession buys +0.021 | 10-run sweep, Morris `mu*` 0.044 |
+| The calibration bought its fit with **compensating errors** — `kc_mult` railed at 2.00, `k_int` railed at 117.4 and *slower* than `k_bas`, celerity 4.5× below prior | parameter positions vs bounds |
+| The **hard floor is r ≈ 0.57**, invariant across all 12 parameter configurations tested, and it is inherited from the rainfall field (LOO IDW r = 0.40) | doc 22 §4.7 |
 
 ---
 
@@ -350,13 +146,13 @@ drop in the model's anomaly correlation.
 
 | share | cause | evidence | fixable by |
 |---|---|---|---|
-| ~⅓ of the headline | the NSE yardstick is not symmetric across windows | climatology also scores NSE −0.062 there (§4.1) | reporting against a benchmark, not raw NSE |
-| the recoverable part | α collapse from a compensating-error calibration | α 0.793; de-damping recovers 0.890 (§4.6) | constraining the stores — worth ≈ +0.023 |
-| the hard floor | r = 0.57, inherited from the rainfall field | invariant over 12 configurations; LOO IDW r = 0.40 (§4.7) | **only a better rainfall field** |
+| ~⅓ of the headline | the NSE yardstick is not symmetric across windows | climatology also scores NSE −0.062 there ([doc 22 §4.1](22_dry_phase_diagnosis.md)) | reporting against a benchmark, not raw NSE |
+| the recoverable part | α collapse from a compensating-error calibration | α 0.793; de-damping recovers 0.890 ([doc 22 §4.6](22_dry_phase_diagnosis.md)) | constraining the stores — worth ≈ +0.023 |
+| the hard floor | r = 0.57, inherited from the rainfall field | invariant over 12 configurations; LOO IDW r = 0.40 ([doc 22 §4.7](22_dry_phase_diagnosis.md)) | **only a better rainfall field** |
 
 Ranked by measured payoff:
 
-1. **Stop tuning parameters for the dry phase.** §4.7 puts a hard ceiling on what they can buy. The
+1. **Stop tuning parameters for the dry phase.** [doc 22 §4.7](22_dry_phase_diagnosis.md) puts a hard ceiling on what they can buy. The
    remaining parameter gain is ≈ +0.02, already located.
 2. **Adopt the de-damped store set** (`k_int` 15, `k_bas` 25) — it improves three of four periods
    simultaneously and costs nothing. It should be *re-fitted*, not hand-set, under item 3.
@@ -369,7 +165,7 @@ Ranked by measured payoff:
    was already the top item on nb14's carried-forward list. The CHIRPS–gauge merge plus the four
    SNHT segment exclusions from doc 17, then re-run notebook 11 → 12 → 13 → 14.
 5. **Raise the `kc_mult` ceiling only together with a PET review.** It is railed at 2.00, meaning
-   the search wanted more ET than allowed; but §4.5 shows more ET alone makes El Niño *worse*
+   the search wanted more ET than allowed; but [doc 22 §4.5](22_dry_phase_diagnosis.md) shows more ET alone makes El Niño *worse*
    (0.193 → 0.177 at kc × 1.20). The energy deficit is an input problem, not a bound problem.
 6. **Report the ENSO contrast against a climatology benchmark.** "NSE < 0" overstates the failure;
    "+0.024 vs +0.236 KGE over climatology" is the defensible statement.
@@ -382,11 +178,11 @@ Recorded because each looked right before it was measured.
 
 | claim | status | what the measurement said |
 |---|---|---|
-| "18 gauges have observed Q above what P − PET can supply → gauge/rating error" | ❌ **backwards** | All 18 fail in the opposite direction: observed rc is *below* its floor. Only 1 of 61 has obs Q > P (§4.3) |
-| "`k_bas` is global but should be regional; that is the dry-phase cause" | ❌ refuted | Regionalising to the observed recessions buys +0.021 KGE. The *level* is wrong by 3.5×, not the regionalisation, and even fixing the level buys ≤ +0.034 (§4.4) |
-| "IDW wet-day inflation bites hardest in the dry season" | ❌ refuted | +18.9 / +17.7 / +18.9 pts in La Niña / El Niño / neutral — period-invariant, marginally smaller in El Niño (§4.5) |
-| "The dry phase fails because of a constant water surplus divided by a smaller flow" | ❌ refuted | "other 09/10/17" carries the same +7.9 % excess and scores 0.446 against 0.193 (§4.5) |
-| "The model is worse than predicting the mean in El Niño" | ⚠️ **misleading** | True of NSE, but a day-of-year climatology also scores −0.062 there. The window's obs CV is the highest of the record (§4.1) |
+| "18 gauges have observed Q above what P − PET can supply → gauge/rating error" | ❌ **backwards** | All 18 fail in the opposite direction: observed rc is *below* its floor. Only 1 of 61 has obs Q > P ([doc 22 §4.3](22_dry_phase_diagnosis.md)) |
+| "`k_bas` is global but should be regional; that is the dry-phase cause" | ❌ refuted | Regionalising to the observed recessions buys +0.021 KGE. The *level* is wrong by 3.5×, not the regionalisation, and even fixing the level buys ≤ +0.034 ([doc 22 §4.4](22_dry_phase_diagnosis.md)) |
+| "IDW wet-day inflation bites hardest in the dry season" | ❌ refuted | +18.9 / +17.7 / +18.9 pts in La Niña / El Niño / neutral — period-invariant, marginally smaller in El Niño ([doc 22 §4.5](22_dry_phase_diagnosis.md)) |
+| "The dry phase fails because of a constant water surplus divided by a smaller flow" | ❌ refuted | "other 09/10/17" carries the same +7.9 % excess and scores 0.446 against 0.193 ([doc 22 §4.5](22_dry_phase_diagnosis.md)) |
+| "The model is worse than predicting the mean in El Niño" | ⚠️ **misleading** | True of NSE, but a day-of-year climatology also scores −0.062 there. The window's obs CV is the highest of the record ([doc 22 §4.1](22_dry_phase_diagnosis.md)) |
 | "Most of the model's r is basin-wide seasonality" (nb14 §10.4 framing) | ⚠️ **overstated** | Removing the day-of-year climatology leaves r = 0.476 of 0.569 in El Niño. Seasonality is 13–17 % of r, not most of it |
 | "The zero-suppression repair fixed the reporting-density bias" | ⚠️ **half true** | It fixed the 70 stations it touched (dense-band selectivity stayed at 1.00 while that band grew 92 → 151 stations), but 139 of 294 remain rain-selective at 1.73 / 1.30. Incomplete in **coverage**, not defective in method (§9.3) |
 | "The 2.67× → 2.04× drop in the binned gradient measures the repair's effect" | ⚠️ **mostly composition** | Repaired stations crossed the density threshold and changed bin. The bias-controlled statistic barely moved: 1.777 → 1.734 (§9.3) |
@@ -419,7 +215,7 @@ Recorded because each looked right before it was measured.
 4. **Check parameter positions against their bounds before interpreting any fitted value.** Three of
    ten are railed here, and a railed parameter is reporting the bound, not the basin.
 5. **A calibrated model can be right for the wrong reasons in one regime and visibly wrong in
-   another.** The α/β trade in §4.5 is the diagnostic: if fixing bias breaks variance, the fit was
+   another.** The α/β trade in [doc 22 §4.5](22_dry_phase_diagnosis.md) is the diagnostic: if fixing bias breaks variance, the fit was
    compensating for an input error, not representing a process.
 6. **Before blaming a process, check whether the metric's ceiling is set by the input.** Twelve
    parameter configurations left r inside 0.016 of each other. That flatness *is* the finding.
@@ -458,7 +254,7 @@ Recorded because each looked right before it was measured.
 | 1 | Re-fit with a recession-signature objective term, `k_int < k_bas` constraint, and a `k_bas` lower bound below 15 d | the ≈ +0.02 parameter gain, and store realism |
 | 2 | CHIRPS–gauge merged rainfall (nb11 → 12 → 13 → 14) | **r, and therefore the dry phase** |
 | 3 | Extend the model period to 2008–2018. **Scoped: this needs a re-run, not new code.** nb11 §7 has no date clamp — it builds PET from whatever `era5land_ext_*` mosaics exist, and its readiness gate was the literal `len(ext) >= 108` (9 years), which is the only reason `forcing_minibacia_pet.csv` stops at 2017-12-31. All 132 mosaics are now on disk and the gate is updated to 132 (generator edited, **notebook not yet re-executed** — same generator/notebook drift convention as doc 17 §2.5) | 2008 spin-up + a 2018 validation year |
-| 4 | Local-inertial routing for the Mompós / La Mojana reach. **Not to be implemented on current evidence** — celerity was swept 0.22 → 2.0 m/s and El Niño r moved < 0.016 (§4.6). Carry it as a named limitation: celerity 0.221 m/s is a floodplain-storage surrogate for the Mompós reach, not a physical velocity | honesty about what the routing represents |
+| 4 | Local-inertial routing for the Mompós / La Mojana reach. **Not to be implemented on current evidence** — celerity was swept 0.22 → 2.0 m/s and El Niño r moved < 0.016 ([doc 22 §4.6](22_dry_phase_diagnosis.md)). Carry it as a named limitation: celerity 0.221 m/s is a floodplain-storage surrogate for the Mompós reach, not a physical velocity | honesty about what the routing represents |
 | 5 | PET review against the 49 mm/yr basin ET deficit | the +5.6 % outlet PBIAS floor and the 18 infeasible gauges |
 | 6 | ~~`build_discharge_gauges.py:149-152` and `build_precip_gauges.py:62` rely on pandas date inference~~ **DONE** — both now detect per file/part via `src/dhime_dates.py`. All 98 precip files and 45 discharge parts proved ISO year-first; outputs content-identical, so nothing was silently transposed in these corpora. Recorded so the null result is not read as the fix being unnecessary | closed |
 | 7 | ~~Finish the zero-suppression repair~~ **DONE (§10)** — selectivity detector with a threshold from the measured null; 153 stations repaired, 240,158 inferred-dry days; sparse-band selectivity 1.777 → **1.040**, dense band unmoved at 1.001; areal mean 2,174.3 → **2,035.6** mm/yr (−6.4 %); over-drying test passed. Energy floor 18 → **14**, target was ≤5 | partly closed — see item 10 |
@@ -469,7 +265,7 @@ Recorded because each looked right before it was measured.
 | 12 | **EL DORADO CATAM `21205791` / AEROPUERTO CATAM `21206570` have one bad coordinate** (§11.2). They sit 5 cm apart in the catalogue yet disagree on 1,000 of 1,470 shared days (corr 0.756). Resolve against the IDEAM catalogue before either is trusted for interpolation | correct gauge geometry near Bogotá |
 | 13 | nb11 §3 must be switched to `src/idw_forcing.py` rather than keeping its own copy of the interpolator. Adopting it moves 69 minibacias vs the stored field (areal mean unchanged) — expected, since the stored field embodies an arbitrary tie-break | one interpolator, not three |
 | 8 | **Establish the provenance of the ~2,050 mm/yr basin reference** (§9.4) — uncited on both sides; his script says only "a published ~2,050", and CHIRPS itself sits +3.7 % above it. ~~Resolve the 9.5 % CHIRPS disagreement~~ **DONE (§9.5): our estimator is sound to 0.1 %; the gap is a period mismatch — interannual range is ±21 % and 2012–2015 gives 1,952 mm/yr. On the like-for-like window CHIRPS is 2,124.9 against IDW 2,174.3, +2.3 %, so a merge cannot close the ~8 % surplus** | using the reference as a validation target |
-| 9 | Advisor question, not a code question: the collaborator **drops** sparse gauges where we **repair** them. §4.7 makes gauge density the binding constraint on `r`, so his remedy worsens the quantity we identified as the ceiling, while ours retains stations that §9.3 shows are still biased. Neither approach is obviously right | the merge design in nb11 |
+| 9 | Advisor question, not a code question: the collaborator **drops** sparse gauges where we **repair** them. [doc 22 §4.7](22_dry_phase_diagnosis.md) makes gauge density the binding constraint on `r`, so his remedy worsens the quantity we identified as the ceiling, while ours retains stations that §9.3 shows are still biased. Neither approach is obviously right | the merge design in nb11 |
 
 ---
 
@@ -477,7 +273,7 @@ Recorded because each looked right before it was measured.
 
 *(§9.3 found the repair half done. §10 finishes it — read the two together.)*
 
-Added after the §4 diagnosis. §4.3 concluded the forcing supplies more water than the rivers
+Added after the §4 diagnosis. [doc 22 §4.3](22_dry_phase_diagnosis.md) concluded the forcing supplies more water than the rivers
 carry. This section tests that from the gauge side, and cross-checks it against an independent
 implementation.
 
@@ -496,7 +292,7 @@ measured a gradient we had never checked — mean rainfall rising as reporting d
 Our pre-repair file reproduces his numbers closely on all six cells. Two codebases, written
 independently, measured the same defect in the same corpus. His downstream consequences —
 basin rainfall 2,420 mm/yr against a published ~2,050, actual ET 1,659 exceeding potential ET
-1,239, Calamar discharge 1.7× too high — are the same surplus our §4.3 found as
+1,239, Calamar discharge 1.7× too high — are the same surplus our [doc 22 §4.3](22_dry_phase_diagnosis.md) found as
 *observed runoff coefficient below its energy floor at 18 of 18 failing gauges*. **Two
 implementations, two different diagnostics, one conclusion.**
 
@@ -560,12 +356,12 @@ figure: gauges cluster in populated valleys. Only the areal figure is comparable
 | reference (collaborator; **provenance not yet established**) | ~2,050 |
 
 * IDW exceeds the reference by **+156 mm/yr (+7.6 %)** — the same order as the +7.9 % / +8.4 %
-  flow excess in §4.5 and the +5.6 % outlet PBIAS floor in §3;
+  flow excess in [doc 22 §4.5](22_dry_phase_diagnosis.md) and the +5.6 % outlet PBIAS floor in §3;
 * IDW exceeds CHIRPS by only **+66 mm/yr (+3.1 %)**, and CHIRPS itself is +4.4 % above the
   reference.
 
 **Consequence for Phase 3:** swapping to CHIRPS moves the water volume by about 3 %, not by the
-~8 % the surplus needs. The CHIRPS merge must be justified by the **r ceiling of §4.7**, not by
+~8 % the surplus needs. The CHIRPS merge must be justified by the **r ceiling of [doc 22 §4.7](22_dry_phase_diagnosis.md)**, not by
 volume — and nobody should expect it to close the energy-floor gap. Fixing the volume means
 finishing the zero-suppression repair on the 139 stations in §9.3, or down-weighting them.
 
@@ -616,7 +412,7 @@ basin area is 258,404 km² against the true 257,097, a 0.5 % check on the mask i
 **Consequence.** On the like-for-like 2009–2017 window, CHIRPS is **2,124.9** against our IDW's
 **2,174.3** — the two products differ by only **+2.3 %**, tighter than the +3.1 % first
 reported. §9.4's conclusion survives and is now on firmer ground: **the CHIRPS merge cannot
-close the ~8 % surplus, and must be justified by the r ceiling of §4.7.** CHIRPS itself sits
+close the ~8 % surplus, and must be justified by the r ceiling of [doc 22 §4.7](22_dry_phase_diagnosis.md).** CHIRPS itself sits
 +3.7 % above the uncited ~2,050 reference, so both products are above it — one more reason not
 to treat that number as a target until it has a citation.
 
@@ -639,7 +435,7 @@ This matters because it flips the Phase 3 expectation. On **our** CHIRPS (2,140)
 volume by 3 % and cannot close the ~8 % surplus. On **his** (1,955) CHIRPS sits *below* the
 ~2,050 reference and a merge would close it and overshoot. The two readings recommend different
 work, so the discrepancy has to be resolved before either is used to justify a volume claim —
-and the r-ceiling justification for the merge (§4.7) is unaffected either way, which is one more
+and the r-ceiling justification for the merge ([doc 22 §4.7](22_dry_phase_diagnosis.md)) is unaffected either way, which is one more
 reason to lead with it.
 
 ---
@@ -790,7 +586,7 @@ delivers.
 **So the ~8 % basin surplus and the worst energy-floor failures are two different problems.**
 The repair removed 6.4 % of basin-wide rainfall and recovered 4 gauges; the remaining 14 are
 local, and at the extreme end are more consistent with catchment-delineation or rating error
-than with forcing. The class verdict of §4.3 stands — 18 of 18 failed with observed rc *below*
+than with forcing. The class verdict of [doc 22 §4.3](22_dry_phase_diagnosis.md) stands — 18 of 18 failed with observed rc *below*
 its floor, which is a wet-forcing signature — but it is now clear that the signature was
 basin-wide for only a minority of them.
 
@@ -879,7 +675,7 @@ Three distinct situations, and only two of them are duplicates:
 * **coordinate error** — Catam's two records overlap on 1,470 days and *disagree*: only 470
   identical, mean \|difference\| 1.9 mm, correlation **0.756**. At a nominal separation of
   5 cm that is not physical — the true duplicates above read 1.000, and the basin-wide
-  inter-gauge correlation at 0–25 km is only 0.33 (§4.7), so 0.756 is neither. **These are
+  inter-gauge correlation at 0–25 km is only 0.33 ([doc 22 §4.7](22_dry_phase_diagnosis.md)), so 0.756 is neither. **These are
   two real gauges and one of them has the wrong catalogue coordinates.** Merging them would
   have averaged away a genuine second observation, silently. Left unmerged and flagged.
 
