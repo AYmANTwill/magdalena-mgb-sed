@@ -27,7 +27,7 @@ Everything below was produced by rebuilding the adopted Config B parameters in m
 reproduces the stored `q_sim_B_m3s` to a **median relative error of 9.1×10⁻⁹** — it was not allowed
 to interpret anything until it did.
 
-### 1 First: the yardstick is not symmetric
+### 4.1 First: the yardstick is not symmetric
 
 `NSE = −0.078` was being read as "worse than predicting the mean". Before accepting that, the same
 window was scored for a **day-of-year climatology** benchmark built from the whole record — the
@@ -48,7 +48,7 @@ The honest statement of the deficit is the last column: the model adds **+0.024*
 climatology in El Niño against **+0.236** in La Niña. That is still a real and large failure — it
 is just not "worse than the mean".
 
-### 2 Which term collapses: α, not β
+### 4.2 Which term collapses: α, not β
 
 Repairing each KGE term in turn, median over gauges:
 
@@ -74,7 +74,7 @@ bias by observed-flow quantile bin, as % of observed:
 The model triples the lowest flows in the dry phase, and undershoots the highest ones. That single
 pattern produces both α < 1 and β > 1.
 
-### 3 Hypothesis (b) is backwards — CONFIRMED
+### 4.3 Hypothesis (b) is backwards — CONFIRMED
 
 The brief recorded the 18 energy-floor gauges as *"observed dry-season Q exceeds what P − PET can
 supply, which points at gauge/rating error"*. `feasibility_gauge.csv` says the opposite:
@@ -94,7 +94,7 @@ little PET**, not of gauges under-reporting. Exactly one gauge in 61 has observe
 That surplus is real, and those 18 gauges are genuinely worse in the dry phase (median β 1.756
 against 0.922 for the feasible ones). But it does not explain the ENSO contrast — see §4.5.
 
-### 4 Hypothesis (a): the recession defect is real, and it is not the cause — CONFIRMED
+### 4.4 Hypothesis (a): the recession defect is real, and it is not the cause — CONFIRMED
 
 Fitting a linear-reservoir constant to ≥3-day monotone declines below the 40th flow percentile:
 
@@ -132,7 +132,7 @@ so the fitted 68.6 d is essentially the 60 d prior default carried through.
 Note also that `k_bas`'s **lower bound is 15 d while the observations imply 13.9 d** — the search
 space excludes the right answer.
 
-### 5 Hypothesis (c): the inflation is real and period-invariant — CONFIRMED
+### 4.5 Hypothesis (c): the inflation is real and period-invariant — CONFIRMED
 
 Doc 16 §11 measured +18.3 pts of IDW wet-day inflation and the brief expected it to *"bite hardest
 in the dry season"*. Leave-one-out IDW (k=6, inverse distance squared) at the 294 QC'd precip
@@ -173,7 +173,7 @@ Drizzle removal below 2 mm/d strips only 3.0 % of total precipitation and moves 
 does raise El Niño to 0.257 — by destroying La Niña (0.399 → 0.315) and the other years
 (0.446 → 0.324). There is no water-volume setting that improves the contrast.
 
-### 6 What the calibration actually did: compensating errors
+### 4.6 What the calibration actually did: compensating errors
 
 Where the search left each parameter inside its own range:
 
@@ -214,7 +214,7 @@ De-damping the stores recovers most of the α gap (0.793 → 0.890) and improves
 periods at once** — CAL +0.016, El Niño +0.023, other +0.016, La Niña unchanged. It is free skill.
 It is also small.
 
-### 7 The binding constraint: r ≈ 0.57, and nothing moves it
+### 4.7 The binding constraint: r ≈ 0.57, and nothing moves it
 
 Across **all 12 parameter configurations** tested in §4.4–§4.6 — `k_bas` from 8 to 100 d, `k_int`
 from 5 to 117 d, celerity from 0.22 to 2.0 m/s, `fint`, `kc`, and P scaled from 0.80 to 1.00 — the

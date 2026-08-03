@@ -118,7 +118,7 @@ CALAMAR needs 1,300 mm/yr of ET against an ERA5-Land PET of 1,251 mm/yr — a de
 * the fitted `kc_mult` of 1.9994 is partly absorbing that inconsistency, not only representing
   forest transpiration.
 
-§4.3 shows this floor is real but is **not** what breaks the dry phase.
+[doc 22 §4.3](22_dry_phase_diagnosis.md) shows this floor is real but is **not** what breaks the dry phase.
 
 ---
 
@@ -132,11 +132,11 @@ establishes, which the rest of this document depends on:
 |---|---|
 | All three standing hypotheses for the dry-phase failure are **refuted**, and hypothesis (b) was **backwards** | 30 full model runs; harness reproduced the stored `q_sim_B_m3s` to 9.1×10⁻⁹ before anything was interpreted |
 | ~⅓ of the headline gap is the **NSE yardstick**, not the model | a day-of-year climatology also scores NSE −0.062 in that window; obs CV 0.799 is the record's highest |
-| The collapsing term is **α, not β** — variance is worth +0.275 KGE, bias only +0.101 | repair ladder, §4.2 of doc 22 |
+| The collapsing term is **α, not β** — variance is worth +0.275 KGE, bias only +0.101 | repair ladder, [doc 22 §4.2](22_dry_phase_diagnosis.md) |
 | The model triples the **lowest** flows in the dry phase (+244 % in Q0–10) and undershoots the highest | bias by flow quantile |
 | `k_bas` is **not** the cause — correcting it to the observed 13.9 d recession buys +0.021 | 10-run sweep, Morris `mu*` 0.044 |
 | The calibration bought its fit with **compensating errors** — `kc_mult` railed at 2.00, `k_int` railed at 117.4 and *slower* than `k_bas`, celerity 4.5× below prior | parameter positions vs bounds |
-| The **hard floor is r ≈ 0.57**, invariant across all 12 parameter configurations tested, and it is inherited from the rainfall field (LOO IDW r = 0.40) | doc 22 §4.7 |
+| The **hard floor is r ≈ 0.57**, invariant across all 12 parameter configurations tested, and it is inherited from the rainfall field (LOO IDW r = 0.40) | doc 22 [doc 22 §4.7](22_dry_phase_diagnosis.md) |
 
 ---
 
