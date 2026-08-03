@@ -91,10 +91,16 @@ for b in [pathlib.Path.cwd()] + list(pathlib.Path.cwd().parents):
         REPO = b; break
 assert REPO is not None, 'could not locate the repository root'
 proc = REPO/'data'/'processed'
-OUTDIR = proc/'model_inputs'
+# v2 bundle is written ALONGSIDE the v1 one. Notebook 14 needs both: H1 re-runs the NEW
+# objective on the OLD forcing to isolate the objective change, which is impossible if the
+# v1 bundle has been overwritten.
+VERSION = 'v2'
+OUTDIR = proc/f'model_inputs_{VERSION}'
 OUTDIR.mkdir(parents=True, exist_ok=True)
 
-MODEL_START, MODEL_END = '2009-01-01', '2017-12-31'
+# 2008 is the spin-up year and 2018 is a NEW validation year; both are now available
+# because nb11 built PET from all 132 ERA5-Land mosaics (doc 18 open item 3).
+MODEL_START, MODEL_END = '2008-01-01', '2018-12-31'
 BASIN_AREA_TARGET_KM2 = 257097.0        # docs/16 and docs/17 headline number
 OUTLET_ID = 2470                        # docs/17 section 2.2
 
@@ -347,12 +353,35 @@ code(r"""t0 = time.time()
 mb   = pd.read_csv(proc/'minibacias.csv')
 urh  = pd.read_csv(proc/'urh_fractions.csv')
 soil = pd.read_csv(proc/'minibacia_soil_params.csv')
-prov = pd.read_csv(proc/'forcing_minibacia_provenance.csv')
+prov = pd.read_csv(proc/f'forcing_minibacia_provenance_{VERSION}.csv')
 
-P_full = pd.read_csv(proc/'forcing_minibacia_precip.csv', index_col=0, parse_dates=[0],
-                     dtype='float32')
-E_full = pd.read_csv(proc/'forcing_minibacia_pet.csv', index_col=0, parse_dates=[0],
-                     dtype='float32')
+# The forcing is read from .npy, NOT from the CSVs. pd.read_csv on these files
+# (4,018 x 8,673, ~180 MB) SILENTLY TRUNCATES: one run returned 1,309 rows ending
+# 2011-08-01, another 3,630 ending 2017-12-08, from a file provably complete (4,019 lines,
+# every line 8,672 commas, no NULs). No exception, and the truncated frame still passed a
+# "calendar holes 0" check because it was a contiguous prefix. src/forcing_npy.py does the
+# conversion once, checking the parsed row count against the file's own line count counted
+# from raw bytes - a check that does not trust the parser that lied. A .npy has a shape
+# header, so it cannot be half-read without raising.
+def _load_forcing(field):
+    stem = proc/f'forcing_{field}_{VERSION}'
+    f_npy = stem.with_name(stem.name + '.npy')
+    if not f_npy.exists():
+        raise FileNotFoundError(
+            f'{f_npy.name} missing - run  python src/forcing_npy.py --version {VERSION}  '
+            f'first. Refusing to fall back to read_csv: it truncates these files silently.')
+    V = np.load(f_npy)
+    # cast to ns: np.save round-trips datetime64[D] back as datetime64[s], and
+    # DatetimeIndex.equals() is resolution-sensitive - identical instants at [s] vs [ns]
+    # compare unequal, which fails the model-period assertion for no real reason.
+    D = pd.DatetimeIndex(np.load(stem.with_name(stem.name + '_dates.npy'))
+                         .astype('datetime64[ns]'))
+    ids = np.load(stem.with_name(stem.name + '_ids.npy'))
+    return pd.DataFrame(V, index=D, columns=[str(int(i)) for i in ids])
+
+
+P_full = _load_forcing('precip')
+E_full = _load_forcing('pet')
 print(f'loaded in {time.time()-t0:.1f} s')
 
 MB_IDS = mb.id.values.astype(np.int64)
@@ -730,7 +759,8 @@ model period is the intersection. Three checks:
 the three linear reservoirs start empty and need months to fill. But PET does not exist for 2008, so
 a 2008 warm-up would have to invent PET, and inventing input data inside an input-assembly notebook
 is exactly the failure mode this notebook is written against. The bundle therefore exports the model
-period only, and records `warmup_available_days = 366` in the manifest so Phase B can make that call
+period only. `warmup_available_days` is now **0** by construction - the period starts where the
+rainfall does - so the spin-up must come from inside it (2008), which is what Phase B does
 with the fact in front of it. Rejected alternative: fabricate 2008 PET from the 2009-2017 day-of-year
 climatology. It is defensible, but it is a modelling decision, and it belongs in the notebook that
 owns the spin-up, not here.""")
@@ -852,6 +882,7 @@ and is stated in the classification below rather than argued away.
 | Gate | n excluded | Source | Why |
 |---|---|---|---|
 | `excl_distributary` | from the report | `docs/17` 3.2 | Brazo de Loba / Mompos arms. The topology is single-downstream D8; upstream-area accumulation cannot allocate split flow. **No re-snap can fix this** - it is the graph, not the mapping. |
+| `excl_energy_floor` | `energy_floor_triage.csv` | `docs/23` 12 | Observed runoff coefficient is below the minimum the forcing permits by more than a 25 % rainfall correction could close, with no dominant rain-selective gauge to blame. Two gauges; both in Antioquia, both plausibly hydropower diversions (open item 15). |
 | `excl_intake_canal` | by name + doc list | `docs/17` 3.6 | Stations named BOCATOMA / CANAL gauge diversion works, not rivers. They produce persistent mass-balance deficits by design. |
 | `excl_multitest_fail` | 1 | `docs/17` 5.1 | `28037020` HACIENDA CONVENCION fails four independent tests. |
 | `excl_no_window_data` | computed | this notebook | Zero discharge days inside 2009-2017. Nothing to calibrate against. This has nothing to do with the re-snap and caps the fleet regardless. |
@@ -1000,6 +1031,38 @@ if len(coll):
     G.loc[(G.cls == 'calib_safe') & G.minibacia.isin(coll.index),
           'cls'] = 'review_minibacia_collision'
 
+# ---- the doc-23 s12 energy-floor triage, carried through -------------------------
+# 14 gauges fail the energy floor on the v2 field. The rule was declared before the
+# numbers (doc 23 s12): 2 EXCLUDE (need P cut >25 %, no dominant selective gauge),
+# 2 KEEP (a rain-selective gauge carries half their catchment weight - our own forcing
+# defect, so removing them would hide it), 10 DOWN-WEIGHT (weak or absent rating curve,
+# or unresolvable).
+#
+# DOWN_WEIGHT = 0.5 is a DECLARED CONVENTION, not a measurement: these gauges carry
+# information but are less trustworthy than the other 59, and halving is the least
+# arbitrary way to say so. It is exported rather than applied here so notebook 14 can
+# report results with and without it.
+DOWN_WEIGHT = 0.5
+_tri_path = proc/'energy_floor_triage.csv'
+G['triage'] = 'not_flagged'
+G['gauge_weight'] = 1.0
+if _tri_path.exists():
+    _tri = pd.read_csv(_tri_path, dtype={'code': str}).set_index('code')
+    G.loc[G.index.isin(_tri.index), 'triage'] = _tri.verdict.reindex(
+        G.index[G.index.isin(_tri.index)]).values
+    _excl = _tri.index[_tri.verdict == 'EXCLUDE']
+    _down = _tri.index[_tri.verdict == 'DOWN-WEIGHT']
+    G.loc[G.index.isin(_down), 'gauge_weight'] = DOWN_WEIGHT
+    _hit = G.index.isin(_excl) & (G.cls == 'calib_safe')
+    G.loc[_hit, 'cls'] = 'excl_energy_floor'
+    print(f'\nenergy-floor triage applied from {_tri_path.name}:')
+    print(f'  EXCLUDE     {len(_excl)}  -> cls=excl_energy_floor ({int(_hit.sum())} were calib_safe)')
+    print(f'  DOWN-WEIGHT {len(_down)}  -> gauge_weight={DOWN_WEIGHT}')
+    print(f'  KEEP        {int((_tri.verdict == "KEEP").sum())}  -> full weight, our own '
+          f'forcing defect kept visible')
+else:
+    print(f'\nWARNING {_tri_path.name} absent - triage NOT applied, all gauges at weight 1.0')
+
 # the wider set stops here; the two tighter gates below define the primary set
 G['rc_band_only_set'] = G.cls == 'calib_safe'
 G.loc[G.index.isin(DOC_MISLABEL) & (G.cls == 'calib_safe'), 'cls'] = 'review_doc17_mislabel'
@@ -1095,13 +1158,19 @@ if cal is not None and len(cal):
 code(r"""CLS_ORDER = ['calib_safe', 'review_qspec_outside_healthy', 'review_doc17_mislabel',
              'review_rc_implausible', 'review_snht_break', 'review_minibacia_collision',
              'excl_short_window', 'excl_no_window_data', 'excl_intake_canal',
-             'excl_distributary', 'excl_multitest_fail']
+             'excl_distributary', 'excl_multitest_fail', 'excl_energy_floor']
 CLS_COL = {'calib_safe': '#1D9E75', 'review_qspec_outside_healthy': '#8FCB9B',
            'review_doc17_mislabel': '#D94801', 'review_rc_implausible': '#E8C547',
            'review_snht_break': '#E08214', 'review_minibacia_collision': '#B07AA1',
            'excl_short_window': '#9EB3C2', 'excl_no_window_data': '#7A7A7A',
            'excl_intake_canal': '#5B4B8A', 'excl_distributary': '#B0412B',
-           'excl_multitest_fail': '#000000'}
+           'excl_multitest_fail': '#000000', 'excl_energy_floor': '#7B3294'}
+# Every class present in G.cls must have a colour. Without this guard a newly added class
+# fails as a bare KeyError inside a scatter call ~140 lines from where the class was
+# introduced, which is what happened when excl_energy_floor was added.
+_unknown = sorted(set(G.cls) - set(CLS_COL))
+assert not _unknown, (f'cls values with no CLS_COL entry: {_unknown}. Add them to CLS_ORDER '
+                      f'and CLS_COL together, or the class-map plots below will fail.')
 fig = plt.figure(figsize=(15, 8.8))
 a = fig.add_subplot(1, 2, 1)
 a.imshow(np.where(LAB > 0, 1.0, np.nan), extent=EXT, cmap=ListedColormap(['#EDEDED']))
@@ -1335,6 +1404,8 @@ FILES['discharge.npz'] = dict(
     gauge_lon=G.lon.reindex(QGAUGES).values, gauge_lat=G.lat.reindex(QGAUGES).values,
     q_m3s=QM, q_valid=QVALID,
     is_calibration_safe=np.array([c in set(SAFE.index) for c in QGAUGES], dtype=bool),
+    gauge_weight=G.gauge_weight.reindex(QGAUGES).fillna(1.0).values.astype('float64'),
+    triage=G.triage.reindex(QGAUGES).fillna('not_flagged').values.astype('U16'),
     in_rc_band_only_set=G.rc_band_only_set.reindex(QGAUGES).values.astype(bool),
     nested_inversion=G.nested_inversion.reindex(QGAUGES).values.astype(bool),
     enso_pair_ok=G.enso_pair_ok.reindex(QGAUGES).values.astype(bool),
@@ -1347,7 +1418,7 @@ GCOLS = ['name', 'lon', 'lat', 'minibacia', 'original_minibacia', 'action', 'cls
          'rc_band_only_set', 'rc_band_ok', 'qspec_band_ok', 'n_record',
          'n_window', 'n_2011', 'n_1516', 'enso_pair_ok', 'up_area_km2', 'meanQ',
          'qspec_l_s_km2', 'P_up_mm_yr', 'rc_win', 'rc_rec', 'final_rc', 'is_intake',
-         'nested_inversion', 'representative']
+         'nested_inversion', 'representative', 'triage', 'gauge_weight']
 G[GCOLS].to_csv(OUTDIR/'gauges.csv')
 FLAG.to_csv(OUTDIR/'minibacia_flags.csv')
 print(f'wrote gauges.csv ({len(G)} rows) and minibacia_flags.csv ({len(FLAG)} rows)')
@@ -1398,6 +1469,8 @@ UNITS = {
  'in_rc_band_only_set': ('bool', 'this notebook s5: the WIDER set - RC band only, before the q_spec envelope and the two localised mislabels'),
  'nested_inversion': ('bool', 'this notebook s5: this gauge is in a nested pair whose downstream mean flow is below its upstream mean flow'),
  'enso_pair_ok':        ('bool', 'this notebook s5: >=300 d in 2011 AND >=600 d in 2015-16'),
+ 'gauge_weight': ('-', 'this notebook s5: objective weight from the docs/23 s12 energy-floor triage. 1.0 for the 59 full-weight gauges and the 2 KEEP gauges; DOWN_WEIGHT=0.5 for the 10 DOWN-WEIGHT ones. A DECLARED CONVENTION, not a measurement - exported rather than applied so nb14 can report with and without it'),
+ 'triage': ('-', 'this notebook s5: energy-floor triage verdict per gauge from energy_floor_triage.csv (KEEP / DOWN-WEIGHT / EXCLUDE / not_flagged), docs/23 s12. EXCLUDE gauges are already removed from is_calibration_safe via cls=excl_energy_floor; this column records WHY'),
 }
 manifest = {
  'bundle': 'magdalena-mgb-sed model inputs',
@@ -1405,10 +1478,18 @@ manifest = {
  'generated_utc': pd.Timestamp.utcnow().isoformat(),
  'model_period': {'start': str(DATES.min().date()), 'end': str(DATES.max().date()),
                   'days': int(NT),
-                  'bounded_by': 'ERA5-Land PET (rainfall extends 2008-01-01..2018-12-31)',
+                  'bounded_by': 'nothing - P and PET both span the full 2008-01-01..2018-12-31 '
+                                'rainfall record. The v1 bundle was bounded to 2009-2017 by PET, '
+                                'because only 108 of the 132 ERA5-Land mosaics had been built; all '
+                                '132 now exist and one (2008_M06) was found internally corrupt and '
+                                'rebuilt. See doc 18.',
                   'warmup_available_days': int((P_full.index < DATES.min()).sum()),
-                  'warmup_note': 'rainfall exists for 2008 but PET does NOT; no 2008 PET was '
-                                 'invented here. A spin-up must state its own PET assumption.'},
+                  'warmup_note': 'ZERO days precede the model period, because the period now STARTS '
+                                 'at the start of the rainfall record. This is not a gap: the spin-up '
+                                 'must be taken from INSIDE the period - use 2008 as the warm-up year '
+                                 'and score 2009-2018. The v1 bundle instead had 366 days of 2008 '
+                                 'rainfall sitting outside a 2009-start period, with no 2008 PET; '
+                                 'that asymmetry is gone.'},
  'indexing': {'per_minibacia_axis': 'minibacia_id (identical order in every file)',
               'per_day_axis': 'dates (identical order in every file)',
               'per_gauge_axis': 'gauge_code',

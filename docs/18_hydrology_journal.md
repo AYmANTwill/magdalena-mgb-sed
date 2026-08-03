@@ -236,6 +236,25 @@ Recorded because each looked right before it was measured.
 11. **Three gauge pairs share an exact lat/lon, so the IDW depends on gauge column order** (§10.7).
     Sorting the gauge columns by code instead of inventory order moves 44 minibacias by up to
     13.1 mm/day. Any re-implementation must reproduce nb11's ordering, or merge the pairs first.
+19. **`pd.read_csv` silently truncates very wide CSVs, non-deterministically, to a contiguous
+    prefix** (§14.3). 4,018 × 8,673 / ~180 MB returned 1,309 rows one call and 3,630 the next from a
+    provably intact file, with no exception. Because the result is a prefix, length/monotonicity/
+    duplicate/“calendar holes” checks all pass. Use `.npy` for anything this wide, and verify the
+    parsed row count against the file's own line count counted from raw bytes — never against the
+    parser that produced it.
+20. **A file count is not a file check.** `era5land_ext_2008_M06.nc` was internally corrupt at a
+    normal 43.69 MB; only opening it and reading a timestep found it (§14.3). The same reasoning that
+    caught zero-suppressed gauges applies to inputs: test the thing, not its metadata.
+21. **Extracting a code block into a module drops its incidental locals.** nb11 §3's apparent
+    interface was `P` and `dk6`; four more names were load-bearing 90 lines away (§14.4). Diff the names
+    the old block bound against the names later code reads before assigning — one command, and it
+    answers in one shot what symptom-patching takes several executions to find.
+22. **`np.save` round-trips `datetime64[D]` as `[s]`, and `DatetimeIndex.equals()` is
+    resolution-sensitive** (§14.3). Identical instants compare unequal. Cast to `[ns]` on load — do
+    *not* loosen the assertion, which is what would have hidden trap 19.
+23. **Changing a window changes the population, not just the filter.** Extending to 2008–2018 took the
+    calibration set to **63**, not the predicted 59, because gauges that failed `n_window` gates
+    qualified (§14.2). Any “N of 61” criterion written before a period change is stale.
 16. **A tie-break is not an optimiser.** `fix_gauge_minibacia_mapping.py` scores candidates against a
     basin-wide rc reference, which looks like it must inject that reference into the data — but the
     candidate set is a 3×3 window, so the reference only orders a handful of geometrically fixed
@@ -266,7 +285,7 @@ Recorded because each looked right before it was measured.
 |---|---|---|
 | 1 | Re-fit with a recession-signature objective term, `k_int < k_bas` constraint, and a `k_bas` lower bound below 15 d | the ≈ +0.02 parameter gain, and store realism |
 | 2 | CHIRPS–gauge merged rainfall (nb11 → 12 → 13 → 14) | **r, and therefore the dry phase** |
-| 3 | Extend the model period to 2008–2018. **Scoped: this needs a re-run, not new code.** nb11 §7 has no date clamp — it builds PET from whatever `era5land_ext_*` mosaics exist, and its readiness gate was the literal `len(ext) >= 108` (9 years), which is the only reason `forcing_minibacia_pet.csv` stops at 2017-12-31. All 132 mosaics are now on disk and the gate is updated to 132 (generator edited, **notebook not yet re-executed** — same generator/notebook drift convention as doc 17 §2.5) | 2008 spin-up + a 2018 validation year |
+| 3 | ~~Extend the model period to 2008–2018~~ **DONE (§14)** — nb11 and nb12 executed; P and PET both span 2008-01-01..2018-12-31 (4,018 days). Required rebuilding one internally corrupt ERA5 mosaic. Spin-up now comes from *inside* the period: use 2008, score 2009–2018 | closed |
 | 4 | Local-inertial routing for the Mompós / La Mojana reach. **Not to be implemented on current evidence** — celerity was swept 0.22 → 2.0 m/s and El Niño r moved < 0.016 ([doc 22 §4.6](22_dry_phase_diagnosis.md)). Carry it as a named limitation: celerity 0.221 m/s is a floodplain-storage surrogate for the Mompós reach, not a physical velocity | honesty about what the routing represents |
 | 5 | PET review against the 49 mm/yr basin ET deficit | the +5.6 % outlet PBIAS floor and the 18 infeasible gauges |
 | 6 | ~~`build_discharge_gauges.py:149-152` and `build_precip_gauges.py:62` rely on pandas date inference~~ **DONE** — both now detect per file/part via `src/dhime_dates.py`. All 98 precip files and 45 discharge parts proved ISO year-first; outputs content-identical, so nothing was silently transposed in these corpora. Recorded so the null result is not read as the fix being unnecessary | closed |
@@ -281,6 +300,10 @@ Recorded because each looked right before it was measured.
 | 8 | **Establish the provenance of the ~2,050 mm/yr basin reference** (§9.4) — uncited on both sides; his script says only "a published ~2,050", and CHIRPS itself sits +3.7 % above it. ~~Resolve the 9.5 % CHIRPS disagreement~~ **DONE (§9.5): our estimator is sound to 0.1 %; the gap is a period mismatch — interannual range is ±21 % and 2012–2015 gives 1,952 mm/yr. On the like-for-like window CHIRPS is 2,124.9 against IDW 2,174.3, +2.3 %, so a merge cannot close the ~8 % surplus** | using the reference as a validation target |
 | 9 | Advisor question, not a code question: the collaborator **drops** sparse gauges where we **repair** them. [doc 22 §4.7](22_dry_phase_diagnosis.md) makes gauge density the binding constraint on `r`, so his remedy worsens the quantity we identified as the ceiling, while ours retains stations that §9.3 shows are still biased. Neither approach is obviously right | the merge design in nb11 |
 
+| 17 | **`PET_READY = len(ext) >= 132` in nb11 counts filenames, not readable files** (§14.3). `era5land_ext_2008_M06.nc` was internally corrupt at normal size and passed both a name count and a size check. Replace with an open-and-read-a-timestep check | trusting any file-count gate |
+| 18 | **Re-run nb13 → nb14 on `model_inputs_v2/`**, with the pre-registered cells H1 (v1 forcing + new objective), H2 (v2 forcing + new objective), H3 (v2 + merge, only if the merge's LOOCV beats **r = 0.429**). Objective changes: `k_bas` bound below 15 d, `k_int < k_bas`, recession-signature term | **the answer** |
+| 19 | **The Phase 3 energy-floor criterion has a stale denominator.** It reads “≤ 5 of 61”; the calibration set is now **63** (§14.2), and [doc 23 §13.2](23_gauge_geometry.md) shows area — the rc denominator — is unreliable per gauge in both implementations. Restate on the subset whose areas agree, or drop it from the physical column | a criterion that measures delineation as much as forcing |
+| 20 | **CHIRPS merge not attempted** (§14). Quantile-map CHIRPS *to* the gauge distribution so volume stays gauge-controlled; gate on LOOCV beating 0.429. 41,180 fallback cells remain, nearest gauge median 16.3 km / max 71.5 km | the r ceiling of [doc 22 §4.7](22_dry_phase_diagnosis.md) |
 ---
 
 ## 9 — The forcing surplus: independent replication, and the repair audited
@@ -648,3 +671,138 @@ items above depend on:
 | The 14 residual energy-floor gauges: **2 EXCLUDE, 2 KEEP, 10 DOWN-WEIGHT**, rule declared before the numbers. Only 2 of 14 are our forcing; 8 of 14 have no rating curve; where curves exist R² runs 0.36–0.69 | [doc 23 §12](23_gauge_geometry.md) |
 | The **rc-reference circularity charge is refuted** — remapped and kept rc spreads are identical (log-SD ratio 1.009, Levene p = 0.76). The pre-authorised regional re-snap is therefore **not justified** | [doc 23 §13.1](23_gauge_geometry.md) |
 | **Catchment areas are unreliable per gauge in both implementations**: median ratio 0.991 over 85 shared gauges but 31 of 85 beyond 2×. Any t/km²/yr yield inherits this one-for-one | [doc 23 §13.2](23_gauge_geometry.md) |
+
+---
+
+## 14 — Phase 2 executed: the v2 forcing rebuild
+
+**The first forcing rebuild since the zero-suppression repair.** nb11 and nb12 both executed
+cleanly and are verified from their executed outputs, not from exit codes. Everything below is
+read out of the notebooks and `model_inputs_v2/manifest.json`.
+
+### 14.1 nb11 — rainfall and PET on the repaired gauge set
+
+| check | result |
+|---|---|
+| co-located merge | 3 merged (`24010140→2401500040`, `24030590→24035420`, `27015330→27015070`) → **291 gauges**; CATAM correctly refused |
+| **order-invariance** | **3 gauge-column shuffles, byte-identical field each time** — asserted *inside* the notebook |
+| forcing matrix | 4,018 days × 8,672 minibacias |
+| k=6 fallback cells | **41,180** (0.118 %), all filled by the k=20 pass, **0 remaining NaN** |
+| area-weighted areal mean, 2009–2017 | **2,036.4 mm/yr** |
+| ERA5-Land mosaics | **132 / 132 readable** (see §14.3) |
+| radiation | **17.2 MJ/m²/day** — inside the 15–22 band, low end, as a cloudy basin should be |
+| PET | **3.41 mm/day**, p1–p99 1.3–5.8 (sanity 3–5) |
+| **model period** | **2008-01-01 → 2018-12-31, 4,018 days** |
+| gauge-only LOOCV | **daily r median 0.429**, bias +1.7 %, RMSE 10.6 mm/day, 287 gauges |
+
+Two of these are worth more than a row in a table.
+
+**The areal mean reproduces the standalone harness to 0.1 mm/yr.** §10.5 predicted 2,036.4 mm/yr
+for 2009–2017 from a separate implementation with a different gauge-column order and the merge
+applied outside the notebook; nb11 landed on 2,036.4. The fallback-cell count matched too
+(41,180, against 41,504 unmerged). Two independent paths through the interpolation agreeing at
+that precision is a real check, not a restatement.
+
+**Open item 3 is closed.** PET now spans the full rainfall record, so the model period is no
+longer clipped to 2009–2017 by ERA5. That item had been open for four sessions.
+
+**The LOOCV baseline is banked before the merge exists.** r = 0.429 is the number the CHIRPS
+merge must beat, recorded now so the comparison cannot be constructed after the fact. For
+scale: [doc 22 §4.7](22_dry_phase_diagnosis.md) measured the model's El Niño anomaly correlation
+at 0.476 against a rainfall field whose own leave-one-out skill was ≈0.40.
+
+### 14.2 nb12 — the v2 model-input bundle
+
+Written to `model_inputs_v2/`; **the v1 bundle is untouched**, because H1 isolates the objective
+change by re-running the new objective on the old forcing and that is impossible if v1 has been
+overwritten.
+
+| check | result |
+|---|---|
+| period assertion | `DATES.equals(want)` → **True**, 4,018 days |
+| precip integrity | NaN 0, negative 0, max 265.4 mm |
+| area-weighted areal mean, 2008–2018 | **2,073.1 mm/yr** (§11.3 predicted 2,073.1) |
+| basin PET | **1,251.6 mm/yr** — the figure §3's energy floor has used since it was written |
+| CALAMAR outlet | 3,992 days, mean Q 7,433.4 m³/s, runoff depth 912.4 mm/yr |
+| smoke tests | 11 passed; 48 arrays documented in the manifest |
+| triage carried through | EXCLUDE **2** → `cls=excl_energy_floor`; DOWN-WEIGHT **10** → `gauge_weight=0.5`; KEEP **2** at full weight |
+| **primary calibration set** | **63 gauges** (56 mapping untouched, 7 re-snapped), 204,955 station-days |
+| weights inside the set | 53 at 1.0, 10 at 0.5; triage tally 51 `not_flagged` + 10 + 2 = 63 ✓ |
+
+**The calibration set grew to 63, and the prediction of 59 was wrong.** Every brief and note in
+this project had been arithmetic from a fixed pool of 61: 61 − 2 excluded = 59. But extending the
+window to 2008–2018 gave gauges that previously failed the `n_window` gates enough record to
+qualify, and that gain (+4 net) outweighed the exclusions. **A window change is not a filter on a
+fixed population; it changes the population.** The energy-floor criterion in the Phase 3 success
+list is stated as "≤ 5 of 61" and now has a different denominator.
+
+`gauge_weight = 0.5` is a **declared convention, not a measurement**, and is *exported rather
+than applied* so that notebook 14 can report results with and without it. The manifest says so
+in the array's own provenance entry.
+
+### 14.3 Corrections this rebuild forced
+
+Five things were believed and are not true. Four were caught only by executing.
+
+**1. `132/132` was a filename count.** `era5land_ext_2008_M06.nc` was **internally corrupt** —
+unreadable with `NetCDF: HDF error` at a perfectly normal 43.69 MB, so neither a name check nor a
+size check could see it. Opening all 132 and reading a timestep from each found exactly one bad
+file and no suspiciously small ones. Both mosaic sources were intact, so it was rebuilt from
+`era5land_basin_2008_M06.nc` + the strip with no CDS download; the corrupt file is quarantined in
+`data/raw/climate/_corrupt/`. **`PET_READY = len(ext) >= 132` in nb11 still has this hole** — it
+counts names. New open item 17.
+
+**2. `pd.read_csv` silently truncates the wide forcing CSVs.** This is the serious one.
+`forcing_minibacia_pet_v2.csv` is 4,018 × 8,673, ~180 MB. One `read_csv` returned **1,309 rows
+ending 2011-08-01**; another returned **3,630 rows ending 2017-12-08**. The file is provably
+complete: 4,019 lines, every line carrying exactly 8,672 commas, no NUL bytes, the row after each
+cut point intact and full width. No exception, no warning, non-deterministic cut point.
+
+The danger is the *shape* of the failure: the truncation is a contiguous **prefix**, so
+`len(date_range(min, max)) == len(df)` still held and nb12's own "calendar holes 0" check passed
+on it. Duplicate, monotonicity and shape checks would all have passed. The only thing that caught
+it was `assert DATES.equals(want)` — an assertion two stages downstream that compares against an
+*independently declared* period. Without it this rebuild would have produced a model calibrated on
+1,309 of 4,018 days with every diagnostic reporting clean.
+
+Fix: `src/forcing_npy.py` converts once to `.npy`, and the verification deliberately does not
+trust the parser that just lied — parsed row count is checked against the **file's own line count
+counted from raw bytes**, column count against the header's comma count. nb12 now loads `.npy`
+and **refuses to fall back to `read_csv`**, raising with the fix command instead. This also
+pre-satisfies Phase 3's memmap requirement.
+
+**3. `np.save` round-trips `datetime64[D]` as `datetime64[s]`, and `DatetimeIndex.equals()` is
+resolution-sensitive.** Identical instants at `[s]` and `[ns]` compare unequal, which failed the
+model-period assertion for no data reason. Cast to `[ns]` on load. Cheap, but it is the kind of
+thing that gets "fixed" by loosening the assertion — which is exactly what would have let
+correction 2 through.
+
+**4. The manifest's provenance strings had gone stale and would have misled.** It still read
+`"bounded_by": "ERA5-Land PET"` and *"rainfall exists for 2008 but PET does NOT; no 2008 PET was
+invented here"*, both now false. And `warmup_available_days` computes to **0** — factually
+correct, because the period now starts where the rainfall does, but it reads like a regression.
+The spin-up must now come from *inside* the period: **use 2008 as the warm-up year and score
+2009–2018.** Both strings were corrected and nb12 re-run so the shipped manifest is accurate.
+
+**5. The 63-vs-59 gauge count** (§14.2).
+
+### 14.4 The process failures, recorded because they cost more than the findings
+
+Seven executions failed before nb11 and nb12 landed. **Five were mine, and they reduce to two
+habits**, both of which the project's own conventions already warn about:
+
+* **Changed a domain without enumerating its consumers — three times.** Extracting nb11 §3 into
+  `src/idw_forcing.py` dropped four incidental locals (`Gv`, `Gf`, `obs`, `D`) that §6's LOOCV
+  read 90 lines away. Adding the `cls` value `excl_energy_floor` broke `CLS_COL`. Adding
+  `gauge_weight`/`triage` to `discharge.npz` tripped the manifest's `UNITS` gate. The static sweep
+  that finds all of these takes one command and I ran it only after paying for a failure.
+* **Verified the wrong artifact.** I added the `UNITS` entries to the *generator*, checked the
+  *generator*, and executed the *notebook* — which was stale. CLAUDE.md states the rule verbatim.
+
+Two guards were added rather than just patched around: `set(G.cls) - set(CLS_COL)` must be empty,
+so the next new class fails by name instead of as a `KeyError` inside a scatter call; and a
+pre-launch check that the **generated notebook** contains the fix, not the generator.
+
+nb12's own `assert k in UNITS, '...refusing to ship it'` deserves credit — it named the exact
+array and refused to write an undocumented field into the bundle. The guards in this repo work;
+I was the one not reading them.

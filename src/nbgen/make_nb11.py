@@ -45,13 +45,32 @@ for b in [pathlib.Path.cwd()] + list(pathlib.Path.cwd().parents):
 proc = REPO/'data'/'processed'; clim = REPO/'data'/'raw'/'climate'
 sys.path.insert(0, str(REPO/'src'))
 import idw_forcing as idwf          # the ONE interpolator: doc 18 s11, open item 13
+km = idwf.km                       # section 6's LOOCV needs the same distance function
 
-# repaired dataset: 55 zero-suppressed stations fixed by
-# src/repair_precip_zero_suppression.py (see notebook 10, section 1)
+# v2 dataset: the zero-suppression repair FINISHED - 153 stations, 240,158 inferred-dry
+# station-days (src/repair_precip_selectivity.py, doc 18 s10). Sparse-band selectivity
+# 1.777 -> 1.040 with the dense band held at 1.001, and the area-weighted basin mean
+# 2,174.3 -> 2,036.4 mm/yr for 2009-2017.
+VERSION = 'v2'
 gauges = (pd.read_csv(proc/'precip_gauges_inventory_qc.csv', dtype={'code': str})
             .dropna(subset=['lat', 'lon']).reset_index(drop=True))
-daily = pd.read_csv(proc/'precip_gauges_daily_qc.csv', dtype={'code': str}).dropna(subset=['precip_mm'])
+daily = pd.read_csv(proc/'precip_gauges_daily_qc_v2.csv', dtype={'code': str}).dropna(subset=['precip_mm'])
 daily['date'] = pd.to_datetime(daily['date'])
+
+# Co-located gauges, classified by what the records do on days they BOTH report rather
+# than by distance (doc 23 s11.2). Two duplicate codes and one sequential instrument
+# replacement are merged; the CATAM pair is refused as a coordinate error and is held
+# out by idw_forcing.NEVER_MERGE so no threshold change can resurrect it.
+_cls = idwf.classify_colocated(gauges, daily)
+print('co-located gauge clusters within 500 m:')
+print(_cls[['a', 'b', 'dist_m', 'n_both', 'mean_abs_diff_mm', 'corr', 'kind', 'do_merge']]
+      .to_string(index=False))
+daily, gauges, _mlog = idwf.merge_colocated(daily, gauges, _cls)
+gauges = gauges.reset_index(drop=True)
+if len(_mlog):
+    print(f'merged {len(_mlog)} gauge(s): '
+          + ', '.join(f'{r.dropped}->{r.merged_into}' for r in _mlog.itertuples()))
+print(f'gauge set after merge: {len(gauges)}')
 mb = pd.read_csv(proc/'minibacias.csv')
 
 with rasterio.open(proc/'minibacias.tif') as src:
@@ -205,6 +224,15 @@ print('order-invariance: 3 gauge-column shuffles, byte-identical field each time
 P, n_gap, gap, dk6 = idwf.idw_field(G, gauges.lat.values, gauges.lon.values,
                                     cent.lat.values, cent.lon.values, return_detail=True)
 filled = int(n_gap - np.isnan(P).sum())
+
+# Section 6's leave-one-out cross-validation re-uses these intermediates. They used to be
+# incidental locals of the interpolator that lived in this cell; now that the interpolator
+# is a module, bind them explicitly so the dependency is visible instead of implicit.
+Gv = G.values.astype('float32')          # observed gauge matrix, days x gauges
+obs = ~np.isnan(Gv)                      # which gauge reported on which day
+Gf = np.where(obs, Gv, 0.0).astype('float32')
+D = km(cent.lat.values[:, None], cent.lon.values[:, None],
+       gauges.lat.values[None, :], gauges.lon.values[None, :])
 
 print(f'forcing matrix: {P.shape[0]} days x {P.shape[1]} minibacias')
 print(f'  k=6 NaN cells        : {n_gap:,} ({100*n_gap/P.size:.3f} %)')
@@ -552,16 +580,32 @@ code(r"""if PET_READY:
 # ---------------------------------------------------------------- 9 export
 md(r"""## 9 - Export the MGB forcing tables""")
 
-code(r"""Pdf.index.name = 'date'
-Pdf.to_csv(proc/'forcing_minibacia_precip.csv', float_format='%.2f')
-cent.to_csv(proc/'forcing_minibacia_provenance.csv', index=False)
-print(f'forcing_minibacia_precip.csv      {Pdf.shape[0]} days x {Pdf.shape[1]} minibacias')
-print(f'forcing_minibacia_provenance.csv  {len(cent)} rows  '
-      f'(cols: {", ".join(cent.columns)})')
+code(r"""# v2 is written ALONGSIDE v1. The v1 files stay on disk because notebook 14's
+# attribution needs both: H2 isolates the effect of the repair by re-running the SAME
+# objective on the OLD forcing, which is impossible if v1 has been overwritten.
+SUF = f'_{VERSION}'
+Pdf.index.name = 'date'
+Pdf.to_csv(proc/f'forcing_minibacia_precip{SUF}.csv', float_format='%.2f')
+cent.to_csv(proc/f'forcing_minibacia_provenance{SUF}.csv', index=False)
+print(f'forcing_minibacia_precip{SUF}.csv      {Pdf.shape[0]} days x {Pdf.shape[1]} minibacias')
+print(f'forcing_minibacia_provenance{SUF}.csv  {len(cent)} rows')
+
+_areal = None
+if 'area_km2' in mb.columns:
+    _a = mb.set_index('id')['area_km2'].reindex(Pdf.columns.astype(int)).to_numpy(float)
+    _P = Pdf.to_numpy(float)
+    _areal = (_P * _a).sum() / (len(_P) * _a.sum()) * 365.25
+    _yr = Pdf.index.year
+    _m = (_yr >= 2009) & (_yr <= 2017)
+    _areal_9917 = (_P[_m] * _a).sum() / (_m.sum() * _a.sum()) * 365.25
+    print(f'\nAREA-WEIGHTED basin mean rainfall (the comparable figure; a gauge mean is not):')
+    print(f'  {Pdf.index.min().date()}..{Pdf.index.max().date()}  {_areal:.1f} mm/yr')
+    print(f'  2009-2017 (like-for-like)              {_areal_9917:.1f} mm/yr'
+          f'   [v1 was 2174.3, gauge-only v2 2036.4]')
 if PET_READY:
     PETdf.index.name = 'date'
-    PETdf.to_csv(proc/'forcing_minibacia_pet.csv', float_format='%.2f')
-    print(f'forcing_minibacia_pet.csv         {PETdf.shape[0]} days x {PETdf.shape[1]} minibacias')
+    PETdf.to_csv(proc/f'forcing_minibacia_pet{SUF}.csv', float_format='%.2f')
+    print(f'forcing_minibacia_pet{SUF}.csv         {PETdf.shape[0]} days x {PETdf.shape[1]} minibacias')
     print(f'\nmodel period (P and PET both available): '
           f'{common.min().date()} -> {common.max().date()}  ({len(common)} days)')""")
 
@@ -575,8 +619,10 @@ a measured cross-validation baseline, Penman-Monteith PET, and a first water-bal
 1. **The ungauged 17 %.** Flag `C` minibacias are extrapolated. Section 6 quantifies the cost: in the
    `>30 km` band, daily *r* falls to ~0.27 and bias rises to ~+12 %, against ~0.45 and ~+1 % where
    gauges are dense. That is the specific, measured case for adding CHIRPS to those minibacias.
-2. **Period mismatch.** Gauges span 2008-2018, ERA5-Land 2009-2017. The model run is bounded to
-   **2009-2017** by PET, not by rainfall.
+2. **Period mismatch - closed in this run.** Gauges span 2008-2018 and all 132 ERA5-Land
+   monthly mosaics (2008-2018) are now present, so PET is built over the full span and the model
+   period is no longer bounded below the rainfall record. The printed model period above is the
+   authority; if it still reads 2009-2017 then `PET_READY` was False and the mosaics are incomplete.
 3. **`dia pluviometrico` offset.** Gauge days run 07:00->07:00 local; discharge is very likely
    midnight->midnight. Notebook 10's lag test showed a one-day realignment doubles the CHIRPS-gauge
    correlation (0.14 -> 0.29), confirming the convention is real and material. It does not affect
