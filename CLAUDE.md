@@ -9,9 +9,12 @@ study: La Niña 2011 (wet) vs El Niño 2015–16 (dry). UMNG internship, advisor
   (zero-suppressed gauges!), development errors, and a traps reference (ERA5/DHIME/IDW pitfalls that
   produce plausible wrong numbers). Do not touch precipitation or ERA5 code before reading §6.
 - `docs/17_discharge_qc_audit.md` — discharge counterpart (if present).
-- `docs/18_hydrology_journal.md` — Phase B record **and the dry-phase diagnosis**. Read §4 before
-  touching calibration: all three standing hypotheses for the El Niño failure were measured and
-  refuted (one was backwards), and the binding constraint is the rainfall field, not any parameter.
+- `docs/22_dry_phase_diagnosis.md` — **read before touching calibration.** All three standing
+  hypotheses for the El Niño failure were measured and refuted (one was backwards); the binding
+  constraint is `r ≈ 0.57`, inherited from the rainfall field, not any parameter.
+- `docs/18_hydrology_journal.md` — the Phase B record: verdict (§5), refuted claims (§6), traps
+  (§7), open items (§8), and the forcing follow-up (§9–§12: surplus, zero-suppression repair,
+  deterministic IDW, energy-floor gauge triage).
 - `docs/progress_journal.md` — chronological log.
 
 ## Phase status
