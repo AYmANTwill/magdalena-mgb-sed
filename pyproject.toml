@@ -1,0 +1,11 @@
+# Project metadata only. This repository is a research pipeline, not an installable
+# package: dependencies are pinned in requirements.txt / environment.yml, and the
+# code is run in place (scripts in src/, generated notebooks in notebooks/).
+
+[project]
+name = "magdalena-mgb-sed"
+version = "0.1.0"
+description = "MGB-SED suspended-sediment modelling of the Magdalena-Cauca basin (Colombia), ENSO contrast study: La Nina 2011 (wet) vs El Nino 2015-16 (dry). UMNG internship."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }  # MIT (per the LICENSE file at the repo root)

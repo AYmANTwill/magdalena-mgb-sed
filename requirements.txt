@@ -1,7 +1,39 @@
-numpy>=1.24
-matplotlib>=3.7
-xarray>=2024.0
-netCDF4>=1.6
-jupyter
-nbformat
+# Pinned to the versions installed on the project box (python3.10 -m pip freeze, 2026-08-03).
+# Only packages the pipeline actually imports (src/, src/nbgen/, notebooks, watch_calib.py).
 # QGIS 3.44 LTR + plugins (IPH-HydroTools, MGB, MGB-SED) are installed separately, not via pip.
+
+# core numerics / tables
+numpy==2.2.1
+pandas==2.2.3
+scipy==1.14.1
+numba==0.66.0
+
+# gridded / geospatial
+xarray==2025.6.1
+netCDF4==1.7.4
+rasterio==1.4.4
+geopandas==1.1.4
+shapely==2.1.2
+pyproj==3.7.1
+affine==2.4.0
+pyflwdir==0.5.11
+pysheds==0.5
+
+# data acquisition (ERA5 / DHIME / SoilGrids / CHIRPS)
+cdsapi==0.7.7
+requests==2.32.3
+OWSLib==0.35.0
+
+# plotting / deliverables
+matplotlib==3.9.2
+python-pptx==1.0.2
+
+# notebooks: nbgen generators write .ipynb via nbformat; execution is headless
+# `python -m nbconvert --to notebook --execute` (jupyter is not on PATH)
+nbformat==5.10.4
+nbconvert==7.16.6
+nbclient==0.10.4
+ipykernel==6.29.5
+
+# testing
+pytest==9.0.3

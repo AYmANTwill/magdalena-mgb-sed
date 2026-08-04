@@ -1,0 +1,40 @@
+# Conda mirror of requirements.txt (same pins). Create with:
+#   conda env create -f environment.yml
+name: magdalena-mgb-sed
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.10
+  # core numerics / tables
+  - numpy=2.2.1
+  - pandas=2.2.3
+  - scipy=1.14.1
+  - numba=0.66.0
+  # gridded / geospatial
+  - xarray=2025.6.1
+  - netcdf4=1.7.4
+  - rasterio=1.4.4
+  - geopandas=1.1.4
+  - shapely=2.1.2
+  - pyproj=3.7.1
+  - affine=2.4.0
+  - pyflwdir=0.5.11
+  # data acquisition
+  - cdsapi=0.7.7
+  - requests=2.32.3
+  - owslib=0.35.0
+  # plotting / deliverables
+  - matplotlib=3.9.2
+  - python-pptx=1.0.2
+  # notebooks (headless execution via `python -m nbconvert`)
+  - nbformat=5.10.4
+  - nbconvert=7.16.6
+  - nbclient=0.10.4
+  - ipykernel=6.29.5
+  # testing
+  - pytest=9.0.3
+  - pip
+  - pip:
+      # conda-forge lags upstream for pysheds; pin the pip build used on the project box
+      - pysheds==0.5

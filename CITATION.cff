@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+type: software
+title: "MGB-SED suspended-sediment modelling of the Magdalena-Cauca basin"
+version: 0.1.0
+date-released: "2026-08-03"
+license: MIT
+authors:
+  - given-names: "TODO"  # TODO: full name (repository owner, "TWILL" in docs/14)
+    family-names: "TODO"
+  - given-names: "TODO"  # TODO: full name (colleague, "yben409" in docs/14)
+    family-names: "TODO"
+  - given-names: "Omar"  # TODO: full name ("Omar" in docs/14)
+    family-names: "TODO"
+references:
+  - type: article
+    title: "TODO: full article title (resolve via the DOI below)"
+    authors:
+      - family-names: "Fagundes"
+        given-names: "TODO"  # TODO: full given names; cited as "Fagundes et al. (2026)"
+    journal: "International Soil and Water Conservation Research"
+    volume: 14
+    year: 2026
+    doi: "10.1016/j.iswcr.2025.11.007"
+    notes: "Article 100599"
