@@ -22,15 +22,40 @@ All five build results report completed==true, so all five areas get committed.
 
 ## Plan checklist
 
-- [ ] Step 0: journal created; inspect git status / check-ignore
-- [ ] Decide fate of tracked MGB_SA_hydrology_Magdalena.pptx (housekeeping issue: new *.pptx
-      ignore rule does not untrack it)
-- [ ] Commit 1: housekeeping + standing items
-- [ ] Commit 2: packaging
-- [ ] Commit 3: docs
-- [ ] Commit 4: engine (et-stress)
-- [ ] Commit 5: forcing (chirps-merge)
-- [ ] Final: git status --short shows no unexpected staged leftovers
+- [x] Step 0: journal created; inspect git status / check-ignore
+- [x] Decide fate of tracked MGB_SA_hydrology_Magdalena.pptx — untracked via
+      `git rm --cached` in commit 1 (see DECISION below)
+- [x] Commit 1: housekeeping + standing items — 37a1ab9, 16 files (4957+/189-):
+      .gitignore, MGB_SA_hydrology_Magdalena.pptx (deleted from index), docs/24, docs/27,
+      docs/28, 6 journals, presentation_guide.html, scripts/{build_deck,
+      extract_notebook_figures,make_deck_charts}.py, watch_calib.py. <=40 files OK.
+- [x] Commit 2: packaging — 869df28, 11 files (453+/6-): CITATION.cff, CONTRIBUTING.md,
+      Makefile, environment.yml, pyproject.toml, requirements.txt, tests/conftest.py +
+      4 test modules. <=40 files OK.
+- [x] Commit 3: docs — b660ec4, 5 files (397+/9-): CLAUDE.md, docs/19, docs/20 (new),
+      docs/21 (new), docs/progress_journal.md. <=40 files OK.
+- [x] Commit 4: engine (et-stress) — 80a7c10, 2 files (102+/13-): src/calib_v2.py,
+      src/mgb_hydrology.py. <=40 files OK.
+- [x] Commit 5: forcing (chirps-merge) — 542d5f6, 2 files (531+): docs/18_hydrology_journal.md,
+      src/merge_chirps_gauges.py (new). merge_loocv_report.csv NOT staged (data/, gitignored).
+      <=40 files OK.
+- [x] Final: `git status --short` shows nothing staged; only two unstaged, EXPECTED
+      leftovers: Protocolo_descarga_PRECIPITACION.docx (explicitly forbidden from
+      staging) and this journal (modified after being committed in 37a1ab9 — it is a
+      living crash-recovery record; later per-commit entries postdate that commit).
+
+## Final summary
+
+Five commits, oldest first:
+1. 37a1ab9 chore: make presentation deck regenerable; ignore deck artifacts (16 files)
+2. 869df28 chore: pin dependencies, add packaging metadata, citation, and a pytest suite (11 files)
+3. b660ec4 docs: close the documentation debt — docs/19 corrections, docs/20+21 added (5 files)
+4. 80a7c10 feat: FAO-56 threshold ET stress (opt-in) + pre-registered cell H2E (2 files)
+5. 542d5f6 forcing: CHIRPS-gauge merge built and rejected by pre-registered gates (2 files)
+
+No push performed (per rules). Nothing from data/, *.pptx, figures/deck/, or the
+Protocolo docx was staged at any point (verified via git check-ignore and per-commit
+`git status --short` before each commit).
 
 ## Log
 
