@@ -42,3 +42,8 @@ Never stage: data/ (gitignored), *.pptx, figures/deck, the .docx, watch_calib.py
   wave 1 (H1 x4) verified running at 456-457 MB/worker.
 - About to stage explicit paths (doc 29, queue runner, all docs/agents journals) and
   commit 'ops: detach seed-expansion queue, agent journals, closeout fixes'. No push.
+- COMMITTED: 8d477b7, 6 files changed, 531 insertions(+), 9 deletions(-). Post-commit
+  git status --short shows only ' M Protocolo_descarga_PRECIPITACION.docx' — excluded
+  by instruction, expected. Not pushed (per task). NOTE: this final journal line is
+  intentionally left uncommitted (committing it would dirty the tree again forever);
+  the substantive log above IS in 8d477b7. — commit-2 signing off, 2026-08-03.

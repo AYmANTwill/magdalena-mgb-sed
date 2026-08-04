@@ -149,3 +149,28 @@ history. Ground rules and reading order:
 
 State your plan against the open items in docs/21 s4 before writing code.
 ```
+
+
+## Addendum (2026-08-03, post-handoff): a calibration queue is RUNNING
+
+Written after the section above. A detached seed-expansion queue was launched and survives
+any session closing (runner PID 26784 at launch; irrelevant after reboot — use the checks
+below, not the PID):
+
+- **Jobs (pre-registered in docs/29):** H1 seeds 20260903–06, H2 seeds 20260903–06,
+  H2E seeds 20260901–02 — budget 1000 evaluations each, max 4 concurrent workers,
+  ~16–20 h total from 2026-08-03 ~20:40.
+- **Monitor:** `python watch_calib.py` from the repo root (workers are `python3.10.exe`;
+  `tasklist` filtered on `python.exe` shows NOTHING while they run).
+- **Completed vs stale:** the four 20260901/02 H1+H2 runs from earlier are COMPLETE;
+  watch_calib correctly marks them stale.
+- **If the queue died** (crash/reboot): checkpoints in `data/processed/_calib_cache/`
+  resume with an RNG-replay assertion — follow docs/29, do not hand-relaunch jobs, and
+  never run two launchers at once (three racing batches happened once).
+- **When done:** pool 6 seeds per cell and apply the docs/29 decision rules —
+  (a) H2 vs H1 separated iff |mean gap| > max(seed spread); (b) H2E success = kc_mult
+  < 1.85 on both seeds AND recession ≤ 1.5× AND mean F within 0.01 of H2.
+- **CHIRPS merge (docs/18 §15):** LOOCV gate PASSED (r 0.447 vs 0.429 — first measured
+  lift on r in the project) but the volume gate FAILED (+7.5 %), so it was rejected under
+  the pre-registered rule. The identified fix: fit the quantile maps on the repaired
+  series including inferred-dry days, then re-run both gates.
