@@ -24,6 +24,11 @@ study: La Niña 2011 (wet) vs El Niño 2015–16 (dry). UMNG internship, advisor
   pre-registered cells. H2 − H1 settles it: the repair moved volume (β −0.044, PBIAS −4.4 pts) and
   left correlation untouched (r +0.003), so volume and correlation are independent and the
   CHIRPS-gauge merge is the only remaining lever. Read §5.1 before quoting any fitted parameter.
+- `docs/20_reproduction_guide.md` — how to rebuild everything not versioned: environment, the full
+  regeneration chain, gitignored artifacts, calibration monitor/resume, and the traps index.
+- `docs/21_project_state_and_handoff.md` — current state for a newcomer: the three calibration
+  attempts, H2 − H1, the r-ceiling, renumbered open items, the advisor question, and a paste-ready
+  prompt for a fresh session.
 - `docs/progress_journal.md` — chronological log.
 
 ## Phase status
@@ -65,6 +70,9 @@ python -m nbconvert --to notebook --execute --inplace notebooks/<nb>.ipynb
   (`C:\Program Files\7-Zip\7z.exe`) for archives and ≥4 MB read chunks.
 - Commit style: `<area>: <summary>` (e.g. `precip: ...`), body explains the why; push to
   `origin main`. `data/`, `data_Final/`, `delivery/` are gitignored (regenerable).
+- `figures/deck/` and `*.pptx` are regenerable (`scripts/`), gitignored.
+- `watch_calib.py` monitors DDS searches; `python3.10.exe` is the worker process name
+  (`tasklist` for `python.exe` reports nothing while searches run).
 - Before trusting any station dataset: check for *absent* records (zero-suppression), not just
   outlier values — value screens structurally cannot see missing data. Neighbour-ratio tests catch
   what per-station statistics miss.

@@ -4,6 +4,39 @@ Dated log of understanding and realization. **Updated at each new step.** Newest
 
 ---
 
+## 2026-08-03 — Documentation closeout: docs/19 corrections, docs/20 + 21 written
+
+The documentation-debt push from doc 25 stage 5, so the repo explains itself with no
+conversation history:
+
+- **docs/19 — both FLAWED items fixed, marked `[corrected 2026-08-03]` in place.**
+  (1) `calibration_safe` is now stated honestly: a **geometry-and-name screen only**
+  (minibacia mapping + BOCATOMA/CANAL regex + two structural exclusions) with **no
+  SSC-quality gate** — two "safe" stations have ρ ≈ 0 over thousands of paired days, and
+  Phase C must add an explicit SSC-quality gate before using the flag (§3.7, §1, §5.1, §6).
+  (2) The flatline-threshold null was recomputed: the published "0.00037 % expected vs
+  0.354 % observed = 952× excess" used a whole-record shuffle that mixes rating-table eras.
+  It reproduces (0.0003 %, 20 replicates) but is the wrong null: local-quantisation nulls
+  give 0.030 % (within-year) to 0.234 % (within-14-day) — the published null understated by
+  **~80–630×**, and the honest excess is **~1.5–12×**. N = 5 now rests on the physical
+  argument (SSC has no storage memory) plus N = 10's vacuity, not on 952×. The same flawed
+  wording survives in a `src/build_sediment_gauges.py` comment (~lines 105–107), left for
+  the next edit of that file.
+- **docs/20_reproduction_guide.md written** — environment (pinned `requirements.txt` /
+  `environment.yml`), the full regeneration chain (precip QC v1→v2→selectivity, discharge,
+  CHIRPS/ERA5, nbgen-generated nb10/11, nb12→13→14), how every gitignored artifact rebuilds
+  (`data/`, `figures/deck/` via scripts/extract_notebook_figures.py + make_deck_charts.py,
+  `*.pptx` via scripts/build_deck.py), calibration monitoring/resume (`watch_calib.py`;
+  checkpoint + verified RNG replay in `src/calib_v2.py`), and the traps index.
+- **docs/21_project_state_and_handoff.md written** — the three attempts (VAL KGE
+  0.450/0.421/0.346; recession 2.98×/0.96×/1.01×), H2 − H1 (PBIAS −4.44 pts, r +0.0033:
+  volume and correlation are independent), the r-ceiling result (12 configs r 0.556–0.572;
+  LOOCV 0.429; anomaly r 0.476; inter-gauge 0.33 at 0–25 km vs ~30 km spacing), 12
+  renumbered open items, the advisor question (docs/24 item 17), the presentation
+  deliverables, and a paste-ready prompt for a fresh session.
+- **CLAUDE.md updated**: pointers to docs/20 and 21; conventions for regenerable deck
+  artifacts and the `python3.10.exe` worker-name trap.
+
 ## 2026-07-28 — Sediment-data reality found on DHIME (pivotal for Q1/Q2)
 
 Investigated IDEAM DHIME + the national station catalogue for suspended-sediment coverage of 2011 and 2015–2016:
