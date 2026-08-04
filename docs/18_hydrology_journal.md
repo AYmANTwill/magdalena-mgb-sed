@@ -809,3 +809,74 @@ I was the one not reading them.
 
 | 21 | **The day-of-year climatology benchmark is not reproducible from doc 22 §4.1's description** ([doc 26 §6](26_phase3_refit.md)). Rebuilt as a (month,day) mean over the whole scored record it is **harder by +0.051 to +0.117 KGE** than the recorded one, so the primary criterion's absolute targets (+0.12 / +0.24) are not testable like-for-like. Either recover the original construction or restate the criterion in its ratio form | comparing any future run against the pre-registered target |
 | 22 | **A constrained ordering relocates the compensation rather than removing it** ([doc 26 §5.1](26_phase3_refit.md)). Imposing `k_int < k_bas` by reparameterisation worked exactly as designed and the search responded by railing `k_sup` above `k_bas` instead. Any further ordering constraint must be justified against this, not asserted | reading H2's parameter set as physically meaningful |
+
+---
+
+## 15 - The CHIRPS-gauge merge: built, validated, and NOT adopted
+
+*(Phase 3 follow-up to s9.4/s9.5 and doc 22 s4.7. Implementation `src/merge_chirps_gauges.py`;
+per-gauge scores `data/processed/merge_loocv_report.csv`; run journal
+`docs/agents/journal_chirps-merge.md`. No forcing file was written - v2 stands.)*
+
+The merged field was the one intervention measured capable of moving r (doc 22 s4.7). It was
+built exactly as nb10's verdict prescribed: CHIRPS quantile-mapped **to the gauge distribution**
+per (elevation band x hydrographic zone) stratum - gauges keep control of volume, CHIRPS supplies
+structure - lag-aligned by -1 day (nb10's dia-pluviometrico test), blended by
+distance-to-nearest-gauge weight (pure gauge IDW under 10 km, pure mapped CHIRPS beyond 30 km,
+linear between, matching the G/GC/GC provenance bands), with the 41,180 k=6-silent fallback
+minibacia-days taken by mapped CHIRPS. Deterministic; order-invariance asserted by shuffle test.
+
+### 15.1 The two gates, pre-registered before the run
+
+The decision rule, quoted from the task as registered in the run journal before any number
+existed: *"ADOPT if merged median r > 0.429 by any margin AND the volume gate holds; otherwise
+DO NOT ADOPT"* - the volume gate being an area-weighted basin mean, 2009-2017 window, within 1 %
+of the v2 gauge-only 2,036.4 mm/yr. Justification by r, never by volume.
+
+| gate | result |
+|---|---|
+| baseline self-check | LOOCV protocol reproduced nb11 s6 exactly: **287 gauges, median daily r 0.429** |
+| **LOOCV gate** | merged median daily r **0.447** (> 0.429) - **PASSES**. Baseline-mask-only diagnostic 0.449 |
+| **VOLUME gate** | merged, area-weighted, **2009-2017: 2,188.5 mm/yr** vs target 2,036.4 +/-1 % - **FAILS (+7.5 %)**. 2008-2018 window: 2,219.2 mm/yr (trap 9: window attached) |
+| **decision** | **DO NOT ADOPT.** LOOCV scored on 2008-2018 station-days; both gates were required |
+
+### 15.2 What the LOOCV actually showed
+
+| isolation band | n | r gauge-only | r merged |
+|---|---|---|---|
+| < 10 km (w_chirps = 0) | 98 | 0.481 | 0.475 |
+| 10-30 km (blend) | 169 | 0.426 | **0.449** |
+| > 30 km (pure mapped CHIRPS) | 20 | 0.343 | **0.300** |
+
+Per gauge: 149 improved, 51 worsened, 87 unchanged (median per-gauge delta 0.000 - the median
+*shift* 0.429 -> 0.447 lives almost entirely in the 10-30 km blend band). Two findings worth
+keeping even though the field was rejected:
+
+* **The blend genuinely helps at intermediate isolation** (+0.023 median at 10-30 km): CHIRPS
+  errors are partly independent of interpolation errors, so mixing raises correlation there.
+* **Pure mapped CHIRPS is WORSE than k=6 IDW even beyond 30 km** (0.300 vs 0.343). The gap-fill
+  argument for CHIRPS - highest value where no gauge is in range - is refuted at the gauges we
+  can test. CHIRPS point skill (raw r 0.31, nb10) is simply below even long-range IDW here.
+
+### 15.3 Why the volume gate failed by +7.5 % when the map targeted the gauge distribution
+
+The quantile maps were fitted on **paired station-days** - days the gauge reported. s9.3 showed
+139 of 294 stations still report rain-selectively after the repair (sparse-band selectivity
+1.734). A reporting-day distribution is therefore **wetter than the all-days truth** at those
+stations; the map faithfully transferred that wet-conditioned distribution onto CHIRPS, and the
+merged field then applied it to *every* day. The gauge-only IDW largely dodges this because a
+silent gauge simply drops out of the day's weighted mean, while the mapped CHIRPS carries the
+bias everywhere the blend weight is non-zero - concentrated in the sparsely gauged (wet, high)
+terrain where w -> 1. The failure is thus the *same* defect s9.3 left open, resurfacing through
+a new channel: **finishing the zero-suppression repair on the 139 residual stations is upstream
+of any usable CHIRPS merge**, exactly as s9.4 predicted from the volume side.
+
+### 15.4 Consequence
+
+v2 remains the forcing. The r ceiling of doc 22 s4.7 stands unmoved for now; the measured +0.018
+median LOOCV gain says a merge *could* buy roughly that much daily skill in the blend band, but
+not until its volume can be held - either by conditioning the quantile maps on inferred-complete
+records only, or by repairing the remaining rain-selective stations first. A v3 calibration was
+never launched (it would need an nb12 rebuild and a new pre-registered cell; recorded as
+follow-up in the run journal). A negative result under a pre-registered rule is a finding: the
+gate did precisely the job it was registered to do.
