@@ -25,7 +25,7 @@ reconciled by choosing — see §4.1 and §4.6.
 | Date parsing | ✅ **Fixed and guarded.** `src/dhime_dates.py` proves the format per file from field values; **39,815 station-days recovered** (§3.1) |
 | Unit handling | ✅ CM converted `Kg/m3 → mg/L` (×1000); CS already `mg/l`. **Silent factor-1000 hazard, now explicit** (§3.2) |
 | Gauge→minibacia mapping | ❗ **28 of 79 mappable** (inherited from the doc-17 re-snap); 46 have no coordinates at all, so no snap of any kind is possible |
-| Calibration-safe SSC stations | **24** (28 mapped − 4 BOCATOMA intakes, per doc 17 §5.1) — **73,264 clean paired SSC+Q days** |
+| Calibration-safe SSC stations | **24** (28 mapped − 4 BOCATOMA intakes, per doc 17 §5.1) — **73,264 clean paired SSC+Q days**. **[corrected 2026-08-03]** the flag is a **geometry-and-name screen only**, with **no SSC-quality gate** — see §3.7 |
 | ENSO contrast as designed (2011 vs 2015-16) | ⚠️ **Only 6 bridging stations**, and the one mainstem anchor sees **0 days** of the El Niño side (§3.8) |
 | Mainstem SSC | ❗ One upper-Magdalena anchor (21.0 % of basin area), **nothing below it, nothing at the outlet** (§3.9) |
 | **Phase C (sediment)** | **Unblocked as a data problem, bounded as a science problem.** The data exist; §3.9 states what they cannot answer |
@@ -239,10 +239,25 @@ stations. Worst share of record at N ≥ 10: `24037040` **1.04 %** (not 4.2 %), 
 **Consequence: `24037040` does *not* "fail two independent tests".** It fails only the corrupt-value
 test (§6). The "fails two tests" framing was an artefact of counting duplicated rows.
 
-That N = 5 is the right threshold was established against a null, not asserted: a **within-station
-value shuffle** (preserving each station's exact value multiset, hence its quantisation coarseness)
-puts the chance expectation at N ≥ 5 at 0.00037 % against 0.354 % observed — a **952× excess**; at
-N ≥ 7 the null is 0 in 20 replicates.
+**[corrected 2026-08-03 — the original null here was wrong by ~600×; changelog: this paragraph
+replaced the claim "shuffle expectation 0.00037 % vs 0.354 % observed = 952× excess; N ≥ 7 null is
+0 in 20 replicates".]** The original justification tested N = 5 against a **whole-record**
+within-station value shuffle. That is the wrong null: it permutes values across rating-table eras,
+and a 40-year record can be coarsely quantised *within* any era while holding hundreds of distinct
+values *overall*, so cross-era shuffling collapses the repeat probability. The original figures do
+reproduce under that flawed null (re-measured, 20 replicates: 0.0003 % at N ≥ 5, and 0-in-20 at
+N ≥ 7) — but against nulls that preserve **local** quantisation the excess shrinks steadily as the
+permutation window tightens: within-year 0.030 % (11.7× excess), within-90-day 0.108 % (3.3×),
+within-30-day 0.193 % (1.8×), within-14-day 0.234 % (1.5×). The published 0.00037 % therefore
+understates the honest local null by **~80–630×**, and at N ≥ 7 the within-30-day null expects
+225 days against 373 observed (1.66×) — not zero. **The honest justification for N = 5 is the
+physical and empirical argument alone**: SSC has no storage memory, so the discharge N = 10 does
+not transfer; N = 10 is near-vacuous here (143 days, 4 stations); and the flag ships as a *column*
+(`flag_flatline`, `flatline_run_len`), deleting nothing, so any caller can re-threshold. The
+statistical excess over a local-quantisation null is **~1.5–3×** — enough to say flatlining exists
+above chance, not enough to pick N = 5 over its neighbours. (The same flawed-null wording survives
+in a comment block in `src/build_sediment_gauges.py` lines ~105–107; it is out of this document's
+edit scope and should be fixed when that file is next touched.)
 
 ### 3.5 A 06:00-timestamp provenance splice at 4 stations — **CONFIRMED, unreported until now**
 
@@ -293,6 +308,21 @@ n = 274 its ρ is weakly determined, so this is the one entry here rated **UNCER
 Both figures are shipped with their definitions, because *matching* the established 28-station number
 is not the same as being *right*: reporting only 28 would silently carry four diversion works into a
 river-sediment calibration set.
+
+**[corrected 2026-08-03 — changelog: earlier wording let "calibration-safe" read as a data-quality
+verdict; this paragraph states what the flag actually is.] What `calibration_safe` does and does not
+screen.** As computed in `src/build_sediment_gauges.py` and shipped in `sediment_inventory.csv`, the
+flag is exactly: *has a minibacia from the doc-17 re-snap* AND *not an excluded distributary* AND
+*station name does not contain BOCATOMA/CANAL* AND *not one of the two doc-17 §5.1 structural
+exclusions* AND *code in zones 21–29*. That is a **geometry-and-name screen — nothing more**. It
+does **not** screen SSC quality in any way: no SSC–Q consistency test (two safe-24 stations sit at
+ρ ≈ 0 over thousands of paired days, §3.6), no flatline or quantisation gate (§3.4), no exclusion of
+the 1996 zone-29 defect segments (§3.3), no handling of the 06:00 provenance splice (§3.5), no
+rating-history check. A station can pass the flag with a physically incredible SSC record, and
+§3.6 proves two do. **Phase C must add an explicit SSC-quality gate on top of this flag before using
+it for anything** — at minimum the §5.1 masks (1996 segments, splice segments, the ρ ≈ 0 stations
+pending rating-history checks) encoded as a scripted, machine-readable step (§5.2 item 4), not
+inherited implicitly from the flag's name.
 
 ### 3.8 ENSO calibration design: the 2011-vs-2015-16 contrast is the **weakest** of the four candidate pairings — **CONFIRMED, and it is the reason a second ENSO cycle matters**
 
@@ -554,7 +584,10 @@ genuine extra part is the loose `concentracion_diaria_santander.csv`.
 ### 5.1 Station disposition before sediment calibration *(the plain-language answer)*
 
 **Usable now — 24 calibration-safe stations, 73,264 clean paired SSC+Q days**, with `flag_corrupt`,
-`flag_zero` and `flag_flatline` (N ≥ 5) masked as missing. Best-constrained: `26127010` EL ALAMBRADO
+`flag_zero` and `flag_flatline` (N ≥ 5) masked as missing. **[corrected 2026-08-03]** "calibration-safe"
+means the geometry-and-name screen of §3.7 only — the masks and exclusions in the rest of this
+subsection ARE the missing SSC-quality gate and must be applied on top; the flag alone applies none
+of them. Best-constrained: `26127010` EL ALAMBRADO
 (ρ = 0.715), `21147030` CARRASPOSO (0.680), `26167060` PAILA LA (0.618). Primary mainstem anchor:
 `21237020` ARRANCAPLUMAS (54,035 km², ρ = 0.457) — **but only for periods ending before
 2015-08-31** (§3.8).
@@ -661,10 +694,10 @@ Every value recomputed in-session; those marked † were reproduced by two indep
 | Corrupt | **1** station-day: `24037040` 2018-05-19, 1.9687 × 10⁸ mg/L (a 10⁶ slip); ceiling insensitive over [32,001, 1.9687 × 10⁸] |
 | Zeros | **385** station-days at **17** stations (756 raw rows) † |
 | Flatlines | N ≥ 5: **952 d / 28 st (0.354 %)** · N ≥ 7: 373 / 13 · N ≥ 10: **143 / 4** · longest run **22 d** (`24037040`, 1.04 % of its record) |
-| Flatline null | within-station shuffle: 0.00037 % expected vs 0.354 % observed at N ≥ 5 = **952× excess** |
+| Flatline null | **[corrected 2026-08-03]** whole-record shuffle (flawed — mixes rating eras) gave 0.0003 % and the old **952×** claim; local-quantisation nulls give 0.030–0.234 % → honest excess **~1.5–12×** (§3.4) |
 | Established flatline claim | 23 st / 4.2058 % — **reproduced only pre-dedup with row-adjacency**; it is an artefact (§3.4) |
 | Zones | 21:18 · 22:5 · 23:9 · 24:15 · 25:3 · 26:18 · 28:3 · 29:8 = **79, all in-basin** |
-| Mapping | **28 of 79 mapped** · 4 are BOCATOMA intakes → **24 calibration-safe** · 46 have **no coordinates** · 5 zone-29 discharge stations still unmapped |
+| Mapping | **28 of 79 mapped** · 4 are BOCATOMA intakes → **24 calibration-safe** (geometry-and-name screen only, no SSC-quality gate — §3.7 **[corrected 2026-08-03]**) · 46 have **no coordinates** · 5 zone-29 discharge stations still unmapped |
 | Paired SSC+Q | all: **103,283 d / 33 st** (clean 102,895) · mapped-28: 92,190 / 28 (91,981) · **safe-24: 73,265 / 24 (73,264)** |
 | SSC–Q Spearman ρ | 33 stations ≥ 100 clean paired days: **median 0.340**, range **−0.019 … 0.715**; 3 stations at ρ ≈ 0 (§3.6) |
 | **ENSO bridging stations** | 2011 vs 2015-16 **6** · 2009-10 vs 2011 **10** · **1997-98 vs 1999-2000 10** · 2009-10 vs 2015-16 6 |
@@ -678,7 +711,7 @@ Every value recomputed in-session; those marked † were reproduced by two indep
 | Terminal-year collapse | SSC stations ≥ 1 d: 2015 **28** → 2016 **12** → 2017 **14** → 2018 45; **safe paired: 2016 = 4 st / 772 d, 2017 = 2 st / 376 d** |
 | 2018 outside the forcing window | 45 SSC stations · 11 safe paired · **2,420 clean paired days** unusable until the forcing is extended |
 | Verification | 22 pre-data smoke tests + 24 independent output checks + 14 date-module smoke tests, **all passing**; 25/25 file agreement between the two date detectors |
-| Defects found in our own work | **3**: the vacuous `_corroborate_monotonic` cross-check, the `n_mean_days` corrupt-row omission, and 4 established figures corrected (§3.1, §3.4, §4.2, §4.6) |
+| Defects found in our own work | **5**: the vacuous `_corroborate_monotonic` cross-check, the `n_mean_days` corrupt-row omission, 4 established figures corrected (§3.1, §3.4, §4.2, §4.6), **[corrected 2026-08-03]** the flatline shuffle null wrong by ~600× (§3.4), and the `calibration_safe` overclaim (§3.7) |
 | **Realistic performance bar** | **SSC KGE −0.26 … 0.44** (Fagundes et al. 2026, in-situ data, **25 years** of calibration) — we have 6 bridging stations and 9 forcing years |
 
 **The two sentences to carry forward.** *First:* **prove the date format from the data before parsing
