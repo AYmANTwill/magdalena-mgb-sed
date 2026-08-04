@@ -39,10 +39,32 @@ Two nested resolutions, exactly as notebook 03 section 5 prescribes:
        W   += Pthr - Dsup
        if W > Wm:  Dsup += W - Wm;  W = Wm      # nb03's second, "bucket-full" term
 
-3. Evapotranspiration, limited by BOTH demand and supply (nb03 s.1)::
+3. Evapotranspiration, limited by BOTH demand and supply.  Two stress modes:
+
+   ``et_stress='linear'`` (**default**, nb03 s.1 verbatim)::
 
        ET = min(kc * PETsoil * (W/Wm), W)
        W -= ET
+
+   ``et_stress='fao56'`` (FAO-56 threshold form, Allen et al. 1998 ch. 8; added for
+   the H2E calibration cell, docs/22 s4.6)::
+
+       ET = min(kc * PETsoil * min((W/Wm)/theta_crit, 1), W)
+       W -= ET
+
+   i.e. ET stays at the potential rate until soil moisture falls below the critical
+   fraction ``theta_crit`` and only then declines linearly to zero.  Why it exists:
+   the linear form throttles ET even in moist soil, and the H1/H2 refits compensated
+   by railing ``kc_mult`` at ~2 - beyond any FAO-56 crop coefficient (docs/26 s5.1).
+   Why ``linear`` remains the default: every stored run (nb13, nb14, sim_baseline*,
+   sim_calibrated*) was produced with it, so changing the default would silently
+   break comparability with everything on record; the FAO-56 form is opt-in and the
+   default path shares no code with the new branch.
+   Rejected alternative - replacing the linear form outright: it would re-run history
+   through a different model and make every archived F incomparable.
+   Rejected alternative - searching ``theta_crit`` in calibration: one change at a
+   time; H2E fixes it at 0.6 (FAO-56's typical p for a standard crop) so any movement
+   in ``kc_mult`` is attributable to the functional form alone.
 
 4. Percolation out of the soil column.  Two modes:
 
@@ -400,6 +422,12 @@ class MgbParams:
     b: object = 0.6
     #: crop/vegetation coefficient on PET.  1.0 = nb03 exactly (ET = ETp * W/Wm).
     kc: object = 1.0
+    #: soil-moisture stress on ET: 'linear' (nb03, default) | 'fao56' (threshold form,
+    #: ET potential until W/Wm < theta_crit).  See module docstring, item 3.
+    et_stress: str = "linear"
+    #: 'fao56' only: critical moisture fraction, per URH (scalar or length-24), in (0, 1].
+    #: 0.6 is FAO-56's typical depletion threshold; ignored when et_stress='linear'.
+    theta_crit: object = 0.6
 
     # ---- canopy -----------------------------------------------------------
     #: leaf area index per URH.  0.0 = interception switched off => literal nb03.
@@ -437,6 +465,14 @@ class MgbParams:
             raise ValueError("percolation must be 'linear' or 'mgb'")
         if self.reservoir not in ("exact", "euler"):
             raise ValueError("reservoir must be 'exact' or 'euler'")
+        if self.et_stress not in ("linear", "fao56"):
+            raise ValueError("et_stress must be 'linear' or 'fao56'")
+        tc = np.asarray(self.theta_crit, dtype=np.float64)
+        if not np.all(np.isfinite(tc)) or np.any(tc <= 0.0) or np.any(tc > 1.0):
+            raise ValueError(
+                "theta_crit must be finite and lie in (0, 1]: 0 would divide by zero "
+                "and > 1 would throttle ET even at saturation, i.e. below 'linear'"
+            )
 
     # -- expansion ---------------------------------------------------------
 
@@ -452,6 +488,7 @@ class MgbParams:
         if np.any(b < 0):
             raise ValueError("b must be >= 0")
         kc = _as_urh(self.kc, "kc")[u]
+        theta_crit = _as_urh(self.theta_crit, "theta_crit")[u]
         simax = (_as_urh(self.alpha_int, "alpha_int") * _as_urh(self.lai, "lai"))[u]
         if np.any(simax < 0):
             raise ValueError("alpha_int * lai must be >= 0")
@@ -505,6 +542,8 @@ class MgbParams:
             c_bas=_release_coef(kb, self.reservoir),
             c_ch=_release_coef(tau, "exact"),
             percolation=self.percolation,
+            et_stress=self.et_stress,
+            theta_crit=theta_crit,
         )
 
 
@@ -543,6 +582,8 @@ class _Expanded:
     c_bas: np.ndarray
     c_ch: np.ndarray
     percolation: str
+    et_stress: str
+    theta_crit: np.ndarray
 
 
 # ---------------------------------------------------------------------------
@@ -643,7 +684,16 @@ def _vertical_step(ex: _Expanded, st: MgbState, p_cell: np.ndarray, pet_cell: np
     w = w - exc
 
     # --- 3. evapotranspiration: min(demand, supply) --------------------
-    et_soil = np.where(ex.wm_pos, np.minimum(ex.kc * pet_soil * (w / ex.wm_safe), w), 0.0)
+    # The two stress modes share NO arithmetic: the 'linear' expression below is the
+    # original line, untouched, so the default path is provably unchanged (the H2E gate
+    # asserts bit-identical output).  ET happens in this one place only - the numba
+    # backend accelerates ROUTING, not the vertical balance - so this branch covers
+    # every backend.
+    if ex.et_stress == "linear":
+        et_soil = np.where(ex.wm_pos, np.minimum(ex.kc * pet_soil * (w / ex.wm_safe), w), 0.0)
+    else:  # 'fao56': potential ET until W/Wm < theta_crit, then linear to zero
+        stress = np.minimum((w / ex.wm_safe) / ex.theta_crit, 1.0)
+        et_soil = np.where(ex.wm_pos, np.minimum(ex.kc * pet_soil * stress, w), 0.0)
     w = w - et_soil
 
     # --- 4. percolation ------------------------------------------------

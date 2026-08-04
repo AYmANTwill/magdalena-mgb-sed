@@ -7,6 +7,12 @@ Notebook 14 runs two pre-registered cells:
     H1 = v1 forcing + the NEW objective    -> isolates the objective change
     H2 = v2 forcing + the NEW objective    -> isolates the zero-suppression repair
 
+A third pre-registered cell was added after the H1/H2 verdict (docs/26):
+
+    H2E = H2 + FAO-56 threshold ET stress  -> isolates the ET stress function
+          (et_stress='fao56', theta_crit FIXED at 0.6 - not searched; hypothesis:
+          kc_mult comes off its ~2.0 rail at no material cost in F)
+
 with two DDS seeds each.  Four independent searches, each ~1 core.  They are run
 CONCURRENTLY with `concurrent.futures.ProcessPoolExecutor`, and on Windows that means
 `spawn`: the worker entry point has to be importable from a module, not defined in a
@@ -98,6 +104,16 @@ CELLS = {
                scored=('2009-01-01', '2017-12-31')),
     'H2': dict(bundle='model_inputs_v2', label='H2  v2 forcing + new objective',
                scored=('2009-01-01', '2018-12-31')),
+    # H2E = H2 + the FAO-56 threshold ET stress (mgb_hydrology et_stress='fao56'),
+    # theta_crit FIXED at 0.6, not searched - one change at a time, so any movement in
+    # kc_mult is attributable to the functional form alone.  Pre-registered hypothesis
+    # (docs/22 s4.6, docs/26 s5.1): with the threshold form, kc_mult comes off its rail
+    # (< 90 % of range; H1 hit 1.98, H2 1.90 of [0.5, 2.0]) at no material cost in F.
+    # `cache='H2'`: bundle and period are identical to H2, so the cell READS H2's
+    # forcing cache instead of writing a duplicate ~100 MB copy into _calib_cache.
+    'H2E': dict(bundle='model_inputs_v2', label='H2E v2 forcing + new objective + FAO-56 ET',
+                scored=('2009-01-01', '2018-12-31'), cache='H2',
+                et_stress='fao56', theta_crit=0.6),
 }
 WU_SPAN = ('2008-01-01', '2008-12-31')
 
@@ -410,15 +426,20 @@ class Cell:
         # cast the unit: the cache stores datetime64[D] and date_range yields [ns];
         # DatetimeIndex.equals compares resolution, so without this the two are unequal
         # while printing identically.
-        cdates = pd.DatetimeIndex(np.load(CACHE / f'{name}_dates.npy')
+        ckey = spec.get('cache', name)      # H2E reads H2's cache (same bundle + period)
+        cdates = pd.DatetimeIndex(np.load(CACHE / f'{ckey}_dates.npy')
                                   .astype('datetime64[ns]'))
         assert cdates.equals(self.D_FULL), (
             f'{name}: cache date axis {cdates[0].date()}..{cdates[-1].date()} '
             f'({len(cdates)}) != declared {self.D_FULL[0].date()}..'
             f'{self.D_FULL[-1].date()} ({len(self.D_FULL)})')
-        self.P_MM = np.load(CACHE / f'{name}_precip.npy', mmap_mode='r')
-        self.E_MM = np.load(CACHE / f'{name}_pet.npy', mmap_mode='r')
+        self.P_MM = np.load(CACHE / f'{ckey}_precip.npy', mmap_mode='r')
+        self.E_MM = np.load(CACHE / f'{ckey}_pet.npy', mmap_mode='r')
         assert self.P_MM.shape[0] == len(self.D_FULL)
+
+        # --- ET stress mode of this cell (H2E; everything else stays 'linear') --------
+        self.ET_STRESS = spec.get('et_stress', 'linear')
+        self.THETA_CRIT = float(spec.get('theta_crit', 0.6))
 
         ids = self.TOP['minibacia_id'].astype(np.int64)
         self.ids = ids
@@ -551,7 +572,8 @@ class Cell:
             wm_mini=wm, b=bsh, kc=self.KC0 * v['kc_mult'],
             lai=self.LAI0 * v['lai_mult'], alpha_int=self.ALPHA_INT,
             adr=adr, fint=fint, percolation='linear', reservoir='exact',
-            k_sup=ks, k_int=ki, k_bas=kb, tau_channel=tau)
+            k_sup=ks, k_int=ki, k_bas=kb, tau_channel=tau,
+            et_stress=self.ET_STRESS, theta_crit=self.THETA_CRIT)
 
     def eq_state(self, params, p_mean, e_mean, n_bis=60):
         """Mean-field equilibrium start, re-solved for the candidate parameters.
@@ -562,16 +584,27 @@ class Cell:
         ex = params.expand(self.TOPO)
         cm = self.CELL_MINI
         pc, ec = p_mean[cm], e_mean[cm]
+
+        # The equilibrium must use the SAME ET stress function as the engine, or a
+        # fao56 candidate would start from the linear model's equilibrium and burn
+        # warm-up correcting an inconsistency this solver exists to remove.
+        if ex.et_stress == 'fao56':
+            def _et(m):
+                return ex.kc * ec * np.minimum(m / ex.theta_crit, 1.0)
+        else:
+            def _et(m):
+                return ex.kc * ec * m          # the original linear term, verbatim
+
         lo = np.zeros_like(pc)
         hi = np.ones_like(pc)
         for _ in range(n_bis):
             mid = .5 * (lo + hi)
-            pos = (pc * np.power(np.maximum(1 - mid, 0), ex.b) - ex.kc * ec * mid
+            pos = (pc * np.power(np.maximum(1 - mid, 0), ex.b) - _et(mid)
                    - ex.adr * ex.wm * mid) > 0
             lo = np.where(pos, mid, lo)
             hi = np.where(pos, hi, mid)
         x = .5 * (lo + hi)
-        resid = float(np.abs(pc * np.power(np.maximum(1 - x, 0), ex.b) - ex.kc * ec * x
+        resid = float(np.abs(pc * np.power(np.maximum(1 - x, 0), ex.b) - _et(x)
                              - ex.adr * ex.wm * x).max())
         drain = ex.adr * x * ex.wm
         fr = self.CELL_FRAC
@@ -673,15 +706,21 @@ def ensure_cache(cell_name, build_h1_warmup=None, verbose=True):
     """
     CACHE.mkdir(parents=True, exist_ok=True)
     spec = CELLS[cell_name]
+    ckey = spec.get('cache', cell_name)     # H2E resolves to H2's files (same forcing)
     dfull = pd.date_range(WU_SPAN[0], spec['scored'][1], freq='D')
-    fp = CACHE / f'{cell_name}_precip.npy'
-    fe = CACHE / f'{cell_name}_pet.npy'
-    fd = CACHE / f'{cell_name}_dates.npy'
+    fp = CACHE / f'{ckey}_precip.npy'
+    fe = CACHE / f'{ckey}_pet.npy'
+    fd = CACHE / f'{ckey}_dates.npy'
     if fp.exists() and fe.exists() and fd.exists():
-        got = pd.DatetimeIndex(np.load(fd))
+        # cast the unit exactly as Cell.__init__ does: the cache stores datetime64[D],
+        # date_range yields [ns], and DatetimeIndex.equals compares resolution - without
+        # the cast this check is always False and the cache is silently REWRITTEN on
+        # every call (observed 2026-08-03: an ensure_cache('H2E') rewrote the H2 files
+        # with identical content; harmless only because the write is deterministic).
+        got = pd.DatetimeIndex(np.load(fd).astype('datetime64[ns]'))
         if got.equals(dfull):
             if verbose:
-                print(f'{cell_name}: cache present, {len(got)} d')
+                print(f'{cell_name}: cache present ({ckey}), {len(got)} d')
             return
     MI = PROC / spec['bundle']
     frc = np.load(MI / 'forcing.npz')
