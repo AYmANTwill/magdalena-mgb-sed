@@ -38,3 +38,7 @@ cds_keys.txt
 
 # Claude Code: share project config, keep personal overrides local
 .claude/settings.local.json
+
+# regenerable presentation artifacts
+figures/deck/
+*.pptx

@@ -1,268 +1,289 @@
-# Presentation outline — MGB-SED / Magdalena (hydrology phase)
+# Presentation outline — MGB-SED Magdalena–Cauca: hydrological calibration
 
-**Audience:** Prof. F. J. Briceño-Zuluaga (UMNG). **Language:** English. **~18 slides.**
-**Supersedes `docs/14_presentation_plan.md`**, which was written in July and describes data
-collection as the current frontier. It is now four phases out of date.
+**Audience:** Prof. F. J. Briceño-Zuluaga (UMNG). **Language:** English. **~18 slides, ~30 min.**
+**Team of three.** Everything in this deck is *our* work — spoken as "we" throughout. The two
+model implementations are two arms of one project, not two people's projects.
 
-**The spine of this deck.** July's deck had to answer *"how do you plan to do all this?"*
-This one answers *"what did you find, and how do you know it is true?"* Every results slide
-carries the measurement that supports it, and the honest limits are on their own slides
-rather than buried.
+**Scope: the deck stops at our attempts to calibrate the hydrological model.** It reports what
+we tried, what each attempt measured, and where we now stand. It does **not** claim a finished
+calibration, and the sediment phase appears only as outlook.
 
-`[+COLLEAGUE]` marks the slots for Youssef's repo when it arrives.
+**The spine.** July's deck answered *"how do you plan to do all this?"* This one answers
+*"what did you try, what did it measure, and how do you know?"* Every results slide carries
+its measurement. The limits get their own slides rather than footnotes.
 
 ---
 
 ## A — Framing (3 slides, ~4 min)
 
 ### 1. Title
-MGB-SED suspended-sediment modelling of the Magdalena–Cauca basin: an ENSO contrast.
-Authors (you + Youssef) · Advisor: Briceño-Zuluaga · UMNG · date.
-One basin map. Method transferred from **Fagundes et al. (2026)**, *Int. Soil Water
-Conserv. Res.* 14, 100599 (Guaíba basin, Brazil).
+**MGB-SED suspended-sediment modelling of the Magdalena–Cauca basin: an ENSO contrast.**
+Team of three · Advisor: Prof. Briceño-Zuluaga · UMNG · August 2026.
+One basin map. Method transferred from **Fagundes et al. (2026)**, *Int. Soil Water Conserv.
+Res.* 14, 100599 (Guaíba basin, Brazil).
 
 ### 2. The question
-- Magdalena: **257,097 km²**, one of the world's highest specific sediment yields.
-- ENSO drives strong interannual variability: **La Niña 2011 (+1.7σ wet)** vs
-  **El Niño 2015–16 (−1σ dry)** — year choice taken from our own anomaly analysis, not
-  from the literature.
-- The gap: the ENSO–sediment link is documented observationally (Restrepo), never
-  reproduced with a **process-based distributed** model over the whole basin.
-- **Objective:** reproduce and *explain* the flux difference, with spatial attribution.
+- Magdalena–Cauca: **257,097 km²**, among the world's highest specific sediment yields.
+- Strong ENSO control. Our own anomaly analysis fixes the contrast years:
+  **La Niña 2011 (+1.7σ wet)** vs **El Niño 2015–16 (−1σ dry)**.
+- The gap: the ENSO–sediment link is documented observationally (Restrepo), never reproduced
+  with a **process-based distributed** model across the whole basin.
+- **Objective:** reproduce *and explain* the flux difference, with spatial attribution.
 
-### 3. What this talk covers
-- **Phase A** model inputs — complete.
-- **Phase B** hydrology and discharge calibration — the body of this talk.
-- **Phase C** sediment — blocked on mainstem SSC data quality; outlook only.
-- Rationale in one line: **hydrology must be calibrated before sediment**, and MUSLE is
-  driven by *runoff*, not rainfall — so the discharge model is the load-bearing component.
+### 3. Where we are, honestly
+- **Phase A — model inputs: complete.**
+- **Phase B — hydrology: calibrated, three attempts, not yet closed.** This is the talk.
+- **Phase C — sediment: blocked** on mainstem SSC data quality.
+- Why in this order: **MUSLE is driven by runoff, not rainfall**, so the discharge model is
+  the load-bearing component. Calibrating sediment on an uncalibrated hydrology would fit
+  erosion parameters to water-balance error.
 
 ---
 
-## B — What was built (4 slides, ~6 min)
+## B — What we built (4 slides, ~6 min)
 
 ### 4. Roadmap
-One master flowchart: `DEM → minibacias → URH → soil/veg parameters → rainfall + PET
-forcing → water balance → routing → discharge → [MUSLE → sediment]`.
-Dashed arrows = calibration data. This is the map for the rest of the talk.
-*Reuse the notebook-04 / README diagram.*
+Master flowchart: `DEM → minibacias → URH → soil & vegetation parameters → rainfall + PET
+forcing → water balance → routing → discharge → [MUSLE → sediment]`. Dashed arrows =
+calibration data. *Reuse the notebook-04 / README diagram.*
 
 ### 5. Spatial discretisation
 - **8,672 minibacias** (D8 on Copernicus 30 m DEM), outlet at Calamar.
 - **24 URH types** = 3 IGAC soil-texture families × 8 hydrological land classes.
-- Per-minibacia soil storage `Wm` from IGAC: median **72.6 mm**, range 13.5–255 mm.
-- Verification: outlet upstream area **257,096.93 km²** against a sum-of-own-areas of
-  **257,096.93** — two independent accumulators agreeing to **1.8e-8 km²**, zero
+- Per-minibacia soil storage from IGAC: median **72.6 mm**, range 13.5–255 mm.
+- Verified: outlet upstream area **257,096.93 km²** against a sum of own areas of
+  **257,096.93** — two independent accumulators agreeing to **1.8×10⁻⁸ km²**, zero
   area-monotonicity violations.
 
-### 6. The engine
-- MGB-IPH water balance: ARNO saturation-excess runoff `Asat/A = 1−(1−W/Wm)^b`, three
-  linear reservoirs (surface / subsurface / groundwater), Muskingum X=0 channel routing.
-- Python implementation, vectorised + numba: **full 4,018-day basin run in 11.7 s**.
-- **Mass-balance residual 1.67e-17** relative; the clip never fires.
-- **numpy vs numba routers: max |ΔQ| exactly 0.** Chunked vs single-shot: 0.
-  Single-day restart: 0.
-- Speaker note: MGB-SA proper is a QGIS plugin. This engine is the *diagnostic* that makes
-  calibration affordable — 11.7 s per run against 1,510 s for a full hydrodynamic run.
+### 6. **Two implementations — the team's main methodological asset**
 
-### 7. Model period and the split
-- **2008-01-01 → 2018-12-31, 4,018 days.** 2008 warms up, **2009–2018 is scored**.
-- Warm-up verified: three mutually incompatible initial states converge to within
-  **0.179 %** of mean flow.
-- **Klemeš (1986) differential split-sample:** calibrate on *neutral* years only, so
-  **both ENSO phases are strictly out-of-sample**. The ENSO contrast is therefore a
-  **prediction**, not a fit. This is the single most important design decision in the deck.
+| | implementation A | implementation B |
+|---|---|---|
+| channel routing | Muskingum X = 0 | **local-inertial + floodplain** (Bates 2010) |
+| run time | **11.7 s** / 4,018 days | **1,510 s** / trial |
+| what it enables | **4,000-evaluation calibration search** | the paper's actual physics, Depresión Momposina |
+| calibrated KGE (median) | **0.346 – 0.450** | **0.329** (90 gauges) |
+
+- Deliberate division: **A buys search, B buys physics.** A 774-run search on B would take
+  13 days; A does 4,000 evaluations overnight.
+- **They agree to within ~0.02 KGE from independent codebases, independent forcing pipelines
+  and different routing.** That is a genuine cross-validation, and it is worth more than
+  either number alone.
+- Speaker note: MGB-SA proper is a QGIS plugin; A is our fast diagnostic engine.
+
+### 7. Model period and the split — *the slide that makes every later number credible*
+- **2008-01-01 → 2018-12-31, 4,018 days.** 2008 warms up, **2009–2018 is scored.**
+- Warm-up verified: three mutually incompatible initial states converge to within **0.179 %**
+  of mean flow.
+- **Klemeš (1986) differential split-sample:** we calibrate on **neutral years only**, so
+  **both ENSO phases are strictly out-of-sample.** The ENSO contrast is a **prediction**, not
+  a fit.
+- Overfitting check: cal→val degradation **−0.159**, only **0.011** worse than an unfitted
+  model.
 
 ---
 
-## C — Results (5 slides, ~8 min)
+## C — Three calibration attempts (5 slides, ~9 min)
 
-### 8. Calibration skill
-Table — validation, median over the calibration-safe gauge set:
+### 8. What we tried, and what each attempt bought
 
-| | KGE | NSE | PBIAS |
-|---|---|---|---|
-| uncalibrated | 0.227 | −0.39 | +46.1 % |
-| **calibrated** | **0.450** | **+0.256** | **+6.8 %** |
+| attempt | forcing | objective | **VAL KGE** | **recession ratio** | params at a bound |
+|---|---|---|---|---|---|
+| **1 — Config B** | original | daily KGE blend | **0.450** | **2.98×** too slow | 3 of 10 |
+| **2 — H1** | original | + recession term | 0.421 | **0.96×** | 2 |
+| **3 — H2** | repaired | + recession term | 0.346 | **1.01×** | 3 |
 
-- DDS search, **4,000 evaluations** across two pre-registered configurations × two seeds.
-- Independent consistency check: two unrelated routes to the basin runoff coefficient
-  agree — **0.440** from the water balance against **0.435** from the gauge fleet.
-- Speaker note: quote Fagundes' *sediment* KGE range of **−0.26 to 0.44** for scale — but
-  say plainly that ours is a *discharge* number and the two are not comparable.
+- DDS, **4,000 evaluations**, two pre-registered configurations × two seeds, pre-registered
+  *before* running so no cell is a post-hoc pick.
+- Reference points on the objective scale: prior 0.128, random sampling 0.173, attempt 1 0.243.
 
-### 9. Report against a benchmark, not raw NSE
-The dry phase looked catastrophic (NSE −0.078) until we scored a fixed benchmark:
+### 9. **The central result: fixing the physics costs skill**
+Attempt 1 reproduced discharge well but with a recession **3× too slow** — we measured
+observed recession constants of **9.5–11.9 days** against a simulated **27–45 days**.
 
-| period | model KGE | climatology KGE | **model − clim** |
-|---|---|---|---|
-| La Niña 2011 | 0.399 | 0.162 | **+0.236** |
-| El Niño 2015–16 | 0.193 | 0.168 | **+0.024** |
+Adding a recession-signature term to the objective:
 
-- A perfect day-of-year climatology *also* scores **NSE −0.062** in the El Niño window,
-  because that window has the record's highest observed CV (0.799).
-- **NSE is not comparable across windows with different observed variance.** About a third
-  of the apparent failure was the metric.
-- The defensible statement is the last column: **+0.024 against +0.236 — a real and large
-  asymmetry, but not "worse than the mean".**
-
-### 10. Diagnosing the dry phase: three hypotheses, all refuted
-Rebuilt the calibrated parameters in memory and re-ran the engine **30 times**, one factor
-at a time — the harness reproduced the stored discharge to **9.1e-9** before it was allowed
-to interpret anything.
-
-| hypothesis | verdict | measurement |
+| | attempt 1 | attempt 2 |
 |---|---|---|
-| gauges under-report in the dry season | **backwards** | 18 of 18 failing gauges have observed runoff coefficient *below* its floor — the forcing is too **wet**, not the gauges too dry |
-| baseflow constant needs regionalising | refuted | buys **+0.021** KGE against a 0.206 gap; the *level* is wrong by 3.5×, not the regionalisation |
-| rainfall wet-day inflation bites hardest when dry | refuted | **+18.9 / +17.7 / +18.9** points in La Niña / El Niño / neutral — period-invariant |
+| recession ratio | 2.98× | **0.96×** — essentially exact |
+| VAL KGE | 0.450 | 0.421 |
+| **El Niño skill over climatology** | **−0.026** | **+0.026** |
 
-Message for the advisor: **each one looked right before it was measured, and each was
-recorded as refuted.** The repo carries a standing register of refuted claims.
+- **We traded 0.029 KGE for a recession that is right, and for the dry phase turning from
+  worse-than-climatology to better.**
+- Message: a higher KGE bought by a physically wrong recession is not the better model. This
+  is the deck's main argument, and it is why we report the ratio alongside the skill.
 
-### 11. Data defects found — and why value screens cannot see them
-- **Zero-suppressed gauges:** stations omit dry days entirely, so mean rainfall scaled with
-  how often the observer wrote anything down — **4.4 mm/day** at >90 % reporting vs
-  **11.7 mm/day** below 50 %. *"A 2.9× spread as a function of reporting frequency is not
-  geography."*
-- The detector that worked uses only the **neighbours'** data, so it has a calibrated null:
-  **1.001** on 89 dense stations (unbiased, as required), **1.777** on the sparse band.
+### 10. Did repairing the rainfall help? — a controlled test
+Attempt 3 changes **only** the forcing, on matched gauges and a matched window:
+
+| H2 − H1 | change |
+|---|---|
+| **PBIAS** | **8.85 % → 4.41 %  (−4.44 points)** |
+| **r (correlation)** | **+0.0033 — essentially zero** |
+| KGE | −0.022 |
+| gauges with KGE > 0 | **+2** |
+
+- **The repair fixed volume and did not touch correlation.** We predicted this before running
+  it, and the number came back +0.003.
+- That is not a disappointment — it is the confirmation that **volume error and correlation
+  error are independent problems in this basin**, which tells us where to spend effort next.
+
+### 11. The data defects we had to fix first
+- **Zero-suppressed gauges.** Stations omit dry days entirely, so mean rainfall scaled with
+  how often the observer wrote anything: **4.4 mm/day** at >90 % reporting vs **11.7 mm/day**
+  below 50 %. *A 2.9× spread as a function of reporting frequency is not geography.*
+- Our detector uses only the **neighbours'** records, so it has a **calibrated null**: 1.001
+  on 89 dense stations (unbiased, as required) against **1.777** on the sparse band.
 - Repair: **153 stations, 240,158 inferred-dry station-days.** Sparse-band selectivity
-  **1.777 → 1.040** with the dense band held at **1.001** — the control that proves no
-  over-repair.
-- Basin areal rainfall **2,174.3 → 2,036.4 mm/yr**; energy-floor failures **18 → 14**.
-- **The transferable lesson:** test for *absent* records, not just outlier values. An
-  outlier screen structurally cannot see a record that was never written.
+  **1.777 → 1.040**, dense band held at **1.001** — the control proving no over-repair.
+- Basin areal rainfall **2,174 → 2,036 mm/yr**; energy-floor violations **18 → 14**.
+- **The transferable lesson:** test for *absent* records, not just outlier values. An outlier
+  screen structurally cannot see a record that was never written.
+- **Independent corroboration within the team:** our two pipelines detected the same rainfall
+  surplus from opposite directions — actual ET breaking through potential ET (1,659 vs 1,239
+  mm/yr) in one, runoff coefficients falling below their energy floor at 18 of 18 failing
+  gauges in the other.
 
 ### 12. Verification as a first-class activity
-Four defects that only executing the code could reveal — good for the "how do you know"
-question:
+Four defects only *executing* the code could reveal:
 - **A silently truncating CSV reader.** On a 180 MB, 4,018 × 8,673 table, `pandas` returned
   **1,309** rows on one call and **3,630** on another, from a provably complete file, with
   **no exception**. The cut is a contiguous *prefix*, so length, monotonicity, duplicate and
-  calendar-gap checks all pass on it. **Only an assertion against an independently declared
-  period caught it** — without which this work would have calibrated on 1,309 of 4,018 days
-  with every diagnostic green.
+  calendar-gap checks all pass on it. Only an assertion against an **independently declared
+  period** caught it — without which we would have calibrated on 1,309 of 4,018 days with
+  every diagnostic green.
 - **A non-deterministic interpolator.** Three gauge pairs share exact coordinates, so the
-  neighbour set was resolved by *column order* — shuffling it moved up to **83 minibacias
-  by 20.5 mm/day**. Now fixed and asserted order-invariant.
-- **"132 of 132 files present" was a filename count.** One ERA5 mosaic was internally
-  corrupt at a perfectly plausible 43.7 MB.
+  neighbour set was resolved by *column order*; shuffling it moved up to **83 minibacias by
+  20.5 mm/day**. Fixed, and now asserted order-invariant on every run.
+- **"132 of 132 files present" was a filename count.** One ERA5 mosaic was internally corrupt
+  at a plausible 43.7 MB.
 - Two gauges 5 cm apart in the catalogue were **not duplicates** — correlation 0.756 across
-  1,470 shared days. A distance-based merge rule would have destroyed a real record.
+  1,470 shared days. A distance-based merge rule would have silently destroyed a real record.
+
+Plus the standing guarantees: **mass-balance residual 1.67×10⁻¹⁷**, and two independent
+routing back-ends agreeing to **max |ΔQ| = 0**.
 
 ---
 
-## D — The finding (2 slides, ~4 min) — *this is the scientific contribution*
+## D — The finding (2 slides, ~4 min) — *the scientific contribution*
 
 ### 13. The model is at its input's ceiling
-Across **all 12 parameter configurations** tested — baseflow constant 8→100 d, subsurface
-5→117 d, celerity 0.22→2.0 m/s, rainfall scaled 0.80→1.00 — El Niño correlation stayed
-inside **0.556–0.572**. Once bias and variance are repaired, KGE *is* r.
+Across **all 12 parameter configurations** we tested — baseflow constant 8→100 d, subsurface
+5→117 d, celerity 0.22→2.0 m/s, rainfall scaled 0.80→1.00 — El Niño correlation stayed inside
+**0.556–0.572**. Once bias and variance are repaired, KGE *is* r.
 
 | | r |
 |---|---|
 | model, catchment-scale daily anomaly | **0.476** |
-| rainfall field's own leave-one-out skill | **0.40** |
+| the rainfall field's own leave-one-out skill | **0.429** |
 | inter-gauge daily rainfall correlation, 0–25 km | **0.33** |
 | the same, 25–50 km | 0.25 |
 | **mean gauge spacing** | **~30 km** |
 
-**The model sits just above the point-scale skill of the field driving it.** No parameter
-set can exceed that. The ceiling is a property of the *observing network*, not the model.
+**The model sits just above the point-scale skill of the field driving it.** No parameter set
+can exceed that. The ceiling is a property of the **observing network**, not of the model.
 
 ### 14. Why that matters beyond this basin
-- It converts "our model underperforms in the dry phase" into a **quantified statement
-  about what daily rainfall–runoff modelling can achieve at 30 km gauge spacing in a
-  tropical mountain basin.** That is transferable to any data-sparse basin.
-- It also **reorders the work**: no further parameter tuning can move the dry phase
-  (remaining headroom ≈ +0.02, already located). Only a better rainfall field can.
-- Independent corroboration `[+COLLEAGUE]`: two codebases and two forcing pipelines reached
-  the same rainfall surplus from **opposite directions** — his actual ET (1,659 mm/yr)
-  breaking through potential ET (1,239), our runoff coefficients falling below their energy
-  floor at 18 of 18 failing gauges. Neither of us could have established that alone.
+- It converts *"our model underperforms in the dry season"* into a **quantified statement
+  about what daily rainfall–runoff modelling can achieve at ~30 km gauge spacing in a tropical
+  mountain basin** — transferable to any data-sparse catchment.
+- It **reorders our own work**: no further parameter tuning can move the dry phase (remaining
+  headroom ≈ +0.02, already located). Only a better rainfall field can.
+- It is why attempt 3's r result (+0.003) was expected rather than surprising.
 
 ---
 
-## E — Limits and plan (3 slides, ~5 min)
+## E — Limits and next steps (3 slides, ~5 min)
 
-### 15. What we cannot yet claim — state these before you are asked
-- **Conventional adequacy is not reached.** Moriasi et al. (2007) put satisfactory daily
-  NSE above 0.50; ours is +0.256. The ceiling above explains why, and we report against a
-  climatology benchmark instead.
-- **Half the scientific target is unmet:** +0.024 vs +0.236 KGE over climatology.
-- **No floodplain physics.** Channel routing is Muskingum X=0, so the Depresión Momposina's
-  storage and backwater are absent. The fitted celerity of **0.221 m/s** is a
-  floodplain-storage *surrogate* and must not be read as a physical velocity.
-- **Three parameters are at their bounds** in the adopted set (crop coefficient railed at
-  2.0, beyond any FAO-56 value), and the simulated recession is **3.5× too slow**. Both are
-  now targeted by a revised objective.
-- **No per-gauge sediment yield can be published.** Our catchment areas and Youssef's
-  disagree beyond 2× on **36 % of 85 shared gauges**, while their medians agree to 1 % — so
-  neither network is trustworthy per gauge, and a 2.5× area error is a 2.5× yield error.
+### 15. What we cannot yet claim — say these before you are asked
+- **The calibration is not closed.** Three attempts, each measuring something different; none
+  meets every criterion we set in advance.
+- **Conventional adequacy is not reached.** Moriasi et al. (2007) put satisfactory *daily* NSE
+  above 0.50; ours is +0.16 to +0.26. Slide 13 explains why, and we report against a
+  day-of-year climatology benchmark instead of raw NSE — a perfect climatology also scores
+  NSE −0.062 in the El Niño window, so **NSE is not comparable across windows** with different
+  observed variance.
+- **The ENSO asymmetry persists.** Skill over climatology is **+0.126** in La Niña against
+  **+0.026** in El Niño. We set out to halve that ratio; we have not.
+- **Two or three parameters still sit at a bound** in every attempt (the crop coefficient
+  pinned at 2.0, beyond any FAO-56 value). The remaining candidate is the ET stress function:
+  `ET = ETp·W/Wm` throttles evaporation even in moist soil, and a doubled crop coefficient is
+  exactly the compensation that implies.
+- **No per-gauge specific yield can be published.** Our two networks' catchment areas disagree
+  beyond 2× on **36 % of 85 shared gauges** while their medians agree to 1 % — so neither is
+  trustworthy per gauge, and a 2.5× area error is a 2.5× yield error.
 
-### 16. Work plan
+### 16. Next steps, in the order the measurements dictate
 1. **Merge satellite rainfall (CHIRPS) with the repaired gauges** — the only lever measured
-   capable of moving r, and therefore the dry phase. Volume stays gauge-controlled;
-   CHIRPS supplies spatial structure and fills the ungauged 17 %.
-2. **Refit with a recession-signature objective** — the recession constant is invisible to
-   daily KGE (Morris sensitivity 0.044, rank 5 of 10), so it was set by the prior rather
-   than by the data.
-3. **Resolve catchment areas against a source external to both networks** — blocks all
+   capable of moving r, and therefore the dry phase. Volume stays gauge-controlled; the
+   satellite supplies spatial structure and fills the ungauged 17 % (nearest gauge median
+   16.3 km, max 71.5 km).
+2. **Replace the ET stress function** with the FAO-56 threshold form — a one-function change
+   that should release the crop coefficient from its bound.
+3. **Add search seeds** until the two forcing versions separate: attempt 3 leads attempt 2 by
+   0.011 on the objective while its own between-seed spread is 0.019, so that comparison is
+   not yet established.
+4. **Resolve catchment areas** against a source external to both our networks — blocks all
    specific-yield reporting.
-4. **Phase C sediment**, once mainstem SSC quality is settled.
-5. Advisor decisions needed: ENSO window definition (2011 vs 2010–2012); whether the
-   Momposina warrants hydrodynamic routing; whether event-tuned erosion triggers suit a
-   *climatological* study.
+5. **Phase C sediment**, once mainstem SSC quality is settled.
 
-### 17. Division of labour `[+COLLEAGUE]`
-Honest framing, and it is a strength rather than a redundancy:
-- **This work:** verified forcing, a calibratable engine, the calibration itself, and the
-  input-ceiling result.
-- **Youssef:** local-inertial routing with floodplain storage (the paper's actual physics),
-  the MUSLE sediment module, remote-sensing SSC retrieval.
-- **The trade-off is real and measured:** he has the better physics and cannot afford to
-  calibrate it (1,510 s per trial → a 774-run search would take 13 days); we can calibrate
-  but omit floodplain processes.
-- Each implementation found defects in the other's. *Fill in specifics once the repo arrives.*
+### 17. The question we need your guidance on
+**Is the input-ceiling result (slide 13) an acceptable closing statement for the hydrological
+phase?**
+
+- If **yes**, the phase can close on a quantified limit, whether or not the rainfall merge
+  succeeds.
+- If **no** — if conventional adequacy is expected — then the merge must succeed, and if it
+  does not we would need either denser rainfall input than IDEAM provides, or a reduced target
+  (monthly instead of daily, or sub-basins instead of the full network).
+
+This changes what "done" means for Phase B, so it is the most useful thing we can settle today.
 
 ---
 
 ## F — Close (1 slide)
 
-### 18. Contribution
-- First MGB-SED transposition to the Magdalena–Cauca.
-- A **calibrated, mass-conservative, reproducible** hydrological engine (residual 1.67e-17,
-  run time 11.7 s) with both ENSO phases held out of calibration.
+### 18. What we have contributed
+- **First MGB-SED transposition to the Magdalena–Cauca**, in **two independent
+  implementations** that agree to ~0.02 KGE — one fast enough to calibrate, one carrying the
+  paper's floodplain physics.
+- A **mass-conservative, reproducible** engine (residual 1.67×10⁻¹⁷, 11.7 s per basin-decade)
+  with **both ENSO phases held out of calibration**.
 - A **quantified input ceiling** for daily rainfall–runoff modelling at this gauge density —
-  the result most likely to transfer.
-- A documented QC methodology for IDEAM station data, including a defect class (omitted dry
-  days) that value-based screening cannot detect.
-- Full audit trail: ~250 KB of technical documentation, a register of refuted claims, and a
-  traps reference.
+  the result most likely to transfer beyond this basin.
+- A **QC methodology for IDEAM station data**, including a defect class — omitted dry days —
+  that value-based screening cannot detect by construction.
+- A full audit trail: ~300 KB of technical documentation, a register of refuted hypotheses,
+  and a traps reference.
 
 ---
 
 ## Speaking notes
 
-- **Lead with the split, not the skill number.** "Both ENSO phases are out-of-sample" is
-  what makes every later number credible.
-- **When you show KGE 0.450, immediately show slide 13.** Otherwise the first question is
-  "why so low", and the answer is a measured ceiling, not an excuse.
-- **Do not oversell the sediment phase.** It is blocked, and the area disagreement means
-  even the hydrology cannot yet support per-gauge yields.
-- **Have the refuted-hypotheses table ready.** If the advisor proposes a cause for the dry
-  phase, there is a good chance it has already been measured and eliminated — that is the
-  strongest impression this deck can leave.
+- **Lead with slide 7 (the Klemeš split).** "Both ENSO phases are out-of-sample" is what makes
+  every later number credible. Without it the deck is just curve-fitting.
+- **Slide 9 is the argument.** Do not present the KGE drop as a setback. Present it as a
+  deliberate trade: a recession that is right, and a dry phase that beats climatology for the
+  first time.
+- **Show slide 8 and slide 13 close together.** Otherwise the first question is "why is KGE
+  only 0.4?", and the answer is a measured ceiling rather than an excuse.
+- **Use "we" for both implementations.** They are two arms of one project, and their agreement
+  is a result.
+- **Have the refuted-hypotheses register ready.** If the advisor proposes a cause for the dry
+  phase, there is a good chance we have already measured and eliminated it — three standing
+  hypotheses were refuted, one of them backwards. That is the strongest impression available.
+- **End on slide 17, not slide 18.** Asking the scope question is more valuable than a summary.
 
 ## Figures to pull
 
 | slide | figure | source |
 |---|---|---|
 | 4 | pipeline flowchart | notebook 04 / README |
-| 5 | minibacia + URH map | notebook 07 / 08 |
-| 8 | observed vs simulated hydrograph, 2–3 gauges | `sim_calibrated/` |
-| 9 | KGE by period, model vs climatology (bar pairs) | docs/22 §4.1 |
-| 11 | rainfall vs reporting-density (3 bars, before/after) | docs/18 §9.1, §10.3 |
+| 5 | minibacia + URH map | notebooks 07, 08 |
+| 8 | the three attempts, KGE vs recession ratio (2-axis bar) | `sim_calibrated_v2/metrics_fleet.csv` |
+| 9 | observed vs simulated recession limbs, before/after | `sim_calibrated_v2/recession_validation.csv` |
+| 10 | H2 − H1 by metric (signed bars) | `sim_calibrated_v2/h2_minus_h1.csv` |
+| 11 | rainfall vs reporting density, before/after repair | docs/18 §9.1, §10.3 |
 | 13 | inter-gauge correlation vs separation distance | docs/22 §4.7 |
-| 15 | gauge-area scatter, ours vs colleague, log–log | docs/23 §13.2 |
+| 15 | catchment-area scatter, both networks, log–log | docs/23 §13.2 |

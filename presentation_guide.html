@@ -1,0 +1,2083 @@
+<title>Magdalena MGB-SED — presentation guide</title>
+
+<style>
+:root{
+  --ground:#F1F3F5; --surface:#FFFFFF; --surface2:#E9EDF0;
+  --ink:#1B2126; --muted:#5F6B73; --hair:#D3DAE0;
+  --accent:#A9682A; --accent-soft:#F2E4D3;
+  --river:#2E5C7A; --river-soft:#DDE8F0;
+  --good:#1B7F4B; --good-soft:#DCEDE3;
+  --warn:#A8392C; --warn-soft:#F6E1DD;
+  --serif:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"Cascadia Mono","SF Mono",Menlo,Consolas,monospace;
+  --rail:15.5rem;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --ground:#12171C; --surface:#1A2128; --surface2:#222B33;
+    --ink:#E4E8EB; --muted:#97A3AC; --hair:#2E3941;
+    --accent:#C98A45; --accent-soft:#33261A;
+    --river:#5B93B8; --river-soft:#1B2833;
+    --good:#4CAF7D; --good-soft:#16281F;
+    --warn:#D9705F; --warn-soft:#2B1A17;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12171C; --surface:#1A2128; --surface2:#222B33;
+  --ink:#E4E8EB; --muted:#97A3AC; --hair:#2E3941;
+  --accent:#C98A45; --accent-soft:#33261A;
+  --river:#5B93B8; --river-soft:#1B2833;
+  --good:#4CAF7D; --good-soft:#16281F;
+  --warn:#D9705F; --warn-soft:#2B1A17;
+}
+:root[data-theme="light"]{
+  --ground:#F1F3F5; --surface:#FFFFFF; --surface2:#E9EDF0;
+  --ink:#1B2126; --muted:#5F6B73; --hair:#D3DAE0;
+  --accent:#A9682A; --accent-soft:#F2E4D3;
+  --river:#2E5C7A; --river-soft:#DDE8F0;
+  --good:#1B7F4B; --good-soft:#DCEDE3;
+  --warn:#A8392C; --warn-soft:#F6E1DD;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);gap:0;
+  max-width:88rem;margin:0 auto}
+
+/* ---------- rail ---------- */
+.rail{position:sticky;top:0;height:100vh;overflow-y:auto;padding:1.6rem 1.1rem 3rem;
+  border-right:1px solid var(--hair);background:var(--surface)}
+.rail h1{font-family:var(--serif);font-size:1.02rem;line-height:1.3;margin:0 0 .15rem;
+  letter-spacing:-.01em}
+.rail .sub{font-size:.72rem;color:var(--muted);margin:0 0 1.3rem;letter-spacing:.02em}
+.tabs{display:flex;gap:.3rem;margin-bottom:1.1rem}
+.tabs button{flex:1;font:inherit;font-size:.76rem;font-weight:600;padding:.42rem .3rem;
+  border:1px solid var(--hair);background:transparent;color:var(--muted);
+  border-radius:3px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);
+  color:var(--surface)}
+.rail nav{display:flex;flex-direction:column;gap:.02rem}
+.rail nav a{display:flex;gap:.55rem;text-decoration:none;color:var(--muted);
+  font-size:.79rem;padding:.24rem .35rem;border-radius:3px;line-height:1.35}
+.rail nav a:hover{background:var(--surface2);color:var(--ink)}
+.rail nav a .n{font-family:var(--mono);font-size:.7rem;color:var(--accent);
+  min-width:1.3rem;text-align:right;padding-top:.08rem}
+.rail nav .grp{font-size:.66rem;text-transform:uppercase;letter-spacing:.09em;
+  color:var(--muted);margin:1rem 0 .3rem;padding-left:.35rem;font-weight:700}
+.rail nav a:focus-visible,.tabs button:focus-visible{outline:2px solid var(--river);outline-offset:2px}
+
+/* ---------- content ---------- */
+main{padding:2.4rem 3rem 6rem;min-width:0}
+.pane[hidden]{display:none}
+h2{font-family:var(--serif);font-size:1.95rem;line-height:1.18;letter-spacing:-.018em;
+  margin:0 0 .3rem;text-wrap:balance}
+h3{font-family:var(--serif);font-size:1.3rem;line-height:1.25;margin:0 0 .5rem;
+  letter-spacing:-.012em;text-wrap:balance}
+h4{font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);
+  margin:1.25rem 0 .4rem;font-weight:700}
+p{margin:0 0 .8rem;max-width:68ch}
+ul,ol{margin:0 0 .9rem;padding-left:1.15rem;max-width:68ch}
+li{margin-bottom:.3rem}
+strong{font-weight:650}
+code,.num{font-family:var(--mono);font-variant-numeric:tabular-nums;
+  font-size:.9em;background:var(--surface2);padding:.06em .3em;border-radius:2px}
+a{color:var(--river)}
+.lede{font-size:1.06rem;color:var(--muted);max-width:62ch;margin-bottom:1.6rem}
+hr{border:0;border-top:1px solid var(--hair);margin:2.6rem 0}
+
+.card{background:var(--surface);border:1px solid var(--hair);border-radius:5px;
+  padding:1.4rem 1.6rem;margin:0 0 1.5rem}
+.card>:last-child{margin-bottom:0}
+.slide{scroll-margin-top:1rem}
+.slide-head{display:flex;align-items:baseline;gap:.75rem;margin-bottom:.75rem;
+  padding-bottom:.6rem;border-bottom:1px solid var(--hair)}
+.slide-head .tag{font-family:var(--mono);font-size:1.5rem;font-weight:700;
+  color:var(--accent);line-height:1}
+.slide-head h3{margin:0}
+.block{margin:1.1rem 0}
+.block h4{margin-top:0}
+
+.callout{border-left:3px solid var(--accent);background:var(--accent-soft);
+  padding:.75rem 1rem;margin:1.1rem 0;border-radius:0 3px 3px 0;max-width:70ch}
+.callout.good{border-color:var(--good);background:var(--good-soft)}
+.callout.warn{border-color:var(--warn);background:var(--warn-soft)}
+.callout p{margin:0;max-width:none}
+.callout .lbl{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.09em;
+  font-weight:700;margin-bottom:.28rem;opacity:.8}
+
+.q{background:var(--river-soft);border:1px solid var(--hair);border-radius:4px;
+  padding:.8rem 1rem;margin:1.1rem 0;max-width:70ch}
+.q .ask{font-weight:650;margin:0 0 .35rem}
+.q .ask::before{content:"Q ";font-family:var(--mono);color:var(--river);font-weight:700}
+.q p:last-child{margin:0;color:var(--ink)}
+
+.tbl-wrap{overflow-x:auto;margin:1rem 0}
+table{border-collapse:collapse;font-size:.87rem;min-width:100%}
+th,td{text-align:left;padding:.42rem .7rem;border-bottom:1px solid var(--hair);
+  vertical-align:top}
+th{font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);
+  font-weight:700;border-bottom:1.5px solid var(--hair);white-space:nowrap}
+td.n,th.n{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right;
+  white-space:nowrap}
+tbody tr:hover{background:var(--surface2)}
+
+figure{margin:1.5rem 0;padding:1.1rem;background:var(--surface);
+  border:1px solid var(--hair);border-radius:5px;overflow-x:auto}
+figcaption{font-size:.79rem;color:var(--muted);margin-top:.7rem;line-height:1.5;
+  max-width:72ch}
+figcaption b{color:var(--ink);font-weight:650}
+svg{display:block;max-width:100%;height:auto}
+svg text{font-family:var(--sans);fill:var(--ink)}
+svg .lab{font-size:11px;fill:var(--muted)}
+svg .val{font-family:var(--mono);font-size:11.5px;font-weight:700}
+svg .ttl{font-size:12.5px;font-weight:650}
+svg .ax{stroke:var(--hair);stroke-width:1}
+
+.def{display:grid;grid-template-columns:minmax(7rem,11rem) 1fr;gap:.3rem 1rem;
+  font-size:.9rem;margin:1rem 0}
+.def dt{font-weight:650;font-family:var(--mono);font-size:.83rem;color:var(--accent)}
+.def dd{margin:0 0 .45rem;color:var(--ink)}
+
+.speech{border-left:3px solid var(--river);padding:.2rem 0 .2rem 1.1rem;margin:.9rem 0;
+  font-size:1.02rem;max-width:66ch}
+.speech p{margin:0 0 .7rem}
+.speech p:last-child{margin:0}
+.stage{font-size:.83rem;color:var(--muted);font-style:italic;margin:.7rem 0;
+  padding-left:1.1rem;border-left:3px dashed var(--hair);max-width:66ch}
+.time{font-family:var(--mono);font-size:.74rem;color:var(--muted);
+  background:var(--surface2);padding:.14rem .45rem;border-radius:2px;white-space:nowrap}
+.cut{display:inline-block;font-family:var(--mono);font-size:.68rem;font-weight:700;
+  color:var(--warn);border:1px solid var(--warn);padding:.06rem .3rem;border-radius:2px;
+  letter-spacing:.04em}
+
+.keys{counter-reset:k;list-style:none;padding:0;max-width:70ch}
+.keys li{counter-increment:k;position:relative;padding-left:2.4rem;margin-bottom:.85rem}
+.keys li::before{content:counter(k);position:absolute;left:0;top:.05rem;
+  font-family:var(--mono);font-size:.8rem;font-weight:700;color:var(--surface);
+  background:var(--accent);width:1.55rem;height:1.55rem;border-radius:50%;
+  display:grid;place-items:center}
+
+/* ---------- quick cards ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(23rem,1fr));gap:1rem;
+  margin:1.4rem 0}
+.qc{background:var(--surface);border:1px solid var(--hair);border-radius:5px;
+  padding:1rem 1.15rem;break-inside:avoid}
+.qc.hot{border-color:var(--accent);border-left-width:3px}
+.qc h5{margin:0 0 .1rem;font-family:var(--serif);font-size:1.06rem;line-height:1.25;
+  letter-spacing:-.01em;display:flex;gap:.55rem;align-items:baseline}
+.qc h5 .n{font-family:var(--mono);font-size:.95rem;font-weight:700;color:var(--accent)}
+.qc .kind{font-size:.66rem;text-transform:uppercase;letter-spacing:.09em;
+  color:var(--muted);font-weight:700;margin:.15rem 0 .55rem;padding-left:1.5rem}
+.qc ul{list-style:none;padding:0;margin:0;max-width:none}
+.qc li{position:relative;padding-left:1.15rem;margin-bottom:.5rem;font-size:.885rem;
+  line-height:1.52}
+.qc li:last-child{margin-bottom:0}
+.qc li::before{content:"";position:absolute;left:0;top:.52em;width:.42rem;height:.42rem;
+  border-radius:50%;background:var(--river)}
+.qc li.read::before{background:var(--muted)}
+.qc li.find::before{background:var(--accent)}
+.qc li.why::before{background:var(--good)}
+.legend{display:flex;flex-wrap:wrap;gap:1.15rem;font-size:.78rem;color:var(--muted);
+  margin:.5rem 0 0;padding:.7rem .9rem;background:var(--surface2);border-radius:4px}
+.legend span{display:flex;align-items:center;gap:.4rem}
+.legend i{width:.5rem;height:.5rem;border-radius:50%;display:inline-block}
+@media print{
+  .rail{display:none}
+  .wrap{grid-template-columns:1fr}
+  main{padding:0}
+  .qc{border-color:#bbb}
+  .pane[hidden]{display:none!important}
+}
+
+pre.mermaid{background:var(--surface);border:1px solid var(--hair);border-radius:5px;
+  padding:1rem;margin:1.4rem 0;overflow-x:auto;text-align:center}
+
+@media (max-width:960px){
+  .wrap{grid-template-columns:1fr}
+  .rail{position:static;height:auto;border-right:0;border-bottom:1px solid var(--hair)}
+  .rail nav{display:grid;grid-template-columns:repeat(auto-fill,minmax(11rem,1fr))}
+  main{padding:1.6rem 1.15rem 4rem}
+  h2{font-size:1.6rem}
+  .def{grid-template-columns:1fr;gap:.1rem}
+  .def dd{margin-bottom:.7rem}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+<aside class="rail">
+  <h1>Magdalena&ndash;Cauca<br>MGB-SED</h1>
+  <p class="sub">Presentation guide &middot; hydrological calibration</p>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="t-c" aria-selected="true" aria-controls="p-c">3&nbsp;bullets</button>
+    <button role="tab" id="t-x" aria-selected="false" aria-controls="p-x">Explained</button>
+    <button role="tab" id="t-s" aria-selected="false" aria-controls="p-s">Script</button>
+  </div>
+
+  <nav id="nav-c">
+    <div class="grp">Quick cards</div>
+    <a href="#c-top"><span class="n">&equiv;</span><span>All 19 slides, 3 bullets each</span></a>
+    <a href="#c-key"><span class="n">&starf;</span><span>The four slides that matter</span></a>
+    <div class="grp">Jump to</div>
+    <a href="#c8"><span class="n">8</span><span>Three attempts</span></a>
+    <a href="#c9"><span class="n">9</span><span>The central result</span></a>
+    <a href="#c13"><span class="n">13</span><span>The invisible defect</span></a>
+    <a href="#c15"><span class="n">15</span><span>The input ceiling</span></a>
+    <a href="#c18"><span class="n">18</span><span>The question</span></a>
+  </nav>
+
+  <nav id="nav-x" hidden>
+    <div class="grp">Before the slides</div>
+    <a href="#p0"><span class="n">0</span><span>The project in one page</span></a>
+    <a href="#p1"><span class="n">1</span><span>Glossary</span></a>
+    <a href="#p2"><span class="n">2</span><span>How to read the numbers</span></a>
+    <div class="grp">Slide by slide</div>
+    <a href="#s2"><span class="n">2</span><span>The two years</span></a>
+    <a href="#s3"><span class="n">3</span><span>Where we are</span></a>
+    <a href="#s4"><span class="n">4</span><span>Preprocessing pipeline</span></a>
+    <a href="#s5"><span class="n">5</span><span>Discretisation &amp; checks</span></a>
+    <a href="#s6"><span class="n">6</span><span>Two implementations</span></a>
+    <a href="#s7"><span class="n">7</span><span>The split</span></a>
+    <a href="#s8"><span class="n">8</span><span>Three attempts</span></a>
+    <a href="#s9"><span class="n">9</span><span>The central result</span></a>
+    <a href="#s10"><span class="n">10</span><span>Benchmark, not NSE</span></a>
+    <a href="#s11"><span class="n">11</span><span>Controlled rainfall test</span></a>
+    <a href="#s12"><span class="n">12</span><span>The hydrographs</span></a>
+    <a href="#s13"><span class="n">13</span><span>The invisible defect</span></a>
+    <a href="#s14"><span class="n">14</span><span>Verification</span></a>
+    <a href="#s15"><span class="n">15</span><span>The input ceiling</span></a>
+    <a href="#s16"><span class="n">16</span><span>What we cannot claim</span></a>
+    <a href="#s17"><span class="n">17</span><span>Next steps</span></a>
+    <a href="#s18"><span class="n">18</span><span>The question</span></a>
+    <div class="grp">Close</div>
+    <a href="#p4"><span class="n">&rarr;</span><span>Five things to remember</span></a>
+  </nav>
+
+  <nav id="nav-s" hidden>
+    <div class="grp">Spoken script</div>
+    <a href="#k-rules"><span class="n">&sect;</span><span>Delivery rules</span></a>
+    <a href="#k1"><span class="n">1</span><span>Title</span></a>
+    <a href="#k2"><span class="n">2</span><span>The two years</span></a>
+    <a href="#k3"><span class="n">3</span><span>Where we are</span></a>
+    <a href="#k4"><span class="n">4</span><span>Pipeline</span></a>
+    <a href="#k5"><span class="n">5</span><span>Discretisation</span></a>
+    <a href="#k6"><span class="n">6</span><span>Two implementations</span></a>
+    <a href="#k7"><span class="n">7</span><span>The split</span></a>
+    <a href="#k8"><span class="n">8</span><span>Three attempts</span></a>
+    <a href="#k9"><span class="n">9</span><span>Central result</span></a>
+    <a href="#k10"><span class="n">10</span><span>Benchmark</span></a>
+    <a href="#k11"><span class="n">11</span><span>Rainfall test</span></a>
+    <a href="#k12"><span class="n">12</span><span>Hydrographs</span></a>
+    <a href="#k13"><span class="n">13</span><span>The defect</span></a>
+    <a href="#k14"><span class="n">14</span><span>Verification</span></a>
+    <a href="#k15"><span class="n">15</span><span>The ceiling</span></a>
+    <a href="#k16"><span class="n">16</span><span>Limits</span></a>
+    <a href="#k17"><span class="n">17</span><span>Next steps</span></a>
+    <a href="#k18"><span class="n">18</span><span>The ask</span></a>
+    <div class="grp">Prepared answers</div>
+    <a href="#k-qa"><span class="n">?</span><span>Anticipated questions</span></a>
+  </nav>
+</aside>
+
+<main>
+
+<!-- ============================== QUICK CARDS ============================== -->
+<section class="pane" id="p-c" role="tabpanel" aria-labelledby="t-c">
+
+<h2 id="c-top">Three bullets per slide</h2>
+<p class="lede">One card per slide, three bullets each: <strong>how to read the graph</strong>,
+<strong>what the number is</strong>, and <strong>why it matters</strong>. Hold this next to the
+deck. Prints on two pages.</p>
+
+<div class="legend">
+  <span><i style="background:var(--muted)"></i> how to read the visual</span>
+  <span><i style="background:var(--accent)"></i> the finding / the number</span>
+  <span><i style="background:var(--good)"></i> why it matters</span>
+</div>
+
+<div class="grid">
+
+<div class="qc">
+<h5><span class="n">1</span>Title</h5>
+<p class="kind">Framing</p>
+<ul>
+<li class="read">Basin terrain from the 30&nbsp;m elevation model &mdash; three Andean ranges, flat lowlands north.</li>
+<li class="find">Scope stated up front: this talk is the <strong>water</strong> side. Sediment is outlook only.</li>
+<li class="why">Not a finished result &mdash; three calibration attempts, honestly reported.</li>
+</ul>
+</div>
+
+<div class="qc">
+<h5><span class="n">2</span>Why these two years</h5>
+<p class="kind">The question</p>
+<ul>
+<li class="read">Left: our discharge anomaly per year. Right: the same signal from the team's second pipeline.</li>
+<li class="find">2011 at <strong>+1.7&sigma;</strong> wet, 2015&ndash;16 at <strong>&minus;1&sigma;</strong> dry. Two independent analyses agree.</li>
+<li class="why">The years came from our data, not the literature &mdash; and we add process attribution, not another correlation.</li>
+</ul>
+</div>
+
+<div class="qc">
+<h5><span class="n">3</span>Where we are</h5>
+<p class="kind">Status</p>
+<ul>
+<li class="read">Map is simulated runoff per unit area &mdash; the field the sediment module will consume.</li>
+<li class="find">Phase A complete · Phase B calibrated but <strong>not closed</strong> · Phase C blocked on sediment-concentration data.</li>
+<li class="why">The order is forced: erosion is driven by runoff, so water must be right before sediment.</li>
+</ul>
+</div>
+
+<div class="qc">
+<h5><span class="n">4</span>Preprocessing pipeline</h5>
+<p class="kind">Method</p>
+<ul>
+<li class="read">Four panels: fill DEM pits &rarr; accumulate drainage &rarr; threshold rivers &rarr; cut units.</li>
+<li class="find"><strong>8,672 minibacias</strong>, each split into <strong>24</strong> soil&times;land-cover types. Outlet closes at 257,097&nbsp;km&sup2;.</li>
+<li class="why">Panel 2 is the proof: rivers appear on their own from flow accumulation, so the topology is right.</li>
+</ul>
+</div>
+
+<div class="qc">
+<h5><span class="n">5</span>Discretisation &amp; checks</h5>
+<p class="kind">Verification</p>
+<ul>
+<li class="read">Table compares two <em>independent</em> algorithms for the same drainage areas.</li>
+<li class="find">They agree to <strong>1.8&times;10&#8315;&#8312;&nbsp;km&sup2;</strong>; zero monotonicity violations; land-cover fractions sum to 1 to machine precision.</li>
+<li class="why">Not a result &mdash; the floor you must stand on first. Map shows soil storage 13&ndash;255&nbsp;mm, a 19-fold range we kept rather than averaged away.</li>
+</ul>
+</div>
+
+<div class="qc hot">
+<h5><span class="n">6</span>Two implementations</h5>
+<p class="kind">The team's asset</p>
+<ul>
+<li class="read">Figure: four search runs climbing then <em>flattening</em> &mdash; flattening means more searching stops helping.</li>
+<li class="find"><strong>A</strong>: bucket routing, 12&nbsp;s/run, buys a 4,000-evaluation search. <strong>B</strong>: shallow-water physics, 1,500&nbsp;s/run, buys floodplains.</li>
+<li class="why">Both calibrated and they agree to <strong>~0.02 KGE</strong> from independent code and different physics &mdash; a cross-check neither could give alone.</li>
+</ul>
+</div>
+
+<div class="qc hot">
+<h5><span class="n">7</span>Model period &amp; the split</h5>
+<p class="kind">Credibility</p>
+<ul>
+<li class="read">Timeline colour-codes each year by role. 2008 warms up; only neutral years calibrate.</li>
+<li class="find">2011 and 2015&ndash;16 are <strong>never seen by the fitting</strong>, so ENSO results are <em>predictions</em>. Overfitting: degrades 0.159, only 0.011 worse than an unfitted model.</li>
+<li class="why">Three incompatible starting states converge to <strong>0.18&nbsp;%</strong> of mean flow &mdash; results don't depend on our initial guess.</li>
+</ul>
+</div>
+
+<div class="qc hot" id="c8">
+<h5><span class="n">8</span>Three attempts</h5>
+<p class="kind">Results</p>
+<ul>
+<li class="read">Left bars = KGE, higher better. Right bars = recession ratio, <strong>1.0 is correct</strong>, green band is acceptable.</li>
+<li class="find">KGE 0.450 &rarr; 0.421 &rarr; 0.346. Recession 2.98&times; &rarr; 0.96&times; &rarr; 1.01&times;.</li>
+<li class="why">Attempt 1 has the <em>best accuracy and the worst physics</em>. That contradiction is the whole point of the next slide.</li>
+</ul>
+</div>
+
+<div class="qc hot" id="c9">
+<h5><span class="n">9</span>The central result</h5>
+<p class="kind">The argument</p>
+<ul>
+<li class="read">Green = observed recession (9.5&ndash;11.9&nbsp;d). Red = attempt 1 (27&ndash;45&nbsp;d). Navy = attempt 2 after refit.</li>
+<li class="find">Cost <strong>0.029 KGE</strong>. Gain: recession right (0.92&ndash;1.27&times;) and El Niño moves <strong>&minus;0.026 &rarr; +0.026</strong> over climatology &mdash; positive for the first time.</li>
+<li class="why">Both curves carry the same <em>total</em> water by different mechanisms. Right answer for the wrong reason fails the moment you ask something new.</li>
+</ul>
+</div>
+
+<div class="qc">
+<h5><span class="n">10</span>Benchmark, not raw NSE</h5>
+<p class="kind">Method</p>
+<ul>
+<li class="read">Bars = KGE gain over a day-of-year climatology, per period. Above zero beats the seasonal average.</li>
+<li class="find">A <em>perfect</em> climatology also scores NSE <strong>&minus;0.06</strong> in the El Niño window &mdash; so NSE is not comparable across windows.</li>
+<li class="why">About a third of the apparent dry-season failure was the metric. Honest gap: <strong>+0.126 wet vs +0.026 dry</strong>.</li>
+</ul>
+</div>
+
+<div class="qc hot">
+<h5><span class="n">11</span>Controlled rainfall test</h5>
+<p class="kind">Results</p>
+<ul>
+<li class="read">Signed bars: attempt 3 minus attempt 2. Same model, objective, gauges, window &mdash; <em>only</em> rainfall changed.</li>
+<li class="find">PBIAS <strong>&minus;4.44 points</strong> (halved). Correlation <strong>+0.0033</strong> &mdash; nothing. KGE &minus;0.022.</li>
+<li class="why">Predicted in advance, confirmed to three decimals: volume error and timing error are <strong>independent problems</strong>.</li>
+</ul>
+</div>
+
+<div class="qc">
+<h5><span class="n">12</span>The hydrographs</h5>
+<p class="kind">What it produces</p>
+<ul>
+<li class="read">Observed vs simulated daily flow, gauges spanning three orders of magnitude in area.</li>
+<li class="find">The <strong>biggest</strong> catchments have the <strong>best</strong> timing (r&nbsp;0.91) &mdash; area averages out rain-gauge error. KGE 0.712 vs 0.433.</li>
+<li class="why">We predicted the opposite and were wrong. Their weakness is peak <em>size</em>, not peak <em>timing</em> &mdash; found by testing, not assuming.</li>
+</ul>
+</div>
+
+<div class="qc hot" id="c13">
+<h5><span class="n">13</span>The invisible defect</h5>
+<p class="kind">Data quality</p>
+<ul>
+<li class="read">Two 30-day strips, same weather. Station A records every day; station B omits dry days entirely.</li>
+<li class="find"><strong>4.4 vs 11.7&nbsp;mm/day</strong> &mdash; nearly 3&times; the apparent rainfall from recording habits alone. Detector reads 1.001 on healthy stations, <strong>1.777</strong> on patchy ones.</li>
+<li class="why">Outlier checks look at values that are <em>present</em>; a record never written is invisible to that entire family of methods.</li>
+</ul>
+</div>
+
+<div class="qc">
+<h5><span class="n">14</span>Verification</h5>
+<p class="kind">How we know</p>
+<ul>
+<li class="read">Diagram: the truncated file as a contiguous <em>prefix</em>, with four checkmarks for the checks that still passed.</li>
+<li class="find">pandas returned <strong>1,309</strong> then <strong>3,630</strong> rows from a complete 4,018-row file, <strong>with no error</strong>.</li>
+<li class="why">Only an assertion against an independently declared period caught it. Plus water conserved to 10&#8315;&#185;&#8311; and two routing back-ends agreeing bit for bit.</li>
+</ul>
+</div>
+
+<div class="qc hot" id="c15">
+<h5><span class="n">15</span>The input ceiling</h5>
+<p class="kind">The contribution</p>
+<ul>
+<li class="read">Curve = rainfall correlation falling with distance. Dashed lines = model skill and the rainfall field's own skill. Vertical line = our gauge spacing.</li>
+<li class="find">Twelve configurations left El Niño r inside <strong>0.556&ndash;0.572</strong>. Field skill <strong>0.429</strong>; model achieves <strong>0.476</strong> &mdash; just above its input.</li>
+<li class="why">Rain correlates 0.33 at 25&nbsp;km while gauges sit 30&nbsp;km apart. <strong>The ceiling belongs to the observing network, not the model.</strong></li>
+</ul>
+</div>
+
+<div class="qc">
+<h5><span class="n">16</span>What we cannot claim</h5>
+<p class="kind">Limits</p>
+<ul>
+<li class="read">Six limits, each with the measurement behind it. Figure: sediment rating curves, median R&sup2;&nbsp;&asymp;&nbsp;0.5.</li>
+<li class="find">Daily NSE 0.16&ndash;0.26 against a &gt;0.5 convention. 2&ndash;3 parameters at bounds (crop coefficient railed at 2.0).</li>
+<li class="why">No per-gauge sediment yield: areas disagree &gt;2&times; on <strong>36&nbsp;%</strong> of shared gauges, and a 2&times; area error is a 2&times; yield error.</li>
+</ul>
+</div>
+
+<div class="qc">
+<h5><span class="n">17</span>Next steps</h5>
+<p class="kind">Plan</p>
+<ul>
+<li class="read">Five steps ordered by measurement, not preference. Panels show the sediment components already exist.</li>
+<li class="find">1&nbsp;satellite merge (only lever on r) &rarr; 2&nbsp;fix the ET formula &rarr; 3&nbsp;more seeds &rarr; 4&nbsp;resolve areas &rarr; 5&nbsp;sediment.</li>
+<li class="why">Seeds before conclusions: the two rainfall versions differ by 0.011 while seeds differ by <strong>0.019</strong>.</li>
+</ul>
+</div>
+
+<div class="qc hot" id="c18">
+<h5><span class="n">18</span>The question for the advisor</h5>
+<p class="kind">The ask &mdash; end here</p>
+<ul>
+<li class="read">Decision tree with one question and two branches.</li>
+<li class="find"><strong>Is the ceiling result an acceptable way to close Phase B?</strong></li>
+<li class="why">YES &rarr; the phase closes on a quantified limit either way. NO &rarr; the merge must succeed, else denser rainfall or a reduced target (monthly, or sub-basins).</li>
+</ul>
+</div>
+
+<div class="qc">
+<h5><span class="n">19</span>Contribution</h5>
+<p class="kind">Backup summary</p>
+<ul>
+<li class="read">Five claims, each traceable to an earlier slide.</li>
+<li class="find">Two independent implementations agreeing to ~0.02 KGE; a mass-conserving engine at 11.7&nbsp;s per basin-decade.</li>
+<li class="why">The quantified input ceiling is the most transferable result; the QC method catches a defect class standard screening cannot see.</li>
+</ul>
+</div>
+
+</div>
+
+<hr>
+<h3 id="c-key">If you only prepare four slides</h3>
+<p>These carry the talk. The rest is supporting material.</p>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th class="n">Slide</th><th>Why it is load-bearing</th><th>The one line to have ready</th></tr></thead>
+<tbody>
+<tr><td class="n">7</td><td>Makes every later number credible</td><td>"Both ENSO phases are out-of-sample, so this is a prediction, not a fit."</td></tr>
+<tr><td class="n">9</td><td>The deck's actual argument</td><td>"We traded 0.029 KGE for a recession that is right &mdash; and a dry season that finally beats climatology."</td></tr>
+<tr><td class="n">15</td><td>The scientific contribution</td><td>"The model sits above its own input's skill. The ceiling is the gauge network, not the model."</td></tr>
+<tr><td class="n">18</td><td>The decision you need</td><td>"Is the ceiling an acceptable close for Phase B? It changes what 'done' means."</td></tr>
+</tbody></table>
+</div>
+
+</section>
+
+<!-- ============================== EXPLAINED ============================== -->
+<section class="pane" id="p-x" role="tabpanel" aria-labelledby="t-x" hidden>
+
+<h2>Everything in the presentation, explained</h2>
+<p class="lede">Written for anyone who needs to follow the deck without having worked on
+the project. No hydrological modelling background assumed. Read parts&nbsp;0&ndash;2 once
+&mdash; about ten minutes &mdash; and the rest becomes easy.</p>
+
+<!-- ---------- Part 0 ---------- -->
+<div class="card slide" id="p0">
+<div class="slide-head"><span class="tag">0</span><h3>The project in one page</h3></div>
+
+<h4>The physical problem</h4>
+<p>The Magdalena drains most of populated Colombia. It carries an enormous amount of mud and
+sand &mdash; sediment &mdash; and how much it carries swings hugely from year to year. That
+sediment fills reservoirs behind dams, builds and erodes the delta, and affects drinking
+water.</p>
+
+<h4>The climate driver</h4>
+<p>The main reason for the swing is <strong>ENSO</strong>, the Pacific climate cycle. Its wet
+phase is <strong>La Niña</strong>, its dry phase <strong>El Niño</strong>. We take the
+strongest recent example of each: <strong>2011</strong> (very wet) against
+<strong>2015&ndash;16</strong> (very dry).</p>
+
+<h4>What already exists, and what we add</h4>
+<p>Others have shown <em>statistically</em> that wet ENSO years move more sediment &mdash; they
+correlated the two. That tells you the relationship exists, but not where in the basin it comes
+from or why. We build a <strong>process-based model</strong>: it simulates rain falling, soaking
+in, evaporating, running off, flowing down channels, and picking up soil. Because it does that
+separately in every part of the basin, it can say <em>which</em> sub-basins drive the difference
+and <em>which mechanism</em> is responsible.</p>
+
+<h4>Why this talk is only about water</h4>
+<p>Sediment transport is driven by <strong>runoff</strong> &mdash; the volume and speed of water
+moving over land &mdash; not directly by rainfall. So the water model must be right first. Tune
+the erosion parameters on top of a wrong water model and they silently absorb the water errors,
+giving numbers that look fine and mean nothing.</p>
+
+<div class="callout"><span class="lbl">Where we actually are</span>
+<p>The water model works, conserves mass exactly, and is calibrated. It performs moderately
+overall and noticeably worse in the dry El Niño phase. We spent real effort finding out
+<em>why</em>, and the answer turned out to be <strong>the rainfall data, not the
+model</strong> &mdash; a result we can quantify. The sediment phase is built but blocked on
+data quality.</p></div>
+</div>
+
+<!-- ---------- Part 1: glossary ---------- -->
+<div class="card slide" id="p1">
+<div class="slide-head"><span class="tag">1</span><h3>Glossary</h3></div>
+<p class="lede" style="margin-bottom:1rem">In the order you meet them, not alphabetical.</p>
+
+<h4>Geography and units</h4>
+<dl class="def">
+<dt>basin</dt><dd>All the land whose rain drains to one point. Ours is <span class="num">257,097 km&sup2;</span>, roughly half of Colombia's populated area.</dd>
+<dt>outlet</dt><dd>The single point everything drains through. Ours is at Calamar.</dd>
+<dt>minibacia</dt><dd>Portuguese for "small basin". We chop the basin into <span class="num">8,672</span> of them; each gets its own water calculation. Think of it as the model's pixel.</dd>
+<dt>Depresión<br>Momposina</dt><dd>A vast inland wetland where the Magdalena and Cauca meet. Water spreads out and sits for weeks. Hard to model.</dd>
+<dt>mm/yr</dt><dd>Rainfall and river flow are both often given as a <em>depth</em>: how deep the water would be if spread evenly over the catchment. This lets you compare rainfall directly with river flow.</dd>
+<dt>m&sup3;/s</dt><dd>Cubic metres per second &mdash; the usual unit for river discharge.</dd>
+</dl>
+
+<h4>The data</h4>
+<dl class="def">
+<dt>DEM</dt><dd>Digital elevation model &mdash; a grid of ground heights. Ours is 30&nbsp;m from the Copernicus satellite programme.</dd>
+<dt>gauge</dt><dd>A physical measuring site. <em>Rain</em> gauges measure rainfall; <em>discharge</em> gauges measure river flow.</dd>
+<dt>IDEAM</dt><dd>Colombia's national hydrology and meteorology institute &mdash; source of our gauge data.</dd>
+<dt>CHIRPS</dt><dd>A satellite rainfall dataset. Less accurate than a good gauge, but it covers everywhere &mdash; including places with no gauges at all.</dd>
+<dt>SSC</dt><dd>Suspended sediment concentration &mdash; how much sediment is in a litre of river water. The measurement Phase&nbsp;C needs.</dd>
+<dt>rating curve</dt><dd>Rivers are almost never measured directly. What is measured is <em>water level</em>; a rating curve is a fitted equation converting level to flow. <strong>So "measured discharge" is really a model output.</strong></dd>
+</dl>
+
+<h4>How the model works</h4>
+<dl class="def">
+<dt>water balance</dt><dd>Bookkeeping: rain in, minus evaporation out, minus river flow out, equals change in storage. Must balance exactly.</dd>
+<dt>URH</dt><dd>Hydrological response unit. Inside each minibacia we cross <span class="num">3</span> soil textures with <span class="num">8</span> land-cover classes = <span class="num">24</span> types. Clay under forest sheds water differently from sand under pasture.</dd>
+<dt>Wm</dt><dd>How much water the soil holds before it starts shedding. Ours: median <span class="num">73&nbsp;mm</span>, range <span class="num">13&ndash;255</span>.</dd>
+<dt>PET</dt><dd>Potential evaporation &mdash; how much water <em>could</em> evaporate given available energy. The ceiling set by sun, wind and humidity.</dd>
+<dt>actual ET</dt><dd>How much actually evaporates. Less than PET when soil is dry.</dd>
+<dt>runoff</dt><dd>Water that flows off the land instead of soaking in or evaporating.</dd>
+<dt>the three<br>reservoirs</dt><dd>The model splits water into a fast path (surface), medium (shallow soil) and slow (groundwater). Each drains at its own rate.</dd>
+<dt>recession</dt><dd>When rain stops, flow decays. The <em>recession constant</em> is roughly how many days that takes. <strong>It is a fingerprint of underground storage</strong> &mdash; measurable from real hydrographs, so the model can be checked against it. Observed here: about <span class="num">10&ndash;12</span> days.</dd>
+<dt>routing</dt><dd>Moving water down the channel network once it has left the land.</dd>
+<dt>Muskingum X=0</dt><dd>Our simple routing: each reach is a bucket that fills and drains. Water only goes downstream.</dd>
+<dt>hydrodynamic<br>routing</dt><dd>Proper physics: tracks water <em>depth</em> and computes flow from the slope of the water surface, so water can spill onto floodplains and even flow backwards. Needed for the Momposina. Far more expensive.</dd>
+<dt>MUSLE</dt><dd>The erosion equation for Phase&nbsp;C. Driven by runoff and peak flow &mdash; which is why the water model comes first.</dd>
+</dl>
+
+<h4>Calibration</h4>
+<dl class="def">
+<dt>parameter</dt><dd>A number we cannot measure directly and must infer &mdash; e.g. how fast groundwater drains.</dd>
+<dt>calibration</dt><dd>Searching for the parameter values that best reproduce observed river flow.</dd>
+<dt>validation</dt><dd>Testing on data the calibration never saw. <strong>Without it, good performance means nothing</strong> &mdash; you have only shown you can fit a curve.</dd>
+<dt>differential<br>split-sample</dt><dd>Klemeš (1986). Stricter than usual: calibrate on one <em>kind</em> of period, validate on a different kind. We calibrate only on <strong>neutral</strong> years, so both ENSO extremes are unseen and our headline results are <em>predictions</em>.</dd>
+<dt>warm-up</dt><dd>The model needs time to forget its arbitrary starting soil moisture. We run 2008 purely to warm up and score from 2009.</dd>
+<dt>objective<br>function</dt><dd>The single number the search maximises. Ours combines flow accuracy with, in attempts 2&ndash;3, a recession penalty.</dd>
+<dt>DDS</dt><dd>The search algorithm. Explores widely at first, then narrows in.</dd>
+<dt>seed</dt><dd>The random starting point of a search. Different seeds give slightly different answers. <strong>If two seeds disagree more than two experiments do, you cannot tell the experiments apart.</strong></dd>
+<dt>pre-registration</dt><dd>Writing down which experiments you will run <em>before</em> running them. Stops you running twenty variants and reporting the luckiest.</dd>
+<dt>railed</dt><dd>Each parameter is searched inside limits. If the best value sits <em>at</em> a limit, the search wanted to go further &mdash; a warning that the model is compensating for something wrong.</dd>
+</dl>
+
+<h4>Our specific data problems</h4>
+<dl class="def">
+<dt>zero-suppression</dt><dd>The central defect: on dry days some observers <strong>wrote nothing</strong>. So a blank means "zero" sometimes and "unknown" other times. Average only the recorded days and you average only the <em>rainy</em> ones.</dd>
+<dt>selectivity</dt><dd>Our detector. For station X, look <em>only at its neighbours</em>: on the days X chose to report, was it unusually wet nearby? An honest station gives ~1.0; a rain-selective one gives more.</dd>
+<dt>IDW</dt><dd>Inverse distance weighting &mdash; turning point measurements into a map by averaging nearby gauges, weighted by closeness.</dd>
+<dt>LOOCV</dt><dd>Leave-one-out cross-validation. Hide one gauge, predict it from the others, compare. Measures <strong>how good the rainfall map itself is</strong> &mdash; central to slide&nbsp;15.</dd>
+<dt>energy floor</dt><dd>A physical impossibility check: a river cannot carry more water than rainfall minus evaporation supplies. Gauges failing it indicate an error somewhere.</dd>
+</dl>
+</div>
+
+<!-- ---------- Part 2: the numbers ---------- -->
+<div class="card slide" id="p2">
+<div class="slide-head"><span class="tag">2</span><h3>How to read the numbers</h3></div>
+<p>Worth reading twice. Almost every question you will be asked is about one of these.</p>
+
+<h4>KGE &mdash; the main score</h4>
+<p><strong>Kling-Gupta Efficiency.</strong> <span class="num">1</span> is perfect; lower is
+worse; it can go negative. It bundles three separate questions, and a model can be good on one
+and bad on another &mdash; which is exactly what happened to us.</p>
+
+<figure>
+<svg viewBox="0 0 700 250" role="img" aria-label="KGE broken into correlation, variability and volume components">
+  <text class="ttl" x="0" y="14">KGE = 1 &minus; &radic;[(r&minus;1)&sup2; + (&alpha;&minus;1)&sup2; + (&beta;&minus;1)&sup2;] &mdash; distance from perfect in three dimensions</text>
+  <!-- r -->
+  <text class="lab" x="0" y="52" style="font-weight:700;fill:var(--ink)">r</text>
+  <text class="lab" x="18" y="52">correlation &mdash; do rises and falls happen at the right TIMES?</text>
+  <line class="ax" x1="0" y1="64" x2="560" y2="64"/>
+  <rect x="0" y="58" width="362" height="12" fill="var(--river)" opacity=".75"/>
+  <line x1="560" y1="52" x2="560" y2="76" stroke="var(--good)" stroke-width="2"/>
+  <text class="val" x="368" y="68" fill="var(--river)">0.646</text>
+  <text class="lab" x="568" y="68" fill="var(--good)">1.0 target</text>
+  <!-- alpha -->
+  <text class="lab" x="0" y="112" style="font-weight:700;fill:var(--ink)">&alpha;</text>
+  <text class="lab" x="18" y="112">variability &mdash; are peaks as peaky and lows as low as reality?</text>
+  <line class="ax" x1="0" y1="124" x2="560" y2="124"/>
+  <rect x="0" y="118" width="485" height="12" fill="var(--accent)" opacity=".75"/>
+  <line x1="560" y1="112" x2="560" y2="136" stroke="var(--good)" stroke-width="2"/>
+  <text class="val" x="491" y="128" fill="var(--accent)">0.866</text>
+  <!-- beta -->
+  <text class="lab" x="0" y="172" style="font-weight:700;fill:var(--ink)">&beta;</text>
+  <text class="lab" x="18" y="172">volume &mdash; is the TOTAL amount of water right?</text>
+  <line class="ax" x1="0" y1="184" x2="560" y2="184"/>
+  <rect x="0" y="178" width="598" height="12" fill="var(--warn)" opacity=".62"/>
+  <line x1="560" y1="172" x2="560" y2="196" stroke="var(--good)" stroke-width="2"/>
+  <text class="val" x="604" y="188" fill="var(--warn)">1.068</text>
+  <text class="lab" x="0" y="228">Our calibrated model, validation period. &beta; overshoots slightly (6.8&nbsp;% too much water);
+  &alpha; undershoots (not variable enough); r is the weakest of the three.</text>
+</svg>
+<figcaption><b>Why this matters for our story.</b> KGE hides which component moved. Reporting
+them separately is what let us see that fixing the volume (&beta;) cost us variability
+(&alpha;), so overall KGE went slightly <em>down</em> even though the model improved.
+<b>Always ask which component moved.</b></figcaption>
+</figure>
+
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>KGE</th><th>Reading for daily river flow</th></tr></thead>
+<tbody>
+<tr><td class="n">&gt; 0.75</td><td>very good</td></tr>
+<tr><td class="n">0.5 &ndash; 0.75</td><td>good</td></tr>
+<tr><td class="n">0.3 &ndash; 0.5</td><td><strong>moderate &mdash; this is where we are</strong></td></tr>
+<tr><td class="n">0 &ndash; 0.3</td><td>weak</td></tr>
+<tr><td class="n">&lt; 0</td><td>worse than a flat line at the mean</td></tr>
+</tbody></table>
+</div>
+<p style="font-size:.9rem;color:var(--muted)">Daily flow is much harder than monthly. Most
+published thresholds are for monthly.</p>
+
+<h4>NSE &mdash; and why we stopped trusting it</h4>
+<p><strong>Nash-Sutcliffe Efficiency.</strong> <span class="num">1</span> is perfect;
+<span class="num">0</span> means "no better than predicting the average <em>of the period you
+are looking at</em>." That last clause is the trap: the benchmark is the variability
+<em>inside your chosen window</em>, so NSE is <strong>not comparable between windows</strong>.</p>
+<div class="callout warn"><span class="lbl">The trap, concretely</span>
+<p>Our El Niño window has the most variable flows in the record. In that window a
+<em>perfect seasonal climatology</em> scores NSE <span class="num">&minus;0.06</span>. So a
+negative NSE there does not mean the model is useless &mdash; it means NSE is the wrong
+yardstick. <strong>About a third of our apparent dry-season failure was the metric.</strong></p></div>
+
+<h4>What we report instead: the climatology benchmark</h4>
+<p>A <strong>day-of-year climatology</strong> is the simplest defensible competitor: for every
+calendar day, predict the long-term average flow for that day. It knows the seasons and nothing
+else. We score that in every window and report <strong>model minus climatology</strong> &mdash;
+fair across windows, because both are measured in the same one.</p>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Period</th><th class="n">Our gain over climatology</th></tr></thead>
+<tbody>
+<tr><td>La Niña 2011 (wet)</td><td class="n" style="color:var(--good);font-weight:700">+0.126</td></tr>
+<tr><td>El Niño 2015&ndash;16 (dry)</td><td class="n" style="color:var(--warn);font-weight:700">+0.026</td></tr>
+</tbody></table>
+</div>
+<p>So we are about <strong>five times better in the wet phase than the dry phase</strong>. That
+is the honest statement of our biggest remaining problem.</p>
+
+<h4>The objective value, F</h4>
+<p>The single number the search maximises. Useful only against its own reference points &mdash;
+note that <em>random guessing beat the textbook starting values</em>, so those priors were poor
+for this basin.</p>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Configuration</th><th class="n">F</th></tr></thead>
+<tbody>
+<tr><td>unfitted starting parameters</td><td class="n">0.128</td></tr>
+<tr><td>best of random guessing</td><td class="n">0.173</td></tr>
+<tr><td>attempt 1</td><td class="n">0.243</td></tr>
+<tr><td>a perfect model</td><td class="n">1.000</td></tr>
+</tbody></table>
+</div>
+
+<h4>Reading the exponents</h4>
+<p><span class="num">1.67 &times; 10&#8315;&#185;&#8311;</span> = 0.0000000000000000167 &mdash;
+zero to the computer's precision. When we say water is conserved to
+<span class="num">10&#8315;&#185;&#8311;</span> we mean <strong>exactly</strong>, not
+"closely".</p>
+</div>
+
+<hr>
+<h2 style="margin-bottom:1.4rem">Slide by slide</h2>
+
+<!-- ---------- slide 2 ---------- -->
+<div class="card slide" id="s2">
+<div class="slide-head"><span class="tag">2</span><h3>The question, and why these two years</h3></div>
+<div class="block"><h4>What you are looking at</h4>
+<p>Two panels. Left: basin discharge anomaly per year from our own gauge composite. Right: the
+same ENSO contrast computed independently by the other half of the team.</p></div>
+<div class="block"><h4>What it means</h4>
+<p>An <em>anomaly</em> is a departure from normal, in standard deviations (&sigma;).
+<strong>2011 sits about +1.7&sigma;</strong> &mdash; much wetter than normal.
+<strong>2015&ndash;16 about &minus;1&sigma;</strong>. Roughly, &plusmn;1&sigma; contains about
+two-thirds of ordinary years, so +1.7&sigma; is genuinely unusual.</p></div>
+<div class="block"><h4>Why it is there</h4>
+<p>It forestalls the obvious challenge &mdash; <em>"why those years?"</em> We did not inherit
+them from a paper; they fall out of our own data. And two independent analyses agree.</p></div>
+<div class="q"><p class="ask">Why not 2010&ndash;2012 for La Niña, since the event spanned it?</p>
+<p>An open question we flag for the advisor. 2011 is the peak; widening the window would dilute
+the contrast but increase the sample.</p></div>
+</div>
+
+<!-- ---------- slide 3 ---------- -->
+<div class="card slide" id="s3">
+<div class="slide-head"><span class="tag">3</span><h3>Where we are, honestly</h3></div>
+<div class="block"><h4>What you are looking at</h4>
+<p>A three-row status table, plus a map of simulated runoff per unit area.</p></div>
+<div class="block"><h4>What it means</h4>
+<p>"Specific runoff in mm/yr" is how much water leaves each unit of area per year, as a depth.
+High in the wet Andean flanks, low in dry inter-Andean valleys. <strong>This is the field the
+sediment module will consume</strong> &mdash; which is why getting it right is the whole job of
+Phase&nbsp;B.</p></div>
+<div class="block"><h4>Why it is there</h4>
+<p>Saying "Phase&nbsp;B is not closed" up front buys credibility for everything after. And it
+explains the ordering: sediment depends on runoff, so water must be right first.</p></div>
+</div>
+
+<!-- ---------- slide 4 ---------- -->
+<div class="card slide" id="s4">
+<div class="slide-head"><span class="tag">4</span><h3>Preprocessing pipeline</h3></div>
+<div class="block"><h4>What you are looking at</h4>
+<p>Four panels left to right, then two below.</p></div>
+
+<figure>
+<svg viewBox="0 0 700 210" role="img" aria-label="Flow diagram from raw elevation model through four preprocessing steps to the per-unit water balance">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+    </marker>
+  </defs>
+  <!-- row 1 -->
+  <g>
+    <rect x="0" y="26" width="120" height="46" rx="4" fill="var(--surface2)" stroke="var(--hair)"/>
+    <text class="lab" x="60" y="45" text-anchor="middle" style="fill:var(--ink);font-weight:650">Raw DEM</text>
+    <text class="lab" x="60" y="60" text-anchor="middle">30 m satellite</text>
+
+    <rect x="148" y="26" width="120" height="46" rx="4" fill="var(--surface)" stroke="var(--accent)"/>
+    <text class="val" x="156" y="40" fill="var(--accent)">1</text>
+    <text class="lab" x="212" y="45" text-anchor="middle" style="fill:var(--ink);font-weight:650">Conditioned</text>
+    <text class="lab" x="212" y="60" text-anchor="middle">pits filled</text>
+
+    <rect x="296" y="26" width="120" height="46" rx="4" fill="var(--surface)" stroke="var(--accent)"/>
+    <text class="val" x="304" y="40" fill="var(--accent)">2</text>
+    <text class="lab" x="360" y="45" text-anchor="middle" style="fill:var(--ink);font-weight:650">Upstream area</text>
+    <text class="lab" x="360" y="60" text-anchor="middle">rivers appear</text>
+
+    <rect x="444" y="26" width="120" height="46" rx="4" fill="var(--surface)" stroke="var(--accent)"/>
+    <text class="val" x="452" y="40" fill="var(--accent)">3</text>
+    <text class="lab" x="508" y="45" text-anchor="middle" style="fill:var(--ink);font-weight:650">River network</text>
+    <text class="lab" x="508" y="60" text-anchor="middle">threshold</text>
+  </g>
+  <line x1="122" y1="49" x2="144" y2="49" stroke="var(--muted)" marker-end="url(#ar)"/>
+  <line x1="270" y1="49" x2="292" y2="49" stroke="var(--muted)" marker-end="url(#ar)"/>
+  <line x1="418" y1="49" x2="440" y2="49" stroke="var(--muted)" marker-end="url(#ar)"/>
+  <!-- elbow down to row 2 -->
+  <path d="M566,49 H600 V116 H564" fill="none" stroke="var(--muted)" marker-end="url(#ar)"/>
+  <!-- row 2, right to left -->
+  <g>
+    <rect x="444" y="93" width="120" height="46" rx="4" fill="var(--surface)" stroke="var(--accent)"/>
+    <text class="val" x="452" y="107" fill="var(--accent)">4</text>
+    <text class="lab" x="508" y="112" text-anchor="middle" style="fill:var(--ink);font-weight:650">Minibacias</text>
+    <text class="lab" x="508" y="127" text-anchor="middle">8,672 units</text>
+
+    <rect x="296" y="93" width="120" height="46" rx="4" fill="var(--surface)" stroke="var(--river)"/>
+    <text class="lab" x="356" y="112" text-anchor="middle" style="fill:var(--ink);font-weight:650">URH</text>
+    <text class="lab" x="356" y="127" text-anchor="middle">3 soils &times; 8 covers = 24</text>
+
+    <rect x="148" y="93" width="120" height="46" rx="4" fill="var(--surface)" stroke="var(--river)"/>
+    <text class="lab" x="208" y="112" text-anchor="middle" style="fill:var(--ink);font-weight:650">Water balance</text>
+    <text class="lab" x="208" y="127" text-anchor="middle">per unit, per day</text>
+  </g>
+  <line x1="442" y1="116" x2="420" y2="116" stroke="var(--muted)" marker-end="url(#ar)"/>
+  <line x1="294" y1="116" x2="272" y2="116" stroke="var(--muted)" marker-end="url(#ar)"/>
+  <text class="lab" x="0" y="176" style="fill:var(--ink)">Steps 1&ndash;4 are the numbered panels on the slide. Every step compounds &mdash; an error here</text>
+  <text class="lab" x="0" y="192">propagates into every later number, which is why slide 5 verifies the geometry two independent ways.</text>
+</svg>
+</figure>
+
+<div class="block">
+<ol>
+<li><strong>Conditioned DEM</strong> &mdash; raw elevation data has artificial pits from
+measurement error. Water would get trapped there, so they are filled first.</li>
+<li><strong>Upstream area</strong> &mdash; for every cell, how much land drains into it. Rivers
+appear automatically as lines of high accumulation. Visually the strongest proof the topology is
+right.</li>
+<li><strong>River network</strong> &mdash; the above, above a threshold.</li>
+<li><strong>Minibacias</strong> &mdash; the basin cut into 8,672 units.</li>
+</ol>
+<p>Below: URH composition (the 24 soil &times; land-cover combinations), and upstream area on a
+log scale with the outlet at <span class="num">257,097 km&sup2;</span>.</p></div>
+
+<div class="block"><h4>Why it is there</h4>
+<p>Answers <em>"how did you get from a satellite DEM to a model?"</em> in one slide. Every step
+compounds &mdash; an error here propagates into every later number.</p></div>
+<div class="q"><p class="ask">Why 8,672 units &mdash; why not more or fewer?</p>
+<p>A trade-off. Finer units capture more spatial detail but cost run time and need input data at
+a resolution we do not have. 8,672 puts the typical unit at about 30&nbsp;km&sup2;, comparable
+to our rainfall gauge spacing &mdash; finer would be false precision.</p></div>
+</div>
+
+<!-- ---------- slide 5 ---------- -->
+<div class="card slide" id="s5">
+<div class="slide-head"><span class="tag">5</span><h3>Discretisation and its verification</h3></div>
+<div class="block"><h4>What the table means</h4>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Check</th><th>Result</th><th>Why it must hold</th></tr></thead>
+<tbody>
+<tr><td>Outlet area vs sum of unit areas</td><td class="n">257,096.93 vs 257,096.93</td><td>Two independent algorithms must agree</td></tr>
+<tr><td>Accumulator disagreement</td><td class="n">1.8 &times; 10&#8315;&#8312; km&sup2;</td><td>Eight decimal places</td></tr>
+<tr><td>Area-monotonicity violations</td><td class="n">0</td><td>A downstream catchment cannot be smaller than one draining into it</td></tr>
+<tr><td>URH fractions row-sum error</td><td class="n">8.9 &times; 10&#8315;&#185;&#8310;</td><td>Land-cover fractions must sum to exactly 1</td></tr>
+</tbody></table>
+</div></div>
+<div class="block"><h4>What the map means</h4>
+<p>How much water each unit's soil can hold, from Colombian field survey (IGAC). Median
+<span class="num">73&nbsp;mm</span>, range <span class="num">13&ndash;255</span> &mdash; a
+<strong>19-fold spatial range</strong>. We could have used one average for the whole basin; that
+would have thrown away real measured variation.</p></div>
+<div class="callout"><p>None of the table is a <em>result</em>. It is the floor you have to be
+standing on before any result means anything.</p></div>
+</div>
+
+<!-- ---------- slide 6 ---------- -->
+<div class="card slide" id="s6">
+<div class="slide-head"><span class="tag">6</span><h3>Two implementations</h3></div>
+<div class="block"><h4>What it means</h4>
+<p>Our team built two versions, deliberately. They differ in how water moves down channels.</p>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th></th><th>Implementation A</th><th>Implementation B</th></tr></thead>
+<tbody>
+<tr><td>Routing</td><td>Bucket per reach, one-directional</td><td>Shallow-water physics, tracks depth, floodplains</td></tr>
+<tr><td>Run time</td><td class="n">12 s</td><td class="n">1,500 s</td></tr>
+<tr><td>Buys</td><td><strong>Search</strong> &mdash; 4,000 evaluations overnight</td><td><strong>Physics</strong> &mdash; the Momposina wetland</td></tr>
+<tr><td>Calibrated KGE</td><td class="n">0.346 &ndash; 0.450</td><td class="n">0.329</td></tr>
+</tbody></table>
+</div>
+<p>B is <span class="num">125&times;</span> slower. The search we ran overnight on A would take
+<strong>thirteen days</strong> on B.</p></div>
+<div class="callout good"><span class="lbl">The payoff</span>
+<p>Both are calibrated and they agree to about <span class="num">0.02</span> KGE &mdash; from
+independent code, independent input processing, and different physics. If either had a serious
+bug they would not land in the same place. <strong>That agreement is a cross-check neither
+version could produce alone.</strong></p></div>
+<div class="block"><h4>What the convergence figure means</h4>
+<p>Each line is one optimisation run, objective value climbing as it tries more parameter sets.
+Four ran concurrently. <strong>The flattening is the important part</strong> &mdash; it means
+more searching stops helping.</p></div>
+<div class="q"><p class="ask">Why is A's KGE higher if B has better physics?</p>
+<p>Because A has been calibrated far harder &mdash; 4,000 evaluations against B's few. Better
+physics with default parameters loses to simpler physics that has been fitted. That is exactly
+why we need both.</p></div>
+</div>
+
+<!-- ---------- slide 7 ---------- -->
+<div class="card slide" id="s7">
+<div class="slide-head"><span class="tag">7</span><h3>Model period and the split</h3></div>
+<div class="callout"><p>The reason to believe anything later in the deck.</p></div>
+
+<figure>
+<svg viewBox="0 0 700 150" role="img" aria-label="Timeline showing 2008 warm-up, neutral years used for calibration, and ENSO years held back for validation">
+  <text class="ttl" x="0" y="14">2008&ndash;2018: what is used for what</text>
+  <g class="lab">
+    <text x="0" y="52">2008</text><text x="63" y="52">2009</text><text x="126" y="52">2010</text>
+    <text x="189" y="52">2011</text><text x="252" y="52">2012</text><text x="315" y="52">2013</text>
+    <text x="378" y="52">2014</text><text x="441" y="52">2015</text><text x="504" y="52">2016</text>
+    <text x="567" y="52">2017</text><text x="630" y="52">2018</text>
+  </g>
+  <rect x="0"   y="58" width="58" height="26" fill="var(--muted)" opacity=".35"/>
+  <rect x="63"  y="58" width="58" height="26" fill="var(--river)" opacity=".55"/>
+  <rect x="126" y="58" width="58" height="26" fill="var(--river)" opacity=".55"/>
+  <rect x="189" y="58" width="58" height="26" fill="var(--river)" opacity=".9"/>
+  <rect x="252" y="58" width="58" height="26" fill="var(--accent)"/>
+  <rect x="315" y="58" width="58" height="26" fill="var(--accent)"/>
+  <rect x="378" y="58" width="58" height="26" fill="var(--accent)"/>
+  <rect x="441" y="58" width="58" height="26" fill="var(--warn)" opacity=".9"/>
+  <rect x="504" y="58" width="58" height="26" fill="var(--warn)" opacity=".9"/>
+  <rect x="567" y="58" width="58" height="26" fill="var(--river)" opacity=".55"/>
+  <rect x="630" y="58" width="58" height="26" fill="var(--river)" opacity=".55"/>
+  <text class="val" x="189" y="76" fill="#fff">WET</text>
+  <text class="val" x="452" y="76" fill="#fff">DRY</text>
+  <g class="lab">
+    <rect x="0" y="104" width="11" height="11" fill="var(--muted)" opacity=".35"/>
+    <text x="17" y="113">warm-up only, never scored</text>
+    <rect x="196" y="104" width="11" height="11" fill="var(--accent)"/>
+    <text x="213" y="113">CALIBRATED on these</text>
+    <rect x="380" y="104" width="11" height="11" fill="var(--river)" opacity=".55"/>
+    <text x="397" y="113">validation</text>
+    <rect x="480" y="104" width="11" height="11" fill="var(--warn)" opacity=".9"/>
+    <text x="497" y="113">validation &mdash; the ENSO extremes we care about</text>
+  </g>
+  <text class="lab" x="0" y="140" style="fill:var(--ink)">Neither 2011 nor 2015&ndash;16 is ever seen by the fitting, so results in those years are PREDICTIONS.</text>
+</svg>
+<figcaption><b>Differential split-sample (Klemeš 1986).</b> Normal split-sample holds back a
+random chunk. This holds back a <em>different kind of period</em>, which tests whether the model
+transfers to conditions it was not tuned for &mdash; precisely the question this project
+asks.</figcaption>
+</figure>
+
+<div class="block"><h4>The overfitting check</h4>
+<p>Every model does worse on unseen data; the question is <em>how much</em> worse. Ours degrades
+by <span class="num">0.159</span> from calibration to validation &mdash; only
+<span class="num">0.011</span> worse than what a model that was <em>never fitted</em> loses. So
+the fitting is capturing real behaviour, not memorising noise.</p></div>
+<div class="block"><h4>What the warm-up figure means</h4>
+<p>Three deliberately incompatible starting states &mdash; bone dry, saturated, equilibrium. By
+the end of 2008 they converge to within <span class="num">0.18&nbsp;%</span> of mean flow, so
+results do not depend on our starting guess.</p></div>
+<div class="q"><p class="ask">Isn't calibrating on only three neutral years too little data?</p>
+<p>It is a deliberate cost: we trade sample size for a genuinely independent test of the thing we
+care about. And the overfitting check says we did not pay for it in generalisation.</p></div>
+</div>
+
+<!-- ---------- slide 8 ---------- -->
+<div class="card slide" id="s8">
+<div class="slide-head"><span class="tag">8</span><h3>Three calibration attempts</h3></div>
+
+<figure>
+<svg viewBox="0 0 700 300" role="img" aria-label="Two panels comparing KGE and recession ratio across three calibration attempts">
+  <text class="ttl" x="0" y="14">Accuracy went down; the physics got right</text>
+  <!-- left panel: KGE -->
+  <text class="lab" x="0" y="36" style="font-weight:700;fill:var(--ink)">VAL KGE &mdash; higher is better</text>
+  <line class="ax" x1="0" y1="220" x2="300" y2="220"/>
+  <line class="ax" x1="0" y1="60" x2="0" y2="220"/>
+  <text class="lab" x="-2" y="64" text-anchor="end">0.6</text>
+  <text class="lab" x="-2" y="224" text-anchor="end">0</text>
+  <rect x="30"  y="100" width="58" height="120" fill="var(--river)"/>
+  <rect x="120" y="108" width="58" height="112" fill="var(--river)" opacity=".78"/>
+  <rect x="210" y="128" width="58" height="92"  fill="var(--river)" opacity=".56"/>
+  <text class="val" x="59"  y="94"  text-anchor="middle" fill="var(--river)">0.450</text>
+  <text class="val" x="149" y="102" text-anchor="middle" fill="var(--river)">0.421</text>
+  <text class="val" x="239" y="122" text-anchor="middle" fill="var(--river)">0.346</text>
+  <!-- right panel: recession -->
+  <text class="lab" x="390" y="36" style="font-weight:700;fill:var(--ink)">Recession ratio &mdash; 1.0 is CORRECT</text>
+  <rect x="390" y="185" width="300" height="35" fill="var(--good)" opacity=".13"/>
+  <line x1="390" y1="203" x2="690" y2="203" stroke="var(--good)" stroke-width="1.6" stroke-dasharray="4 3"/>
+  <text class="lab" x="694" y="207" fill="var(--good)">1.0</text>
+  <line class="ax" x1="390" y1="220" x2="690" y2="220"/>
+  <line class="ax" x1="390" y1="60" x2="390" y2="220"/>
+  <text class="lab" x="388" y="64" text-anchor="end">4&times;</text>
+  <rect x="420" y="70"  width="58" height="150" fill="var(--warn)"/>
+  <rect x="510" y="192" width="58" height="28"  fill="var(--good)"/>
+  <rect x="600" y="189" width="58" height="31"  fill="var(--good)"/>
+  <text class="val" x="449" y="64"  text-anchor="middle" fill="var(--warn)">2.98&times;</text>
+  <text class="val" x="539" y="186" text-anchor="middle" fill="var(--good)">0.96&times;</text>
+  <text class="val" x="629" y="183" text-anchor="middle" fill="var(--good)">1.01&times;</text>
+  <!-- shared x labels -->
+  <g class="lab">
+    <text x="59"  y="240" text-anchor="middle">attempt 1</text>
+    <text x="149" y="240" text-anchor="middle">attempt 2</text>
+    <text x="239" y="240" text-anchor="middle">attempt 3</text>
+    <text x="449" y="240" text-anchor="middle">attempt 1</text>
+    <text x="539" y="240" text-anchor="middle">attempt 2</text>
+    <text x="629" y="240" text-anchor="middle">attempt 3</text>
+    <text x="59"  y="256" text-anchor="middle">original rain</text>
+    <text x="149" y="256" text-anchor="middle">+ recession term</text>
+    <text x="239" y="256" text-anchor="middle">+ repaired rain</text>
+    <text x="449" y="256" text-anchor="middle">original rain</text>
+    <text x="539" y="256" text-anchor="middle">+ recession term</text>
+    <text x="629" y="256" text-anchor="middle">+ repaired rain</text>
+  </g>
+  <text class="lab" x="0" y="288" style="fill:var(--ink)">Attempt 1 has the best accuracy AND by far the worst physics. Attempts 2&ndash;3 give up some accuracy and land the recession almost exactly right.</text>
+</svg>
+<figcaption><b>"Params at bound"</b> on the slide counts parameters that ended pressed against
+their allowed limits. Any non-zero count warns that the model is compensating for something
+wrong.</figcaption>
+</figure>
+
+<div class="block"><h4>Why it is there</h4>
+<p>It sets up slide 9 by <em>showing</em> the trade rather than asserting it. And it records that
+we <strong>pre-registered</strong> the experiments &mdash; two configurations, two random seeds,
+4,000 evaluations, decided before running. If you run twenty variants and report the best, you
+have fooled yourself.</p></div>
+<div class="q"><p class="ask">You made it worse. Why present that?</p>
+<p>Because KGE is not the objective &mdash; a usable model is. See slide 9.</p></div>
+</div>
+
+<!-- ---------- slide 9 ---------- -->
+<div class="card slide" id="s9">
+<div class="slide-head"><span class="tag">9</span><h3>The central result</h3></div>
+
+<figure>
+<svg viewBox="0 0 700 290" role="img" aria-label="Hydrograph recession curves showing observed decay against a model draining three times too slowly">
+  <text class="ttl" x="0" y="14">What "recession three times too slow" looks like</text>
+  <line class="ax" x1="46" y1="230" x2="670" y2="230"/>
+  <line class="ax" x1="46" y1="40" x2="46" y2="230"/>
+  <text class="lab" x="42" y="46" text-anchor="end">flow</text>
+  <text class="lab" x="46" y="248">rain stops</text>
+  <text class="lab" x="250" y="248">+20 days</text>
+  <text class="lab" x="450" y="248">+40 days</text>
+  <text class="lab" x="650" y="248">+60 days</text>
+  <!-- observed: k = 11 d -->
+  <path d="M46,50 C82,96 118,140 154,168 C200,196 260,214 340,222 C440,228 560,229 670,230"
+        fill="none" stroke="var(--good)" stroke-width="2.6"/>
+  <!-- simulated attempt 1: k = 33 d -->
+  <path d="M46,50 C120,66 190,84 260,104 C350,130 460,160 560,182 C610,193 645,199 670,203"
+        fill="none" stroke="var(--warn)" stroke-width="2.6"/>
+  <!-- half-flow markers -->
+  <line x1="46" y1="140" x2="670" y2="140" stroke="var(--hair)" stroke-dasharray="3 3"/>
+  <text class="lab" x="674" y="144">half</text>
+  <line x1="154" y1="140" x2="154" y2="230" stroke="var(--good)" stroke-dasharray="3 3"/>
+  <line x1="376" y1="140" x2="376" y2="230" stroke="var(--warn)" stroke-dasharray="3 3"/>
+  <text class="val" x="158" y="134" fill="var(--good)">~11 d observed</text>
+  <text class="val" x="380" y="134" fill="var(--warn)">~33 d simulated</text>
+  <g class="lab">
+    <line x1="380" y1="60" x2="404" y2="60" stroke="var(--good)" stroke-width="2.6"/>
+    <text x="410" y="64">observed &mdash; real rivers, 9.5&ndash;11.9 d</text>
+    <line x1="380" y1="78" x2="404" y2="78" stroke="var(--warn)" stroke-width="2.6"/>
+    <text x="410" y="82">attempt 1 &mdash; 27&ndash;45 d, 2.9&ndash;3.9&times; too slow</text>
+  </g>
+  <text class="lab" x="0" y="276" style="fill:var(--ink)">Both curves can carry roughly the same TOTAL water. They release it by different mechanisms &mdash; and only one is right.</text>
+</svg>
+<figcaption>The recession constant reflects how water is released from underground storage. Three
+times too slow means the model held water back far too long. It happened to produce roughly the
+right <em>total</em> &mdash; by the wrong <em>mechanism</em>.</figcaption>
+</figure>
+
+<div class="callout good"><span class="lbl">The trade</span>
+<p>We lost <span class="num">0.029</span> KGE. We gained a correct recession, and the dry El Niño
+phase went from <strong>worse</strong> than a seasonal average
+(<span class="num">&minus;0.026</span>) to <strong>better</strong>
+(<span class="num">+0.026</span>) &mdash; for the first time.</p></div>
+
+<div class="block"><h4>Why this is the argument of the deck</h4>
+<p>A model that reproduces the hydrograph well but drains groundwater three times too slowly is
+<strong>getting the right answer for the wrong reason</strong>. That is fine as long as you only
+ask it questions like the ones it was fitted to. It becomes unreliable the moment you ask
+something new &mdash; a different climate period, or feeding a sediment module that responds to
+<em>peaks</em>.</p></div>
+<div class="q"><p class="ask">How do you measure the observed recession?</p>
+<p>Find stretches where flow declines steadily for at least three days at low flow, fit an
+exponential decay, take the median. We validated the estimator by checking it reproduces ratios
+recorded independently earlier in the project.</p></div>
+</div>
+
+<!-- ---------- slide 10 ---------- -->
+<div class="card slide" id="s10">
+<div class="slide-head"><span class="tag">10</span><h3>Scoring against a benchmark, not raw NSE</h3></div>
+
+<figure>
+<svg viewBox="0 0 700 250" role="img" aria-label="KGE gain over a seasonal climatology by period for attempts one and two">
+  <text class="ttl" x="0" y="14">KGE gain over a day-of-year climatology &mdash; above zero beats the seasonal average</text>
+  <line class="ax" x1="120" y1="150" x2="670" y2="150"/>
+  <text class="lab" x="116" y="154" text-anchor="end">0</text>
+  <text class="lab" x="116" y="70" text-anchor="end">+0.20</text>
+  <text class="lab" x="116" y="196" text-anchor="end">&minus;0.08</text>
+  <!-- CAL -->
+  <rect x="150" y="150" width="26" height="26" fill="var(--muted)" opacity=".5"/>
+  <rect x="180" y="150" width="26" height="40" fill="var(--accent)" opacity=".55"/>
+  <!-- La Nina -->
+  <rect x="290" y="72"  width="26" height="78" fill="var(--muted)" opacity=".5"/>
+  <rect x="320" y="87"  width="26" height="63" fill="var(--accent)"/>
+  <!-- El Nino -->
+  <rect x="430" y="150" width="26" height="13" fill="var(--muted)" opacity=".5"/>
+  <rect x="460" y="137" width="26" height="13" fill="var(--good)"/>
+  <!-- other -->
+  <rect x="570" y="57"  width="26" height="93" fill="var(--muted)" opacity=".5"/>
+  <rect x="600" y="97"  width="26" height="53" fill="var(--accent)"/>
+  <g class="val">
+    <text x="163" y="190" text-anchor="middle" fill="var(--warn)">&minus;.053</text>
+    <text x="193" y="204" text-anchor="middle" fill="var(--warn)">&minus;.081</text>
+    <text x="303" y="66"  text-anchor="middle" fill="var(--good)">+.157</text>
+    <text x="333" y="81"  text-anchor="middle" fill="var(--good)">+.126</text>
+    <text x="443" y="177" text-anchor="middle" fill="var(--warn)">&minus;.026</text>
+    <text x="473" y="131" text-anchor="middle" fill="var(--good)">+.026</text>
+    <text x="583" y="51"  text-anchor="middle" fill="var(--good)">+.187</text>
+    <text x="613" y="91"  text-anchor="middle" fill="var(--good)">+.107</text>
+  </g>
+  <g class="lab">
+    <text x="178" y="220" text-anchor="middle">CAL 2012&ndash;14</text>
+    <text x="318" y="220" text-anchor="middle">La Niña 2011 (wet)</text>
+    <text x="458" y="220" text-anchor="middle">El Niño 15&ndash;16 (dry)</text>
+    <text x="598" y="220" text-anchor="middle">other years</text>
+    <rect x="150" y="234" width="11" height="11" fill="var(--muted)" opacity=".5"/>
+    <text x="167" y="243">attempt 1</text>
+    <rect x="250" y="234" width="11" height="11" fill="var(--accent)"/>
+    <text x="267" y="243">attempt 2 &mdash; note El Niño crosses zero</text>
+  </g>
+</svg>
+<figcaption><b>The one bar that matters.</b> In the dry El Niño window attempt 1 sits
+<em>below</em> zero &mdash; worse than a seasonal average. Attempt 2 crosses above it. That is
+what the 0.029 KGE bought.</figcaption>
+</figure>
+
+<div class="block"><h4>Why this slide exists</h4>
+<p>We nearly over-reacted to a negative NSE in the dry period. Before concluding the model was
+useless there, we scored a <em>perfect seasonal climatology</em> in the same window &mdash; and
+it also came out negative. The window is simply the most variable in our record. So we switched
+to a fixed benchmark, which is fair across windows.</p></div>
+<div class="callout warn"><p>Still a real and uncomfortable asymmetry: we are about
+<strong>five times better wet than dry</strong>. But that is an honest statement of the gap, not
+"worse than the mean".</p></div>
+</div>
+
+<!-- ---------- slide 11 ---------- -->
+<div class="card slide" id="s11">
+<div class="slide-head"><span class="tag">11</span><h3>Did repairing the rainfall help?</h3></div>
+<div class="block"><h4>The design</h4>
+<p>A <strong>controlled</strong> comparison &mdash; same model, same objective, same gauges, same
+window. <strong>Only</strong> the rainfall changed. So any difference is attributable to the
+rainfall.</p></div>
+
+<figure>
+<svg viewBox="0 0 700 230" role="img" aria-label="Signed change in each metric from repairing the rainfall">
+  <text class="ttl" x="0" y="14">Attempt 3 minus attempt 2 &mdash; only the rainfall differs</text>
+  <line x1="330" y1="30" x2="330" y2="185" stroke="var(--hair)" stroke-width="1.4"/>
+  <text class="lab" x="330" y="200" text-anchor="middle">no change</text>
+  <!-- pbias -->
+  <text class="lab" x="150" y="52" text-anchor="end" style="fill:var(--ink);font-weight:650">PBIAS (points)</text>
+  <rect x="90" y="41" width="240" height="18" fill="var(--good)"/>
+  <text class="val" x="82" y="55" text-anchor="end" fill="var(--good)">&minus;4.44</text>
+  <!-- beta -->
+  <text class="lab" x="150" y="82" text-anchor="end" style="fill:var(--ink);font-weight:650">&beta; volume ratio</text>
+  <rect x="306" y="71" width="24" height="18" fill="var(--good)" opacity=".7"/>
+  <text class="val" x="298" y="85" text-anchor="end" fill="var(--good)">&minus;0.044</text>
+  <!-- alpha -->
+  <text class="lab" x="150" y="112" text-anchor="end" style="fill:var(--ink);font-weight:650">&alpha; variability</text>
+  <rect x="320" y="101" width="10" height="18" fill="var(--warn)" opacity=".6"/>
+  <text class="val" x="312" y="115" text-anchor="end" fill="var(--warn)">&minus;0.018</text>
+  <!-- r -->
+  <text class="lab" x="150" y="142" text-anchor="end" style="fill:var(--ink);font-weight:650">r correlation</text>
+  <rect x="330" y="131" width="3" height="18" fill="var(--river)"/>
+  <text class="val" x="342" y="145" fill="var(--river)">+0.0033 &mdash; nothing</text>
+  <!-- kge -->
+  <text class="lab" x="150" y="172" text-anchor="end" style="fill:var(--ink);font-weight:650">KGE</text>
+  <rect x="318" y="161" width="12" height="18" fill="var(--warn)" opacity=".6"/>
+  <text class="val" x="310" y="175" text-anchor="end" fill="var(--warn)">&minus;0.022</text>
+  <text class="lab" x="0" y="220" style="fill:var(--ink)">Volume halved. Timing untouched. KGE slipped because it also penalises the &alpha; change.</text>
+</svg>
+<figcaption><b>We wrote the prediction down before running it</b> &mdash; volume would improve,
+timing would not move &mdash; and r came back at <span class="num">+0.003</span>. Prediction
+followed by confirmation is the strongest evidence available here.</figcaption>
+</figure>
+
+<div class="callout"><span class="lbl">Why this small result is the useful one</span>
+<p>Volume error and timing error are <strong>independent problems</strong>. We had been treating
+"the rainfall is wrong" as one issue. It is two, and fixing one leaves the other untouched.
+That is what makes slide 17's ordering evidence-based rather than a guess.</p></div>
+<div class="q"><p class="ask">So the repair was pointless?</p>
+<p>No. It halved the volume bias, removed physically impossible gauges, and told us that no
+amount of <em>volume</em> correction will fix the <em>timing</em>. That redirects the whole work
+plan.</p></div>
+</div>
+
+<!-- ---------- slide 12 ---------- -->
+<div class="card slide" id="s12">
+<div class="slide-head"><span class="tag">12</span><h3>What the model actually produces</h3></div>
+<div class="block"><h4>What you are looking at</h4>
+<p>Observed against simulated daily discharge, for gauges spanning three orders of magnitude in
+catchment area. This is the raw thing all the metrics summarise.</p></div>
+<div class="callout"><span class="lbl">The counter-intuitive finding</span>
+<p>The <strong>largest</strong> catchments have the <strong>best</strong> timing
+(r&nbsp;&asymp;&nbsp;0.91), because they average over enough area that individual rain-gauge
+errors cancel. The 6 gauges above 20,000&nbsp;km&sup2; reach validation KGE
+<span class="num">0.712</span> against <span class="num">0.433</span> for the 55 smaller ones.</p></div>
+<div class="block"><p>We had predicted the <em>opposite</em> &mdash; big rivers are where our
+simple routing should be weakest. We were wrong, and we only found out because we tested the
+prediction instead of asserting it. Their weakness is in peak <strong>magnitude</strong>, not in
+<strong>timing</strong>.</p></div>
+</div>
+
+<!-- ---------- slide 13 ---------- -->
+<div class="card slide" id="s13">
+<div class="slide-head"><span class="tag">13</span><h3>The defect that value screens cannot see</h3></div>
+
+<figure>
+<svg viewBox="0 0 700 300" role="img" aria-label="Diagram showing how omitting dry days inflates a station's mean rainfall">
+  <text class="ttl" x="0" y="14">Two stations, the same weather, thirty days</text>
+  <!-- honest station -->
+  <text class="lab" x="0" y="42" style="fill:var(--ink);font-weight:650">Station A &mdash; records every day</text>
+  <g>
+    <!-- 30 cells: wet ones filled, dry ones outlined -->
+    <g id="rowA"></g>
+  </g>
+  <text class="lab" x="0" y="100">reported days: 30 &nbsp;&middot;&nbsp; of which dry: 20 &nbsp;&middot;&nbsp; mean of reported = <tspan class="val" style="fill:var(--good)">4.4 mm/day</tspan></text>
+  <!-- selective station -->
+  <text class="lab" x="0" y="150" style="fill:var(--ink);font-weight:650">Station B &mdash; writes nothing on dry days</text>
+  <g id="rowB"></g>
+  <text class="lab" x="0" y="208">reported days: 10 &nbsp;&middot;&nbsp; of which dry: 0 &nbsp;&middot;&nbsp; mean of reported = <tspan class="val" style="fill:var(--warn)">11.7 mm/day</tspan></text>
+  <g class="lab">
+    <rect x="0" y="228" width="13" height="13" fill="var(--river)"/>
+    <text x="19" y="239">rainy day, recorded</text>
+    <rect x="170" y="228" width="13" height="13" fill="none" stroke="var(--muted)"/>
+    <text x="189" y="239">dry day, recorded as zero</text>
+    <rect x="370" y="228" width="13" height="13" fill="none" stroke="var(--warn)" stroke-dasharray="2 2"/>
+    <text x="389" y="239">dry day, NOT written down</text>
+  </g>
+  <text class="lab" x="0" y="272" style="fill:var(--ink)">Same weather. Nearly 3&times; the apparent rainfall &mdash; purely because of what got written down.</text>
+  <text class="lab" x="0" y="290">A blank means "zero" sometimes and "unknown" other times, and nothing in the file distinguishes them.</text>
+</svg>
+<figcaption><b>Why standard checks miss it.</b> Normal quality control asks: is this value too
+large? Does it disagree with the neighbours? Is it an outlier? <b>Every one of those looks at
+values that are present.</b> A record that was never written is invisible to all of them, by
+construction &mdash; this is a defect class an entire family of standard methods cannot
+detect.</figcaption>
+</figure>
+
+<div class="block"><h4>The detector, and why it can be trusted</h4>
+<p>For station X, use <strong>only its neighbours' data</strong>: on the days X chose to report,
+was it unusually wet nearby? If X reports honestly, those should be ordinary days &mdash; giving
+about 1.0.</p>
+<p>The clever part is a <strong>calibrated null</strong>: on the 89 healthy dense stations it
+reads <span class="num">1.001</span>, correctly finding no bias where there should be none.
+That is what makes <span class="num">1.777</span> on the patchy stations trustworthy rather than
+an arbitrary threshold.</p>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Selectivity statistic</th><th class="n">Before</th><th class="n">After repair</th></tr></thead>
+<tbody>
+<tr><td>Sparse band (&lt;50&nbsp;% reporting)</td><td class="n">1.777</td><td class="n" style="color:var(--good);font-weight:700">1.040</td></tr>
+<tr><td><strong>Dense band (&gt;90&nbsp;%) &mdash; the control</strong></td><td class="n">1.001</td><td class="n" style="color:var(--good);font-weight:700">1.001</td></tr>
+<tr><td>Basin areal rainfall</td><td class="n">2,174 mm/yr</td><td class="n">2,036 mm/yr</td></tr>
+<tr><td>Energy-floor violations</td><td class="n">18</td><td class="n">14</td></tr>
+</tbody></table>
+</div>
+<p>The dense band <em>staying</em> at 1.001 is the control that proves we did not over-correct
+and invent dry days on good stations. 153 stations repaired, 240,158 inferred-dry
+station-days.</p></div>
+<div class="q"><p class="ask">How do you know the inferred dry days really were dry?</p>
+<p>We check at independent neighbours: on the days we inserted, neighbour wet-day rate was
+<span class="num">0.17</span> against <span class="num">0.33</span> overall. So those days were
+genuinely much drier than average &mdash; though not bone dry, which is why we report the
+corrected basin rainfall as a bounded range rather than one exact figure.</p></div>
+</div>
+
+<!-- ---------- slide 14 ---------- -->
+<div class="card slide" id="s14">
+<div class="slide-head"><span class="tag">14</span><h3>Verification as a first-class activity</h3></div>
+
+<div class="callout warn"><span class="lbl">Finding 1 &mdash; the serious one</span>
+<p>Our rainfall table is about 180&nbsp;MB (4,018 rows &times; 8,673 columns). The standard
+Python CSV reader returned <span class="num">1,309</span> rows on one call and
+<span class="num">3,630</span> on another, from a file we then proved complete &mdash; <strong>with
+no error raised</strong>.</p></div>
+
+<figure>
+<svg viewBox="0 0 700 200" role="img" aria-label="Diagram showing that a truncated file prefix passes every standard sanity check">
+  <text class="ttl" x="0" y="14">Why every check passed on a third of the data</text>
+  <text class="lab" x="0" y="40">the complete file, 4,018 rows</text>
+  <rect x="0" y="48" width="620" height="22" fill="var(--river)" opacity=".3"/>
+  <text class="lab" x="0" y="98">what the reader returned &mdash; a contiguous PREFIX</text>
+  <rect x="0" y="106" width="202" height="22" fill="var(--warn)"/>
+  <rect x="202" y="106" width="418" height="22" fill="none" stroke="var(--warn)" stroke-dasharray="4 3"/>
+  <text class="val" x="210" y="122" fill="var(--warn)">missing &mdash; always from the END</text>
+  <g class="lab">
+    <text x="0" y="156" style="fill:var(--good)">&#10003; column count correct</text>
+    <text x="180" y="156" style="fill:var(--good)">&#10003; dates in order</text>
+    <text x="330" y="156" style="fill:var(--good)">&#10003; no duplicates</text>
+    <text x="470" y="156" style="fill:var(--good)">&#10003; no calendar gaps</text>
+  </g>
+  <text class="lab" x="0" y="184" style="fill:var(--ink)">The ONLY thing that caught it: an assertion comparing the file's dates against a period declared separately, from two literal dates.</text>
+</svg>
+<figcaption>Without that one line we would have calibrated this entire model on about a third of
+the data, and <b>every diagnostic would have been green</b>.</figcaption>
+</figure>
+
+<div class="block"><h4>The other three</h4>
+<ul>
+<li><strong>The interpolation was not reproducible.</strong> Three gauge pairs share identical
+coordinates, so which neighbours got used depended on the accidental order of the columns.
+Shuffling moved rainfall by up to <span class="num">20 mm/day</span> in some catchments.</li>
+<li><strong>"132 of 132 files present" was a count of filenames.</strong> One file was internally
+corrupt at a perfectly plausible 43.7&nbsp;MB. <em>A file listing is not a file check.</em></li>
+<li><strong>Two gauges 5&nbsp;cm apart were not duplicates.</strong> They disagree on 1,000 of
+1,470 shared days &mdash; one simply has wrong coordinates. A merge rule based on distance would
+have silently destroyed a real measurement.</li>
+</ul></div>
+<div class="callout good"><span class="lbl">Standing guarantees, checked on every run</span>
+<p>Water conserved to <span class="num">1.67 &times; 10&#8315;&#185;&#8311;</span> &mdash; exact.
+And two completely independent implementations of the routing agree <strong>bit for
+bit</strong>.</p></div>
+</div>
+
+<!-- ---------- slide 15 ---------- -->
+<div class="card slide" id="s15">
+<div class="slide-head"><span class="tag">15</span><h3>The model is at its input's ceiling</h3></div>
+<div class="callout"><p>The main scientific result. Take time here.</p></div>
+
+<ol class="keys">
+<li><strong>Tuning did not work.</strong> We swept the groundwater parameter across an order of
+magnitude, the subsurface parameter, channel speed from 0.22 to 2&nbsp;m/s, and scaled all
+rainfall down by up to 20&nbsp;%. <strong>Twelve configurations.</strong></li>
+<li><strong>Correlation refused to move</strong> &mdash; it stayed between
+<span class="num">0.556</span> and <span class="num">0.572</span> in every one. When a result is
+that insensitive to everything you change, it is not a parameter problem.</li>
+<li><strong>So we measured what the rainfall data itself can do.</strong> Hide one gauge, predict
+it from the others, compare. The rainfall field's own skill:
+<span class="num">r &asymp; 0.43</span>.</li>
+<li><strong>Our model achieves <span class="num">r &asymp; 0.476</span></strong> &mdash; just
+<em>above</em> the quality of its own input.</li>
+<li><strong>The physical reason.</strong> Daily rainfall at two gauges 25&nbsp;km apart
+correlates only <span class="num">0.33</span>. Tropical mountain storms are small: one hits a
+valley and misses the next. Our average gauge spacing is <span class="num">~30 km</span>.</li>
+</ol>
+
+<figure>
+<svg viewBox="0 0 700 280" role="img" aria-label="Rainfall correlation falling with distance, against the model and field skill levels and the gauge spacing">
+  <text class="ttl" x="0" y="14">Rain decorrelates faster than the network can sample it</text>
+  <line class="ax" x1="60" y1="215" x2="640" y2="215"/>
+  <line class="ax" x1="60" y1="40" x2="60" y2="215"/>
+  <text class="lab" x="56" y="46" text-anchor="end">0.6</text>
+  <text class="lab" x="56" y="128" text-anchor="end">0.3</text>
+  <text class="lab" x="56" y="219" text-anchor="end">0</text>
+  <text class="lab" x="30" y="130" text-anchor="middle" transform="rotate(-90 30 130)">correlation</text>
+  <g class="lab">
+    <text x="60"  y="234" text-anchor="middle">0</text>
+    <text x="220" y="234" text-anchor="middle">25 km</text>
+    <text x="380" y="234" text-anchor="middle">50 km</text>
+    <text x="540" y="234" text-anchor="middle">75 km</text>
+  </g>
+  <!-- model skill and field skill reference lines -->
+  <line x1="60" y1="76" x2="640" y2="76" stroke="var(--river)" stroke-width="2" stroke-dasharray="6 4"/>
+  <text class="val" x="644" y="80" fill="var(--river)">0.476 model</text>
+  <line x1="60" y1="87" x2="640" y2="87" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 4"/>
+  <text class="val" x="644" y="99" fill="var(--accent)">0.429 field</text>
+  <!-- decorrelation curve -->
+  <path d="M60,96 C120,110 170,122 220,128 C300,138 340,146 380,150 C460,158 540,164 640,168"
+        fill="none" stroke="var(--warn)" stroke-width="2.8"/>
+  <circle cx="220" cy="128" r="4.5" fill="var(--warn)"/>
+  <text class="val" x="228" y="122" fill="var(--warn)">0.33</text>
+  <circle cx="380" cy="150" r="4.5" fill="var(--warn)"/>
+  <text class="val" x="388" y="144" fill="var(--warn)">0.25</text>
+  <!-- gauge spacing -->
+  <line x1="252" y1="40" x2="252" y2="215" stroke="var(--ink)" stroke-width="1.6"/>
+  <text class="val" x="258" y="54" style="fill:var(--ink)">~30 km &mdash; our mean gauge spacing</text>
+  <text class="lab" x="60" y="262" style="fill:var(--ink)">At the distance our gauges are apart, daily rainfall is already only ~0.3 correlated. The information simply is not sampled.</text>
+</svg>
+<figcaption><b>Therefore:</b> the ceiling belongs to the <b>observing network</b>, not the
+model. No parameter set gets past it.</figcaption>
+</figure>
+
+<div class="callout good"><span class="lbl">Why it matters</span>
+<p>It reframes a weakness as a measurement. Not <em>"we underperform in the dry season"</em> but
+<em>"we have quantified the limit of daily rainfall&ndash;runoff modelling at ~30&nbsp;km gauge
+spacing in a tropical mountain basin"</em> &mdash; transferable to any data-sparse basin, and
+the most publishable thing in the work.</p></div>
+<div class="q"><p class="ask">Could you not just interpolate the rainfall better?</p>
+<p>Better interpolation cannot invent information that was never sampled. If the field
+decorrelates over 25&nbsp;km and gauges are 30&nbsp;km apart, the missing structure is not
+recoverable from those gauges. That is why step 1 on slide 17 is <em>satellite</em> rainfall
+&mdash; a genuinely different observation, not a cleverer average of the same points.</p></div>
+</div>
+
+<!-- ---------- slide 16 ---------- -->
+<div class="card slide" id="s16">
+<div class="slide-head"><span class="tag">16</span><h3>What we cannot yet claim</h3></div>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Limit</th><th>What it means</th></tr></thead>
+<tbody>
+<tr><td><strong>Calibration not closed</strong></td><td>Three attempts, none meeting every criterion we set in advance.</td></tr>
+<tr><td><strong>Conventional adequacy not reached</strong></td><td>The usual daily NSE threshold is &gt;0.5; we are 0.16&ndash;0.26. Slide 15 explains why, but it is still true.</td></tr>
+<tr><td><strong>ENSO asymmetry persists</strong></td><td>Five times better wet than dry. We aimed to halve that ratio and did not.</td></tr>
+<tr><td><strong>Parameters at bounds</strong></td><td>A vegetation coefficient sits at 2.0, beyond any physically sensible value. That is compensation &mdash; our evaporation formula throttles evaporation even in moist soil, so the model needs an unrealistic coefficient to evaporate enough. A one-function fix, next on the list.</td></tr>
+<tr><td><strong>No per-catchment sediment yield</strong></td><td>Our two implementations' drainage areas disagree by more than 2&times; on <span class="num">36&nbsp;%</span> of shared gauges, while their <em>averages</em> agree to 1&nbsp;%. Yield is mass per unit area, so a 2&times; area error is a 2&times; yield error.</td></tr>
+<tr><td><strong>Celerity is a surrogate</strong></td><td>The fitted channel speed of 0.221&nbsp;m/s is doing the job of floodplain storage that implementation A does not represent. It cannot be reported as a physical velocity.</td></tr>
+</tbody></table>
+</div>
+<div class="callout"><p>Stating limits yourself is what makes the positive claims believable.
+Every limit here comes with a measurement, not a hedge.</p></div>
+</div>
+
+<!-- ---------- slide 17 ---------- -->
+<div class="card slide" id="s17">
+<div class="slide-head"><span class="tag">17</span><h3>Next steps</h3></div>
+<p>The order is set by measurements, not preference.</p>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th class="n">#</th><th>Step</th><th>Why in this position</th></tr></thead>
+<tbody>
+<tr><td class="n">1</td><td>Merge satellite rainfall with the repaired gauges</td><td>The <strong>only</strong> intervention measured capable of moving correlation (slide 15), and therefore the dry season. Satellite supplies spatial pattern and covers the 17&nbsp;% of the basin with no nearby gauge; gauges stay in control of volume, because slide 11 showed volume is now nearly right and must not be broken.</td></tr>
+<tr><td class="n">2</td><td>Fix the evaporation formula</td><td>Cheap, and should release the stuck parameter (slide 16).</td></tr>
+<tr><td class="n">3</td><td>More search seeds</td><td>Our two rainfall versions differ by <span class="num">0.011</span> while different random seeds differ by <span class="num">0.019</span>. <strong>The seed noise is larger than the effect</strong>, so that comparison is not yet established.</td></tr>
+<tr><td class="n">4</td><td>Resolve catchment areas</td><td>Blocks all yield reporting.</td></tr>
+<tr><td class="n">5</td><td>Then sediment</td><td>Phase C is <em>built and tested</em> &mdash; it waits on data quality, not on code.</td></tr>
+</tbody></table>
+</div>
+</div>
+
+<!-- ---------- slide 18 ---------- -->
+<div class="card slide" id="s18">
+<div class="slide-head"><span class="tag">18</span><h3>The question for the advisor</h3></div>
+<div class="callout"><span class="lbl">The decision</span>
+<p>Is the input-ceiling result an acceptable closing statement for the hydrological phase?</p></div>
+
+<figure>
+<svg viewBox="0 0 700 300" role="img" aria-label="Decision tree: if the ceiling result is an acceptable close, Phase B finishes; if not, the satellite merge must succeed">
+  <defs>
+    <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+    </marker>
+  </defs>
+  <!-- question -->
+  <rect x="210" y="8" width="280" height="52" rx="26" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.6"/>
+  <text class="lab" x="350" y="30" text-anchor="middle" style="fill:var(--ink);font-weight:700">Is the ceiling result an</text>
+  <text class="lab" x="350" y="46" text-anchor="middle" style="fill:var(--ink);font-weight:700">acceptable way to close Phase B?</text>
+  <!-- branch lines -->
+  <path d="M280,62 V84 H150 V104" fill="none" stroke="var(--muted)" marker-end="url(#ar2)"/>
+  <path d="M420,62 V84 H540 V104" fill="none" stroke="var(--muted)" marker-end="url(#ar2)"/>
+  <text class="val" x="196" y="80" fill="var(--good)">YES</text>
+  <text class="val" x="480" y="80" fill="var(--warn)">NO</text>
+  <!-- yes branch -->
+  <rect x="20" y="106" width="260" height="76" rx="4" fill="var(--good-soft)" stroke="var(--good)"/>
+  <text class="lab" x="150" y="128" text-anchor="middle" style="fill:var(--ink);font-weight:650">Phase B closes on a quantified limit</text>
+  <text class="lab" x="150" y="146" text-anchor="middle">&mdash; whether or not the merge works.</text>
+  <text class="lab" x="150" y="164" text-anchor="middle">Effort moves to sediment.</text>
+  <!-- no branch -->
+  <rect x="420" y="106" width="260" height="56" rx="4" fill="var(--warn-soft)" stroke="var(--warn)"/>
+  <text class="lab" x="550" y="130" text-anchor="middle" style="fill:var(--ink);font-weight:650">The satellite merge MUST succeed</text>
+  <text class="lab" x="550" y="148" text-anchor="middle">&mdash; it is the only lever on correlation</text>
+  <line x1="550" y1="164" x2="550" y2="186" stroke="var(--muted)" marker-end="url(#ar2)"/>
+  <text class="lab" x="558" y="180" style="fill:var(--muted)">and if it does not?</text>
+  <rect x="420" y="188" width="260" height="90" rx="4" fill="var(--surface2)" stroke="var(--hair)"/>
+  <text class="lab" x="432" y="209" style="fill:var(--ink);font-weight:650">Two options remain:</text>
+  <text class="lab" x="432" y="230">&bull; denser rainfall input than IDEAM has</text>
+  <text class="lab" x="432" y="250">&bull; a reduced target &mdash; monthly instead of</text>
+  <text class="lab" x="443" y="266">daily, or sub-basins instead of the network</text>
+  <!-- footer -->
+  <text class="lab" x="20" y="212" style="fill:var(--ink);font-weight:650">Both answers are workable.</text>
+  <text class="lab" x="20" y="232">What is not workable is leaving it undecided,</text>
+  <text class="lab" x="20" y="248">because &ldquo;done&rdquo; means different things</text>
+  <text class="lab" x="20" y="264">under each &mdash; which is why this is the</text>
+  <text class="lab" x="20" y="280">slide to end on rather than a summary.</text>
+</svg>
+</figure>
+
+<p>Both answers are workable. What is not workable is leaving it undecided, because "done"
+means different things under each &mdash; which is why this is the slide to end on rather than a
+summary.</p>
+</div>
+
+<!-- ---------- Part 4 ---------- -->
+<div class="card slide" id="p4">
+<div class="slide-head"><span class="tag">&rarr;</span><h3>Five things to remember if you remember nothing else</h3></div>
+<ol class="keys">
+<li><strong>Both ENSO years are out-of-sample.</strong> We calibrate only on neutral years, so
+the headline results are predictions, not fits. <em>(Slide 7)</em></li>
+<li><strong>We traded 0.029 KGE for a correct groundwater recession</strong> &mdash; and the dry
+season went from worse-than-climatology to better. A flattering number from wrong physics is not
+the better model. <em>(Slide 9)</em></li>
+<li><strong>Repairing the rainfall fixed volume and did not touch timing</strong> &mdash;
+predicted in advance, confirmed at +0.003. Two independent problems. <em>(Slide 11)</em></li>
+<li><strong>The model sits just above its input's own skill</strong> (0.476 vs 0.43), and daily
+rainfall decorrelates over 25&nbsp;km while our gauges are 30&nbsp;km apart. The ceiling belongs
+to the network. <em>(Slide 15)</em></li>
+<li><strong>Test for absent records, not just bad values.</strong> Standard outlier checks cannot
+see a measurement that was never written down. <em>(Slide 13)</em></li>
+</ol>
+</div>
+
+</section>
+
+<!-- ============================== SCRIPT ============================== -->
+<section class="pane" id="p-s" role="tabpanel" aria-labelledby="t-s" hidden>
+
+<h2>Spoken script</h2>
+<p class="lede">Text in quotation marks is what to say, written the way you would speak it.
+<em>Italic dashed blocks</em> are stage directions. Times are cumulative; total as written is
+about <strong>34 minutes</strong>. Take the three <span class="cut">CUT IF SHORT</span> marks to
+reach 25.</p>
+
+<div class="card slide" id="k-rules">
+<div class="slide-head"><span class="tag">&sect;</span><h3>Three rules for delivery</h3></div>
+<ol class="keys">
+<li><strong>Never read a number without saying what it means.</strong> "KGE 0.45" means nothing
+to a listener; "about 0.45 on a scale where 1 is perfect" does.</li>
+<li><strong>Say what the axes are before you say what the result is.</strong></li>
+<li><strong>Slide 18 is the one you want discussed.</strong> Do not let slides 1&ndash;17 eat its
+time.</li>
+</ol>
+</div>
+
+<div class="card slide" id="k1">
+<div class="slide-head"><span class="tag">1</span><h3>Title <span class="time">0:00 &rarr; 0:30</span></h3></div>
+<div class="speech">
+<p>"Good morning. This is our work on modelling suspended sediment in the Magdalena&ndash;Cauca
+basin, comparing a very wet year with a very dry one."</p>
+<p>"I want to be clear about the scope up front. Today is about the <em>water</em> side &mdash;
+the hydrology. The sediment module is built, but it is waiting on data quality, so it appears
+only at the end as an outlook."</p>
+<p>"And this is a progress talk, not a finished result. I will show you three attempts at
+calibrating the hydrological model, what each one measured, and where we now stand &mdash; with
+the limits stated as clearly as the successes."</p>
+</div>
+<p class="stage">Move on quickly. The title slide should not take a minute.</p>
+</div>
+
+<div class="card slide" id="k2">
+<div class="slide-head"><span class="tag">2</span><h3>The two years <span class="time">0:30 &rarr; 2:00</span></h3></div>
+<div class="speech">
+<p>"The Magdalena&ndash;Cauca drains about 257,000 square kilometres of Colombia, and it carries
+one of the highest sediment loads per unit area of any river in the world. That sediment fills
+reservoirs, reshapes the delta, and affects water quality."</p>
+<p>"How much sediment moves changes a lot from year to year, and the main driver is
+<em>ENSO</em> &mdash; the El Niño / La Niña cycle in the Pacific. La Niña brings wet years, El
+Niño brings dry ones."</p>
+<p>"We compare 2011, a strongly wet La Niña year, with 2015 to 2016, a dry El Niño period."</p>
+</div>
+<p class="stage">Point at the left panel.</p>
+<div class="speech">
+<p>"And I want to stress: we did not take those years from the literature. This left panel is
+our own analysis of discharge across the basin, year by year. 2011 stands out at about 1.7
+standard deviations above normal, and 2015&ndash;16 is about one standard deviation below. The
+years chose themselves from our data."</p>
+<p>"The right panel is the same signal, computed independently by the second half of our team,
+from a different pipeline. Two analyses, same answer."</p>
+<p>"The gap we are filling: this ENSO&ndash;sediment link is well documented
+<em>statistically</em> &mdash; people have correlated the two. But nobody has reproduced it with
+a <em>process-based model</em> that represents the physics across the whole basin. That is what
+a process model adds: it tells you not just that the difference exists, but <em>where</em> in
+the basin it comes from, and <em>why</em>."</p>
+</div>
+</div>
+
+<div class="card slide" id="k3">
+<div class="slide-head"><span class="tag">3</span><h3>Where we are <span class="time">2:00 &rarr; 3:00</span></h3></div>
+<div class="speech">
+<p>"Three phases. Phase A, all the model inputs, is complete. Phase B, the hydrology, is
+calibrated &mdash; three attempts &mdash; but <em>not closed</em>, and that is today's talk.
+Phase C, the sediment, is blocked on the quality of the sediment concentration data on the main
+stem."</p>
+<p>"Why in that order? Because the erosion equation we use is driven by <em>runoff</em>, not by
+rainfall. Water has to be right first. If we calibrated the sediment parameters on top of an
+uncalibrated water balance, the erosion parameters would just absorb our water errors, and we
+would get plausible-looking numbers that mean nothing."</p>
+</div>
+<p class="stage">Point at the map.</p>
+<div class="speech">
+<p>"This is what the hydrology hands to the sediment module &mdash; simulated runoff per unit
+area across the basin. Getting this field right is the whole job of Phase B."</p>
+</div>
+</div>
+
+<div class="card slide" id="k4">
+<div class="slide-head"><span class="tag">4</span><h3>Pipeline <span class="time">3:00 &rarr; 4:30</span></h3></div>
+<div class="speech">
+<p>"Before any modelling, we have to turn a digital elevation model into a river network. Four
+steps, left to right."</p>
+<p>"First, condition the elevation data &mdash; fill the artificial pits that would otherwise
+trap water. Second, compute for every cell how much land drains into it; that is what makes the
+river network appear, and you can see it emerge in the second panel. Third, threshold that to
+define the channels. Fourth, cut the basin into small units."</p>
+<p>"We end with 8,672 units &mdash; we call them <em>minibacias</em>, small sub-catchments. Each
+one gets its own water balance."</p>
+</div>
+<p class="stage">Point at the bottom-left panel.</p>
+<div class="speech">
+<p>"Inside each minibacia we do not assume one uniform surface. We cross soil texture with land
+cover, which gives 24 combinations &mdash; each behaving differently when it rains. Clay under
+forest does not shed water like sand under pasture."</p>
+<p>"Bottom right is the accumulated drainage area on a log scale. The single outlet at Calamar
+accumulates the full 257,000 square kilometres, which is the first check that the network is
+connected correctly."</p>
+</div>
+<p><span class="cut">CUT IF SHORT</span> &nbsp;Compress to <em>"we turn the DEM into 8,672
+sub-catchments, each split into 24 soil-by-land-cover classes"</em> and move on.</p>
+</div>
+
+<div class="card slide" id="k5">
+<div class="slide-head"><span class="tag">5</span><h3>Discretisation <span class="time">4:30 &rarr; 6:00</span></h3></div>
+<div class="speech">
+<p>"I want to spend thirty seconds on verification, because it is a theme of this talk."</p>
+<p>"Geometry is easy to get subtly wrong and hard to notice. So we do not just compute the
+drainage areas &mdash; we compute them <em>two independent ways</em> and compare."</p>
+</div>
+<p class="stage">Point at the table, line by line.</p>
+<div class="speech">
+<p>"The area accumulated at the outlet, and the sum of all the individual sub-catchment areas,
+agree to eight decimal places. Zero edges where a downstream catchment is somehow smaller than
+its upstream one, which would be physically impossible. The soil-and-land-cover fractions sum to
+exactly one, to machine precision."</p>
+<p>"None of that is a result. It is the floor you have to be standing on before any result means
+anything."</p>
+</div>
+<p class="stage">Point at the map.</p>
+<div class="speech">
+<p>"And this is one real input: how much water the soil can hold, from Colombian soil survey
+data. Median about 73 millimetres, but ranging from 13 to 255. A nineteen-fold spatial range. We
+could have used one average number for the whole basin &mdash; that would have thrown away real,
+measured variation."</p>
+</div>
+</div>
+
+<div class="card slide" id="k6">
+<div class="slide-head"><span class="tag">6</span><h3>Two implementations <span class="time">6:00 &rarr; 8:30</span></h3></div>
+<div class="speech">
+<p>"Now the piece I am most pleased about, and it needs explaining."</p>
+<p>"Our team built <em>two</em> versions of this model, deliberately."</p>
+</div>
+<p class="stage">Point at column A.</p>
+<div class="speech">
+<p>"Implementation A uses simple channel routing. Water moves downstream through a chain of
+storage reservoirs. It is physically crude, but it runs the whole basin for eleven years in
+<em>twelve seconds</em>."</p>
+</div>
+<p class="stage">Point at column B.</p>
+<div class="speech">
+<p>"Implementation B uses proper hydrodynamics &mdash; it solves shallow-water physics, tracks
+water depth, and represents floodplains. That matters here because of the Depresión Momposina,
+the huge wetland where the Magdalena and Cauca meet, which stores water for weeks. But it costs
+about 1,500 seconds per run &mdash; twenty-five minutes."</p>
+<p>"So: A buys <em>search</em>, B buys <em>physics</em>. To calibrate you need hundreds or
+thousands of runs. On implementation B, the search we ran overnight would have taken thirteen
+days. On A it took a few hours."</p>
+</div>
+<p class="stage">Point at the callout.</p>
+<div class="speech">
+<p>"And here is the payoff. Both are now calibrated, and they land within about 0.02 of each
+other on our skill metric &mdash; from independent code, independent input processing, and
+different physics. That agreement is a genuine cross-check. Neither version alone could have
+told us that."</p>
+</div>
+<p class="stage">Point at the convergence figure.</p>
+<div class="speech">
+<p>"This is the search itself. Each line is one optimisation run &mdash; four running at once.
+You can see them climbing and flattening out. The flattening is what tells you the search has
+found what it is going to find."</p>
+</div>
+</div>
+
+<div class="card slide" id="k7">
+<div class="slide-head"><span class="tag">7</span><h3>The split <span class="time">8:30 &rarr; 11:00</span></h3></div>
+<div class="speech">
+<p>"This slide is the reason you should believe anything I say afterwards. Please stay with me
+for two minutes."</p>
+<p>"We run 2008 to 2018 &mdash; about four thousand days. 2008 is used to warm the model up, and
+we score 2009 to 2018."</p>
+<p>"Now, the honest problem with calibration: if you tune a model on some data and then report
+how well it does on that same data, you have proved nothing. You have proved you can fit a
+curve."</p>
+<p>"The standard fix is to hold some data back. We do something stricter, from a 1986 paper by
+Klemeš. <em>We calibrate only on the neutral years</em> &mdash; the ordinary ones, neither El
+Niño nor La Niña."</p>
+<p>"Which means both of the years we actually care about, 2011 and 2015&ndash;16, are
+<em>never seen by the calibration</em>. When I show you how the model does in those years, that
+is a <em>prediction</em>, not a fit."</p>
+<p>"And we check for overfitting directly: the drop in performance from the calibration years to
+the validation years is 0.159 &mdash; only 0.011 worse than what an <em>unfitted</em> model
+loses. So the fitting is not memorising."</p>
+</div>
+<p class="stage">Point at the figure.</p>
+<div class="speech">
+<p>"One more thing on this slide. A model like this carries memory in its soil moisture, so the
+starting condition matters. We tested three deliberately incompatible starting states &mdash;
+bone dry, saturated, and equilibrium. By the end of the warm-up year they converge to within
+0.18 percent of mean flow. So the answers do not depend on our guess about initial
+conditions."</p>
+</div>
+</div>
+
+<div class="card slide" id="k8">
+<div class="slide-head"><span class="tag">8</span><h3>Three attempts <span class="time">11:00 &rarr; 13:30</span></h3></div>
+<div class="speech">
+<p>"Now the actual work: three attempts."</p>
+<p>"First, let me explain the metric, because everything depends on it. <em>KGE</em> &mdash;
+Kling-Gupta Efficiency. One is perfect. It combines three things: does the model get the
+<em>timing</em> of the rises and falls right, does it get the <em>variability</em> right, and
+does it get the <em>total volume</em> right. Above about 0.5 is generally considered decent for
+daily river flow, which is a hard target."</p>
+</div>
+<p class="stage">Point at the blue bars.</p>
+<div class="speech"><p>"Attempt one reached 0.450."</p></div>
+<p class="stage">Point at the red bars.</p>
+<div class="speech">
+<p>"But we also measured something else, and this is where it gets interesting. When rain stops,
+a river's flow decays. How fast it decays is called the <em>recession</em>, and it tells you
+about how water is stored underground. We measured it in the observations: about ten to twelve
+days."</p>
+<p>"Attempt one's simulated recession was <em>thirty to forty-five days</em>. Three to four
+times too slow. The model was getting the right total volume of water, but releasing it far too
+slowly &mdash; and no one had checked."</p>
+<p>"So attempts two and three add a term to the objective that explicitly penalises a wrong
+recession, and attempt three additionally uses a repaired rainfall dataset."</p>
+<p>"One methodological point: we <em>wrote down which experiments we would run before running
+them</em>. Two configurations, two random seeds each, four thousand model evaluations total.
+That matters &mdash; if you run twenty variants and report the best one, you have fooled
+yourself. Pre-registering stops that."</p>
+</div>
+</div>
+
+<div class="card slide" id="k9">
+<div class="slide-head"><span class="tag">9</span><h3>Central result <span class="time">13:30 &rarr; 16:30</span></h3></div>
+<div class="speech"><p>"This is the most important slide in the talk."</p></div>
+<p class="stage">Point at the green bars.</p>
+<div class="speech"><p>"Green is the recession we measured in the real rivers, by period &mdash;
+nine to twelve days."</p></div>
+<p class="stage">Red bars.</p>
+<div class="speech"><p>"Red is attempt one. Two-point-nine to three-point-nine times too
+slow."</p></div>
+<p class="stage">Navy bars.</p>
+<div class="speech">
+<p>"Navy is attempt two, after we told the objective function to care about recession. Between
+0.92 and 1.27 times observed. Essentially right."</p>
+<p>"And here is the trade."</p>
+</div>
+<p class="stage">Point at the callout.</p>
+<div class="speech">
+<p>"We <em>lost</em> KGE. From 0.450 down to 0.421. About 0.03."</p>
+<p>"I want to be very deliberate about how I present that, because it would be easy to hide. We
+did not lose skill by accident. We chose it. A model that reproduces the hydrograph well but
+drains groundwater three times too slowly is <em>getting the right answer for the wrong
+reason</em> &mdash; and it will fail the moment you ask it something new, like a different
+climate period, or feed it into a sediment module."</p>
+<p>"And we gained something concrete. In the El Niño dry period, attempt one was <em>worse</em>
+than a simple seasonal average; attempt two is <em>better</em> than it. First time. I will show
+you that on the next slide."</p>
+<p>"So: three-hundredths of a metric, for physics that is right and a dry season that finally
+works. We would make that trade again."</p>
+</div>
+</div>
+
+<div class="card slide" id="k10">
+<div class="slide-head"><span class="tag">10</span><h3>Benchmark <span class="time">16:30 &rarr; 18:30</span></h3></div>
+<div class="speech">
+<p>"A short methodological slide, because it changed how we read our own results."</p>
+<p>"We were looking at a metric called NSE for the dry El Niño period, and it was
+<em>negative</em> &mdash; which is conventionally read as 'the model is worse than just
+predicting the average'. That sounds catastrophic."</p>
+<p>"Before accepting that, we asked: how would a <em>perfect seasonal average</em> score in that
+same window? Something that knows the typical flow for every day of the year and nothing
+else."</p>
+<p>"It also scored negative. Minus 0.06."</p>
+<p>"The reason is that NSE compares against the variability <em>within the window you
+chose</em>, and the El Niño window happens to have the most variable flows in our whole record.
+So NSE is <em>not comparable between windows</em>. About a third of what looked like model
+failure was the measuring stick."</p>
+</div>
+<p class="stage">Point at the figure.</p>
+<div class="speech">
+<p>"So we report this instead: how much better than that seasonal climatology is the model, in
+each period. In the wet La Niña year we add about 0.13. In the dry El Niño period, about
+0.03."</p>
+<p>"That is still a real and uncomfortable asymmetry &mdash; we are five times better at wet
+than at dry. But it is an honest statement of the gap, and it is not 'worse than the
+mean'."</p>
+</div>
+</div>
+
+<div class="card slide" id="k11">
+<div class="slide-head"><span class="tag">11</span><h3>Rainfall test <span class="time">18:30 &rarr; 21:00</span></h3></div>
+<div class="speech">
+<p>"Attempt three tested one thing only: does better rainfall data help? Same model, same
+objective, same gauges, same time window &mdash; <em>only</em> the rainfall changed."</p>
+<p>"And we wrote down what we expected <em>before</em> we ran it. We expected the volume error
+to improve and the timing correlation not to move. Here is what happened."</p>
+</div>
+<p class="stage">Point at the bars.</p>
+<div class="speech">
+<p>"Volume bias: from about 8.9 percent down to 4.4 percent. Cut roughly in half."</p>
+<p>"Correlation: plus <em>zero-point-zero-zero-three</em>. Which is nothing."</p>
+<p>"Two more gauges crossed from useless to useful."</p>
+<p>"Overall KGE went slightly down, because KGE also penalises the change in variability."</p>
+</div>
+<p class="stage">Point at the callout.</p>
+<div class="speech">
+<p>"So the repair fixed <em>volume</em> and did not touch <em>timing</em>. Exactly as
+predicted."</p>
+<p>"That sounds like a small result. It is actually the most useful thing we learned, because it
+tells us these are <em>two separate problems</em>. We had been treating 'the rainfall is wrong'
+as one issue. It is two, and fixing one does not touch the other. That is what points us at
+what to do next."</p>
+</div>
+</div>
+
+<div class="card slide" id="k12">
+<div class="slide-head"><span class="tag">12</span><h3>Hydrographs <span class="time">21:00 &rarr; 22:30</span></h3></div>
+<div class="speech">
+<p>"Enough metrics. This is what it actually looks like. Observed discharge against simulated,
+for gauges spanning three orders of magnitude in catchment area."</p>
+<p>"One thing worth pointing out, because it surprised us. The <em>biggest</em> catchments have
+the <em>best</em> timing &mdash; correlation around 0.91. Because they average over so much area
+that the errors in individual rain gauges cancel out."</p>
+<p>"We had predicted the opposite &mdash; we expected the big rivers to be worst, because that
+is where our simple routing is weakest. We were wrong, and we found out because we tested the
+prediction instead of assuming it. Their weakness turns out to be in the <em>size</em> of the
+peaks, not in <em>when</em> the peaks arrive."</p>
+</div>
+<p><span class="cut">CUT IF SHORT</span> &nbsp;This slide can go, though it is the most intuitive
+one in the deck.</p>
+</div>
+
+<div class="card slide" id="k13">
+<div class="slide-head"><span class="tag">13</span><h3>The defect <span class="time">22:30 &rarr; 25:00</span></h3></div>
+<div class="speech">
+<p>"I want to show you one data problem, because the lesson generalises."</p>
+<p>"Our rainfall comes from Colombian gauge stations. Some report almost every day, others
+report patchily. We noticed something odd: the patchy stations reported <em>much higher</em>
+average rainfall. Stations reporting more than 90 percent of days averaged about 4.4 millimetres
+a day. Stations reporting less than half the days averaged 11.7."</p>
+<p>"Nearly three times more rain, purely as a function of how often the observer wrote something
+down. That is not geography."</p>
+<p>"What is happening: on dry days, some observers simply <em>wrote nothing</em>. So a blank
+does not mean 'unknown' &mdash; it often means zero. If you average only the days that were
+recorded, you systematically average only the rainy ones."</p>
+<p>"Now here is the part I want you to take away. Every standard quality check looks at the
+<em>values that are there</em> &mdash; is this number too big, is it an outlier, does it agree
+with the neighbours. <em>None of those can see a record that was never written.</em> The defect
+is invisible by construction to the entire class of checks people normally run."</p>
+<p>"What worked was a test built only from the <em>neighbouring</em> stations' data: on the days
+station X chose to report, was it raining at its neighbours? If X reports honestly, that should
+be an ordinary day. We calibrated it on the healthy dense stations, where it reads 1.001 &mdash;
+correctly finding no bias. On the patchy stations it read 1.777."</p>
+</div>
+<p class="stage">Point at the table.</p>
+<div class="speech">
+<p>"After repairing 153 stations, the patchy band comes down to 1.040, and &mdash; this is the
+control that matters &mdash; the healthy band <em>stays</em> at 1.001. So we did not
+over-correct and invent dry days on good stations."</p>
+<p>"Basin rainfall dropped from about 2,174 to 2,036 millimetres a year. A six percent
+correction, but on a quantity that drives everything downstream."</p>
+</div>
+</div>
+
+<div class="card slide" id="k14">
+<div class="slide-head"><span class="tag">14</span><h3>Verification <span class="time">25:00 &rarr; 27:00</span></h3></div>
+<div class="speech">
+<p>"Four things we found only by running the code. I will do the first one properly and name the
+others."</p>
+<p>"Our rainfall table is about 180 megabytes &mdash; four thousand rows by eight thousand
+columns. We asked the standard Python library to read it. On one call it returned 1,309 rows. On
+another call, 3,630. From a file we then proved was complete. With <em>no error message</em>."</p>
+<p>"And the cruel part: the missing rows were always from the <em>end</em>. So the data looked
+perfect. Correct number of columns, dates in order, no duplicates, no gaps in the calendar.
+Every sanity check we had would pass."</p>
+<p>"The only thing that caught it was an assertion comparing the dates in the file against a
+period we had <em>declared separately, from two literal dates</em>. Without that one line, we
+would have calibrated this entire model on about a third of the data, and every diagnostic would
+have been green."</p>
+<p>"Briefly, the other three. Our rainfall interpolation was not <em>reproducible</em> &mdash;
+three stations share identical coordinates, so which neighbours got used depended on the order
+the columns happened to be in; shuffling it moved rainfall by up to 20 millimetres a day in some
+catchments. We reported '132 of 132 climate files present' &mdash; that was a count of
+<em>filenames</em>; one file was internally corrupt at a perfectly plausible size. And two
+stations five centimetres apart in the catalogue turned out <em>not</em> to be duplicates
+&mdash; they disagree on a thousand days &mdash; so a rule based on distance would have silently
+destroyed a real measurement."</p>
+</div>
+<p class="stage">Point at the callout.</p>
+<div class="speech">
+<p>"Underneath all of it, two guarantees that run on every single execution: water is conserved
+to seventeen decimal places, and two completely independent implementations of the routing agree
+<em>exactly</em> &mdash; bit for bit."</p>
+</div>
+</div>
+
+<div class="card slide" id="k15">
+<div class="slide-head"><span class="tag">15</span><h3>The ceiling <span class="time">27:00 &rarr; 30:00</span></h3></div>
+<div class="speech">
+<p>"This is our main scientific result, and it took us a while to see it."</p>
+<p>"We could not get the dry El Niño period to work. So we tested the obvious explanations. We
+swept the groundwater parameter across an order of magnitude. The subsurface parameter. Channel
+speed, from 0.22 to 2 metres per second. We even scaled all the rainfall down by twenty
+percent."</p>
+<p>"<em>Twelve</em> different configurations. And the timing correlation stayed between 0.556
+and 0.572 in every single one."</p>
+<p>"That flatness is the finding. When a result refuses to move no matter what you change, you
+are not looking at a parameter problem."</p>
+</div>
+<p class="stage">Point at the table.</p>
+<div class="speech">
+<p>"So we measured what the rainfall data itself is capable of. We hid each gauge in turn,
+predicted its rainfall from its neighbours, and checked. The rainfall field's own skill is about
+0.43."</p>
+<p>"Our model achieves 0.476."</p>
+<p>"We are sitting just above the quality of the data we feed it. There is no parameter set that
+gets past that."</p>
+<p>"And the reason is physical. Look at the bottom rows. Daily rainfall at two gauges 25
+kilometres apart correlates at only 0.33. Tropical mountain rain is spatially patchy &mdash; a
+storm hits one valley and misses the next. Our average gauge spacing is about 30 kilometres. So
+we are trying to reconstruct a field that decorrelates faster than our network can sample
+it."</p>
+<p>"The ceiling is a property of the <em>observing network</em>, not of our model. And that
+reframes everything: it is not that we underperform in the dry season. It is that we have
+<em>measured the limit</em> of what daily rainfall&ndash;runoff modelling can do at this gauge
+density &mdash; which is a result other people in data-sparse basins can use."</p>
+</div>
+</div>
+
+<div class="card slide" id="k16">
+<div class="slide-head"><span class="tag">16</span><h3>Limits <span class="time">30:00 &rarr; 32:00</span></h3></div>
+<div class="speech">
+<p>"I want to state the limits myself rather than have them found."</p>
+<p>"The calibration is <em>not closed</em>. Three attempts, none meeting every criterion we set
+in advance."</p>
+<p>"We do not reach the conventional adequacy threshold &mdash; the usual benchmark for daily
+NSE is above 0.5, and we are between 0.16 and 0.26. Slide 15 explains why, but it is still
+true."</p>
+<p>"The ENSO asymmetry persists. We are about five times better in the wet phase than the dry
+phase. We set out to halve that ratio. We have not."</p>
+<p>"Two or three parameters are still pressed against their allowed limits &mdash; in particular
+a vegetation coefficient sitting at 2.0, which is beyond any physically sensible value. That is
+the model compensating for something. We think we know what: our evaporation formula throttles
+evaporation even when soil is quite wet, and doubling that coefficient is exactly the
+compensation that implies. It is a one-function fix and it is next on the list."</p>
+<p>"And an important one for Phase C: we <em>cannot publish sediment yield per catchment</em>.
+Our two implementations disagree by more than a factor of two on the catchment area for 36
+percent of shared gauges &mdash; while their averages agree to one percent. So neither drainage
+network is trustworthy gauge by gauge. And since yield is mass <em>per unit area</em>, a
+factor-of-two area error is a factor-of-two yield error. We have to resolve that against an
+external source before any specific yield is reportable."</p>
+</div>
+</div>
+
+<div class="card slide" id="k17">
+<div class="slide-head"><span class="tag">17</span><h3>Next steps <span class="time">32:00 &rarr; 33:00</span></h3></div>
+<div class="speech">
+<p>"Five steps, and the order is set by the measurements, not by preference."</p>
+<p>"One: merge satellite rainfall with our repaired gauges. This is the <em>only</em> thing we
+have measured to be capable of moving the timing correlation &mdash; and therefore the dry
+season. The satellite gives us spatial pattern and covers the seventeen percent of the basin
+with no nearby gauge; we keep the gauges in control of the total volume."</p>
+<p>"Two: fix the evaporation formula. Cheap, and it should release that stuck parameter."</p>
+<p>"Three: more random seeds, because our two rainfall versions differ by less than the
+variation between seeds &mdash; so that comparison is not yet established."</p>
+<p>"Four: resolve the catchment areas."</p>
+<p>"Five: then sediment."</p>
+</div>
+<p class="stage">Point at the two panels.</p>
+<div class="speech">
+<p>"And to be clear that Phase C is not vapour: the sediment retrieval from satellite imagery
+and the sediment transport module are both built and tested. They are waiting on data quality,
+not on code."</p>
+</div>
+</div>
+
+<div class="card slide" id="k18">
+<div class="slide-head"><span class="tag">18</span><h3>The ask <span class="time">33:00 &rarr; 34:00</span> &mdash; then stop</h3></div>
+<div class="speech">
+<p>"I would like to end with a question, because your answer changes what we do next."</p>
+<p>"Is the ceiling result on slide 15 an acceptable way to <em>close</em> the hydrological
+phase?"</p>
+<p>"If yes &mdash; then we can finish Phase B on a quantified limit, whether or not the
+satellite merge works, and move to sediment."</p>
+<p>"If no &mdash; if you expect us to reach the conventional adequacy threshold &mdash; then the
+satellite merge has to succeed. And if it does not, we would need either denser rainfall input
+than IDEAM has, or a reduced target: monthly instead of daily, or a few well-gauged sub-basins
+instead of the whole network."</p>
+<p>"Either answer is workable. But it changes what 'done' means, so it is the most useful thing
+we can settle today."</p>
+</div>
+<p class="stage">Stop. Let the discussion happen. Slide 19 is a backup if he asks "so what have
+you got?" &mdash; otherwise you may never need it.</p>
+</div>
+
+<div class="card slide" id="k-qa">
+<div class="slide-head"><span class="tag">?</span><h3>Anticipated questions</h3></div>
+
+<div class="q"><p class="ask">Why is the KGE only 0.45? That seems low.</p>
+<p>"Two reasons, and the second is the real one. First, this is <em>daily</em> flow, which is
+much harder than monthly &mdash; most published thresholds are for monthly. Second, and more
+importantly, we have measured the ceiling: the rainfall data's own skill is 0.43 and we achieve
+0.476. We are already above our input. No parameter set beats that, so the honest next step is
+better rainfall, not more tuning."</p></div>
+
+<div class="q"><p class="ask">Why not just use the model with the better physics?</p>
+<p>"We do &mdash; it is calibrated too, at 0.329, and it is what we will use for floodplain
+processes. But it costs twenty-five minutes per run, so the search we did overnight would take
+thirteen days on it. We need both: one to find the parameters, one to represent the
+physics."</p></div>
+
+<div class="q"><p class="ask">Are you sure the dry-season problem is the rainfall and not the
+model?</p>
+<p>"As sure as we can be from measurement. We tested twelve parameter configurations spanning
+more than an order of magnitude on three different parameters, and the correlation moved by less
+than 0.02 in all of them. Then we measured the rainfall field's own skill independently and
+found the model sitting just above it. We also tested three specific explanations for the
+dry-season failure &mdash; and all three were refuted, one of them backwards from what we had
+assumed."</p></div>
+
+<div class="q"><p class="ask">What happened to the sediment?</p>
+<p>"The module is built and tested; the satellite retrieval works. It is blocked on two data
+issues: the concentration measurements on the main stem, and the catchment-area disagreement on
+slide 16. Both are data problems, not modelling problems, and we would rather report no yield
+than a yield with a factor-of-two area error in it."</p></div>
+
+<div class="q"><p class="ask">Is 6&nbsp;% a big correction to the rainfall?</p>
+<p>"On the basin average, it sounds modest. But it cut the volume bias in our discharge by
+nearly half, and it took the number of physically impossible gauges &mdash; where the observed
+river carries less water than the rainfall implies &mdash; from 18 down to 14. And locally the
+correction is much larger than 6&nbsp;%; it is concentrated on 153 specific stations."</p></div>
+
+<div class="q"><p class="ask">Who did what?</p>
+<p>"We are three, and the work is joint. The two model implementations are two arms of one
+project &mdash; deliberately, so we would have one version fast enough to calibrate and one
+with the physics we eventually need. Their agreement to within 0.02 is a result we could only
+get by having both."</p></div>
+</div>
+
+</section>
+</main>
+</div>
+
+<script>
+// tab switching
+const tabs = {"t-c": ["p-c", "nav-c"], "t-x": ["p-x", "nav-x"], "t-s": ["p-s", "nav-s"]};
+Object.keys(tabs).forEach(function (id) {
+  document.getElementById(id).addEventListener("click", function () {
+    Object.keys(tabs).forEach(function (o) {
+      const sel = o === id;
+      document.getElementById(o).setAttribute("aria-selected", sel ? "true" : "false");
+      document.getElementById(tabs[o][0]).hidden = !sel;
+      document.getElementById(tabs[o][1]).hidden = !sel;
+    });
+    window.scrollTo(0, 0);
+  });
+});
+
+// build the two 30-day station strips on slide 13
+(function () {
+  // 1 = rainy, 0 = dry. Same weather for both stations.
+  const days = [0,0,1,0,0,0,1,1,0,0,0,0,1,0,0,1,0,0,0,1,1,0,0,0,0,1,0,0,1,0];
+  const cell = 19, gap = 3;
+  function draw(id, y, omitDry) {
+    const g = document.getElementById(id);
+    if (!g) return;
+    let out = "";
+    days.forEach(function (wet, i) {
+      const x = i * (cell + gap);
+      if (wet) {
+        out += '<rect x="' + x + '" y="' + y + '" width="' + cell + '" height="' + cell +
+               '" fill="var(--river)"/>';
+      } else if (omitDry) {
+        out += '<rect x="' + x + '" y="' + y + '" width="' + cell + '" height="' + cell +
+               '" fill="none" stroke="var(--warn)" stroke-dasharray="2 2"/>';
+      } else {
+        out += '<rect x="' + x + '" y="' + y + '" width="' + cell + '" height="' + cell +
+               '" fill="none" stroke="var(--muted)"/>';
+      }
+    });
+    g.innerHTML = out;
+  }
+  draw("rowA", 56, false);
+  draw("rowB", 164, true);
+})();
+</script>
