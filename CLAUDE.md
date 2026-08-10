@@ -45,12 +45,19 @@ study: La Niña 2011 (wet) vs El Niño 2015–16 (dry). UMNG internship, advisor
 
 - **Phase A (model inputs): complete.** Minibacias (8,672) → URH (24 types, IGAC soils) → soil
   params (Wm, K) → rainfall + PET forcing (`data/processed/forcing_minibacia_*.csv`).
-- **Phase B (water balance + discharge calibration): complete through the Phase 3 refit** (doc 26).
-  Notebooks 13 and 14 run on `model_inputs_v2/`; 2008 warms up, 2009-2018 is scored. MGB-SA proper
-  runs as a QGIS plugin; a Python water balance (derivation in `notebooks/03_hydrology.ipynb`) is
-  the diagnostic. Outputs in `sim_baseline_v2/` and `sim_calibrated_v2/`.
-- **Phase C (sediment): ACTIVE** — plan in docs/30. The old "blocked on mainstem SSC"
-  framing is superseded: 79 flagged stations exist; stage C1 builds the missing SSC-quality gate.
+- **Phase B (water balance + discharge calibration): CLOSED on H2E** (doc 26 + its 2026-08-10
+  addendum). Notebooks 13 and 14 run on `model_inputs_v2/`; 2008 warms up, 2009-2018 is scored.
+  MGB-SA proper runs as a QGIS plugin; a Python water balance (derivation in
+  `notebooks/03_hydrology.ipynb`) is the diagnostic. Outputs in `sim_baseline_v2/` and
+  `sim_calibrated_v2/`. The adopted configuration is **H2E** (v2 forcing + revised objective +
+  FAO-56 ET, θ_crit 0.6), frozen by stage C0: `parameters_H2E.csv`, `q_gauge_H2E.npz`,
+  `report_H2E.json`, `h2e_drivers.npz`, and H2E rows in `metrics_fleet.csv`. Reproduce the
+  adoption with `python3.10 src/report_h2e.py` (gate: F must match 0.25931 to 1e-8).
+  **The inherited caveat: El Niño skill-over-climatology is −0.0005 — the dry phase sits AT
+  climatology in the adopted fit, not above it** (doc 26 addendum A.5).
+- **Phase C (sediment): ACTIVE** — plan in docs/30, work breakdown in docs/31. Stage **C0 is
+  complete**; C1 (the SSC-quality gate) is next. The old "blocked on mainstem SSC" framing is
+  superseded: 79 flagged stations exist, of which C1 runs on the 28 mapped (docs/31 C1.0).
 
 ## Pipeline commands
 

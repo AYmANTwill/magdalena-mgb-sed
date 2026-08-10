@@ -83,19 +83,34 @@ calibration data. *Reuse the notebook-04 / README diagram.*
 
 ---
 
-## C — Three calibration attempts (5 slides, ~9 min)
+## C — Four calibration attempts (5 slides, ~9 min)
 
 ### 8. What we tried, and what each attempt bought
 
-| attempt | forcing | objective | **VAL KGE** | **recession ratio** | params at a bound |
-|---|---|---|---|---|---|
-| **1 — Config B** | original | daily KGE blend | **0.450** | **2.98×** too slow | 3 of 10 |
-| **2 — H1** | original | + recession term | 0.421 | **0.96×** | 2 |
-| **3 — H2** | repaired | + recession term | 0.346 | **1.01×** | 3 |
+*Table updated 2026-08-10 (Stage C0) to add attempt 4, the adopted configuration. Sources:
+`sim_calibrated_v2/metrics_fleet.csv` VAL-all + CAL rows, `parameters_*.csv`; full report in
+[docs/26](26_phase3_refit.md) addendum A.4.*
 
-- DDS, **4,000 evaluations**, two pre-registered configurations × two seeds, pre-registered
-  *before* running so no cell is a post-hoc pick.
-- Reference points on the objective scale: prior 0.128, random sampling 0.173, attempt 1 0.243.
+| attempt | forcing | objective | **VAL KGE** | **recession ratio** | PBIAS % | params at a bound (global / all 18) |
+|---|---|---|---|---|---|---|
+| **1 — Config B** | original | daily KGE blend | **0.450** | **2.98×** too slow | +6.8 | 3 of 10 / — |
+| **2 — H1** | original | + recession term | 0.421 | **0.96×** | +6.4 | 2 of 10 / 2 of 18 |
+| **3 — H2** | repaired | + recession term | 0.346 | **1.01×** | +7.3 | 2 of 10 / 3 of 18 |
+| **4 — H2E (adopted)** | repaired | + recession term, **FAO-56 ET** | 0.356 | **0.98×** | **+3.5** | 2 of 10 / 3 of 18 |
+
+- DDS, **14,000 evaluations** in total: three pre-registered configurations — H1 and H2 at six
+  seeds each, H2E at two ([docs/29](29_seed_expansion.md)) — every cell registered *before*
+  running, so none is a post-hoc pick.
+- Reference points on the objective scale: prior 0.128, random sampling 0.173, attempt 1 0.243,
+  attempt 4 **0.259**.
+- **The "params at a bound" column now states both denominators.** One 18-dimensional search
+  vector, two ways to count it: attempts 3 and 4 rail two of the ten *global* parameters and
+  three of all eighteen *dimensions* (the third is the regional `wm_mult@R2`). Reporting one
+  number is what made an earlier version of this slide say "3 of 10" where docs/26 §5 said "2".
+- **Attempt 4 bought volume, not skill:** β 1.073 → 1.035 and PBIAS +7.3 → +3.5 %, the best of
+  the four, while VAL KGE (+0.011) and r (+0.008) both moved less than the 0.051 between-seed
+  spread. It also freed the crop coefficient from its rail (`kc_mult` 1.90 → 1.66), which was
+  the pre-registered hypothesis it was built to test.
 
 ### 9. **The central result: fixing the physics costs skill**
 Attempt 1 reproduced discharge well but with a recession **3× too slow** — we measured
@@ -113,6 +128,14 @@ Adding a recession-signature term to the objective:
   worse-than-climatology to better.**
 - Message: a higher KGE bought by a physically wrong recession is not the better model. This
   is the deck's main argument, and it is why we report the ratio alongside the skill.
+- **Caveat added 2026-08-10 (Stage C0), and it must be spoken, not skipped:** the dry-phase
+  turn above is the attempt 1 → attempt 2 comparison and remains true of it. It does **not**
+  survive to the configuration we adopted. El Niño skill-over-climatology reads
+  **+0.026 → +0.006 → −0.0005** across attempts 2 → 3 → 4, so attempt 4 sits *at*
+  climatology in the dry phase, not above it. La Niña stays at **+0.106**. The honest
+  one-liner is therefore "the wet phase is predictable, the dry phase is not" — which is the
+  input-ceiling result (slide 12), not a contradiction of it. See
+  [docs/26](26_phase3_refit.md) addendum A.5.
 
 ### 10. Did repairing the rainfall help? — a controlled test
 Attempt 3 changes **only** the forcing, on matched gauges and a matched window:

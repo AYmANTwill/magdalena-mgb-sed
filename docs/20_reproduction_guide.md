@@ -41,6 +41,8 @@ dependency manifests. **Gitignored and regenerable** (see `.gitignore`):
 | `delivery/`, `*.pdf`, `notebooks/*.html` | packaging scripts; not project source |
 | `figures/deck/` | `python scripts/extract_notebook_figures.py` (every PNG output of `notebooks/*.ipynb` → `figures/deck/<nb>_c<cell>_<n>.png`) then `python scripts/make_deck_charts.py` (the four `gen_*.png` charts from `data/processed/sim_calibrated_v2/*.csv`) |
 | `*.pptx` | `python scripts/build_deck.py` → `MGB-SED_Magdalena_FIGURES.pptx`. Needs `figures/deck/` populated first. The `yb_*.png` figures come from the team's second-implementation repo — the one input not rebuildable from this repo alone |
+| `sim_calibrated_v2/h2e_drivers.npz` (546 MB) | `python3.10 src/build_h2e_drivers.py` — the frozen per-minibacia sediment drivers of the adopted H2E run (docs/31 C0.5). Needs `_calib_cache/dds_H2E_20260901.npz` and `model_inputs_v2/`; regenerates its own forcing cache if absent |
+| `_calib_cache/H1_*.npy`, `H2_*.npy` | `python3.10 -c "import sys; sys.path.insert(0,'src'); import calib_v2 as c; c.ensure_cache('H2E')"` — the memory-mapped forcing the cells read; deterministic, rebuilt from the bundle |
 | `cds_keys.txt`, `.cdsapirc` | your own credentials |
 
 Rule of thumb from the audits: **verify from on-disk artifacts and executed outputs, never
@@ -84,9 +86,23 @@ python -m nbconvert --to notebook --execute --inplace --ExecutePreprocessor.time
                                                 # -> sim_calibrated_v2/ (reads finished DDS
                                                 #   checkpoints; see s5 for the workers)
 
-# F. Sediment (Phase C data, currently blocked as science - doc 19 s3.9)
+# F. Phase B closeout: the adopted H2E configuration, reported and frozen (docs/31 C0)
+python3.10 src/report_h2e.py                    # C0.1-C0.4: reproduction gate, then
+                                                #   parameters_H2E.csv, q_gauge_H2E.npz,
+                                                #   report_H2E.json, +12 metrics_fleet rows
+python3.10 src/build_h2e_drivers.py             # C0.5: -> sim_calibrated_v2/h2e_drivers.npz
+                                                #   (the per-minibacia daily sediment drivers)
+
+# G. Sediment (Phase C; the "blocked as science" framing is superseded - docs/30 s1)
 python src/build_sediment_gauges.py             # -> sediment_daily.csv, sediment_inventory.csv
 ```
+
+`report_h2e.py` runs the **reproduction gate first** and exits non-zero if the recomputed
+objective does not match the archived `F = 0.25931` to 1e-8 relative; a failure there means
+the environment drifted and nothing downstream is trustworthy (docs/31 Stage C0). Both
+scripts are idempotent: re-running replaces the H2E rows and files rather than appending
+duplicates, and the 27 pre-existing `metrics_fleet.csv` rows are preserved byte-for-byte
+(a pandas read/write round trip re-emits them 3 ULP different — see docs/26 addendum A.6).
 
 Non-negotiable conventions on this chain:
 
@@ -112,6 +128,11 @@ Non-negotiable conventions on this chain:
 - Mass-balance residual < 1e-15 (measured 1.67e-17); numpy vs numba routers identical.
 - Any calibration harness must reproduce the stored flows before its output is interpreted
   (bar used in doc 22: median relative error 9.1×10⁻⁹ against `q_sim_B_m3s`).
+- `python3.10 src/report_h2e.py` is the standing version of that bar for the adopted
+  configuration: it re-evaluates the archived best `x` of `dds_H2E_20260901.npz` and requires
+  `F` to match `0.25930593639066796` to ≤ 1e-8 relative. Measured 2026-08-10: **0.000e+00**,
+  with all 3 × 63 stored per-gauge terms bit-identical. Run it after any environment change
+  before trusting anything built on H2E.
 - nb13's assertions (period, forcing identity) must pass in the executed notebook. If a
   re-run of nb14 starts a *new* search instead of reading the four checkpoints, kill it —
   the fix belongs in `src/calib_v2.py` (doc 25 stage 0).

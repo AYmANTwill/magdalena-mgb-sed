@@ -150,6 +150,16 @@ def _random_cells(n: int, rng, percolation: str, *, allow_zero_wm: bool = True):
         expo=3.0 + 2.0 / lam,
         c_sup=dummy, c_int=dummy, c_bas=dummy, c_ch=dummy,
         percolation=percolation,
+        # Commit 80a7c10 added these two REQUIRED fields to _Expanded when it added the
+        # FAO-56 ET option, and did not update this constructor - so tests 4 and 6 have
+        # raised TypeError since 2026-08-03, i.e. through the whole seed-expansion queue
+        # (found 2026-08-10 by the Stage C0 session; docs/agents/journal_c0.md s7).
+        # 'linear' is the value that preserves what these tests were written to check:
+        # they predate the option and sweep the original stress term.  theta_crit is
+        # therefore inert here, and is set to the engine's own default rather than to
+        # something that would look meaningful.
+        et_stress="linear",
+        theta_crit=np.full(n, 0.6),
     )
 
 
