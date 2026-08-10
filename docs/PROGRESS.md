@@ -50,7 +50,7 @@ its nine findings (F1–F9) were just corrected in place. Yields (t/km²/yr) rem
 - [ ] ⬜ C0.5 precompute sediment drivers → `h2e_drivers.npz` (~250 MB, gitignored)
 - [ ] ⬜ C0.6 commit `results: adopt H2E …`
 
-### C1 — SSC-quality gate ⬜ *the real unblock* — **1–2 sessions**
+### C1 — SSC-quality gate 🟡 *the real unblock* — **pre-registered 2026-08-10 (docs/32); execution → Claude Code**
 - [x] 📌 **C1.0 network-size decision TAKEN** — Phase C runs now on the **28-station mapped subset (24 safe)**; the 46-unmapped coordinate fetch is moved to background **B5** (non-gating). C1 is no longer blocked (docs/31 C1.0, docs/30 §5.4)
 - [ ] ⬜ C1.1 coverage census → `sediment_coverage_census.csv` (pre-register the N threshold)
 - [ ] ⬜ C1.2 sampling-selectivity (transposed zero-suppression) — null = **calendar-regular** stations (F4)
@@ -134,7 +134,7 @@ its nine findings (F1–F9) were just corrected in place. Yields (t/km²/yr) rem
 | 29 | seed expansion read-out (H2E succeeded) | ✅ |
 | **30** | **Phase C plan** (scope decision, stages) | ✅ ACTIVE |
 | **31** | **Phase C workplan** (subtasks, gates, registers) | ✅ ACTIVE |
-| 32 | SSC QC audit | ⬜ (C1.6 writes it) |
+| 32 | SSC QC audit | 🟡 **pre-registration frozen** 2026-08-10; results appended by C1 run |
 | 33 | observed ENSO contrast | ⬜ (C2) |
 | 34 | sediment calibration | ⬜ (C4) |
 | 35 | ENSO contrast results | ⬜ (C5) |
@@ -151,6 +151,7 @@ its nine findings (F1–F9) were just corrected in place. Yields (t/km²/yr) rem
 
 ## Decisions & discoveries log
 
+- **2026-08-10** — C1 **pre-registration frozen** (docs/32): coverage N-rule, calendar-regular selectivity null, value-screen nulls, rating-era + rubric — written before any C1 compute so thresholds aren't tuned to the answer. Execution → Claude Code.
 - **2026-08-10** — 📌 **C1.0 decided: Phase C runs on the 28-station mapped subset** (24 calibration-safe); the 46-unmapped coordinate fetch moved to background **B5**. C1 no longer waits on it (docs/31 C1.0, docs/30 §5.4).
 - **2026-08-10** — docs/31 adversarially reviewed; F1–F9 corrected. SSC network stated honestly (**28 mapped, not 79**); C1.0 coordinate-fetch added; C1.2 null fixed (calendar-regular); B1 refit re-spec'd; register #1 resolved.
 - **2026-08-10** — 📌 ENSO pairing **kept 2011 vs 2015-16** (forcing bound to 2008–2018; alt pairing un-runnable) — recorded in docs/30 §1.
