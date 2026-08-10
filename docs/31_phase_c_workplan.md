@@ -114,9 +114,16 @@ inflates any naive flux mean. Value screens cannot see this; the sampling-date p
 - For each station with a paired discharge record (`is_discharge_station` or the docs/13
   pair): compute the **flow-percentile of each SSC sampling date** within that station's
   full discharge record. Unbiased sampling ⇒ median percentile ≈ 0.5.
-- Calibrate the null exactly as the precipitation selectivity statistic did: the
-  distribution over stations with dense, regular sampling defines "unbiased"; flag
-  stations whose median sampled-day percentile exceeds the null's p99.
+- Calibrate the null — and avoid a circularity the precipitation version did not face:
+  density alone does NOT define "unbiased", because a densely-sampled station can still
+  be flow-chasing (campaigns sent out when the river is high). The null pool is stations
+  whose sampling dates are **calendar-regular** — test the inter-sample date spacing for
+  schedule structure (low dispersion of gaps, e.g. near-monthly) — because
+  calendar-driven sampling is unbiased with respect to flow BY CONSTRUCTION, whatever
+  its density. Flag stations whose median sampled-day flow percentile exceeds that null
+  pool's p99. If fewer than ~10 calendar-regular stations exist, say so and fall back to
+  the theoretical null (percentiles ~ Uniform(0,1), median 0.5) with the weaker-null
+  caveat recorded.
 - **Out:** `ssc_sampling_selectivity.csv` (station, n, median percentile, flag).
 - **Gate:** the null is calibrated (dense stations ≈ 0.5) before any station is flagged.
   Record both the biased list AND the consequence: for flagged stations, only
@@ -175,14 +182,25 @@ Goal: the target table C5 must reproduce — publishable on its own.
 ### C2.1 Pre-register windows and estimators (before computing anything)
 - Primary windows: **calendar 2011** (La Niña) vs **2015-01→2016-12** (El Niño).
 - Sensitivity windows: 2010-07→2011-06 and 2015-10→2016-04 (ONI-peak definitions).
+- **Why the team gets to pick these:** the window definition was an open advisor question
+  (docs/21 open items: "2011 vs 2010–2012") and the advisor declined to answer (docs/30
+  §1). The sensitivity windows ARE the mitigation for that unresolved choice — every C2
+  and C5 result is reported for the primary AND sensitivity windows, so no conclusion can
+  hinge on the window definition alone. A reviewer meeting the docs/21 open item should
+  read this as "resolved by bracketing", not as a contradiction.
+- **Comparability rule (hard):** the primary windows have unequal lengths (12 vs 24
+  months). Cross-window comparisons therefore use RATES ONLY — t/day (and monthly means).
+  Window totals (t) may be reported per window for context but NEVER as a wet:dry ratio;
+  a ratio of unequal-window totals is meaningless by construction.
 - Two flux estimators, both reported: (a) sample-day flux mean (only for stations
   passing C1.2 unbiased), (b) rating-curve flux on all days (per-era fits from C1.5),
   with uncertainty from residual σ.
 - **Out:** the registration block at the top of `docs/33_observed_enso_contrast.md`.
 
 ### C2.2 Compute
-- Per usable station: total flux (t), mean daily flux (t/day), wet:dry ratio, monthly
-  shape, for both windows × both estimators; bootstrap CI (resample sample days; resample
+- Per usable station: mean daily flux (t/day), monthly shape, and the wet:dry ratio
+  **computed on rates per the C2.1 comparability rule**; window totals (t) as context
+  only; for both windows × both estimators; bootstrap CI (resample sample days; resample
   rating residuals).
 - **Absolute flux only. No t/km²/yr anywhere** (docs/23 area embargo).
 - **Out:** `observed_enso_contrast.csv`; figures: per-station wet:dry ratio (dot plot,
@@ -280,9 +298,16 @@ engine-grade tests; verify against implementation B on one sub-basin."*
 - Cells: parameters {α, β, settling velocity/deposition coefficient}; bounds from
   literature (α ∈ [2, 30], β ∈ [0.4, 0.75], registered exactly at write-time);
   objective = KGE on **log flux** (flux spans decades) at the C1-usable tributary set;
-  CAL = neutral years 2012–14, warm-up 2011 for antecedent state; **both ENSO windows
-  out-of-sample** (Klemeš, as in Phase B); DDS, 2 seeds minimum, budget set after a
-  timing probe (sediment evals are cheap — hydrology is precomputed).
+  CAL = neutral years 2012–14; **both ENSO windows out-of-sample** (Klemeš, as in
+  Phase B); DDS, 2 seeds minimum, budget set after a timing probe (sediment evals are
+  cheap — hydrology is precomputed).
+- **Spin-up clarification (a reviewer WILL flag this, so it is stated here):** the
+  sediment model runs over the full 2009–2018 driver record and is SCORED only on the
+  registered windows. The 2009–2011 span, including La Niña 2011, therefore feeds
+  antecedent sediment state into the 2012–14 calibration window. That is physics, not
+  fitting: no 2011 observation enters the objective, no parameter is adjusted against
+  2011 data, and the ENSO windows remain strictly out-of-sample. "Warm-up ≠ scored" is
+  the same distinction Phase B used for 2008 (docs/26).
 - Decision rules registered with the cells: success = median log-flux KGE within
   Fagundes' −0.26…0.44 band at calibration stations AND parameters off their bounds;
   report every outcome.
@@ -387,3 +412,36 @@ the core path — by decision (docs/30 §1), not by accident.
 | α/β equifinality | C4 parameters uninterpretable | pre-registered bounds + seeds + bound checks, as in Phase B |
 | dry-phase hydrology ceiling | El Niño flux accuracy | propagated quantitatively in C5.2; named in every ENSO claim |
 | forcing changes mid-phase | silent invalidation of C0's freeze | B1 can only re-open hydrology through a new pre-registration |
+
+---
+
+## Review protocol — for any session auditing this plan for contradictions
+
+This plan is deliberately pointer-justified: the evidence for a choice lives in the doc
+cited next to it (docs/16–29), not duplicated here. A reviewing session must therefore
+classify every suspected fault as one of three things BEFORE reporting it:
+
+1. **Pointer-resolved** — the justification exists in the cited doc. Follow the citation
+   first; docs/22 §4.x and docs/29 §Results carry most of the load. Not a finding.
+2. **Known-open** — already on the register below. Confirming it is not a discovery;
+   resolving it is.
+3. **Genuine contradiction or unjustified choice** — nothing in the repo grounds it.
+   THIS is a finding. Report it with the two clashing statements quoted verbatim and
+   their file locations.
+
+A reviewer that reports category-1 items as faults has been misdirected by its own
+shallowness; a reviewer that finds a real category-3 item has improved the plan. Apply
+the same bar this project applies to itself: measured claims beat plausible ones, and
+"I could not find the justification" must state where you looked.
+
+### Known-open register (confirmed, unresolved — confirming these is not a discovery)
+
+| # | item | where flagged |
+|---|---|---|
+| 1 | docs/24 (slide 8: "3 of 10") vs docs/26 §5 ("2") disagree on attempt-3's railed-parameter count | docs/21 |
+| 2 | kc_mult 1.662/1.836 is off its rail but still above the FAO-56 plausibility bar of ≤1.2 — the ET form was a real cause, not the whole story | docs/29 §Results caveats |
+| 3 | k_int_frac sits on its 0.02 floor in 7 of 8 v2-forcing seeds — a new near-rail, unprobed until B2 | docs/29 §Results caveats |
+| 4 | Older docs (12, 19, 21, 24, 25, 28) still carry "Phase C blocked on mainstem SSC" — superseded by docs/30 §1, not yet edited in place | docs/30 |
+| 5 | The Restrepo outlet-flux anchor (~140–180 Mt/yr) is unverified until C2.4 fetches the exact figure and citation | §0 table |
+| 6 | The ENSO window definition was never adjudicated by the advisor; C2.1 resolves it by primary+sensitivity bracketing, not by authority | docs/21, C2.1 |
+| 7 | H2E is adopted from n=2 seeds, exactly as its pre-registration allowed; more seeds require a NEW pre-registration | docs/29 |
