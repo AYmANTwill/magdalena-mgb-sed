@@ -33,6 +33,9 @@ study: La Niña 2011 (wet) vs El Niño 2015–16 (dry). UMNG internship, advisor
   (queue completed 2026-08-05). Verdicts: H1 vs H2 **not separated** (gap 0.009 < seed
   spread 0.051); **H2E (FAO-56 ET) succeeded** — kc_mult off its rail (1.66/1.84 vs ≥1.90
   everywhere else) at no cost in F. H2E is the preferred configuration going forward.
+- `docs/30_phase_c_plan.md` — **the ACTIVE plan.** The advisor declined the Phase B scope
+  question, so the team decision is recorded there: Phase B closes on the input ceiling with
+  H2E adopted; Phase C (sediment) proceeds in stages C0–C5 with a bounded background track.
 - `docs/progress_journal.md` — chronological log.
 
 ## Phase status
@@ -43,7 +46,8 @@ study: La Niña 2011 (wet) vs El Niño 2015–16 (dry). UMNG internship, advisor
   Notebooks 13 and 14 run on `model_inputs_v2/`; 2008 warms up, 2009-2018 is scored. MGB-SA proper
   runs as a QGIS plugin; a Python water balance (derivation in `notebooks/03_hydrology.ipynb`) is
   the diagnostic. Outputs in `sim_baseline_v2/` and `sim_calibrated_v2/`.
-- **Phase C (sediment): blocked** on mainstem SSC data.
+- **Phase C (sediment): ACTIVE** — plan in docs/30. The old "blocked on mainstem SSC"
+  framing is superseded: 79 flagged stations exist; stage C1 builds the missing SSC-quality gate.
 
 ## Pipeline commands
 
