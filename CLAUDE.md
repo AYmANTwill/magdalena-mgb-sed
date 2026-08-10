@@ -36,6 +36,9 @@ study: La Niña 2011 (wet) vs El Niño 2015–16 (dry). UMNG internship, advisor
 - `docs/30_phase_c_plan.md` — **the ACTIVE plan.** The advisor declined the Phase B scope
   question, so the team decision is recorded there: Phase B closes on the input ceiling with
   H2E adopted; Phase C (sediment) proceeds in stages C0–C5 with a bounded background track.
+- `docs/31_phase_c_workplan.md` — **the execution-level work breakdown**: every subtask with
+  In/Out/Gate, the pre-registration points, per-stage paste-prompts, dependencies, and the
+  risk register. A session opens its stage section and starts; no conversation history needed.
 - `docs/progress_journal.md` — chronological log.
 
 ## Phase status

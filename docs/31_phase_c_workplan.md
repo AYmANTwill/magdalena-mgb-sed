@@ -1,0 +1,389 @@
+# 31 — Phase C work breakdown: every stage, every subtask
+
+Written 2026-08-10. This is the **execution-level** companion to `docs/30_phase_c_plan.md`
+(which records the scope decision and the stage logic). Docs/30 says *what and why*; this
+document says *exactly what to do, with what inputs, to what gate*. A session should be
+able to open its stage section and start working without reading the conversation history.
+
+Conventions used below: every subtask has an ID (`C1.2`), **In** (files it consumes),
+**Out** (files it must produce), and **Gate** (the measurable condition that closes it).
+"Session" ≈ one focused Claude/working session. All commits `<area>: <summary>`, pushed
+to `origin main`. One session on this repo at a time.
+
+---
+
+## 0 — Ground truth this plan builds on (do not re-derive)
+
+| fact | value | source |
+|---|---|---|
+| Adopted hydrology | **H2E** = v2 forcing + revised objective + FAO-56 ET (θ_crit 0.6) | docs/29 read-out |
+| Best H2E run | seed 20260901, **F 0.25931**, kc_mult 1.662, recession median 1.082 | `_calib_cache/dds_H2E_20260901.npz` |
+| Second H2E seed | 20260902, F 0.24671, kc_mult 1.836, recession 1.110 | same dir |
+| H1 vs H2 verdict | **not separated** (gap 0.009 < seed spread 0.051) | docs/29 §Results |
+| Dry-phase ceiling | El Niño r pinned 0.556–0.572 across 12 configs; field LOOCV skill 0.429 | docs/22 §4.7 |
+| CHIRPS merge | LOOCV **passed** (r 0.447), volume **failed** (+7.5 %) → rejected; fix identified | docs/18 §15 |
+| SSC data | `sediment_daily.csv`: 269,337 rows, 1979–2018, cols incl. `ssc_mean_mg_l`, `ssc_surface_mg_l`, `approval`, `flag_corrupt/zero/flatline` | data/processed |
+| SSC stations | 79, mapped to minibacias, `calibration_safe` is **geometry-only** (no SSC-quality gate) | `sediment_inventory.csv`, docs/19 |
+| MUSLE K | per-minibacia in `minibacia_soil_params.csv:K` (t·ha·h/(ha·MJ·mm)) | nb09 |
+| Areas | per-gauge catchment areas untrustworthy in BOTH team networks (36 % of 85 shared gauges disagree >2×) | docs/23 §13.2 |
+| Rating curves | median R² ≈ 0.5 across the fleet; per-pair list in docs/13 | docs/13, nb06 |
+| Flux conversion | Q (m³/s) × C (mg/L) × **0.0864** = t/day | arithmetic |
+| MUSLE defaults | α = 11.8, β = 0.56 (Williams 1975) — starting values, to be calibrated | literature |
+| Sediment skill bar | Fagundes et al. 2026 report sediment KGE **−0.26 to 0.44** | the source paper |
+| Literature flux anchor | Magdalena suspended load at the outlet ~140–180 Mt/yr (Restrepo et al.) — **verify the exact figure and citation in C2.5 before quoting** | to confirm |
+
+Standing rules (docs/18 §7 traps + additions): never `pd.read_csv` the wide forcing CSVs
+(`src/forcing_npy.py`); verify from executed outputs, never exit codes; pre-register every
+calibration cell before searching; check fitted parameters against their bounds before
+interpreting; test for **absent** records, not just flagged values; a filename count is
+not a file check; report every effect at basin AND local scale; journals in `docs/agents/`
+for any multi-step run.
+
+---
+
+## Stage C0 — freeze and report H2E (1 session)
+
+Goal: the hydrology Phase C consumes exists as reviewed artifacts, not as a checkpoint file.
+
+### C0.1 Extract and record the adopted parameter set
+- **In:** `_calib_cache/dds_H2E_20260901.npz`, `src/calib_v2.py` (decode: `exp()` on
+  `IS_LOG` dims, names like `kc_mult@global`, `wm_mult@R1`, `adr@soil2`).
+- **Out:** `sim_calibrated_v2/parameters_H2E.csv` — same schema as `parameters_H1.csv`
+  (parameter, scope, value, prior, lo, hi, pos, railed).
+- **Gate:** kc_mult reads 1.662; flag `k_int_frac` at its 0.02 floor (`railed=YES`, it is).
+
+### C0.2 Reproduction gate before anything is interpreted
+- Rebuild the H2E cell (`cv.Cell('H2E')`), evaluate the stored best `x`, and require the
+  recomputed objective to match the archived **0.25931** to ≤ 1e-8 relative (the
+  established 9.1e-9 harness bar, docs/22).
+- **Gate:** match, or STOP — a mismatch means the environment drifted and nothing
+  downstream is trustworthy.
+
+### C0.3 Full simulation + per-period metrics
+- Run the engine (fao56, θ_crit 0.6) on `model_inputs_v2/` with the decoded set; 2008
+  warm-up, score 2009–2018.
+- **Out:** `sim_calibrated_v2/q_gauge_H2E.npz`; append H2E rows to `metrics_fleet.csv`
+  with the identical column set (KGE, NSE, r, alpha, beta, pbias, kge_gt0, kge_gt05, n,
+  clim_kge, skill_over_clim, rec_ratio) for periods: CAL 2012-14, VAL all,
+  VAL La Nina 11, VAL El Nino 15-16, VAL other 09/10/17, VAL 2018.
+- **Gate:** mass-balance residual < 1e-15 relative; per-period rec_ratio ≤ 1.5×
+  everywhere (the seed-level medians were 1.08/1.11).
+
+### C0.4 The two tables every later stage quotes
+- (a) H2E vs H1-fit vs H2-fit vs Config B, VAL-all row (the four-attempt history).
+- (b) ENSO asymmetry restated for H2E: skill-over-climatology in La Niña vs El Niño —
+  this is the number C5 inherits as its hydrology caveat.
+- **Out:** addendum section in `docs/26_phase3_refit.md`; update the docs/24 outline's
+  attempt table (it currently stops at attempt 3).
+
+### C0.5 Precompute and store the sediment drivers
+Sediment evaluation must not re-run hydrology. Store per-minibacia daily fields the
+sediment model needs: surface runoff `Qsur` (mm/day), total reach inflow, and the
+chosen peak proxy input (see C3.3).
+- **Out:** `data/processed/sim_calibrated_v2/h2e_drivers.npz` (float32, (3652, 8672) per
+  field, ~250 MB — gitignored; regeneration command recorded in docs/20).
+- **Gate:** `np.load` round-trip; column sums match the run's water balance to 1e-6.
+
+### C0.6 Commit
+`results: adopt H2E — full report and frozen sediment drivers`.
+
+**Paste-prompt for the session:** *"Execute stage C0 of docs/31 exactly: subtasks
+C0.1–C0.6. The reproduction gate (C0.2) blocks everything else. Verify from executed
+outputs; journal to docs/agents/journal_c0.md."*
+
+---
+
+## Stage C1 — the SSC-quality gate (1–2 sessions) — **the real unblock**
+
+Goal: replace "blocked on mainstem SSC quality" with a per-station, evidence-based
+classification. The precipitation QC playbook transposes almost one-for-one.
+
+### C1.1 Coverage census
+- Per station × year: sample count; days in 2009–2018; days inside the two ENSO windows
+  (2011 calendar year; 2015-01→2016-12); `approval` distribution (Definitivo > En
+  revisión > Preliminar); `ssc_mean` vs `ssc_surface` availability.
+- **Out:** `sediment_coverage_census.csv`; a bar figure per station (reuse the nb06
+  availability-plot style).
+- **Gate:** an explicit list of stations with ≥ N samples in BOTH ENSO windows (pick N
+  after seeing the distribution — pre-register it in the session journal before
+  computing the classification, so the threshold is not tuned to the answer).
+
+### C1.2 Sampling-selectivity — the transposed zero-suppression lesson
+SSC is campaign-sampled; the risk is **sampling preferentially on high-flow days**, which
+inflates any naive flux mean. Value screens cannot see this; the sampling-date pattern can.
+- For each station with a paired discharge record (`is_discharge_station` or the docs/13
+  pair): compute the **flow-percentile of each SSC sampling date** within that station's
+  full discharge record. Unbiased sampling ⇒ median percentile ≈ 0.5.
+- Calibrate the null exactly as the precipitation selectivity statistic did: the
+  distribution over stations with dense, regular sampling defines "unbiased"; flag
+  stations whose median sampled-day percentile exceeds the null's p99.
+- **Out:** `ssc_sampling_selectivity.csv` (station, n, median percentile, flag).
+- **Gate:** the null is calibrated (dense stations ≈ 0.5) before any station is flagged.
+  Record both the biased list AND the consequence: for flagged stations, only
+  rating-curve flux estimates (C2.2) are usable, never sample-mean flux.
+
+### C1.3 Value screens with the corrected null
+- Re-adjudicate `flag_flatline` runs using docs/19's corrected local-quantisation null
+  (0.030 % within-year / 0.234 % within-14-day — NOT the flawed 0.00037 %).
+- Review `flag_corrupt` and `flag_zero` counts per station; zeros in SSC are suspect
+  (a river is never at 0 mg/L) — classify zero-runs as missing-coded-as-zero unless
+  neighbouring samples corroborate near-zero.
+- Extreme values: **corroborate before deleting** (the source paper's own rule — its
+  744 mg/L peak was real). Corroboration = same-day or ±3-day high discharge at the
+  paired gauge, or a same-event neighbour.
+- **Out:** amended flags in `sediment_daily_qc.csv`.
+- **Gate:** zero deletions without a recorded corroboration check.
+
+### C1.4 Rating-era segmentation
+- SSC often rides the same stage record as discharge: docs/17's SNHT break list applies.
+  For each paired station, mark in-window breaks; each segment between breaks is an
+  **era**. Rating fits (C1.5, C2.2) are per-era, never pooled across a break.
+- **Out:** `ssc_station_eras.csv` (station, era_start, era_end, break_source).
+
+### C1.5 Sediment rating relations, per station per era
+- Fit `log Qs = log a + b·log Q` on QC'd same-day pairs (Qs = flux from C's conversion).
+  Record R², n, residual σ per fit. Median fleet R² ≈ 0.5 is the expectation (docs/13);
+  that is usable-with-stated-uncertainty, not disqualifying.
+- **Out:** `ssc_rating_fits.csv`.
+- **Gate:** every fit's n and R² recorded; fits with n < 15 pairs marked unusable.
+
+### C1.6 Classification — the deliverable
+Every one of the 79 stations gets exactly one class, with the measurement that decided it:
+- **usable** — coverage in both windows, unbiased or correctable sampling, ≥1 usable
+  rating era covering the windows;
+- **usable-with-caveat** — one deficiency, named (e.g. biased sampling → rating-only);
+- **excluded** — with the specific evidence (no window coverage / no plausible rating /
+  corrupt record), never a blanket rule.
+- **Out:** `sediment_inventory_qc.csv` with `ssc_class` and `ssc_class_reason`;
+  `docs/32_ssc_qc_audit.md` documenting method, nulls, and the per-station table.
+- **Gate:** 79/79 classified; the mainstem-vs-tributary split stated (C4 needs the
+  tributary list); the count of usable stations inside each ENSO window stated.
+
+### C1.7 Commit
+`sediment: SSC-quality gate — 79 stations classified with evidence`.
+
+**Paste-prompt:** *"Execute stage C1 of docs/31 (subtasks C1.1–C1.7). Pre-register the
+coverage threshold and the selectivity null before computing classifications. The
+deliverable is docs/32 + sediment_inventory_qc.csv with all 79 stations classified."*
+
+---
+
+## Stage C2 — the observational ENSO contrast, model-free (1 session)
+
+Goal: the target table C5 must reproduce — publishable on its own.
+
+### C2.1 Pre-register windows and estimators (before computing anything)
+- Primary windows: **calendar 2011** (La Niña) vs **2015-01→2016-12** (El Niño).
+- Sensitivity windows: 2010-07→2011-06 and 2015-10→2016-04 (ONI-peak definitions).
+- Two flux estimators, both reported: (a) sample-day flux mean (only for stations
+  passing C1.2 unbiased), (b) rating-curve flux on all days (per-era fits from C1.5),
+  with uncertainty from residual σ.
+- **Out:** the registration block at the top of `docs/33_observed_enso_contrast.md`.
+
+### C2.2 Compute
+- Per usable station: total flux (t), mean daily flux (t/day), wet:dry ratio, monthly
+  shape, for both windows × both estimators; bootstrap CI (resample sample days; resample
+  rating residuals).
+- **Absolute flux only. No t/km²/yr anywhere** (docs/23 area embargo).
+- **Out:** `observed_enso_contrast.csv`; figures: per-station wet:dry ratio (dot plot,
+  stations ordered downstream), flux time series at the 3–5 best stations, monthly shape.
+
+### C2.3 Consistency checks
+- Estimator (a) vs (b) at stations where both are valid — disagreement beyond the CI is
+  a C1 flag that was missed; go back.
+- Downstream monotonicity along the mainstem where stations nest (flux should not
+  decrease downstream absent a known sink; the Momposina IS a known sink — annotate it).
+
+### C2.4 Literature anchor
+- Compare the outlet-most usable station's annual flux against the published Magdalena
+  load (~140–180 Mt/yr; **fetch and cite the exact Restrepo figure here**). Order of
+  magnitude agreement = pass; disagreement = investigate before proceeding.
+
+### C2.5 Commit
+`sediment: observed ENSO flux contrast — the C5 target table`.
+
+**Paste-prompt:** *"Execute stage C2 of docs/31. Write the pre-registration block FIRST
+(C2.1), then compute. Deliverables: docs/33, observed_enso_contrast.csv, figures."*
+
+---
+
+## Stage C3 — MUSLE hillslope erosion on our engine (2–3 sessions)
+
+Goal: `Sed = α·(Qsur·qpeak·A)^β · K · C · P · LS2D` per URH per day, driven by frozen
+H2E runoff, verified the way the hydrology engine was.
+
+### C3.1 LS2D factor (the one missing static input)
+- Desmet & Govers (1996) two-dimensional LS from the conditioned DEM (the nb07 chain
+  already produces filled DEM + D8 + accumulation): per cell
+  LS = (m+1)·(A/22.13)^m·(sin β/0.0896)^n, aggregated area-weighted per URH per minibacia.
+- **Out:** `minibacia_ls2d.csv` (or per-URH npz); a map figure.
+- **Gate:** distributional sanity — LS ∈ (0, ~72], basin median in the literature range
+  for mountainous basins (~2–10); flat lowlands ≪ Andean flanks visually.
+
+### C3.2 C and P factors
+- Map the 8 hydrological land classes → C values (take Fagundes' table as primary; keep
+  the mapping in a reviewable CSV, not hardcoded). P = 1.0 basin-wide (no conservation-
+  practice data) — stated, not hidden.
+- **Out:** `urh_cp_factors.csv` with a source column per value.
+
+### C3.3 The qpeak proxy — pre-registered choice
+A daily model has no sub-daily peak. Options, to be registered before implementation:
+1. `qpeak = Qsur/86400` (daily mean as peak — floor estimate);
+2. SCS-triangular: `qpeak = f(Qsur, t_c)` with time of concentration from reach
+   length/slope (already in `topology.npz`);
+3. the source paper's own formulation — **read Fagundes' methods section first; use
+   theirs if extractable** (transposition claim is stronger).
+- **State the known bias direction before calibrating:** docs/22 measured α < 1 (peaks
+  undersimulated) at most gauges, worst at the largest; therefore raw MUSLE will
+  under-erode at large scale, and calibration of α/β will partially absorb that. Write
+  this in the code docstring AND docs — it is the sediment twin of the celerity
+  surrogate.
+
+### C3.4 Implement `src/mgb_sediment.py`
+- Vectorised like `mgb_hydrology.py`; consumes `h2e_drivers.npz` (C0.5), K, C, P, LS2D;
+  produces per-minibacia daily hillslope load (t/day) delivered to the reach.
+- Engine-grade tests in `tests/test_sediment.py`: zero-rain ⇒ zero erosion; strict
+  monotonicity in K, C, LS; units audit (a hand-computed single-cell case matches to
+  1e-12); NaN-free; a mass ledger (eroded = delivered + stored, exact).
+- **Gate:** pytest green including the new file.
+
+### C3.5 Cross-check against implementation B
+- Same sub-basin, same inputs, our module vs the team's `musle.py`: agreement to within
+  the C/P mapping differences (document any residual). This is the Phase B
+  two-implementation discipline applied to sediment.
+- **Out:** a short comparison note in docs (numbers, one figure).
+
+### C3.6 First uncalibrated basin run — order-of-magnitude gate only
+- Basin-total hillslope erosion (Mt/yr) with α=11.8, β=0.56 defaults vs the literature
+  anchor. Expect the wrong number (uncalibrated, no deposition yet) — the gate is
+  **order of magnitude and spatial pattern** (Andean flanks ≫ lowlands), nothing more.
+- **Out:** erosion map figure; the number, recorded with its caveats.
+
+**Paste-prompt:** *"Execute stage C3 of docs/31 (C3.1–C3.6). Register the qpeak choice
+(C3.3) with its bias statement before writing the module. mgb_sediment.py needs
+engine-grade tests; verify against implementation B on one sub-basin."*
+
+---
+
+## Stage C4 — channel transport + sediment calibration (2–3 sessions)
+
+### C4.1 Transport + the honest sink statement
+- Advect the suspended load through the reach network with the existing storage routing;
+  first-order deposition/settling term per reach (parameter, calibratable).
+- **Write the Momposina limitation into the module docstring before calibrating:** the
+  floodplain sink is NOT represented (Muskingum X=0; celerity already acts as a storage
+  surrogate, docs/22 §4.6) ⇒ expect systematic over-delivery at/below Mompós. Mitigation
+  is structural: **calibrate on tributary and upper-mainstem stations upstream of the
+  Momposina**; evaluate — never calibrate — below it.
+
+### C4.2 Pre-registration (before any search)
+- Cells: parameters {α, β, settling velocity/deposition coefficient}; bounds from
+  literature (α ∈ [2, 30], β ∈ [0.4, 0.75], registered exactly at write-time);
+  objective = KGE on **log flux** (flux spans decades) at the C1-usable tributary set;
+  CAL = neutral years 2012–14, warm-up 2011 for antecedent state; **both ENSO windows
+  out-of-sample** (Klemeš, as in Phase B); DDS, 2 seeds minimum, budget set after a
+  timing probe (sediment evals are cheap — hydrology is precomputed).
+- Decision rules registered with the cells: success = median log-flux KGE within
+  Fagundes' −0.26…0.44 band at calibration stations AND parameters off their bounds;
+  report every outcome.
+- **Out:** `docs/34_sediment_calibration.md` pre-registration section.
+
+### C4.3 Search, report, verdict
+- Same machinery pattern as `calib_v2` (checkpoints, logs watch_calib can parse,
+  detached queue if runs are long — they should not be).
+- Report per-period at every usable station: calibration set, validation set, and the
+  below-Momposina stations separately (expected to fail; that failure is the measured
+  cost of the missing sink, and it goes in the report as such).
+- **Gate:** parameters checked against bounds; seed spread reported; verdict against the
+  registered rules, both directions reportable.
+
+**Paste-prompt:** *"Execute stage C4 of docs/31. C4.2's pre-registration must be
+committed before the first search runs. Calibrate upstream of the Momposina only."*
+
+---
+
+## Stage C5 — the ENSO experiment (1–2 sessions) — the project's deliverable
+
+### C5.1 The contrast run
+- Calibrated sediment model, full 2009–2018; extract both ENSO windows (primary + the
+  C2.1 sensitivity windows).
+
+### C5.2 Prediction vs target
+- Simulated vs C2's observed table, station by station: sign of the contrast, magnitude
+  ratio, seasonal timing. State explicitly which comparisons are **out-of-sample
+  predictions** (everything in the ENSO windows) — this sentence is the credibility of
+  the whole project.
+- Inherited caveat, stated up front: the dry-phase hydrology sits at its input ceiling
+  (El Niño r ≈ 0.57), so El Niño flux errors are bounded below by the water errors;
+  quantify by propagating H2E's El Niño discharge bias through the rating relation.
+
+### C5.3 Spatial attribution — what the process model adds
+- Per-minibacia erosion difference map (2011 − 2015/16); ranked sub-basin contributions
+  to the outlet flux difference.
+- **Pre-registered factor-swap experiments** (the mechanism question): (a) 2011 rainfall
+  on 2015 antecedent moisture, (b) vice-versa, (c) rainfall amount scaled vs pattern
+  swapped. Each swap isolates one candidate mechanism (amount / pattern / antecedent
+  state). Register the swap list before running any of them.
+
+### C5.4 Write-up
+- `docs/35_enso_contrast_results.md` + figure set; updates to docs/21 and the
+  presentation material (docs/24 chain). Every number carries its window and its
+  prediction/description label.
+
+**Paste-prompt:** *"Execute stage C5 of docs/31. Register the factor-swap list (C5.3)
+before running any swap. The deliverable is docs/35 plus the figure set."*
+
+---
+
+## Background track — bounded, never gating
+
+### B1 CHIRPS refit (≤ 2 sessions, then stop either way)
+- Refit the per-(elevation band × hydrographic zone) quantile maps **on the repaired
+  series including `Inferido_seco` inferred-dry days** (the identified cause of the
+  volume failure, docs/18 §15). Rerun BOTH gates unchanged: volume within 1 % of
+  2,036.4 mm/yr (2009–17); LOOCV median daily r > 0.429.
+- Both pass → produce forcing v3 + nb11/nb12 rebuild + ONE pre-registered cell
+  (H3 = v3 + H2E physics, 2 seeds) and stop. Any gate fails → the negative result closes
+  the CHIRPS question permanently; write it and stop.
+
+### B2 k_int_frac floor probe (≤ ½ session)
+- 7 of 8 v2-forcing seeds sit on the 0.02 floor (docs/29). One run: bound 0.02 → 0.005,
+  H2E config, seed 20260901, budget 1000. Report where it lands and what F does.
+  **No adoption without a new pre-registration** — this is reconnaissance.
+
+### B3 External catchment areas (async, unblocks yields only)
+- Acquire an arbiter independent of both team networks: IDEAM's official station
+  catalogue drainage areas (request/download), and/or HydroSHEDS-HydroATLAS snapping as
+  a third derivation. Success = the 31 disputed gauges adjudicated; then and only then
+  t/km²/yr yields become reportable (revisit C2/C5 outputs).
+
+### B4 Remote-sensing SSC cross-check (optional, 1 session)
+- The team's RS retrieval (Landsat-8/Sentinel-2) vs in-situ SSC on matching dates at
+  C1-usable stations — an independent check on both, and Phase C's analogue of the
+  two-implementation cross-validation.
+
+---
+
+## Dependencies and suggested order
+
+```
+C0 ──────────────► C3 ──► C4 ──► C5
+      C1 ──► C2 ─────────► C4 (calibration targets come from C1/C2)
+B1, B2, B3, B4: independent; B1 success re-opens hydrology ONLY via a new pre-registration
+```
+
+Core path ≈ **8–12 sessions**; background ≤ 3½. Nothing in the background track blocks
+the core path — by decision (docs/30 §1), not by accident.
+
+## Risk register (each with its mitigation already in the plan)
+
+| risk | where it bites | mitigation |
+|---|---|---|
+| qpeak proxy bias (daily model, α<1 at big gauges) | C3/C4 absorb it into α,β silently | bias direction stated before calibration (C3.3); tributary-first calibration |
+| Momposina sink missing | over-delivery below Mompós | calibrate upstream only; below-Mompós reported as evaluation, with the failure attributed (C4.1) |
+| SSC sampling bias | inflated naive flux means | C1.2 selectivity statistic with calibrated null; rating-only flux for flagged stations |
+| rating R² ≈ 0.5 | wide flux CIs | dual estimators + bootstrap CIs (C2.2); uncertainty carried into C5 |
+| catchment-area errors | any per-area number | flux-only embargo until B3 delivers an external arbiter |
+| α/β equifinality | C4 parameters uninterpretable | pre-registered bounds + seeds + bound checks, as in Phase B |
+| dry-phase hydrology ceiling | El Niño flux accuracy | propagated quantitatively in C5.2; named in every ENSO claim |
+| forcing changes mid-phase | silent invalidation of C0's freeze | B1 can only re-open hydrology through a new pre-registration |
