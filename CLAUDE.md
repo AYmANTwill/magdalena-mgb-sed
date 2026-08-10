@@ -29,9 +29,10 @@ study: La Niña 2011 (wet) vs El Niño 2015–16 (dry). UMNG internship, advisor
 - `docs/21_project_state_and_handoff.md` — current state for a newcomer: the three calibration
   attempts, H2 − H1, the r-ceiling, renumbered open items, the advisor question, and a paste-ready
   prompt for a fresh session.
-- `docs/29_seed_expansion.md` — **the ACTIVE pre-registration.** A detached DDS queue
-  (10 jobs: H1/H2 +4 seeds each, H2E ×2 with FAO-56 ET) may still be running — check with
-  `python watch_calib.py`. Decision rules are fixed in that doc; do NOT relaunch or add cells.
+- `docs/29_seed_expansion.md` — the seed-expansion pre-registration **and its read-out**
+  (queue completed 2026-08-05). Verdicts: H1 vs H2 **not separated** (gap 0.009 < seed
+  spread 0.051); **H2E (FAO-56 ET) succeeded** — kc_mult off its rail (1.66/1.84 vs ≥1.90
+  everywhere else) at no cost in F. H2E is the preferred configuration going forward.
 - `docs/progress_journal.md` — chronological log.
 
 ## Phase status

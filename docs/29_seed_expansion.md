@@ -141,3 +141,66 @@ CAL window (2012–14, warm-up 2011), the gauge set, and the forcing caches
 (H1_*, H2_*.npy; H2E reads H2's cache — same bundle, same period). Only the seeds are
 new, plus the H2E cell whose single change (FAO-56 threshold ET, theta_crit = 0.6
 fixed) is gated exactly as pre-registered in `src/calib_v2.py`.
+
+
+---
+
+## Results (read out 2026-08-10; queue completed 2026-08-05 02:26, 10/10 ok, 0 crashed)
+
+Best F per run, decoded from `_calib_cache/dds_*.npz` with `calib_v2`'s own transform;
+recession medians computed exactly as rule 2 specifies (`arch_ks` at the best evaluation
+vs the cell's own `K_OBS_CAL`).
+
+| run | best F | kc_mult | rec median |
+|---|---|---|---|
+| H1 20260901 | 0.23023 | 1.989 | 1.121 |
+| H1 20260902 | 0.23677 | 1.982 | 1.158 |
+| H1 20260903 | 0.22828 | 1.999 | 1.160 |
+| H1 20260904 | 0.21004 | 1.980 | 1.152 |
+| H1 20260905 | 0.24044 | 1.973 | 1.019 |
+| H1 20260906 | 0.26085 | 1.960 | 1.083 |
+| H2 20260901 | 0.25337 | 1.896 | 1.026 |
+| H2 20260902 | 0.23479 | 1.997 | 1.294 |
+| H2 20260903 | 0.23960 | 1.924 | 1.096 |
+| H2 20260904 | 0.23528 | 1.948 | 1.124 |
+| H2 20260905 | 0.24067 | 1.935 | 1.188 |
+| H2 20260906 | 0.25777 | 1.976 | 1.210 |
+| H2E 20260901 | **0.25931** | **1.662** | 1.082 |
+| H2E 20260902 | 0.24671 | **1.836** | 1.110 |
+
+### Rule (a) — H1 vs H2 separability: **NOT SEPARATED**
+
+mean F: H1 0.23443 (spread 0.05082) vs H2 0.24358 (spread 0.02298).
+Gap 0.00915 < max spread 0.05082. Six seeds per cell did not separate the forcings —
+the repair's effect on the objective is smaller than DDS seed noise. Note the best run
+overall (0.26085) is an **H1** seed, i.e. the OLD forcing: further confirmation that
+seed noise dominates forcing choice at this budget. Consistent with docs/26's controlled
+H2−H1 result (volume moved, correlation did not).
+
+### Rule (b) — H2E (FAO-56 threshold ET): **SUCCESS, all three conditions**
+
+1. kc_mult < 1.85 on both seeds: 1.662 and 1.836 — PASS (every H1/H2 seed sits ≥ 1.896).
+2. Fleet-median recession ratio in [1/1.5, 1.5] on both: 1.082 and 1.110 — PASS.
+3. |mean F_H2E − mean F_H2| = |0.25301 − 0.24358| = 0.00943 ≤ 0.01 — PASS, and the sign
+   is POSITIVE: the threshold form scored slightly higher, on top of freeing kc.
+
+The pre-registered hypothesis (docs/22 §4.6) is **confirmed**: the linear stress
+ET = kc·PET·(W/Wm) was why kc railed; the FAO-56 threshold form releases it at no cost.
+
+### Caveats, stated before anyone quotes this
+
+- kc came OFF THE RAIL but is not yet plausible: 1.662/1.836 against the FAO-56
+  plausibility target of ≤ 1.2 (docs/25 definition of done). The functional form was
+  a real cause, not the whole story — the remaining excess ET demand still points at
+  the forcing/PET budget (docs/22 §4.5).
+- n = 2 seeds for H2E, judged exactly as pre-registered; any further seeds need a new
+  pre-registration, not an extension of this one.
+- A NEW near-rail appeared: k_int_frac sits at its 0.02 floor in 5 of 6 H2 seeds and
+  both H2E seeds (k_int = 0.02·k_bas — the search wants interflow as fast as allowed).
+  Equifinality persists elsewhere too (H1 k_bas spans 43–394 d at similar F).
+
+### What follows
+
+H2E becomes the preferred configuration for any further Phase B work (fao56, theta_crit
+0.6). The dry-phase ceiling argument (docs/22 §4.7) is untouched by any of this — the
+CHIRPS-merge volume fix (docs/18 §15) remains the only identified path to moving r.
