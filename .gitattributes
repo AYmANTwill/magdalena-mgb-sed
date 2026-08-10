@@ -1,0 +1,24 @@
+# Normalize line endings: store text as LF in the repo, check out native on each OS.
+# Fixes the CRLF-vs-LF churn that makes ~20 unedited files show as "modified" on Windows.
+* text=auto eol=lf
+
+# Binary assets — never touch their bytes
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.tif   binary
+*.tiff  binary
+*.npz   binary
+*.npy   binary
+*.nc    binary
+*.zip   binary
+*.7z    binary
+*.gz    binary
+*.docx  binary
+*.pptx  binary
+*.xlsx  binary
+*.pdf   binary
+*.gpkg  binary
+*.shp   binary
+*.dbf   binary
