@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>MGB-SED · Progress Map</title>
+<style>
+:root{
+  --bg:#0e1420; --panel:#161f2e; --panel2:#1d2942; --line:#2b3852; --ink:#e6edf6; --mut:#8ea3bf;
+  --done:#2ecc71; --wip:#f5b942; --todo:#5b6b82; --block:#ef5f5f; --emb:#a879e6; --dec:#48a9ff;
+  --accent:#48a9ff;
+}
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.5 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.wrap{max-width:1160px;margin:0 auto;padding:22px 18px 60px}
+h1{font-size:22px;margin:0 0 2px} .sub{color:var(--mut);font-size:13px;margin-bottom:16px}
+.banner{background:linear-gradient(90deg,#16233a,#161f2e);border:1px solid var(--line);border-left:3px solid var(--accent);
+  border-radius:10px;padding:12px 14px;margin-bottom:18px;color:#cdddf1}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.card .n{font-size:26px;font-weight:700} .card .l{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.bar{height:9px;border-radius:6px;background:#0b1220;overflow:hidden;display:flex;margin-top:8px}
+.bar>span{height:100%}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 16px}
+.chip{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:20px;padding:5px 12px;cursor:pointer;font-size:12.5px}
+.chip.active{border-color:var(--accent);background:#12243c;color:#cfe6ff}
+input#q{flex:1;min-width:180px;background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:8px 11px}
+.btn{border:1px solid var(--line);background:var(--panel2);color:#cfe0f5;border-radius:8px;padding:6px 11px;cursor:pointer;font-size:12.5px}
+.tree{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 6px}
+.node{margin:1px 0}
+.row{display:flex;align-items:flex-start;gap:9px;padding:6px 8px;border-radius:8px}
+.row:hover{background:#182338}
+.caret{width:14px;flex:0 0 14px;color:var(--mut);cursor:pointer;user-select:none;transform:translateY(1px);transition:.15s}
+.caret.open{transform:rotate(90deg) translateX(1px)}
+.dot{width:10px;height:10px;border-radius:50%;flex:0 0 10px;margin-top:5px}
+.ttl{flex:1} .ttl b{font-weight:600}
+.badge{font-size:10.5px;color:#0b1220;border-radius:5px;padding:1px 6px;margin-left:6px;font-weight:700;vertical-align:middle}
+.tag{font-size:11px;color:var(--mut);border:1px solid var(--line);border-radius:5px;padding:0 6px;margin-left:6px}
+.note{color:var(--mut);font-size:12.5px;margin-top:2px}
+.kids{margin-left:16px;border-left:1px dashed var(--line);padding-left:6px}
+.hidden{display:none}
+.dim{opacity:.32}
+.leg{display:flex;flex-wrap:wrap;gap:14px;color:var(--mut);font-size:12px;margin:14px 2px}
+.leg span{display:inline-flex;align-items:center;gap:6px}
+.cols{display:grid;grid-template-columns:1fr 340px;gap:16px;margin-top:18px}
+@media(max-width:820px){.cols{grid-template-columns:1fr}}
+.side h3{margin:2px 0 8px;font-size:14px}
+.disc{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.disc .item{border-left:2px solid var(--accent);padding:2px 0 8px 10px;margin-bottom:8px}
+.disc .d{color:var(--mut);font-size:11.5px}
+.disc textarea{width:100%;background:#0b1220;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:8px;resize:vertical;min-height:52px}
+mark{background:#3a5a2a;color:#eaffea;padding:0 2px;border-radius:3px}
+a.doc{color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body><div class="wrap">
+  <h1>MGB-SED — Magdalena–Cauca · Progress Map</h1>
+  <div class="sub" id="updated"></div>
+  <div class="banner" id="banner"></div>
+
+  <div class="grid" id="cards"></div>
+  <div class="bar" id="overall" title="overall completion"></div>
+  <div class="sub" id="overallpct" style="margin-top:6px"></div>
+
+  <div class="controls">
+    <input id="q" placeholder="search tasks, docs, files…"/>
+    <span class="chip active" data-f="all">All</span>
+    <span class="chip" data-f="done">✅ done</span>
+    <span class="chip" data-f="wip">🟡 in&nbsp;progress</span>
+    <span class="chip" data-f="todo">⬜ todo</span>
+    <span class="chip" data-f="blocked">🔴 blocked</span>
+    <span class="chip" data-f="embargoed">🚫 embargo</span>
+    <button class="btn" id="expand">Expand all</button>
+    <button class="btn" id="collapse">Collapse</button>
+  </div>
+
+  <div class="cols">
+    <div class="tree" id="tree"></div>
+    <div class="side">
+      <div class="disc">
+        <h3>Decisions &amp; discoveries</h3>
+        <textarea id="newdisc" placeholder="log a discovery / decision…"></textarea>
+        <button class="btn" id="adddisc" style="margin-top:6px">+ add (saved in this browser)</button>
+        <div id="disclist" style="margin-top:12px"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="leg">
+    <span><i class="dot" style="background:var(--done)"></i>done</span>
+    <span><i class="dot" style="background:var(--wip)"></i>in progress</span>
+    <span><i class="dot" style="background:var(--todo)"></i>todo</span>
+    <span><i class="dot" style="background:var(--block)"></i>blocked / open</span>
+    <span><i class="dot" style="background:var(--emb)"></i>embargoed</span>
+    <span><i class="dot" style="background:var(--dec)"></i>decision</span>
+    <span style="margin-left:auto">source of truth: <a class="doc" href="docs/PROGRESS.md">docs/PROGRESS.md</a></span>
+  </div>
+</div>
+
+<script>
+const C = {done:'#2ecc71',wip:'#f5b942',todo:'#5b6b82',blocked:'#ef5f5f',embargoed:'#a879e6',decision:'#48a9ff'};
+const LABEL = {done:'DONE',wip:'WIP',todo:'TODO',blocked:'BLOCKED',embargoed:'EMBARGO',decision:'DECISION'};
+const n=(t,s,note,doc,kids)=>({t,s,note,doc,kids});
+
+const DATA = {
+ updated:"2026-08-10",
+ banner:"Phase A ✅ and Phase B ✅ complete — hydrology <b>frozen at H2E</b> (F 0.25931) at the input's r≈0.57 ceiling, by decision. <b>Phase C (sediment) is ACTIVE</b>; next executable step is <b>C0</b> (→ Claude Code). docs/31 reviewed 2026-08-10; findings F1–F9 corrected. Yields (t/km²/yr) 🚫 embargoed.",
+ phases:[
+  n("Phase A — model inputs","done",null,null,[
+    n("DEM → 8,672 minibacias (nb07)","done"), n("URH: 24 types soil×land (nb08)","done"),
+    n("Soil params Wₘ, K (nb09)","done"), n("Rainfall + PET forcing v2 (repaired)","done","docs/16"),
+    n("Domain correction — east strip","done","docs/15")]),
+  n("Phase B — water balance + discharge calibration","done","frozen at H2E; not KGE-closed, by design",null,[
+    n("Engine mgb_hydrology.py (fao56/θ_crit)","done"),
+    n("Forcing QC v2 — zero-suppression repair (153/294 gauges)","done","docs/16, 18 §9-10"),
+    n("Discharge QC — SNHT / energy-floor","done","docs/17"),
+    n("4 calibration attempts (Config B, H1, H2, H2E) — all pre-registered","done","docs/26"),
+    n("📌 Decision: close on ceiling; adopt H2E","decision","docs/30 §1"),
+    n("r-ceiling quantified (El Niño 0.556–0.572 / 12 configs; field LOOCV 0.429)","done","docs/22 §4.7"),
+    n("H2−H1: volume & correlation independent","done","docs/21 §2"),
+    n("Presentation deck + guide + docs/24/27/28","done"),
+    n("Advisor closing-statement question — advisor declined, team decided","blocked","docs/30 §1")]),
+  n("Phase C — sediment (ACTIVE)","wip",null,"docs/30 + docs/31",[
+    n("C0 — freeze & report H2E  ◂ NEXT (→ Claude Code)","todo",null,null,[
+      n("C0.1 extract H2E parameter set → parameters_H2E.csv","todo"),
+      n("C0.2 reproduction gate — F match 0.25931 ≤1e-8 (blocks all)","todo"),
+      n("C0.3 full sim + per-period metrics","todo"),
+      n("C0.4 4-attempt table + ENSO asymmetry","todo"),
+      n("C0.5 precompute h2e_drivers.npz (~250 MB)","todo"),
+      n("C0.6 commit","todo")]),
+    n("C1 — SSC-quality gate  (the real unblock)","todo",null,"docs/31, writes docs/32",[
+      n("C1.0 resolve network size — 46 unmapped coord fetch (only 28/79 mapped)","blocked","NEW · F1"),
+      n("C1.1 coverage census (pre-register N)","todo"),
+      n("C1.2 sampling-selectivity — null = calendar-regular stations","todo","F4"),
+      n("C1.3 value screens (corrected nulls)","todo"),
+      n("C1.4 rating-era segmentation (SNHT)","todo"),
+      n("C1.5 rating relations per station/era","todo"),
+      n("C1.6 classify 79/79 with evidence → docs/32","todo"),
+      n("C1.7 commit","todo")]),
+    n("C2 — observed ENSO contrast (model-free, publishable)","todo",null,"writes docs/33",[
+      n("C2.1 pre-register windows + rates-only rule","todo"),
+      n("C2.2 flux (t/day), monthly shape, bootstrap CIs","todo"),
+      n("C2.3 consistency checks","todo"),
+      n("C2.4 literature anchor vs docs/06 (~145–169 Mt/yr)","todo"),
+      n("C2.5 commit","todo")]),
+    n("C3 — MUSLE hillslope erosion","todo",null,null,[
+      n("C3.1 LS2D from conditioned DEM","todo"),
+      n("C3.2 C & P factors (8 land classes)","todo"),
+      n("C3.3 qpeak proxy — pre-register + α<1 bias (slope from nb07 DEM)","todo","F6"),
+      n("C3.4 src/mgb_sediment.py + engine tests","todo"),
+      n("C3.5 cross-check vs impl-B musle.py — file NOT in repo, acquire first","blocked","F5"),
+      n("C3.6 first uncalibrated run (order-of-magnitude gate)","todo")]),
+    n("C4 — channel transport + sediment calibration","todo",null,"writes docs/34",[
+      n("C4.1 transport + Momposina sink limitation","todo"),
+      n("C4.2 pre-register cells; CAL 2012–14; ENSO out-of-sample","todo"),
+      n("C4.3 search, report, verdict (upstream of Mompós only)","todo")]),
+    n("C5 — the ENSO experiment (the deliverable)","todo",null,"writes docs/35",[
+      n("C5.1 contrast run (primary + sensitivity windows)","todo"),
+      n("C5.2 prediction vs C2 target (label out-of-sample)","todo"),
+      n("C5.3 spatial attribution + pre-registered factor-swaps","todo"),
+      n("C5.4 write-up → docs/35 + figures","todo")])]),
+  n("Background track (bounded, never gating)","wip",null,"docs/30 §5",[
+    n("B1 CHIRPS refit — merge rejected (r 0.447✅/volume +7.5%🔴); refit on selectivity-passing stations","wip","F3"),
+    n("B2 k_int_frac floor probe (0.02→0.005)","todo"),
+    n("B3 external catchment areas — unblocks yields only","todo"),
+    n("B4 remote-sensing SSC cross-check (optional)","todo")]),
+  n("Open registers & embargo","wip",null,null,[
+    n("docs/21 §4 — PET review ✅ · PET_READY gate ✅ · rest open (routing, provenance, intake regex…)","wip","docs/21 §4"),
+    n("docs/31 register — #1 railed-count RESOLVED ✅; kc_mult>1.2, k_int_frac floor, Restrepo anchor open","wip","docs/31"),
+    n("🚫 Yields t/km²/yr embargoed until areas resolved (B3)","embargoed","docs/23")])
+ ],
+ discoveries:[
+  {d:"2026-08-10",t:"docs/31 adversarially reviewed; F1–F9 corrected in place. SSC network stated honestly (28 mapped, not 79); C1.0 coordinate-fetch added; C1.2 null fixed; B1 refit re-spec'd; register #1 resolved."},
+  {d:"2026-08-10",t:"📌 ENSO pairing kept 2011 vs 2015-16 — forcing bound to 2008–2018, alt pairing un-runnable (docs/30 §1)."},
+  {d:"2026-08-10",t:"📌 Phase B closed on ceiling; H2E adopted (docs/30 §1)."},
+  {d:"2026-08 (docs/29)",t:"Seed expansion: H1≈H2 not separable; H2E succeeded on every pre-registered condition."},
+  {d:"2026-08 (docs/18 §15)",t:"CHIRPS merge rejected — volume gate +7.5%; fix identified."}
+ ]
+};
+
+/* ---- progress counts (leaves only, excluding decision/embargoed markers) ---- */
+function leaves(node,acc){(node.kids&&node.kids.length)?node.kids.forEach(k=>leaves(k,acc)):acc.push(node);return acc;}
+const allLeaves=[]; DATA.phases.forEach(p=>leaves(p,allLeaves));
+const counted=allLeaves.filter(l=>['done','wip','todo','blocked'].includes(l.s));
+const by=s=>counted.filter(l=>l.s===s).length;
+const tot=counted.length, done=by('done');
+document.getElementById('updated').textContent="updated "+DATA.updated+" · "+tot+" tracked tasks";
+document.getElementById('banner').innerHTML=DATA.banner;
+
+/* cards */
+const cardDefs=[['done','done'],['wip','in progress'],['todo','todo'],['blocked','blocked']];
+document.getElementById('cards').innerHTML=cardDefs.map(([k,l])=>
+ `<div class="card"><div class="n" style="color:${C[k]}">${by(k)}</div><div class="l">${l}</div></div>`).join('')
+ +`<div class="card"><div class="n" style="color:var(--accent)">${Math.round(100*done/tot)}%</div><div class="l">complete</div></div>`;
+/* overall bar segmented by status */
+document.getElementById('overall').innerHTML=['done','wip','blocked','todo'].map(k=>
+ `<span style="width:${100*by(k)/tot}%;background:${C[k]}"></span>`).join('');
+document.getElementById('overallpct').textContent=`${done}/${tot} tasks done · Phase A & B complete · Phase C not yet started (next: C0)`;
+
+/* ---- render tree ---- */
+const tree=document.getElementById('tree');
+function render(node,depth){
+  const el=document.createElement('div'); el.className='node';
+  const row=document.createElement('div'); row.className='row';
+  const hasKids=node.kids&&node.kids.length;
+  const caret=document.createElement('span'); caret.className='caret'+(depth<1?' open':'');
+  caret.textContent=hasKids?'▸':''; row.appendChild(caret);
+  const dot=document.createElement('span'); dot.className='dot'; dot.style.background=C[node.s]||'#666'; row.appendChild(dot);
+  const ttl=document.createElement('div'); ttl.className='ttl';
+  ttl.innerHTML=`<b>${node.t}</b>`+
+    `<span class="badge" style="background:${C[node.s]}">${LABEL[node.s]||''}</span>`+
+    (node.doc?`<span class="tag">${node.doc}</span>`:'')+
+    (node.note?`<div class="note">${node.note}</div>`:'');
+  row.appendChild(ttl); el.appendChild(row);
+  let kidsWrap;
+  if(hasKids){
+    kidsWrap=document.createElement('div'); kidsWrap.className='kids'+(depth<1?'':' hidden');
+    node.kids.forEach(k=>kidsWrap.appendChild(render(k,depth+1)));
+    el.appendChild(kidsWrap);
+    const toggle=()=>{kidsWrap.classList.toggle('hidden');caret.classList.toggle('open');};
+    caret.onclick=toggle; ttl.onclick=toggle;
+  }
+  el._node=node; el._kidsWrap=kidsWrap;
+  return el;
+}
+DATA.phases.forEach(p=>tree.appendChild(render(p,0)));
+
+/* filter + search */
+let filter='all', query='';
+function apply(){
+  document.querySelectorAll('#tree .node').forEach(el=>{
+    const nd=el._node; const leaf=!(nd.kids&&nd.kids.length);
+    const txt=(nd.t+' '+(nd.note||'')+' '+(nd.doc||'')).toLowerCase();
+    const mQ=!query||txt.includes(query);
+    el.querySelector('.row').classList.toggle('dim', leaf && !(mQ&&(filter==='all'||nd.s===filter)));
+  });
+  // highlight
+  document.querySelectorAll('#tree .ttl b').forEach(b=>{const t=b.textContent;b.innerHTML=query?t.replace(new RegExp('('+query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig'),'<mark>$1</mark>'):t;});
+}
+document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{
+  document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');filter=c.dataset.f;apply();});
+document.getElementById('q').oninput=e=>{query=e.target.value.trim().toLowerCase();
+  if(query)document.querySelectorAll('#tree .kids').forEach(k=>k.classList.remove('hidden'));apply();};
+document.getElementById('expand').onclick=()=>{
+  document.querySelectorAll('#tree .kids').forEach(k=>k.classList.remove('hidden'));
+  document.querySelectorAll('#tree .caret').forEach(c=>{if(c.textContent)c.classList.add('open');});};
+document.getElementById('collapse').onclick=()=>{
+  // collapse everything below the top-level phases
+  document.querySelectorAll('#tree > .node .kids').forEach(k=>k.classList.add('hidden'));
+  document.querySelectorAll('#tree > .node .caret').forEach(c=>c.classList.remove('open'));
+  document.querySelectorAll('#tree > .node > .kids').forEach(k=>k.classList.remove('hidden'));
+  document.querySelectorAll('#tree > .node > .row .caret').forEach(c=>{if(c.textContent)c.classList.add('open');});};
+
+/* discoveries (embedded + user-added via localStorage) */
+const KEY='mgbsed_discoveries';
+function userDisc(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
+function drawDisc(){
+  const all=[...userDisc(),...DATA.discoveries];
+  document.getElementById('disclist').innerHTML=all.map(x=>
+    `<div class="item"><div>${x.t}</div><div class="d">${x.d}${x.u?' · you':''}</div></div>`).join('');
+}
+document.getElementById('adddisc').onclick=()=>{
+  const v=document.getElementById('newdisc').value.trim(); if(!v)return;
+  const u=userDisc(); u.unshift({d:new Date().toISOString().slice(0,10),t:v,u:true});
+  localStorage.setItem(KEY,JSON.stringify(u)); document.getElementById('newdisc').value=''; drawDisc();
+};
+drawDisc();
+</script>
+</body></html>

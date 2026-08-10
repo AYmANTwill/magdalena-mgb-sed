@@ -20,17 +20,17 @@ to `origin main`. One session on this repo at a time.
 | Best H2E run | seed 20260901, **F 0.25931**, kc_mult 1.662, recession median 1.082 | `_calib_cache/dds_H2E_20260901.npz` |
 | Second H2E seed | 20260902, F 0.24671, kc_mult 1.836, recession 1.110 | same dir |
 | H1 vs H2 verdict | **not separated** (gap 0.009 < seed spread 0.051) | docs/29 §Results |
-| Dry-phase ceiling | El Niño r pinned 0.556–0.572 across 12 configs; field LOOCV skill 0.429 | docs/22 §4.7 |
+| Dry-phase ceiling | El Niño r pinned 0.556–0.572 across 12 configs (docs/22 §4.7); field LOOCV skill 0.429 (docs/18 §12, docs/26 §7 — the all-period gauge-only median; docs/22 §4.7's per-window El Niño field skill is 0.40, a different statistic) | docs/22 §4.7; docs/18 §12 |
 | CHIRPS merge | LOOCV **passed** (r 0.447), volume **failed** (+7.5 %) → rejected; fix identified | docs/18 §15 |
 | SSC data | `sediment_daily.csv`: 269,337 rows, 1979–2018, cols incl. `ssc_mean_mg_l`, `ssc_surface_mg_l`, `approval`, `flag_corrupt/zero/flatline` | data/processed |
-| SSC stations | 79, mapped to minibacias, `calibration_safe` is **geometry-only** (no SSC-quality gate) | `sediment_inventory.csv`, docs/19 |
+| SSC stations | 79 total, but **28 mapped / 33 with coords / 24 calibration-safe**; 46 unmapped (no coordinates) pending the docs/19 §5.2-item-2 coordinate+area fetch (see C1.0). `calibration_safe` is geometry-only (no SSC-quality gate) | `sediment_inventory.csv` (measured 2026-08-10), docs/19 §3.7 |
 | MUSLE K | per-minibacia in `minibacia_soil_params.csv:K` (t·ha·h/(ha·MJ·mm)) | nb09 |
 | Areas | per-gauge catchment areas untrustworthy in BOTH team networks (36 % of 85 shared gauges disagree >2×) | docs/23 §13.2 |
-| Rating curves | median R² ≈ 0.5 across the fleet; per-pair list in docs/13 | docs/13, nb06 |
+| Rating curves | median R² **0.54** across 33 pairs; per-pair list in `data/processed/rating_curves.csv` (cols code/name/n_pairs/a/b/R2). docs/13 is the pairing-candidates doc — it carries **no R² values** | `rating_curves.csv` (nb06); docs/13 |
 | Flux conversion | Q (m³/s) × C (mg/L) × **0.0864** = t/day | arithmetic |
 | MUSLE defaults | α = 11.8, β = 0.56 (Williams 1975) — starting values, to be calibrated | literature |
 | Sediment skill bar | Fagundes et al. 2026 report sediment KGE **−0.26 to 0.44** | the source paper |
-| Literature flux anchor | Magdalena suspended load at the outlet ~140–180 Mt/yr (Restrepo et al.) — **verify the exact figure and citation in C2.5 before quoting** | to confirm |
+| Literature flux anchor | Magdalena suspended load at Calamar ~140–180 Mt/yr (Restrepo et al.). docs/06:9 already records **~145–169 Mt/yr** with citations; Restrepo & Kjerfve (2000) give **144 Mt/yr** (1975–1995). **C2.4** (not C2.5) reconciles against docs/06 and fetches the exact figure before quoting | docs/06:9; confirm in C2.4 |
 
 Standing rules (docs/18 §7 traps + additions): never `pd.read_csv` the wide forcing CSVs
 (`src/forcing_npy.py`); verify from executed outputs, never exit codes; pre-register every
@@ -98,6 +98,20 @@ outputs; journal to docs/agents/journal_c0.md."*
 Goal: replace "blocked on mainstem SSC quality" with a per-station, evidence-based
 classification. The precipitation QC playbook transposes almost one-for-one.
 
+### C1.0 Resolve the network size — coordinate + area fetch (docs/19 §5.2 item 2) — **do this first**
+The §0 table is now honest: `sediment_inventory.csv` has **28 of 79 stations mapped** (33 with
+coordinates, 24 calibration-safe); 46 have no coordinates at all (docs/19 §3.7, CONFIRMED). C1
+therefore cannot classify "79 usable stations" until those 46 are located.
+- **In:** `sediment_inventory.csv`; `src/fetch_station_coords.py` (single commit `b4a1230` — the
+  docs/19 §5.2-item-2 extension was never built).
+- **Do:** extend `fetch_station_coords.py` to pull the IDEAM catalogue **coordinate + catalogue
+  drainage area** for the 46 unmapped codes, then re-snap by **drainage-area matching** (docs/19 §5.2).
+- **Out:** updated `sediment_inventory.csv` with the newly-mapped stations flagged `mapping_action=catalogue`.
+- **Gate / decision (record explicitly, do not inherit):** either (a) the fetch raises the mapped
+  count — record the new number — or (b) it cannot, and Phase C is **run on the mapped subset**
+  (28 mapped / 24 calibration-safe), with the 46 dark stations carried as `ssc_class=excluded,
+  reason="no coordinates"` in C1.6. One of (a)/(b) MUST be written before C1.1 sizes coverage.
+
 ### C1.1 Coverage census
 - Per station × year: sample count; days in 2009–2018; days inside the two ENSO windows
   (2011 calendar year; 2015-01→2016-12); `approval` distribution (Definitivo > En
@@ -125,7 +139,8 @@ inflates any naive flux mean. Value screens cannot see this; the sampling-date p
   the theoretical null (percentiles ~ Uniform(0,1), median 0.5) with the weaker-null
   caveat recorded.
 - **Out:** `ssc_sampling_selectivity.csv` (station, n, median percentile, flag).
-- **Gate:** the null is calibrated (dense stations ≈ 0.5) before any station is flagged.
+- **Gate:** the null is calibrated (**calendar-regular** stations ≈ 0.5, per the method above —
+  NOT dense stations, which can be flow-chasing) before any station is flagged.
   Record both the biased list AND the consequence: for flagged stations, only
   rating-curve flux estimates (C2.2) are usable, never sample-mean flux.
 
@@ -136,7 +151,7 @@ inflates any naive flux mean. Value screens cannot see this; the sampling-date p
   (a river is never at 0 mg/L) — classify zero-runs as missing-coded-as-zero unless
   neighbouring samples corroborate near-zero.
 - Extreme values: **corroborate before deleting** (the source paper's own rule — its
-  744 mg/L peak was real). Corroboration = same-day or ±3-day high discharge at the
+  744 mg/L peak was real; *to confirm from the paper in C2.4, no in-repo anchor yet*). Corroboration = same-day or ±3-day high discharge at the
   paired gauge, or a same-event neighbour.
 - **Out:** amended flags in `sediment_daily_qc.csv`.
 - **Gate:** zero deletions without a recorded corroboration check.
@@ -149,7 +164,7 @@ inflates any naive flux mean. Value screens cannot see this; the sampling-date p
 
 ### C1.5 Sediment rating relations, per station per era
 - Fit `log Qs = log a + b·log Q` on QC'd same-day pairs (Qs = flux from C's conversion).
-  Record R², n, residual σ per fit. Median fleet R² ≈ 0.5 is the expectation (docs/13);
+  Record R², n, residual σ per fit. Median fleet R² ≈ 0.5 is the expectation (`rating_curves.csv`: 0.54/33 pairs);
   that is usable-with-stated-uncertainty, not disqualifying.
 - **Out:** `ssc_rating_fits.csv`.
 - **Gate:** every fit's n and R² recorded; fits with n < 15 pairs marked unusable.
@@ -159,8 +174,8 @@ Every one of the 79 stations gets exactly one class, with the measurement that d
 - **usable** — coverage in both windows, unbiased or correctable sampling, ≥1 usable
   rating era covering the windows;
 - **usable-with-caveat** — one deficiency, named (e.g. biased sampling → rating-only);
-- **excluded** — with the specific evidence (no window coverage / no plausible rating /
-  corrupt record), never a blanket rule.
+- **excluded** — with the specific evidence (**no coordinates** (the 46 unmapped, per C1.0) /
+  no window coverage / no plausible rating / corrupt record), never a blanket rule.
 - **Out:** `sediment_inventory_qc.csv` with `ssc_class` and `ssc_class_reason`;
   `docs/32_ssc_qc_audit.md` documenting method, nulls, and the per-station table.
 - **Gate:** 79/79 classified; the mainstem-vs-tributary split stated (C4 needs the
@@ -183,7 +198,8 @@ Goal: the target table C5 must reproduce — publishable on its own.
 - Primary windows: **calendar 2011** (La Niña) vs **2015-01→2016-12** (El Niño).
 - Sensitivity windows: 2010-07→2011-06 and 2015-10→2016-04 (ONI-peak definitions).
 - **Why the team gets to pick these:** the window definition was an open advisor question
-  (docs/21 open items: "2011 vs 2010–2012") and the advisor declined to answer (docs/30
+  (docs/28:258, slide-2 QA: "Why not 2010–2012 for La Niña?" — flagged for the advisor; NOT in
+  docs/21's open-item table) and the advisor declined to answer (docs/30
   §1). The sensitivity windows ARE the mitigation for that unresolved choice — every C2
   and C5 result is reported for the primary AND sensitivity windows, so no conclusion can
   hinge on the window definition alone. A reviewer meeting the docs/21 open item should
@@ -247,8 +263,9 @@ H2E runoff, verified the way the hydrology engine was.
 ### C3.3 The qpeak proxy — pre-registered choice
 A daily model has no sub-daily peak. Options, to be registered before implementation:
 1. `qpeak = Qsur/86400` (daily mean as peak — floor estimate);
-2. SCS-triangular: `qpeak = f(Qsur, t_c)` with time of concentration from reach
-   length/slope (already in `topology.npz`);
+2. SCS-triangular: `qpeak = f(Qsur, t_c)` with time of concentration from reach length
+   (`reach_km` in `topology.npz`) and **slope — to be derived from the nb07 DEM chain; it is
+   NOT a shipped artifact** (topology.npz has no slope key; verified 2026-08-10);
 3. the source paper's own formulation — **read Fagundes' methods section first; use
    theirs if extractable** (transposition claim is stronger).
 - **State the known bias direction before calibrating:** docs/22 measured α < 1 (peaks
@@ -266,6 +283,11 @@ A daily model has no sub-daily peak. Options, to be registered before implementa
 - **Gate:** pytest green including the new file.
 
 ### C3.5 Cross-check against implementation B
+- **In (acquire first — it is NOT in this repo):** `musle.py`/`sediment.py` are the team's
+  second-implementation files; `find` confirms they exist nowhere under `c:/dev` and no path/URL
+  is recorded (docs/20:43 documents impl-B as "the one input not rebuildable from this repo
+  alone"). **Request them from the team and record the drop location in docs**, OR re-scope this
+  subtask to compare against implementation B's *published numbers* (as docs/23 §13 did for areas).
 - Same sub-basin, same inputs, our module vs the team's `musle.py`: agreement to within
   the C/P mapping differences (document any residual). This is the Phase B
   two-implementation discipline applied to sediment.
@@ -363,10 +385,14 @@ before running any swap. The deliverable is docs/35 plus the figure set."*
 ## Background track — bounded, never gating
 
 ### B1 CHIRPS refit (≤ 2 sessions, then stop either way)
-- Refit the per-(elevation band × hydrographic zone) quantile maps **on the repaired
-  series including `Inferido_seco` inferred-dry days** (the identified cause of the
-  volume failure, docs/18 §15). Rerun BOTH gates unchanged: volume within 1 % of
-  2,036.4 mm/yr (2009–17); LOOCV median daily r > 0.429.
+- Refit the per-(elevation band × hydrographic zone) quantile maps **only on stations that
+  pass the selectivity test (~1.00)** (docs/18 §15.4; `journal_chirps-merge.md` follow-up) —
+  optionally after finishing the zero-suppression repair on the 139 residual rain-selective
+  stations first (§15.3, which is upstream of any usable merge). *The identified mechanism* of
+  the +7.5 % volume failure is those 139 residual rain-selective stations transferred through
+  reporting-day-conditioned maps (docs/18 §15.3) — **not** merely the absence of `Inferido_seco`
+  days, which only dries already-repaired stations and would leave the volume gate failing.
+  Rerun BOTH gates unchanged: volume within 1 % of 2,036.4 mm/yr (2009–17); LOOCV median daily r > 0.429.
 - Both pass → produce forcing v3 + nb11/nb12 rebuild + ONE pre-registered cell
   (H3 = v3 + H2E physics, 2 seeds) and stop. Any gate fails → the negative result closes
   the CHIRPS question permanently; write it and stop.
@@ -445,3 +471,12 @@ the same bar this project applies to itself: measured claims beat plausible ones
 | 5 | The Restrepo outlet-flux anchor (~140–180 Mt/yr) is unverified until C2.4 fetches the exact figure and citation | §0 table |
 | 6 | The ENSO window definition was never adjudicated by the advisor; C2.1 resolves it by primary+sensitivity bracketing, not by authority | docs/21, C2.1 |
 | 7 | H2E is adopted from n=2 seeds, exactly as its pre-registration allowed; more seeds require a NEW pre-registration | docs/29 |
+
+**2026-08-10 review applied.** Findings F1–F9 of `docs/agents/review_2026-08-10_docs31.md` were
+corrected in place: F1 (SSC network 79→28, added C1.0 coordinate fetch), F2 (ENSO pairing decision
+recorded in docs/30 §1), F4 (C1.2 gate → calendar-regular), F3 (B1 refit re-spec), F5 (musle.py
+acquisition line), F6 (slope not in topology.npz), F7 (four pointers), F8 (docs/30 ratio wording),
+F9 (744 mg/L marker). Register #1 (railed-count 3-vs-2 discrepancy) is **RESOLVED with evidence** in
+that review §3 (one 18-dim vector, two denominators: parameters_H2.csv marks 3 railed dims incl.
+regional `wm_mult@R2`; docs/26 §5's "2" counts globals only). All four load-bearing findings
+(F1, F4, F5, F6) were re-verified against disk before applying.

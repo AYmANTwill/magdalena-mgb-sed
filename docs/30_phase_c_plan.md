@@ -28,6 +28,16 @@ What closing means concretely: the hydrology is *frozen* for sediment work at th
 H2E parameter set. Any future forcing change (CHIRPS v3) re-opens it only through a new
 pre-registration.
 
+**Second recorded decision — the ENSO pairing (docs/19 §5.2 item 1).** docs/19 requires this
+be *taken explicitly, not inherited*. **Decision: keep 2011 (La Niña) vs 2015–16 (El Niño).**
+Ground, and it is a hard constraint not a preference: the v2 forcing is bounded by ERA5 P∩PET
+and the gauge network to **2008–2018** (CLAUDE.md), so the alternative docs/19 §3.8 favours —
+1997-98 vs 1999-2000 (10 bridging stations, mainstem anchors on both sides) — **cannot be run at
+all** without re-acquiring forcing that predates our data, which is out of scope. Costs accepted
+and named: 2011-vs-2015-16 is the *weakest* of the four candidate pairings (docs/19 §3.8) — 6
+bridging stations, no El Niño-side mainstem anchor (docs/19 §3.9b). The C2.1 sensitivity windows
+bracket the window-*boundary* question but do NOT substitute for this pairing decision.
+
 ---
 
 ## 2 — What Phase C already has (more than "blocked" implied)
@@ -35,12 +45,12 @@ pre-registration.
 | asset | state |
 |---|---|
 | SSC observations | `sediment_daily.csv` — 269,337 rows, 1979–2018, with `flag_corrupt/zero/flatline` already computed |
-| SSC inventory | 79 stations, gauge→minibacia mapping done, `calibration_safe` flag exists (geometry-only — see gap below) |
+| SSC inventory | 79 stations, but only **28 mapped to minibacias / 24 calibration-safe**; 46 have no coordinates (`sediment_inventory.csv`, measured). `calibration_safe` flag exists (geometry-only — see gap below). Mapping the 46 needs the docs/19 §5.2-item-2 coordinate fetch (docs/31 C1.0) |
 | MUSLE soil erodibility K | per-minibacia in `minibacia_soil_params.csv:K` (nb09: Wischmeier class × IGAC drainage) |
 | C factor / land cover | 8 hydrological classes from WorldCover (nb05/08) |
 | Runoff driver | calibrated H2E hydrology, recession-correct (ratio 1.08–1.11), mass-conservative |
 | Rating-curve pairs | docs/13; median R² ≈ 0.5 — usable with stated uncertainty |
-| Team's second implementation | `musle.py`, `sediment.py`, RS-SSC retrieval — an independent cross-check, as in Phase B |
+| Team's second implementation | `musle.py`, `sediment.py`, RS-SSC retrieval — **external, not in this repo** (docs/20:43); must be acquired for the C3.5 cross-check, as in Phase B |
 
 Known gaps, named: `calibration_safe` has **no SSC-quality gate** (docs/19, corrected
 claim); per-gauge **areas disagree >2× on 36 % of shared gauges** (docs/23 §13.2);
@@ -69,8 +79,9 @@ becomes a sentence with station counts in it.
 
 ### C2 — the observational ENSO contrast, model-free · *1 session, publishable alone*
 From C1's usable stations, compute observed suspended-sediment flux (concentration ×
-same-day discharge) for La Niña 2011 vs El Niño 2015–16: totals, ratios, seasonal
-shape, at every usable station. **Absolute fluxes (t/day) only — no t/km²/yr yields**
+same-day discharge) for La Niña 2011 vs El Niño 2015–16: totals (context only), **rate
+ratios per docs/31 C2.1** (never a ratio of unequal-window totals), seasonal shape, at
+every usable station. **Absolute fluxes (t/day) only — no t/km²/yr yields**
 until areas are externally resolved (docs/23). Exit: the observational target the model
 must reproduce, with uncertainty from the rating-curve R².
 
