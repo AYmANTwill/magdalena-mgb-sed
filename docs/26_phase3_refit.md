@@ -231,6 +231,13 @@ the rail that held H1 at 98.8 % and H2 at 93.3 %. Railed: **2 of 10 global**
 (adding `wm_mult@R2` at 97.1 %) — both denominators stated, because reporting only one is
 what produced the docs/24-vs-docs/26 "3 vs 2" discrepancy.
 
+One near-rail that the pre-registered 5 % rule does **not** flag, recorded because a reader
+quoting these parameters should see it: `adr@soil-medium` sits at **91.1 %** of its range
+(0.1692 of (0.0005, 0.30)), the closest unflagged dimension to a bound. It is inside the
+band by the rule stated before the run, so it is not counted as railed — but the full
+position column is in `parameters_H2E.csv` precisely so that judgement is checkable rather
+than inherited.
+
 **The store-ordering inversion relocated a third time.** `k_sup` 19.20 d, `k_int` 0.87 d,
 `k_bas` 42.97 d. `k_int < k_bas` holds by construction, and unlike H2 the fit no longer puts
 `k_sup` above `k_bas` — but surface response is now **22× slower than interflow**, which is
