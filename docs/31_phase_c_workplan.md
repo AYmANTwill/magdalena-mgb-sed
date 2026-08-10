@@ -98,19 +98,16 @@ outputs; journal to docs/agents/journal_c0.md."*
 Goal: replace "blocked on mainstem SSC quality" with a per-station, evidence-based
 classification. The precipitation QC playbook transposes almost one-for-one.
 
-### C1.0 Resolve the network size — coordinate + area fetch (docs/19 §5.2 item 2) — **do this first**
-The §0 table is now honest: `sediment_inventory.csv` has **28 of 79 stations mapped** (33 with
-coordinates, 24 calibration-safe); 46 have no coordinates at all (docs/19 §3.7, CONFIRMED). C1
-therefore cannot classify "79 usable stations" until those 46 are located.
-- **In:** `sediment_inventory.csv`; `src/fetch_station_coords.py` (single commit `b4a1230` — the
-  docs/19 §5.2-item-2 extension was never built).
-- **Do:** extend `fetch_station_coords.py` to pull the IDEAM catalogue **coordinate + catalogue
-  drainage area** for the 46 unmapped codes, then re-snap by **drainage-area matching** (docs/19 §5.2).
-- **Out:** updated `sediment_inventory.csv` with the newly-mapped stations flagged `mapping_action=catalogue`.
-- **Gate / decision (record explicitly, do not inherit):** either (a) the fetch raises the mapped
-  count — record the new number — or (b) it cannot, and Phase C is **run on the mapped subset**
-  (28 mapped / 24 calibration-safe), with the 46 dark stations carried as `ssc_class=excluded,
-  reason="no coordinates"` in C1.6. One of (a)/(b) MUST be written before C1.1 sizes coverage.
+### C1.0 Network-size decision (docs/19 §5.2 item 2) — 📌 **DECISION TAKEN; C1 is NOT gated on it**
+`sediment_inventory.csv` has **28 of 79 stations mapped** (33 with coordinates, 24 calibration-safe);
+46 have no coordinates (docs/19 §3.7, CONFIRMED). docs/19 §5.2 requires this be decided *explicitly,
+not inherited*. **Decision (2026-08-10): Phase C proceeds now on the 28-station mapped subset (24
+calibration-safe).** This is exactly docs/19 §5.2's stated fallback — *"until [the coordinate fetch]
+is done the sediment network is 24 stations, not 79."* C1.1 therefore sizes coverage against the
+mapped subset, and the 46 unmapped are carried as `ssc_class=excluded, reason="no coordinates"` in C1.6.
+- The coordinate+area fetch for the 46 is **background task B5** (async, non-gating — see Background
+  track). If B5 lands it *re-opens* coverage and C1.1/C1.6 restate the counts; if it does not, the
+  exclusion stands. Nothing on the core path waits for it.
 
 ### C1.1 Coverage census
 - Per station × year: sample count; days in 2009–2018; days inside the two ENSO windows
@@ -413,6 +410,14 @@ before running any swap. The deliverable is docs/35 plus the figure set."*
   C1-usable stations — an independent check on both, and Phase C's analogue of the
   two-implementation cross-validation.
 
+### B5 SSC coordinate + area fetch for the 46 unmapped stations (async, unblocks SSC coverage only)
+- The C1.0 decision runs Phase C on the 28 mapped stations *now*; this task tries to raise that count.
+- Extend `src/fetch_station_coords.py` (single commit `b4a1230`; the docs/19 §5.2-item-2 extension was
+  never built) to pull the IDEAM catalogue **coordinate + catalogue drainage area** for the 46 unmapped
+  codes, then re-snap by **drainage-area matching** (docs/19 §5.2).
+- Success = mapped count rises; record the new number and re-run C1.1/C1.6 for the added stations.
+  Distinct from B3 (which fetches areas as a *discharge-network* arbiter for the yield embargo).
+
 ---
 
 ## Dependencies and suggested order
@@ -420,7 +425,8 @@ before running any swap. The deliverable is docs/35 plus the figure set."*
 ```
 C0 ──────────────► C3 ──► C4 ──► C5
       C1 ──► C2 ─────────► C4 (calibration targets come from C1/C2)
-B1, B2, B3, B4: independent; B1 success re-opens hydrology ONLY via a new pre-registration
+B1, B2, B3, B4, B5: independent; B1 success re-opens hydrology ONLY via a new pre-registration;
+C1.0 decision (run on 28-station subset) means C1 does NOT wait for B5
 ```
 
 Core path ≈ **8–12 sessions**; background ≤ 3½. Nothing in the background track blocks

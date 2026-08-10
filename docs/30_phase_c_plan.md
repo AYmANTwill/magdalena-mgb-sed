@@ -130,6 +130,10 @@ and which are description.
    happens; 7 of 8 v2-forcing seeds sit on it (docs/29 results).
 3. **Areas**: acquire an external drainage-area source (IDEAM station catalogue request /
    published tables). Unblocks yields; blocks nothing else.
+4. **SSC coordinate fetch (B5)**: pull IDEAM-catalogue coordinates + areas for the **46 unmapped
+   SSC stations** and re-snap by drainage-area matching (docs/19 §5.2 item 2; docs/31 B5). Unblocks
+   SSC coverage; blocks nothing. 📌 **C1.0 decision (2026-08-10): Phase C runs now on the 28-station
+   mapped subset (24 calibration-safe);** B5 only *raises* that count if it succeeds — C1 does not wait.
 
 ## 6 — Standing rules carried into Phase C
 
