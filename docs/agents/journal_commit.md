@@ -637,3 +637,39 @@ still-running `reverdict` output are the substantive handback: they are the cita
 C-factor table is what turned my test suite red, and they need their own commit agent.
 
 Next: `git push origin main`.
+
+## Step 11 — PUSH DONE, confirmed against the remote ref
+
+`git push origin main` -> **`a4746a8..d6a3d30  main -> main`** (github.com/AYmANTwill/
+magdalena-mgb-sed.git). Fast-forward. No `--force`, no `--no-verify`.
+- `git rev-list --left-right --count origin/main...HEAD` -> **`0  0`**. Local and remote are the
+  same commit, so the push is confirmed against the remote ref, not merely reported by its own
+  output.
+- Six commits pushed: `083f8a2` evidence (5 files) · `8807951` code (3) · `9880d38` verdict (2) ·
+  `6e1d24a` fixer (2) · `1a6fd79` tracker (2) · `d6a3d30` this journal (1) = **15 files**.
+- `git status --short` after the push lists **34 paths, none of them mine** — all 13 mandate
+  paths are absent from it, i.e. committed and clean. The 34 are the out-of-mandate areas
+  enumerated in step 10.
+- Frozen `h2e_drivers.npz` still 546,366,478 B @ 2026-08-10 13:54. `src/mgb_sediment.py` still
+  77,626 B @ 08:54, unchanged since commit 2 — the `reverdict` run has not written again yet.
+
+## Handback (also in my structured output)
+1. **The test suite is red on `main`: 2 of 96 fail.** Root cause is the revised C-factor table
+   (URH 11: C 0.003 -> 0.005), not the code. The C-factor area must decide whether the two
+   assertions move to the cited C values or are parameterised over `cp_revision`. Until then
+   anyone running `pytest` on a clean clone sees 2 failures.
+2. **`reverdict` was still running when I pushed** and owns further edits to `src/mgb_sediment.py`
+   (already committed as a snapshot) plus a planned docs/37 amendment and a docs/00_INDEX update.
+   A second commit agent is needed after it finishes.
+3. **docs/40 (SDR), docs/41 (C-factor), docs/42 (C4 guards) are unversioned** along with 7 area
+   journals, `docs/00_INDEX.md` and `docs/38`. docs/37's SDR closure condition is judged against
+   evidence that is not yet in the repository.
+4. `data/processed/urh_cp_factors.csv` is STILL the unversioned hand-curated table flagged by run
+   2 — and it has now silently changed the model default and broken tests, which is exactly the
+   failure mode that provenance gap invites. Highest-priority carry-over, now demonstrated.
+5. Three `.docx` deletions sit staged in the index, pre-staged by another area. Left exactly as
+   found; excluded from all six commits by pathspec.
+6. `.gitignore`, `CLAUDE.md` and 14 `docs/*.md` are modified by the hygiene/consolidate runs and
+   uncommitted.
+
+CHECKLIST (run 3): [x]0 [x]1 [x]2 [x]3 [x]4 [x]5 [x]6 [x]7 [x]8 [x]9 [x]10 [x]11. TASK COMPLETE.
