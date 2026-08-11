@@ -39,6 +39,10 @@ study: La Niña 2011 (wet) vs El Niño 2015–16 (dry). UMNG internship, advisor
 - `docs/31_phase_c_workplan.md` — **the execution-level work breakdown**: every subtask with
   In/Out/Gate, the pre-registration points, per-stage paste-prompts, dependencies, and the
   risk register. A session opens its stage section and starts; no conversation history needed.
+- `docs/33_c2b_preregistration.md` — **FROZEN pre-registration for stage C2b**: read before
+  measuring anything about surface runoff, baseflow index or peak flow — it fixes the H-BFI /
+  H-PEAK / H-CHIRPS gates, the Eckhardt definitions, the refit weight vectors and the H2E-S
+  cell, and it renumbers the C2/C4/C5 docs to 34/35/36.
 - `docs/progress_journal.md` — chronological log.
 
 ## Phase status

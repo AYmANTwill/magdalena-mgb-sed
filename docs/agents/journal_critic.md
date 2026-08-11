@@ -1,78 +1,83 @@
-# Critic agent journal (2026-08-03)
+# Journal: critic (adversarial verification of the C2b/C1/C2 run)
 
-## Goal
-Adversarially verify the closeout claims of the other agents (housekeeping, packaging,
-docs, et-stress, chirps-merge, commit, launch). Trust nothing not executed. Write ONLY
-this journal.
+GOAL: independently verify every claim of this run. ONLY write = this journal.
 
-## Planned checks
-- [ ] 1. git status --short: unexpected staged/uncommitted; Protocolo docx modified-but-untracked-change; no *.pptx or figures/deck tracked (git ls-files)
-- [ ] 2. pytest tests/ -q green, count tests
-- [ ] 3. Regeneration: delete one figures/deck PNG, rerun extract_notebook_figures.py, confirm reappears; same for one gen_* via make_deck_charts.py
-- [ ] 4. Engine import; MgbParams accepts et_stress='fao56', rejects garbage
-- [ ] 5. Queue: watch_calib.py shows new seeds, tasklist worker count, queue_runner.log heartbeat
-- [ ] 6. docs/20 + docs/21 exist, commands runnable (try >=2 from docs/20); docs/21 paste-ready prompt; CLAUDE.md pointers; docs/29 matches running jobs
-- [ ] 7. docs/agents journals: one per agent, non-empty, committed
-- [ ] 8. CHIRPS decision + rule + numbers in docs/18; not adopted so no v3 files should exist
+## Checklist
+- [ ] 1. Frozen-doc integrity: git diff docs/32, docs/33 registered sections
+- [ ] 2. Pre-registration precedence (mtimes, journals, git)
+- [ ] 3. Independent recompute: one BFI_obs, one AMS ratio, CHIRPS volume, one C1 classification
+- [ ] 4. C2 comparability: unequal-window totals? both window pairs?
+- [ ] 5. Embargo: t/km2/yr anywhere
+- [ ] 6. Refit actually running + zero-weight gate <= 1e-10
+- [ ] 7. Claimed files exist w/ claimed content (spot-check 3)
+- [ ] 8. Journals one per agent, threshold before result
 
 ## Log
-- Created journal.
-- CHECK 1 done: git status shows Protocolo docx modified (correct, untouched by agents);
-  MODIFIED journal_commit-1.md (expected per commit agent) and UNTRACKED: docs/29_seed_expansion.md,
-  scripts/calib_queue_runner.py, docs/agents/journal_calibration-launch.md, journal_critic.md (mine).
-  => launch agent's pre-registration doc + queue runner + its journal are NOT committed. git ls-files
-  shows NO pptx and NO figures/deck tracked (good; legacy pptx untracked too). gitignore bites
-  (FIGURES.pptx and figures/deck absent from status).
-- CHECK 2 done: python3.10 -m pytest tests/ -q => 16 passed in 2.05s, exit 0.
-- Next: regeneration spot-checks (delete one extracted PNG + one gen_* chart, rerun scripts).
-- figures/deck holds 80 files: 71 extracted (claim matches), 4 gen_*, plus 5 yb_*.png of
-  unknown regeneration path — checking whether any script rebuilds them and whether build_deck uses them.
-- About to do risky-ish regeneration spot-check: delete figures/deck/01_c003_1.png and
-  figures/deck/gen_h2_h1.png, then rerun the two scripts. Both are claimed regenerable.
-- CHECK 3 done: deleted 01_c003_1.png + gen_h2_h1.png; extract_notebook_figures.py rewrote
-  71 PNGs (exit 0), make_deck_charts.py rewrote all 4 gen_* (exit 0); both deleted files
-  reappeared with IDENTICAL md5 (406a99b0... / 33365eba...). Regeneration claim holds for
-  the 75 script-owned files. HOWEVER 5 yb_*.png in figures/deck come "from the team's
-  second implementation repo" (build_deck.py docstring), are gitignored, and have NO
-  regeneration path in this repo => deck is not fully regenerable from the repo alone.
-- Next: engine import + MgbParams et_stress validation.
-- CHECK 4 done: engine imports; MgbParams() defaults linear; et_stress='fao56' accepted
-  (theta_crit 0.6); 'garbage' raises ValueError; theta_crit 0.0 and 1.5 both rejected.
-- Next: queue liveness (watch_calib.py, tasklist, queue_runner.log).
-- CHECK 5 in progress: queue_runner.log heartbeat exists (QUEUE START 10 jobs 20:41:06,
-  4 STARTs, PIDs match launch claim); tasklist shows runner 26784 + 4 workers 26428/14944/
-  19500/36764 at ~466 MB; watch_calib: "search workers alive: 4", new seed headers present,
-  no eval line yet — expected, completed logs show first eval line at eval 26 (~9 min in);
-  will re-check after 20:50. 4 completed dds_*.npz intact (Aug 3 04:45-04:47 mtimes).
-  docs/29 job table = H1/H2 x 20260903-06 + H2E x 20260901-02, budget 1000 — matches queue.
-- Next: docs 20/21/CLAUDE.md checks.
-- CHECK 6 done: docs/20 (10.3 KB) + docs/21 (10.6 KB) exist; every script referenced by
-  docs/20 regen chain exists on disk; docs/21 s7 "Paste-ready prompt" present; CLAUDE.md
-  points at both (lines 27,29). BUT `make` is NOT installed (make figures -> command not
-  found, exit 127); Makefile's own header claims Git Bash usability — false on this box.
-  Underlying commands all run (pytest 16 pass, both figure scripts exit 0).
-- CHECK 7 done: 8 journals, all non-empty. Committed: housekeeping, packaging, docs,
-  et-stress, chirps-merge, commit-1. NOT committed: journal_calibration-launch.md,
-  docs/29_seed_expansion.md, scripts/calib_queue_runner.py (all post-date the commit
-  agent) + my own journal.
-- CHECK 8 done: docs/18 s15 records built/validated/NOT-adopted with the pre-registered
-  rule quoted, LOOCV 0.429->0.447 PASS, volume 2188.5 vs 2036.4 +/-1% FAIL (+7.5%), both
-  windows attached; no model_inputs_v3/forcing v3 files; only merge_loocv_report.csv.
-- Re-checking queue eval progress now (~11 min after 20:41 start).
-- CHECK 5 done: at 20:49 all four H1 new seeds show eval 26/1000, F 0.14356, 14.0 s/ev,
-  upd 2.1m — identical eval-26 best across seeds is BENIGN (completed 20260901 AND 20260902
-  also show 0.14356 at eval 26: it is the shared deterministic start point; seeds diverge
-  by eval 51 in the completed logs; calib_v2.py:346 seeds default_rng(seed)). Queue live,
-  ETA ~3h48m for wave 1 per watch. dds_H1/H2_2026090[12].npz untouched.
-- pptx state matches claims: FIGURES.pptx on disk 3,957,092 B; hydrology.pptx gone; legacy
-  MGB_SA_hydrology_Magdalena.pptx on disk, untracked. Packaging files all present;
-  pyproject declares MIT via LICENSE file; docs/19 carries 7 "[corrected 2026-08-03]" marks.
-
-## Verdict summary
-- No critical findings. Two warns: (1) launch artifacts (docs/29, scripts/calib_queue_runner.py,
-  journal_calibration-launch.md, updated journal_commit-1.md) uncommitted — pre-registration
-  not yet in git; (2) 5 yb_*.png in figures/deck are external, gitignored, non-regenerable
-  from this repo, so the deck is NOT fully regenerable as claimed. Notes: make not installed
-  (Makefile unusable on this box); src/build_sediment_gauges.py stale comments (disclosed);
-  CLAUDE.md lacks a docs/29 pointer.
-- All checklist items 1-8 executed. Journal closed.
+- CHECK1 docs/32: `git diff HEAD -- docs/32` = ONE hunk at line 120; only 2 lines removed
+  (the "## Results (appended...)" heading and the "*(empty until C1.1-C1.7 run...)*"
+  placeholder). Registered sections lines 1-119 (§0-§6) BYTE-IDENTICAL. PASS.
+- CHECK1 docs/33: untracked (no git baseline). §0-§5 = lines 1-508, §6 starts line 509,
+  §7 line 691, EOF 935 -> consistent with append-only. Every threshold in §1/§2.4/§3.2 on
+  disk matches the list recorded in journal_prereg-c2b.md Step 5 (mtime 19:04:03) verbatim:
+  IQR gate, [0.85,1.15], [2016.0,2056.8], r>0.429, BFImax 0.80, 0.20 BFI scale, ln1.5,
+  weights (0.34,0.34,0.17,0.15) / (0.28,0.28,0.14,0.15,0.15), seeds 20260907/08, budget 1000.
+- CHECK2 mtimes: prereg journal 19:04:03 < baseflow.py 19:08 < journal_bfi 19:16:48,
+  journal_peaks 19:16:25, docs/33 19:17:07. Prereg precedes measurement. PASS so far.
+- CHECK3 BFI recomputed INDEPENDENTLY (my own Eckhardt/gapfill/segmentation; only the
+  registered recession_k imported). EXACT reproduction: 55/63 included, same 8 excluded,
+  median BFI_obs 0.7811, BFI_sim 0.7965, median|diff| 0.01625, IQR 0.02845, SD 0.0307,
+  BFImax0.50 0.00308 vs 0.00487, median k 10.444 / a 0.9087, gauge 21237040 obs 0.67325
+  sim 0.79053 => +0.1173 (claimed +0.117). Verdict NOT REFUTED confirmed.
+- CHECK3 PEAKS recomputed independently: fleet median R_AMS 0.8200 (claimed 0.820),
+  R_Q5 0.9744 (0.975), R_Q1 0.8399 -- matches their RAW-mask robustness row (0.840) not
+  their headline 0.847 (segmented mask); both < 0.85 so verdict unaffected. Counts
+  36/9/18 below/in/above band reproduce exactly. H-PEAK REFUTED confirmed.
+- CHECK3 CHIRPS: merge_loocv_report_v2.csv vs merge_loocv_report.csv -> max|diff| 0.0 on
+  r_base/r_merged/bias_merged_pct/n_base/n_merged over 291 rows (bit-identical CONFIRMED).
+  median r_base 0.42902 (287 finite), median r_merged 0.44748 -> LOOCV PASS confirmed by me.
+  Volume ANCHOR recomputed independently from forcing_precip_v2.npy + minibacias areas:
+  2036.39 mm/yr 2009-2017 area-weighted (gate anchor 2036.4, band [2016.0,2056.8]) -> correct.
+  Basin area sum 257,097 km2. Merged 2188.5 NOT re-derived by me (needs a full field rebuild)
+  but is bit-for-bit the value already recorded in COMMITTED docs/18 line 840 from the Aug-3
+  run -> corroborated by an independent prior record. v3 files ABSENT on disk (verified).
+- CHECK3 C1: recomputed window counts from sediment_daily_qc.csv (269,337 rows, 79 stations,
+  c1_deleted sum 0): 26017060 = 207/34, 21197010 = 192/202, 21237020 = 91/195,
+  26237020 = 0/179 -> all match docs/32 R6.1 exactly. Classification of 26017060 as
+  usable-with-caveat (single-window at N=91) reproduces.
+  NOTE: 21237020 (the ONLY Magdalena-trunk station) has La Nina n = 91 = N exactly.
+- CHECK6 GATE reproduced INDEPENDENTLY in my own process (registered temp cell, no file
+  written): H2E stored best F 0.25930593639066796; current modified calib_v2 recomputes
+  0.25930593639066796 (rel 0.0); peak term COMPUTED at weight 0 with (0.40,0.40,0.20,0.0)
+  gives 0.25930593639066796, abs 0.000e+00, rel 0.000e+00 <= 1e-10 -> GATE PASS CONFIRMED.
+  H2E-S weights on the same vector: F 0.22057354584714875, r_ams finite 51, median 0.6482
+  (matches the launch agent's informational numbers exactly).
+- CHECK5 embargo grep over docs/32,33,34, all agent journals, docs/18 and data/processed/c2/*:
+  every "t/km2/yr" hit is an embargo STATEMENT; no computed yield. c2 CSVs carry only
+  *_tday rate columns. PASS.
+- CHECK4 C2: c2_rate_ratios has pair in {primary(18), sensitivity(18)}; flux table has all
+  four windows P-LN 365 d / P-EN 731 d / S-LN 365 d / S-EN 213 d, but every ratio is
+  t/day over t/day: max |a_ln_tday/a_en_tday - a_ratio| = 1.8e-15. NO totals ratio. PASS.
+  Reproduced medians: primary a 4.620, primary b(all) 2.949, sens a 9.320, sens b(all) 4.650.
+  DISCREPANCY: 24 finite station x estimator x pair ratios exist and 24/24 exceed 1; docs/34
+  line 204/473 says "22 of 22". Direction claim holds a fortiori; the count does not tie out.
+- CHECK6 RUN ALIVE: PIDs 23840 (queue, 25.8 MB), 29064 + 28648 (workers 455.5/455.8 MB,
+  > 300 MB bar). Worker logs advance 26 -> 51 -> 76 / 1000; checkpoints read back as cell
+  H2E-S, budget 1000, arch_ra (76,63) with 51 finite per eval. queue_runner.log has the
+  19:44:12 QUEUE START + 2 START lines. No .err files.
+- CHECK7 files: src/baseflow.py --selftest re-run by me = 9/9 PASS (BFI 1.000000000000,
+  spike 0.062014, MRC k_hat 25.000). figures/deck/gen_bfi.png, gen_peaks.png,
+  gen_ssc_coverage.png all present. sediment_inventory_qc.csv = 79 rows, classes
+  6/12/61 (matches). c2_monotonicity 40 rows, 40 increases. 21237020 discharge really
+  ends 2014-12-31 (n 9073). EL PROFUNDO leverage 156.66 % reproduced.
+  peaks_per_gauge medians: R_AMS 0.8200, R_Q1 0.8470, R_Q5 0.9746, POT 1285/2236 = 0.575,
+  4 zero-POT gauges -- all as claimed.
+- CHECK8 journals: 7 journals present and non-empty (bfi 108, peaks 79, c1-ssc 359,
+  c2-contrast 107, chirps-refit 154, refit-launch 180, prereg-c2b 105 lines); each quotes
+  its gate/threshold at the head before any result.
+- FINDINGS (see structured output): no CRITICAL. WARN: nothing committed (docs/33+34 are
+  untracked and hold prereg + results in one file; docs/34 has no external corroboration
+  of precedence); docs/31 still points C2 at "docs/33" and C4 at "docs/34" so the
+  renumbering is unresolved outside docs/33 §5.2; H-BFI gate has near-zero power
+  (r(sim,obs)=0.094, BFI_obs range 0.658-0.799 under the 0.80 cap); refit peak term scored
+  on CAL 2012-14 (R_AMS 0.6482) while §2.3/§3.5 define it on 2009-2018 (0.820);
+  docs/34's "22 of 22" does not tie out (artifact holds 24 finite ratios, 24/24 > 1).
