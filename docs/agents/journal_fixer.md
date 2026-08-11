@@ -377,3 +377,250 @@ SELF-CORRECTION: I first wrote "4 occurrences ... all three of the claim-bearing
 guessed lines 85/87/219; the executed grep says 3 lines at 195/252/256 and the §2 CONDITIONAL
 box does not use the phrase at all. Corrected against the output, per the verify-from-executed-
 output rule that this very run is enforcing on others. Tests re-run after this edit: 96 passed.
+
+---
+
+# RUN 3 — 2026-08-11 (same slug, two new criticals). MUSLE QUANTITY IDENTITY + ENGINE DOCSTRING
+
+GOAL: fix exactly TWO critical findings, smallest change each.
+F1: clause 4' compares a sediment YIELD (our MUSLE sum) against a gross EROSION (Tan RUSLE)
+    and calls it like-for-like; nb18 §1 already says that distinction is not pedantic.
+    Fix = pin WHICH quantity the MUSLE sum is, with SWAT Ch.4:1 as the citation, re-derive
+    all three legs under BOTH readings, report the residual sign-unknown, drop Leg C's
+    mean-vs-max form as invalid at basin scale, and re-open the 0.579-0.740 reading as a
+    possible channel/floodplain throughput vs docs/40's 20-45 % Momposina retention.
+F2: src/mgb_sediment.py docstring lines ~177-197 still assert the RETIRED uncited
+    0.05-0.3 SDR band as "the published range", still says C3 is open "for exactly this
+    reason", and its convention table understates its own default by 20.4 %
+    (248.72 vs 299.54 Mt/yr under cited_central C).
+
+## Step checklist (run 3)
+- [x] S1. Journal section opened BEFORE any edit.
+- [x] S2. Read docs/37 (A1.1 clauses, A1.2, A1.7), docs/40, docs/41, docs/42 G5.
+- [x] S3. Read src/mgb_sediment.py docstring block + CP_REVISIONS + convention table.
+- [x] S4. Read nb18 cell 8 (§1) and cell 68 (§6.4) verbatim; quote both.
+- [x] S5. Locate/verify a citable SWAT Ch.4:1 source IN-REPO. If not citable -> say UNCITED.
+- [x] S6. Verify every number I intend to print from executed output.
+- [x] S7. Edit docs/40 with the new §0 (quantity identity) + three-leg re-derivation.
+- [x] S8. Edit docs/37 A1.1 clause 4' -> sign-unknown; add A1.9; add mgb_sediment.py to A1.7 item 4.
+- [x] S9. Edit src/mgb_sediment.py docstring (F2).
+- [x] S10. Re-execute nb18 if its text carries the retired claim AND is named; else disclose.
+- [x] S11. Verify all edits from executed output; run tests; confirm no frozen artifact touched.
+
+## Log — run 3
+
+### S1 (start)
+Files I expect to touch: docs/40_sdr_evidence.md, docs/37_c3_closure.md,
+src/mgb_sediment.py, plus this journal. Read-only: docs/41, docs/42, nb18, journal_cite-sdr.
+No git add/commit/push. No calibration. No frozen-artifact write.
+
+### S2-S6 — evidence, quoted and verified BEFORE any edit
+
+**The two nb18 sentences the finding pairs, both verbatim (read with json, not grep).**
+`notebooks/18_musle_construction.ipynb` cell 8 (§1), point 2:
+> "Because runoff already encodes how much water was available to *carry* the soil away, MUSLE's
+> output is closer to "sediment delivered from this patch to its stream" than to "soil detached
+> on this patch". Section 6 shows this distinction is not pedantic - a whole closure gate was
+> retired over it."
+
+cell 68 (§6.4), Leg A bullet:
+> "**Leg A - the only like-for-like denominator.** Tan, Liu & Lu (2024), *ESPL* 49:1778-1795, report
+> **RUSLE hillslope** erosion of 23.7-26.5 t ha-1 a-1 in a large, data-sparse
+> mountainous basin. Hillslope against hillslope, so this is the leg that counts."
+
+CONFIRMED CONTRADICTORY in the sense the finding states: the second treats a RUSLE *erosion* rate
+as the like-for-like denominator for a sum the first says is closer to a *delivered* quantity.
+
+**The citation, verified by me from the PRIMARY source this run, not taken from the finding.**
+I fetched `https://swat.tamu.edu/media/99192/swat2009-theory.pdf` (7,690,470 B, 647 pp) and
+text-extracted it with PyMuPDF. **SWAT Theoretical Documentation, Version 2009, Section 4
+Chapter 1 "EQUATIONS: SEDIMENT", printed p. 252 (PDF page 277)**, VERBATIM:
+
+> "USLE predicts average annual gross erosion as a function of rainfall energy. In MUSLE, the
+> rainfall energy factor is replaced with a runoff factor. This improves the sediment yield
+> prediction, eliminates the need for delivery ratios, and allows the equation to be applied to
+> individual storm events. Sediment yield prediction is improved because runoff is a function of
+> antecedent moisture condition as well as rainfall energy. Delivery ratios (the sediment yield at
+> any point along the channel divided by the source erosion above that point) are required by the
+> USLE because the rainfall factor represents energy used in detachment only. Delivery ratios are
+> not needed with MUSLE because the runoff factor represents energy used in detaching and
+> transporting sediment."
+
+and eq. 4:1.1.1, same page:
+
+> "where sed is the sediment yield on a given day (metric tons), Qsurf is the surface runoff volume
+> (mm H2O/ha), qpeak is the peak runoff rate (m3/s), areahru is the area of the HRU (ha), KUSLE is
+> the USLE soil erodibility factor (0.013 metric ton m2 hr/(m3-metric ton cm))"
+
+The finding's quotation is accurate. SECOND, INDEPENDENT confirmation of the `sed` definition:
+WebFetch of the SWAT+ theoretical documentation MUSLE page returned
+"sed is the sediment yield on a given day (metric tons)" and nothing about rainfall energy or
+delivery ratios — so the gitbook page alone would NOT have supported the decisive sentence; the
+2009 PDF does. In-repo corroboration that the SWAT text is the ancestor of our equation:
+`docs/agents/journal_decide-units.md` §1d-§1e already established the chain of custody
+SWAT manual -> Buarque (2015) -> Fagundes (2018) -> this project.
+
+**Arithmetic, all from executed python3.10 this session (A = 257,097 km2):**
+- adopted C total 299.5387 Mt/yr -> 1,165.0805 t/km2/yr = **11.6508 t/ha/yr** (model-internal).
+- Leg A as written (erosion reading): 23.7 / 26.5 vs 11.6508 -> **2.0342x / 2.2745x low**
+  (reproduces docs/37 A1.4 exactly).
+- Leg A under the YIELD reading, Tan's gross erosion converted with NEH Table 6-2's own
+  sheet-erosion delivery ratio 0.33 (= 300,000/900,000 = 0.3333): 7.8210 / 8.7450 t/ha/a, ours
+  11.6508 -> **1.4897x / 1.3323x ABOVE**. With 1/3 exactly: 1.4748x / 1.3190x above. SIGN INVERTS.
+- No-conversion cross-check: Tan et al.'s own reported specific sediment YIELD is 1.3-16.9 t/ha/a
+  and ours (11.6508) is **inside** it.
+- Leg B 1,485/1,445.32 = **1.02745** (the 2.8 % docs/37 already concedes is no longer evidence).
+- Leg C mean 1,165.08/690 = **1.6885x above**; max 1,165.08/2,200 = 0.5296 (**1.8883x** the other
+  way). Model's OWN internal range 1,445.32/77.41 = **18.671x**, so a basin mean below a sub-basin
+  maximum is arithmetic, not evidence.
+- Throughput reading of the retired ratio: prior C 144/248.7298 = 0.57894 and 184/248.7298 =
+  0.73976 -> **26.02-42.11 % lost in transit** (the finding's 26.0-42.1 %). At the ADOPTED C the
+  ratio is 0.48074-0.61428 -> **38.57-51.93 %**, i.e. ABOVE docs/40 C11's 20-45 % Momposina band,
+  so the agreement the finding notes is a prior-C agreement and I will not restate it as current.
+  Decomposed at the adopted C: total transit loss 155.539 (low anchor) / 115.539 (high anchor)
+  Mt/yr; Momposina M9's 36-80 Mt/yr is 12.02-26.71 % of the hillslope yield, leaving
+  **75.54-119.54 Mt/yr (25.2-39.9 %)** resp. **35.54-79.54 Mt/yr (11.9-26.6 %)** for every other
+  sink. Physically open, not physically closed.
+- alpha implied by the yield reading: 11.8/1.4897 = **7.921** and 11.8/1.3323 = **8.857**, which
+  overlaps docs/42 G5's deposition-free fit band **6.83-8.73**. Recorded because it means a fit
+  that "works" under the yield reading is nearly the same fit as one asserting SDR = 1.0.
+- Erosion-reading alpha check: 11.8 x 2.034 = 24.00, 11.8 x 2.275 = 26.84 (docs/37's 24.0-26.8).
+
+**DIRECTION DISCLOSURE.** The yield reading makes the adopted result look BETTER (from 2.03-2.27x
+low to 1.33-1.49x high). I am therefore NOT adopting it as the answer. What the evidence supports
+is that the decisive leg is not like-for-like, so the residual's DIRECTION is unknown; the honest
+verdict for clause 4' is NOT ESTABLISHED, which still forbids closure, rather than MET. The
+counter-argument to the yield reading is recorded in the docs too: MUSLE was fitted to
+small-watershed OUTLET yields and we apply it per 90 m pixel and sum, so a per-pixel sum over
+257,097 km2 is not a basin yield either.
+
+### S7 — docs/40 edited (7 places, all pointing to the same defect)
+
+1. **NEW `## 0` (lines 35-142)**, five sub-sections: §0.1 the SWAT v2009 Ch. 4:1 p. 252 quotes
+   verbatim + the nb18 §1 sentence that already said it; §0.2 what it does to §7 (Leg A's sign
+   inverts to 1.332-1.490x ABOVE via NEH's own 0.33 sheet DR, plus the conversion-free
+   cross-check that ours lands inside Tan's own 1.3-16.9 t/ha/a YIELD range; Leg B already
+   conceded; Leg C's max form invalid because a mean cannot reach a max and our own internal
+   range is 18.671x); §0.3 the conclusion — **direction UNKNOWN, clause 4' NOT ESTABLISHED**,
+   the yield reading explicitly NOT adopted, with its own counter-argument (18-small-watershed
+   fit vs a 30-million-pixel sum) written next to it; §0.4 the throughput reading at BOTH C
+   levels with the honest note that the Momposina agreement is a prior-C agreement.
+2. **Header verdict box** — one AMENDED note so the abstract cannot be quoted without §0.
+3. **§7 preamble** — "all failing in the same direction" marked SUPERSEDED.
+4. **§7 Leg C** — max-yield half WITHDRAWN, with the arithmetic reason.
+5. **§8.2** — the replacement wording marked AMENDED and pointed at clause 4'' in docs/37 A1.9.
+6. **§8.3** — "one closure condition is now evaluable and failed" -> not established.
+7. **§9 C18** (new citation row) + **§10 traps 4 and 5** (quantity-before-comparison; a basin mean
+   can never reach a sub-basin maximum) + **§11** reproduction block extended with every number
+   §0 prints + a provenance paragraph for §0 itself.
+
+### S8 — docs/37 edited (5 places)
+
+1. **A1.1 clause 4'** struck through -> **RE-OPENED**, with the reason and the inverted bracket;
+   **new clause 4''** (quantity-explicit) marked **NOT ESTABLISHED**.
+2. **Under the A1.1 table** — an A1.9 pointer stating that clauses 2 and 3 are now the only ones
+   failing in a KNOWN direction and that either alone still forbids closure.
+3. **A1.4 head** — SUPERSEDED IN PART; its arithmetic stands, its interpretation does not; explicit
+   "1.03-2.27x must not be quoted as a directed result".
+4. **A1.7 item 4** — `src/mgb_sediment.py` added to the 248.730-superseded file list, with the three
+   docstring defects named (20.4 % understated default, retired band as "the published range",
+   false "for exactly this reason") and marked fixed by this pass. **A1.7 item 7 NEW** — nb18/
+   make_nb18.py enumerated with generator line numbers (2366-2368, 2397, 2417, 2430, 2449,
+   2512-2517, 2980) and recorded as NOT FIXED with the reason.
+5. **NEW `AMENDMENT A1.9`** (7 sub-sections, 182 lines): the citation; the both-readings leg table;
+   the verdict + resolver; the C4 consequences incl. the alpha 7.92-8.86 vs G5 6.83-8.73 overlap;
+   the throughput/Momposina hypothesis with its prior-C caveat and its decomposition; a direction
+   disclosure; a reproduction block.
+
+### S9 — src/mgb_sediment.py docstring edited (ONE block, lines 177-198 -> 177-227)
+
+- Convention table: 4 rows -> **5**, each row now carries its `cp_revision`, and the DEFAULT row is
+  **`williams_m3` + `us_customary` @ `cited_central_2026_08_11` = 299.539 Mt/yr, 2.08x / 1.63x
+  ABOVE** (299.5387/144 = 2.0801, /184 = 1.6280 — computed, not copied). The old 248.72 row is kept
+  and relabelled `@ prior_2026_08_11`, and its figure corrected to 248.730.
+- The "a delivery ratio is < 1 so the first three rows are impossible" argument is replaced by the
+  statement that the anchor column is CONTEXT and the conventions were chosen by the unit
+  derivations (SWAT source code, docs/35 §9.2) — which is what actually decided them.
+- The 0.05-0.3 sentence is DELETED as a live claim and replaced by a three-bullet correction: the
+  band is uncited and retired in both directions (do not reinstate); C3 is open on A1.1 clauses 2,
+  3 and 4''; and the "gross erosion" label is itself unresolved, with the SWAT quote and the
+  inverted bracket. The old sentence is quoted inside the correction rather than erased, so the
+  record of what the file used to assert survives.
+- The closing prohibition is kept and strengthened with docs/42 G5 and the 7.92-8.86 / 6.83-8.73
+  overlap. NO CODE CHANGED — docstring only.
+
+### S10 — nb18: NOT edited, with the reason (this is the "unfixable as scoped" entry)
+
+The wrong claim is in *executed* cells (printed strings at make_nb18.py 2397/2417/2430/2449), so a
+correct fix is a generator edit **plus** a full nb18 re-execution. Neither file is named by either
+finding, and the fix_hint for F1 scopes the fix to docs/40 §0 / docs/37 A1.9. Recorded as
+**docs/37 A1.7 item 7** with exact line numbers, and again in A1.9.6, so the next pass can do it in
+one go with the qualification text already written in A1.9.2-A1.9.3. nb18 executes today (its
+outputs are present and were produced by the nb18 agent) — I did not re-run it and did not need to.
+
+### S11 — verification, from executed output only
+
+- `python3.10 -m pytest tests/ -q` -> **94 passed, 2 failed in 8.16 s**. The two failures are
+  verbatim the ones docs/37 A1.7 item 2 pre-registers (`test_audit_unit_day_reproduces_from_the_real_files`,
+  `test_real_geometry_shape_and_ranges`; the second's assert shows the expected
+  `{0.0, 0.005, 0.015, 0.03, 0.2, 0.5}` against the stale `{0.0, 0.001, ...}`), i.e. the stale C
+  assertions from the CSV rewrite, NOT caused by me. Unchanged before and after my edit.
+- Module re-imported: `import OK`, `VOLUME_CONVENTIONS = ('pixel_km2','swat_mm_ha','williams_m3')`,
+  docstring 431 lines, contains `299.539` / `UNCITED and RETIRED` / `docs/40` / `A1.9`.
+- Markdown table integrity checked programmatically (column counts per contiguous block):
+  docs/40 **11 tables, 0 ragged**; docs/37 **18 tables, 0 ragged**.
+- Greps: docs/40 `## 0. AMENDMENT` 1, `sediment yield on a given day` 1, `1.332 - 1.490` 1,
+  `WITHDRAWN` 2, `C18` 3, `18.671` 4. docs/37 `A1.9` 26, `4''` 9, `NOT ESTABLISHED` 7, `1.4897` 3,
+  `src/mgb_sediment.py` 7, `A1.7 item 7` 1. Line counts: docs/40 548 -> **727**, docs/37 737 ->
+  **961**.
+- **Frozen artifacts untouched:** `h2e_drivers.npz` 2026-08-10 13:54, `parameters_H2E.csv` and
+  `q_gauge_H2E.npz` 2026-08-10 14:03 — all yesterday, before this session. Not opened by this run.
+  No simulation re-run; every erosion level in A1.9 is quoted from docs/37 A1.3-A1.4.
+- `git status --porcelain`: the only paths I modified are `docs/37_c3_closure.md`,
+  `docs/40_sdr_evidence.md`, `src/mgb_sediment.py` and this journal. No git add/commit/push. No
+  calibration launched. No `data/` product written. No gauge-referenced t/km2/yr yield quoted — every
+  specific figure in the new text is labelled model-internal or is a published comparator.
+- **Observation, NOT my change (again flagged for the commit agent):** the three
+  `Protocolo_descarga_*.docx` files now show as **staged deletions** (`D `) in git status. I did not
+  read, write, move or delete them. Recorded because run 1 of this journal flagged one of these files
+  changing state without an owner, and now all three are staged for deletion.
+
+## OUTCOME (run 3)
+
+**Finding 1 (clause 4' compares a yield against a gross erosion): FIXED**, as the fix_hint asks and
+not by editing a number.
+- The quantity question is now PINNED with a primary citation I retrieved and text-extracted myself
+  (SWAT v2009 Ch. 4:1 p. 252) rather than accepted from the finding, and the citation's own metadata
+  was read off the PDF's title page so the reference is not invented. It is filed as docs/40 C18 with
+  its retrieval status, and the one half of it that a second source could confirm was confirmed
+  against SWAT+ independently.
+- All three legs are re-derived under BOTH readings at the adopted C. Leg A's sign inverts. Leg C's
+  max-yield form is dropped as arithmetically invalid at basin scale. Leg B was already conceded.
+- Clause 4' is re-opened as clause 4'' and reported **NOT ESTABLISHED**; the residual is reported
+  **sign-unknown** (2.27x low ... 1.49x high) in docs/40 §0.3, docs/37 A1.1 and A1.9.3.
+- C3's verdict is **unchanged: OPEN**, now on clauses 2, 3 and 4''. I did not manufacture a flip and
+  did not let the better-looking reading close anything.
+- The 0.579-0.740 throughput reading is re-examined with numbers at both C levels, and the
+  Momposina agreement is reported as a **prior-C** agreement with the residual-sink decomposition
+  that the adopted C requires — not restated as current.
+- The C4 prohibition the fix_hint asks for is written in docs/40 §0.3, docs/37 A1.9.4 item 1 and the
+  engine docstring: **no alpha fit against clause 4' or 4''**, with the measured G5 overlap
+  (7.92-8.86 vs 6.83-8.73) as the reason it would be undetectable otherwise.
+
+**Finding 2 (engine docstring carries the retired band as live fact): FIXED**, all three defects, in
+the one block, plus the A1.7 omission recorded in docs/37 rather than silently repaired.
+
+**DIRECTION DISCIPLINE.** The single change available to this run that would have made the adopted
+result look better — adopting the yield reading — is the one thing I refused to do. No parameter, no
+convention, no `cp_revision`, no threshold and no registered number moved. What moved is one label
+(which quantity a sum is) and the status of one clause, from a fail with a direction to a
+**cannot-be-evaluated**, which is worse to work with and is what the evidence supports.
+
+**KNOWN REMAINING GAPS, disclosed rather than fixed:**
+1. `notebooks/18_musle_construction.ipynb` + `src/nbgen/make_nb18.py` — docs/37 A1.7 item 7 above.
+2. NEH Table 6-2's 0.33 is a US agricultural sheet-erosion delivery ratio used to establish the
+   DIRECTION of the conversion, not a validated conversion for a tropical Andean basin. Stated as
+   such in both documents; the resolver (docs/37 A1.9.3) asks for a cited one if reading A is kept.
+3. `docs/00_INDEX.md`, `docs/PROGRESS.md` and `progress_map.html` still carry clause 4' as
+   "NOT MET - under-erosive". Not named by either finding; not edited.
+4. `tests/test_sediment.py` still 2 failed (docs/37 A1.7 item 2). Pre-existing, not in scope.
