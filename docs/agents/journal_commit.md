@@ -673,3 +673,163 @@ magdalena-mgb-sed.git). Fast-forward. No `--force`, no `--no-verify`.
    uncommitted.
 
 CHECKLIST (run 3): [x]0 [x]1 [x]2 [x]3 [x]4 [x]5 [x]6 [x]7 [x]8 [x]9 [x]10 [x]11. TASK COMPLETE.
+
+---
+
+# RUN 4 (2026-08-11) — the backlog run
+
+GOAL: commit EVERYTHING outstanding and push. Two earlier commit agents died on API errors;
+their work is partly in (run 3 landed 083f8a2..1f131d7) and partly still loose. Plus this
+run's docs/40, 41, 42, docs/37 amendment, notebooks 15-18 + generators, fixer, tracker,
+journals.
+
+## Hard constraints (from my task)
+- explicit paths ONLY, never `git add -A` / `git add .` (incident 53c3044); never --no-verify
+- NEVER stage: `data/`, `*.pptx`, `figures/deck/`, `cds_keys.txt`, `.claude/settings.json`
+- frozen read-only: `sim_calibrated_v2/{h2e_drivers.npz, parameters_H2E.csv, q_gauge_H2E.npz}`
+- after each commit `git show --stat HEAD`; STOP if any commit exceeds ~45 files
+- commit order: (1) inherited C3 gap-closure, (2) inherited hygiene, (3) docs/40+41+42,
+  (4) docs/37 amendment, (5) notebooks 15-18 + generators, (6) fixer, (7) tracker, (8) journals
+
+## Checklist (run 4)
+- [ ] 0. journal section opened
+- [ ] 1. survey: full `git status -s -uall`, reconcile against the task's inherited list
+- [ ] 2. verify frozen artifacts untouched (size + mtime)
+- [ ] 3. verify ignore rules for every never-stage path (`git check-ignore -v`)
+- [ ] 4. per-area completion check (each journal's own verdict) + test suite state
+- [ ] 5. commit plan with explicit paths, every tracked/untracked path accounted for
+- [ ] 6. commit group 1 (C3 gap-closure remainder, if any)
+- [ ] 7. commit group 2 (hygiene: 38 + 00_INDEX + pointers + .gitignore + removals)
+- [ ] 8. commit group 3 (docs/40 + 41 + 42)
+- [ ] 9. commit group 4 (docs/37 amendment)
+- [ ] 10. commit group 5 (notebooks 15-18 + generators)
+- [ ] 11. commit group 6 (fixer)
+- [ ] 12. commit group 7 (tracker)
+- [ ] 13. commit group 8 (journals)
+- [ ] 14. pre-push verification, then `git push origin main`
+- [ ] 15. post-push: `git log --oneline -14`, `git status --short`, rev-list vs remote
+
+## Step 0 — survey, reconciled against the task's inherited list
+
+`git status -s -uall` returns 52 lines. Reconciliation of the task's "inherited" list against
+what git actually says (the task told me to verify, not assume):
+
+INHERITED C3 GAP-CLOSURE — **already committed by run 3**, contrary to the task's premise:
+- `src/mgb_sediment.py` unit/K-unit corrections + tests -> `8807951` (96 tests)
+- `scripts/c3/` evidence runs -> `083f8a2`
+- docs/35 amendment + docs/37 -> `9880d38`
+- docs/39 + journal_fixer -> `6e1d24a`; progress_map -> `1a6fd79`; journals -> `d6a3d30`,`1f131d7`
+  So group 1 is EMPTY except for what the LATER (reverdict/fixer/tracker) runs re-modified.
+  `src/mgb_sediment.py` is modified AGAIN (docstring-only, +53/-22) and `progress_map.html`,
+  `journal_fixer.md`, `journal_tracker.md`, `docs/37_c3_closure.md` all changed again.
+
+STILL LOOSE (52 paths): .gitignore, CLAUDE.md, 3 staged .docx deletions, 14 modified docs,
+docs/37, docs/PROGRESS, progress_journal, open_questions, era5_download_checklist,
+progress_map.html, src/mgb_sediment.py, + untracked docs/00_INDEX, 38, 40, 41, 42,
+12 journals, notebooks 15-18, src/nbgen/make_nb15-18.py.
+
+NOT PRESENT in git status, though the task named them: `docs/39` (committed), `scripts/c3/`
+(committed), `tests/` (committed), `urh_cp_factors.csv` (lives under `data/` = gitignored —
+checked below), the 2 remaining `.docx` + 1 `.pptx` (checked below).
+
+## Step 1-4 — verifications, all from executed output
+
+**Frozen artifacts UNTOUCHED** (they live under `data/processed/`, not `sim_calibrated_v2/` at
+the repo root — the task's paths are relative to `data/processed/`):
+- `data/processed/sim_calibrated_v2/h2e_drivers.npz` 546,366,478 B @ 2026-08-10 13:54
+  (byte-identical size and mtime to run 3's record)
+- `.../parameters_H2E.csv` 1,278 B @ 2026-08-10 14:03
+- `.../q_gauge_H2E.npz` 3,017,869 B @ 2026-08-10 14:03
+`git status --short data/processed/sim_calibrated_v2/` -> empty (whole tree is gitignored).
+
+**Never-stage paths, verified with `git check-ignore -v`:**
+- `data/processed/urh_cp_factors.csv` -> `.gitignore:3:data/processed/*` IGNORED
+- `cds_keys.txt` -> `.gitignore:36` IGNORED
+- `figures/deck` -> `.gitignore:43` IGNORED
+- `*.pptx` -> `.gitignore:44`; `git ls-files | grep -Ei '\.(docx|pptx)$'` -> EMPTY, and
+  `ls *.docx *.pptx` -> no such file, so nothing survives to stage
+- `.claude/settings.json` -> **NOT ignored**, and it IS tracked (`git ls-files .claude/`), but it
+  is clean (absent from `git status`), so there is nothing to stage. It appears in no pathspec.
+
+**.docx / .pptx removals.** Task said five .docx + one .pptx. `journal_hygiene.md` (lines 175-177)
+records that only THREE of the five .docx were ever tracked; the other two, the .pdf and the .pptx
+were already gitignored, so their removal is a plain `rm` with no history to record. The three
+tracked deletions are already staged in the index (`git diff --cached --stat`: IDEAM_Magdalena
+12,135 -> 0, PRECIPITACION 11,636 -> 0, SEDIMENTOS 11,342 -> 0). I keep them and commit them in
+group 2 alongside the `.gitignore` patterns that stop them coming back.
+
+**Per-area completion, from each journal's own closing verdict** (14 journals tailed):
+hygiene, hygiene-critic, consolidate, cite-sdr, cite-cfactor, alpha-guard, reverdict, nb15, nb16,
+nb17, nb18, fixer, tracker, critic — all closed DONE with an explicit file list, and every one
+states it ran no git command. **No area reported a failure, so no `git checkout --` restore is
+warranted.** `src/mgb_sediment.py` is modified by a COMPLETED area (reverdict: "Files touched:
+src/mgb_sediment.py, docs/37_c3_closure.md (append only), docs/00_INDEX.md, this journal"), and
+its diff is +53/-22 **docstring only** — the convention/`cp_revision` table and the deleted
+SDR-band paragraph. No executable line changes. Committed, not restored.
+
+**Test suite state, run before I stage anything** (`python3.10 -m pytest tests/ -q`):
+`2 failed, 94 passed in 8.32s`. Both failures are the KNOWN, pre-existing, out-of-scope ones
+(run 3 handback item 1; `journal_fixer.md` gap 4): `test_real_geometry_shape_and_ranges` sees
+C values {0.015, 0.03, 0.5} that its literal set does not list, and
+`test_audit_unit_day_reproduces_from_the_real_files` follows. Root cause is the revised C-factor
+table in the **gitignored** `data/processed/urh_cp_factors.csv`, not any file I am committing —
+and `tests/` is not in my mandate, so I do not touch it. **Recorded so the red suite is not
+mistaken for something this commit run introduced.**
+
+## Step 5 — COMMIT PLAN (explicit paths only; `git add -A`/`.` never used)
+
+Every one of the 52 paths in `git status -s -uall` is assigned to exactly one commit; the counts
+below sum to 52, which is my completeness check.
+
+| # | group | paths | n |
+|---|-------|-------|---|
+| 1 | inherited C3 gap-closure | **NO COMMIT** — landed in run 3 (`083f8a2`, `8807951`, `9880d38`, `6e1d24a`) | 0 |
+| 2 | inherited hygiene | `.gitignore`, `CLAUDE.md`, `docs/00_INDEX.md`, `docs/38_*`, 16 status-banner docs, 3 `.docx` deletions | 23 |
+| 3 | evidence | `docs/40_sdr_evidence.md`, `docs/41_cfactor_evidence.md`, `docs/42_c4_guards.md` | 3 |
+| 4 | verdict | `docs/37_c3_closure.md` (append-only, +675/-0, starts at `# AMENDMENT A1`) | 1 |
+| 5 | notebooks | `notebooks/15..18*.ipynb` + `src/nbgen/make_nb15..18.py` | 8 |
+| 6 | fixer | `src/mgb_sediment.py` (docstring only) | 1 |
+| 7 | tracker | `progress_map.html` (+197/-42) | 1 |
+| 8 | journals | 12 new + 3 modified (`critic`, `fixer`, `tracker`) under `docs/agents/` | 15 |
+
+The 16 status-banner docs are all **+2/-0** each (24 insertions total, verified by `--numstat`):
+02, 03, 05, 08, 09, 11, 12, 13, 14, 21, 22, 25, `era5_download_checklist`, `PROGRESS`,
+`open_questions`, `progress_journal`.
+
+ORDERING DEVIATION, declared: `docs/00_INDEX.md` sits in group 2 as the task assigns, but it
+forward-references `docs/37`'s `AMENDMENT A1` (line 115) which only lands in group 4, two commits
+later. I keep the assigned grouping because the INDEX is a map, not a verdict — it cites nothing
+as evidence for a claim of its own — and because splitting one untracked file across two commits
+is impossible. The evidence-before-verdict rule is honoured where it bites: groups 3 (docs/40-42)
+precede group 4 (the amendment that cites them) and group 6 (the docstring that cites docs/40).
+
+## Steps 6-12 — seven content commits, each verified from `git show --stat HEAD`
+
+| group | sha | files | shortstat |
+|-------|-----|------:|-----------|
+| 1 C3 gap-closure | — | 0 | NO COMMIT: already in `083f8a2`/`8807951`/`9880d38`/`6e1d24a` |
+| 2 hygiene | `b06d6e3` | 23 | +577, 3 `delete mode 100644` (the .docx), 2 `create mode` (00_INDEX, 38) |
+| 3 evidence | `4366c1f` | 3 | +1803 (40: 727, 41: 464, 42: 612) |
+| 4 verdict | `15948bd` | 1 | +675/-0 (append-only confirmed by the numstat) |
+| 5 notebooks | `345299a` | 8 | +31661 (4 nbs 4827/4403/5167/4810, 4 gens 3224/2746/3408/3076) |
+| 6 fixer | `4e49168` | 1 | +53/-22, docstring only |
+| 7 tracker | `92cf372` | 1 | +197/-42 |
+
+No commit exceeded 45 files (largest 23). Sum of committed files = 37; +15 area journals = 52,
+which closes the ledger against the 52 lines of the baseline `git status -s -uall`.
+
+## Step 6a — a WRONG SENTENCE I committed, and how I handled it
+
+Commit `4e49168`'s message repeated `journal_fixer.md` gap 3 verbatim: "docs/00_INDEX.md,
+docs/PROGRESS.md and progress_map.html still carry clause 4' as NOT MET - under-erosive". I then
+grep-checked it and it is **only one-third true**:
+- `progress_map.html`: 11 x "NOT ESTABLISHED", 20 x "A1.9" -> the tracker run (which ran AFTER the
+  fixer) already fixed it. Gap is STALE for this file.
+- `docs/PROGRESS.md`: 0 hits for "clause 4", "delivery ratio", "0.05" -> it makes no clause-4
+  statement at all. Gap is MOOT for this file.
+- `docs/00_INDEX.md` line 154: genuinely stale — the WHERE-IS-IT answer still ends "it is failed -
+  the model is under-erosive by 1.03-2.27x", which A1.9 superseded.
+I did NOT amend (the sequence is cleaner to audit with the error visible). The correction is written
+into the NEXT commit's message (`92cf372`, final paragraph) and is handed back in my output. The
+lesson for the next agent: an inherited journal's "known gaps" list is a snapshot, and a later area
+may have closed one — re-grep before repeating it.
