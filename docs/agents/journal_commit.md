@@ -171,3 +171,16 @@ ISSUES for the parent (not fixed by me — I do not move other agents' files):
 
 This journal is committed once more, immediately after this line, so the working tree ends
 clean; a second `git push origin main` follows it.
+
+### Step 12b — post-push verification (read-only)
+`git push origin main` (second, journal-only) -> `caecfa0..3991c02`. Final
+`git status --short` is EMPTY; `git status -sb` -> `## main...origin/main` (no divergence).
+`git diff --name-only 74883cd..HEAD` = 22 paths, all of them docs/, scripts/, src/,
+progress_map.html — grep for `^data/|\.pptx$|^figures/|Protocolo|\.claude/` returns nothing,
+so the never-stage list held across all nine commits. (Those files ARE tracked in the repo
+from earlier history; none was touched here.)
+docs/33 in HEAD: 935 lines, 8 top-level sections (§0-§7) — the three-part landing reassembled
+the complete document exactly.
+H2E-S queue untouched and still alive after all git work: runner 23840 + workers 29064/28648
+(≈467 MB each) still in `tasklist` for python3.10.exe.
+TASK COMPLETE.
