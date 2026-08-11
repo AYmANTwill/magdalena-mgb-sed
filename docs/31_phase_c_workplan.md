@@ -1,5 +1,9 @@
 # 31 — Phase C work breakdown: every stage, every subtask
 
+> **Numbering corrected 2026-08-10:** 33 = C2b pre-registration · 34 = C2 observed
+> contrast · 35 = C4 sediment calibration · 36 = C5 results. Earlier text pointed the
+> C2 contrast at 33, which C2b took first.
+
 Written 2026-08-10. This is the **execution-level** companion to `docs/30_phase_c_plan.md`
 (which records the scope decision and the stage logic). Docs/30 says *what and why*; this
 document says *exactly what to do, with what inputs, to what gate*. A session should be
@@ -208,7 +212,7 @@ Goal: the target table C5 must reproduce — publishable on its own.
 - Two flux estimators, both reported: (a) sample-day flux mean (only for stations
   passing C1.2 unbiased), (b) rating-curve flux on all days (per-era fits from C1.5),
   with uncertainty from residual σ.
-- **Out:** the registration block at the top of `docs/33_observed_enso_contrast.md`.
+- **Out:** the registration block at the top of `docs/34_observed_enso_contrast.md`.
 
 ### C2.2 Compute
 - Per usable station: mean daily flux (t/day), monthly shape, and the wet:dry ratio

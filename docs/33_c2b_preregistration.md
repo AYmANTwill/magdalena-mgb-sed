@@ -97,6 +97,12 @@ session **may not** substitute them for the gate in either direction.
 
 ### H-CHIRPS — refitting the quantile maps on the repaired series fixes the volume failure
 
+> **[resolved 2026-08-10 — see §7]** H-CHIRPS is **REFUTED by its own volume gate**
+> (2,188.5 mm/yr against the required [2,016.0, 2,056.8]). The registered intervention
+> turned out to be a **no-op**: the quantile maps already included the inferred-dry days,
+> so the diagnosed cause in docs/18 §15.3 was wrong. This paragraph is a pointer, not an
+> edit to the frozen hypothesis — the original wording above is unchanged.
+
 > Refitting the CHIRPS-gauge quantile maps on the **repaired** precipitation series —
 > `precip_gauges_daily_qc.csv` with `approval == 'Inferido_seco'` days included, so the
 > maps are no longer conditioned on reporting days only — brings the areal volume inside
