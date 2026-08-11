@@ -184,3 +184,261 @@ the complete document exactly.
 H2E-S queue untouched and still alive after all git work: runner 23840 + workers 29064/28648
 (≈467 MB each) still in `tasklist` for python3.10.exe.
 TASK COMPLETE.
+
+
+---
+
+# RUN 2 (2026-08-11) — the C3 build: LS2D, C/P, q_peak, MUSLE engine, first run, research, docs/36
+
+# Journal — commit agent (SLUG: commit)
+
+GOAL: land this run (C3.1 LS2D, C3.2 C/P, C3.3 qpeak, C3.4 engine, C3.6 first run,
+peak-deficit research, docs/36 synthesis, fixer, tracker) as clean separated commits in the
+pre-registered order, then push to origin main.
+
+## Hard constraints I am operating under
+- Explicit paths only. NEVER `git add -A` / `git add .` (incident 53c3044). NEVER `--no-verify`.
+- Never stage: `data/**` (gitignored), `figures/deck/**` (gitignored), `*.pptx`,
+  `Protocolo_descarga_PRECIPITACION.docx`, `.claude/settings.json`.
+- Frozen artifact `data/processed/sim_calibrated_v2/h2e_drivers.npz` must be untouched.
+- Commit order: docs/35 (qpeak pre-registration) FIRST, then ls2d, cp, engine, first run,
+  research findings, synthesis (docs/36), fixer, tracker.
+- After every commit: `git show --stat HEAD`, journal the file list, stop if >40 files.
+- Verify from executed outputs, never exit codes.
+
+## Step checklist
+- [x] 1. Journal created; `git status --short` captured (baseline).
+- [ ] 2. Verify frozen artifacts untouched (npz mtime/size; no data/ path staged ever).
+- [ ] 3. Read each area's journal to confirm completed=true; note any failures.
+- [ ] 4. Confirm which listed files actually exist / are gitignored.
+- [ ] 5. Commit 1 — docs/35 qpeak pre-registration + all docs/agents journals.
+- [ ] 6. Commit 2 — ls2d (scripts/c3/ls2d.py).
+- [ ] 7. Commit 3 — cp (nothing trackable? verify) .
+- [ ] 8. Commit 4 — qpeak code + tests.
+- [ ] 9. Commit 5 — engine + tests.
+- [ ] 10. Commit 6 — first run (figures gitignored -> likely journal only, already in c1).
+- [ ] 11. Commit 7 — research findings (data/ gitignored -> flag in issues).
+- [ ] 12. Commit 8 — synthesis docs/36.
+- [ ] 13. Commit 9 — fixer (src/mgb_sediment.py + docs/35 amendment; folded if same file).
+- [ ] 14. Commit 10 — tracker (progress_map.html).
+- [ ] 15. `git push origin main`; capture `git log --oneline -12` + `git status --short`.
+
+---
+
+## Step 1 — baseline `git status --short` (verbatim)
+
+```
+ M docs/agents/journal_critic.md
+ M docs/agents/journal_tracker.md
+ M progress_map.html
+?? docs/35_qpeak_preregistration.md
+?? docs/36_peak_deficit_options.md
+?? docs/agents/journal_c31-ls2d.md
+?? docs/agents/journal_c32-cp.md
+?? docs/agents/journal_c33-qpeak.md
+?? docs/agents/journal_c34-sediment-engine.md
+?? docs/agents/journal_c36-first-run.md
+?? docs/agents/journal_fixer.md
+?? docs/agents/journal_research-data.md
+?? docs/agents/journal_research-diagnose.md
+?? docs/agents/journal_research-method.md
+?? docs/agents/journal_research-synthesis.md
+?? scripts/c3/
+?? src/mgb_sediment.py
+?? tests/test_qpeak.py
+?? tests/test_sediment.py
+```
+
+Branch `main`, HEAD `3eec668 results: H2E-S rejected on 2 of 3 conditions — the peak deficit is structural`.
+
+NOTE: the session-start snapshot showed ` M Protocolo_descarga_PRECIPITACION.docx`; it is NOT
+in the current status. Either it was reverted by another agent or Word rewrote it identically.
+Either way it is on the never-stage list — no action.
+
+NOTE: `docs/agents/journal_critic.md` is modified but is not in my named file list. It is an
+agent journal (journal protocol: never delete), and my instructions say to commit
+`docs/agents/` journals with the first commit. Decision recorded in step 3.
+
+## Step 2 — frozen artifacts: UNTOUCHED (verified)
+
+`data/processed/sim_calibrated_v2/h2e_drivers.npz` — 546,366,478 bytes (521 MiB),
+mtime **2026-08-10 13:54**, i.e. yesterday: no agent in this run rewrote it. It is also under
+`data/processed/*` which `.gitignore:3` ignores, so it is structurally unstageable.
+`git check-ignore -v` confirms every data artifact named in my task is ignored:
+`data/processed/{minibacia_ls2d.csv,urh_ls2d.csv,urh_cp_factors.csv,peakgap/events.csv}` ->
+`.gitignore:3:data/processed/*`; `figures/deck/gen_ls2d.png` -> `.gitignore:43:figures/deck/`.
+`scripts/c3/__pycache__/*.pyc` -> `.gitignore:23:__pycache__/`.
+`Protocolo_descarga_PRECIPITACION.docx` is NOT ignored, but it is clean against HEAD now, so
+there is nothing to stage or exclude. (journal_fixer.md §"Observation" flags the same
+disappearance; neither of us touched it.)
+
+## Step 3 — completion check, per area (read from each journal's own verdict)
+
+| area | journal verdict | trackable files? |
+|---|---|---|
+| ls2d (C3.1) | 4/4 gates reported PASS/stated; cross-checks run | YES `scripts/c3/ls2d.py` |
+| cp (C3.2) | all 6 steps `[x]`; both scales reported | **NO** — output is `data/processed/urh_cp_factors.csv` (gitignored) |
+| qpeak (C3.3) | "30 passed in 0.30s", "46 passed in 1.36s"; docs/35 written before code | YES docs/35, `scripts/c3/qpeak.py`, `tests/test_qpeak.py` |
+| research-diagnose | "All checklist items closed" | **NO** — all findings under `data/processed/peakgap/` (gitignored) |
+| research-data | "S7 DONE"; 9 candidates adjudicated | **NO** — findings file under `data/processed/peakgap/` |
+| research-method | "DONE"; findings file written | **NO** — findings file under `data/processed/peakgap/` |
+| engine (C3.4) | "STATUS: C3.4 COMPLETE", 82 passed | YES `src/mgb_sediment.py`, `tests/test_sediment.py` |
+| first run (C3.6) | "STATUS: C3.6 COMPLETE", 4 gates with numbers | **NO** — both PNGs under `figures/deck/` (gitignored) |
+| synthesis | done; 6 propagated corrections listed | YES `docs/36_peak_deficit_options.md` |
+| fixer | "Finding 1 of 1: FIXED", 36 passed post-edit | folded (see below) |
+| tracker | "DONE (run 2)"; NODE_CHECK_OK, 41==41==41 | YES `progress_map.html` |
+
+No area reported a failure, so no `git checkout --` restore is needed. Nothing in `src/` is
+modified-but-broken: the only `src/` entry is the NEW `src/mgb_sediment.py`.
+
+FIXER CANNOT BE A SEPARATE COMMIT — recorded, not worked around. The fixer edited
+`src/mgb_sediment.py` and `docs/35_qpeak_preregistration.md`, both of which were created
+**earlier in this same uncommitted working tree**. Only the post-fix bytes exist on disk; the
+pre-fix bytes were never committed and are unrecoverable. Fabricating a pre-fix blob to
+manufacture a two-commit history would be inventing a state that never existed in git. So the
+fixer's changes land inside the docs/35 commit and the engine commit, and each commit body
+says so explicitly. Flagged to the parent.
+
+EXTRA FILE, decided: `docs/agents/journal_critic.md` is ` M` (+159 lines, a run-2 review) and is
+not in my named list. My instructions say to commit `docs/agents/` journals with the first
+commit, and the journal protocol says a journal is never destroyed. Committing it. Flagged.
+
+## Step 4 — pre-commit verification from EXECUTED OUTPUT
+
+`python3.10 -m pytest tests/ -q` -> **`82 passed in 6.60s`** (not an exit code: the count is
+the engine journal's 82 and the qpeak journal's 30+16). No active git hooks
+(`.git/hooks` has only `*.sample`, no `.pre-commit-config.yaml`), so nothing to bypass and
+`--no-verify` is never needed.
+Line counts of what ships: docs/35 542, docs/36 792, `src/mgb_sediment.py` 1134,
+`tests/test_sediment.py` 555, `tests/test_qpeak.py` 260, `scripts/c3/ls2d.py` 704,
+`scripts/c3/qpeak.py` 367.
+
+## Step 5 — COMMIT PLAN (explicit paths only; `git add -A` never used)
+
+1. docs/35 + all 12 `docs/agents/*.md` journals  (pre-registration lands FIRST)
+2. `scripts/c3/ls2d.py`
+3. cp — **no commit possible** (output gitignored); journal carries the 8 values verbatim
+4. `scripts/c3/qpeak.py` + `tests/test_qpeak.py`  (before the engine that imports it)
+5. `src/mgb_sediment.py` + `tests/test_sediment.py`  (includes the fixer's edit)
+6. first run — **no commit possible** (both figures gitignored)
+7. research findings — **no commit possible** (all four artifacts + 2 prose findings gitignored)
+8. `docs/36_peak_deficit_options.md`
+9. fixer — folded into 1 and 5
+10. `progress_map.html`
+11. `docs/agents/journal_commit.md` (this file)
+
+## Step 6 — COMMIT 1 (docs/35 + journals): `21fe174`
+
+`git show --stat HEAD` -> **13 files changed, 2196 insertions(+)**, all creates except the two
+appends (journal_critic.md +159, journal_tracker.md +87):
+docs/35_qpeak_preregistration.md 542 · journal_c31-ls2d 139 · journal_c32-cp 158 ·
+journal_c33-qpeak 152 · journal_c34-sediment-engine 121 · journal_c36-first-run 160 ·
+journal_critic 159 · journal_fixer 146 · journal_research-data 183 ·
+journal_research-diagnose 93 · journal_research-method 136 · journal_research-synthesis 120 ·
+journal_tracker 87. 13 <= 40 -> continue. No `data/`, no `figures/`, no `.docx`, no
+`.claude/settings.json` in the tree (verified with `git diff --cached --name-only` BEFORE
+committing, not after).
+
+## Step 7 — COMMIT 2 (ls2d): `5eaabf5`
+
+`git show --stat HEAD` -> **1 file changed, 704 insertions(+)**: `scripts/c3/ls2d.py` (create).
+1 <= 40 -> continue. The three LS2D data products and the figure are gitignored, so this
+script is the only versioned record of how they were built — stated in the commit body.
+
+## Step 8 — cp (C3.2): NO COMMIT MADE, deliberately
+
+Every artifact the C/P agent produced is `data/processed/urh_cp_factors.csv`, which
+`.gitignore:3` ignores. I did not copy it into a tracked path: my instructions restrict me to
+the files my task names, and the task tells me to flag this instead. It is flagged in my
+structured output as a PROVENANCE RISK, and it is the more serious kind — unlike the LS2D
+CSVs this table is **hand-curated literature values (Roose 1977 / Wischmeier & Smith), not a
+regenerable model output**, and its writer lived only in a session scratchpad. The eight
+values and their sources are reproduced verbatim in `docs/agents/journal_c32-cp.md`
+(committed in commit 1), so the table is rebuildable from git — but by transcription, not by
+re-running anything. Precedent for the fix: commit `92f6e14` moved the C2b measurement code
+out of gitignored `data/processed/c2b/` into `scripts/c2b/` for exactly this reason.
+
+## Step 9 — COMMIT 3 (qpeak impl): `a230428`
+
+`git show --stat HEAD` -> **2 files changed, 627 insertions(+)**: `scripts/c3/qpeak.py` 367
+(create), `tests/test_qpeak.py` 260 (create). 2 <= 40 -> continue.
+Placed AFTER commit 1 (docs/35) and BEFORE the engine commit, so the history reads
+pre-registration -> proxy code -> consumer, which is also the import direction.
+
+## Step 10 — COMMIT 4 (engine): `56dc565`
+
+`git show --stat HEAD` -> **2 files changed, 1689 insertions(+)**: `src/mgb_sediment.py` 1134
+(create), `tests/test_sediment.py` 555 (create). 2 <= 40 -> continue.
+Body carries the numbers that matter: 0.6844 Mt/yr vs the 144-184 Mt/yr anchors (210x-269x low,
+in the physically impossible direction), alpha ~ 2480 needed = 70x past the hard stop, ENSO
+2.83x fleet / 3.11x per-minibacia median / 98.93 % of minibacias wet>dry / 12 of 12 months.
+The fixer's `VOLUME_CONVENTIONS` correction is inside this commit and the body says so.
+
+## Step 11 — first run (C3.6): NO COMMIT MADE
+
+`figures/deck/gen_c36_erosion_map.png` and `gen_c36_seasonal_cycle.png` are both under
+`.gitignore:43:figures/deck/` (regenerable per CLAUDE.md). The C3.6 gate verdicts, the
+four gate numbers and the ENSO split at both scales are in
+`docs/agents/journal_c36-first-run.md`, committed in commit 1. HOWEVER — the critic's own
+warning applies and I am repeating it rather than burying it: **nothing in the repo re-runs
+C3.6.** The figures are called regenerable but the script that made them is not in the
+tree, so "regenerable" is currently a claim about a scratchpad, not about git.
+
+## Step 12 — research findings (3 lenses): NO COMMIT MADE
+
+All six artifacts live under `data/processed/peakgap/` -> `.gitignore:3`:
+`events.csv`, `per_gauge.csv`, `match_sensitivity.csv`, `summary.json` (the POT diagnosis),
+plus `subdaily_data_inventory.md` and `method_research.md`. The two `.md` files are PROSE
+FINDINGS, not data: an adjudicated 9-candidate sub-daily inventory (each verdict backed by an
+opened file or a live-exercised API route, including the live-verified IDEAM 10-min network)
+and a literature/method review with DOIs. Per my instructions I did not move them; both are
+flagged in my structured output as belonging in `docs/`. Their measurement scripts
+(`peakgap.py`, `peakgap_fig.py`) live only in the session scratchpad and are therefore not in
+git at all — the same defect commit `92f6e14` already had to repair once for C2b.
+
+## Step 13 — COMMIT 5 (synthesis docs/36): `fa8a6e9`
+
+`git show --stat HEAD` -> **1 file changed, 792 insertions(+)**:
+`docs/36_peak_deficit_options.md` (create). 1 <= 40 -> continue.
+The commit body leads with the correction (43 % is a COUNT deficit; the event-identity deficit
+is 81.8 % / 68.3 %) and with the per-unit fact the fleet median hid (8 of 63 gauges miss 100 %
+of their POT, 4 simulate none), because those two propagate into docs/31, 33 and 35.
+
+## Step 14 — COMMIT 6 (tracker): staging `progress_map.html`
+
+Independent check before staging (I do not take the tracker's word for self-containment, since
+this file is the one artifact a human opens in a browser): `grep -c "https\?://"` -> **0**;
+`grep -o -i "cdn|unpkg|jsdelivr|googleapis|@import|fetch("` -> **no matches**. So the page is
+self-contained. `wc -c` -> **112,237 bytes**, against the tracker journal's "111,451-byte
+file" — a 786-byte discrepancy I did not chase; most likely CRLF accounting (git warns
+"CRLF will be replaced by LF" on this path) or a measurement taken one edit early. Recorded,
+not swept under the rug. Diff is +180/-38 lines.
+
+## Step 15 — MY OWN INCIDENT, self-reported: I overwrote run 1's journal, then restored it
+
+`docs/agents/journal_commit.md` was ALREADY TRACKED (186 lines, committed by the run-1 commit
+agent as `6379345 ops: commit-agent journal — post-push verification`). My first action this
+run was a `Write` to that path, which **destroyed run 1's record** — a direct violation of the
+journal protocol's "Never delete it". I did not notice until `git status --short` showed the
+path as ` M` (modified) rather than `??` (untracked), after commit 6.
+
+Why it was harmless in the end: journal_commit.md was NOT in any of my six commits (commit 1
+staged the twelve OTHER journals by explicit path, and explicit paths are exactly why the
+damage stayed in the working tree), so run 1's bytes were still in HEAD and nothing wrong was
+ever pushed. Repair: `git show HEAD:docs/agents/journal_commit.md` restored to the top of the
+file, my run-2 record appended below a `RUN 2` header. Verified, not assumed:
+`git show HEAD:... | diff - <(head -186 ...)` -> **empty, RUN1_BYTE_IDENTICAL_TO_HEAD**.
+File is now 415 lines = 186 (run 1, untouched) + 6 (separator) + 223 (run 2).
+
+LESSON for the next commit agent, since this is the second run in a row where a file's
+tracked-vs-untracked state mattered: read `git status --short` BEFORE the first `Write`, and
+`git show HEAD:<path> | wc -l` on your own journal path. A journal filename existing is not
+evidence that it is yours — "a filename count is not a file check" applies to your own file too.
+
+## Step 16 — final `git status --short` before the push (risky operation)
+
+Working tree carries exactly one path: ` M docs/agents/journal_commit.md` (this file), which
+is commit 7. `data/` untouched and unstageable; frozen `h2e_drivers.npz` still 546,366,478
+bytes / mtime 2026-08-10 13:54 (yesterday). Six content commits `21fe174 5eaabf5 a230428
+56dc565 fa8a6e9 2296988`, largest 13 files, total 21 files across the run — no commit came
+near the 40-file stop.
