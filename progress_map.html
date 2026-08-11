@@ -169,7 +169,7 @@ bfi:`<svg viewBox="0 0 560 210" role="img" aria-label="Baseflow separation split
  L540,165 C450,152 360,148 280,150 C200,152 120,158 40,160 Z" fill="#2ecc71" opacity=".22"/>
 <text x="180" y="88" fill="#2ecc71" font-size="11">QUICKFLOW — drives erosion (MUSLE)</text>
 <text x="150" y="168" fill="#8ea3bf" font-size="10.5">baseflow — carries almost no sediment</text>
-<text x="0" y="200" fill="#8ea3bf" font-size="10.5">BFI = baseflow volume ÷ total volume. Our model says 19.5 % — nobody has ever checked it against this curve.</text>
+<text x="0" y="200" fill="#8ea3bf" font-size="10.5">BFI = baseflow volume ÷ total volume. C2b.1 MEASURED it: observed 0.781 vs simulated 0.797 — inside the gate. (The model's 19.5 % internal baseflow store is a different quantity.)</text>
 </svg>`,
 
 alpha:`<svg viewBox="0 0 560 200" role="img" aria-label="Alpha below 1 means simulated peaks are too low">
@@ -186,7 +186,7 @@ alpha:`<svg viewBox="0 0 560 200" role="img" aria-label="Alpha below 1 means sim
 <text x="358" y="186" fill="#8ea3bf">observed</text>
 <line x1="430" y1="182" x2="452" y2="182" stroke="#f5b942" stroke-width="2" stroke-dasharray="5 3"/>
 <text x="458" y="186" fill="#8ea3bf">simulated</text></g>
-<text x="0" y="186" fill="#8ea3bf" font-size="10.5">MUSLE multiplies by q_peak — so a 10 % peak deficit propagates straight into the sediment estimate.</text>
+<text x="0" y="186" fill="#8ea3bf" font-size="10.5">MEASURED in C2b.2: peaks run 18 % low (R_AMS 0.820) ⇒ 10.5 % less sediment fleet-wide, 19 % less in El Niño.</text>
 </svg>`,
 
 selectivity:`<svg viewBox="0 0 560 200" role="img" aria-label="Sampling on high-flow days inflates the mean concentration">
@@ -209,7 +209,7 @@ musle:`<svg viewBox="0 0 560 180" role="img" aria-label="MUSLE equation with eac
 <text x="0" y="14" fill="#8ea3bf" font-size="11">MUSLE — what each term comes from, and which two are unverified</text>
 <rect x="8" y="30" width="112" height="42" rx="6" fill="#12243c" stroke="#ef5f5f"/>
 <text x="64" y="48" fill="#e6edf6" font-size="12" text-anchor="middle" font-weight="600">Q_sur · q_peak</text>
-<text x="64" y="63" fill="#ef5f5f" font-size="10" text-anchor="middle">hydrology — UNVERIFIED</text>
+<text x="64" y="63" fill="#ef5f5f" font-size="10" text-anchor="middle">Q_sur open · q_peak −18 %</text>
 <rect x="132" y="30" width="72" height="42" rx="6" fill="#12243c" stroke="#2ecc71"/>
 <text x="168" y="48" fill="#e6edf6" font-size="12" text-anchor="middle" font-weight="600">K</text>
 <text x="168" y="63" fill="#2ecc71" font-size="10" text-anchor="middle">IGAC soils ✓</text>
@@ -224,8 +224,8 @@ musle:`<svg viewBox="0 0 560 180" role="img" aria-label="MUSLE equation with eac
 <text x="424" y="63" fill="#f5b942" font-size="10" text-anchor="middle">C4 — to fit</text>
 <text x="8" y="104" fill="#d8e6f7" font-size="13" font-family="ui-monospace,Consolas,monospace">Sed = α·(Q_sur · q_peak · A)^β · K · C · P · LS2D</text>
 <text x="8" y="132" fill="#8ea3bf" font-size="10.5">Sediment is driven by SURFACE RUNOFF and PEAK FLOW — not by total discharge, and not by rainfall.</text>
-<text x="8" y="148" fill="#ef5f5f" font-size="10.5">Both red inputs come straight from the hydrology, and neither has ever been validated against observations.</text>
-<text x="8" y="166" fill="#8ea3bf" font-size="10.5">That is what stage C2b exists to fix, before any sediment parameter is fitted.</text>
+<text x="8" y="148" fill="#ef5f5f" font-size="10.5">C2b measured one of the two red inputs: q_peak is 18 % low (R_AMS 0.820) ⇒ −10.5 % sediment, −19 % in El Niño.</text>
+<text x="8" y="166" fill="#8ea3bf" font-size="10.5">The surface-runoff share Q_sur is still unvalidated — no observation of it exists. That part of C2b remains open.</text>
 </svg>`,
 
 attempts:`<svg viewBox="0 0 560 200" role="img" aria-label="Four calibration attempts, skill against recession realism">
@@ -255,7 +255,7 @@ windows:`<svg viewBox="0 0 560 150" role="img" aria-label="Unequal windows canno
 </svg>`,
 
 partition:`<svg viewBox="0 0 560 130" role="img" aria-label="Simulated flow partition, unvalidated">
-<text x="0" y="12" fill="#8ea3bf" font-size="11">Where the model says the water goes — never checked against a single observation</text>
+<text x="0" y="12" fill="#8ea3bf" font-size="11">Where the model says the water goes — the SURFACE share is still unvalidated (C2b.1 tested hydrograph shape, a different quantity)</text>
 <rect x="40" y="34" width="256" height="30" fill="#2ecc71" opacity=".75"/>
 <rect x="296" y="34" width="146" height="30" fill="#48a9ff" opacity=".75"/>
 <rect x="442" y="34" width="98" height="30" fill="#a879e6" opacity=".75"/>
@@ -264,13 +264,61 @@ partition:`<svg viewBox="0 0 560 130" role="img" aria-label="Simulated flow part
 <text x="491" y="54" fill="#0b1220" font-size="12" text-anchor="middle" font-weight="700">base 19.5 %</text>
 <text x="168" y="82" fill="#2ecc71" font-size="10.5" text-anchor="middle">↑ THIS is what MUSLE erodes with</text>
 <text x="0" y="112" fill="#ef5f5f" font-size="10.5">Two parameter sets can produce identical total discharge with very different splits — daily KGE cannot tell them apart.</text>
+</svg>`,
+
+peakgate:`<svg viewBox="0 0 560 200" role="img" aria-label="Peak ratios measured against the pre-registered 0.85 to 1.15 band">
+<text x="0" y="12" fill="#8ea3bf" font-size="11">H-PEAK — measured ratios against the band frozen in docs/33 §1</text>
+<rect x="228" y="34" width="144" height="96" fill="#2ecc71" opacity=".13"/>
+<line x1="228" y1="34" x2="228" y2="130" stroke="#2ecc71" stroke-dasharray="3 3"/>
+<line x1="372" y1="34" x2="372" y2="130" stroke="#2ecc71" stroke-dasharray="3 3"/>
+<line x1="300" y1="34" x2="300" y2="130" stroke="#2b3852"/>
+<text x="228" y="146" fill="#2ecc71" font-size="10" text-anchor="middle">0.85</text>
+<text x="300" y="146" fill="#8ea3bf" font-size="10" text-anchor="middle">1.00</text>
+<text x="372" y="146" fill="#2ecc71" font-size="10" text-anchor="middle">1.15</text>
+<text x="290" y="30" fill="#2ecc71" font-size="10" text-anchor="middle">PASS BAND</text>
+<circle cx="214" cy="52" r="5" fill="#ef5f5f"/><text x="204" y="56" fill="#ef5f5f" font-size="11" text-anchor="end">R_AMS 0.820</text>
+<circle cx="227" cy="78" r="5" fill="#ef5f5f"/><text x="217" y="82" fill="#ef5f5f" font-size="11" text-anchor="end">R_Q1 0.847</text>
+<circle cx="288" cy="104" r="5" fill="#8ea3bf"/><text x="278" y="108" fill="#8ea3bf" font-size="11" text-anchor="end">R_Q5 0.975</text>
+<circle cx="92" cy="126" r="5" fill="#8ea3bf" opacity=".7"/><text x="102" y="130" fill="#8ea3bf" font-size="10.5">R_POT 0.567 (reported, not a gate)</text>
+<text x="0" y="172" fill="#ef5f5f" font-size="10.5">Both GATE statistics fall outside the band, on the low side — so H-PEAK is REFUTED and the failure direction was predicted (α &lt; 1).</text>
+<text x="0" y="188" fill="#8ea3bf" font-size="10.5">Per gauge it is not uniform: 36 of 63 below the band, 9 inside, 18 ABOVE it. The median is a fleet statement, not a per-gauge one.</text>
+</svg>`,
+
+bfigate:`<svg viewBox="0 0 560 180" role="img" aria-label="BFI error compared with the between-gauge spread that serves as its gate">
+<text x="0" y="12" fill="#8ea3bf" font-size="11">H-BFI — the error is smaller than the yardstick, but the yardstick is short</text>
+<rect x="150" y="30" width="162" height="24" fill="#2ecc71" opacity=".8"/>
+<text x="144" y="47" fill="#8ea3bf" font-size="11" text-anchor="end">median |sim − obs|</text>
+<text x="320" y="47" fill="#2ecc71" font-size="11">0.01625</text>
+<rect x="150" y="66" width="284" height="24" fill="#48a9ff" opacity=".7"/>
+<text x="144" y="83" fill="#8ea3bf" font-size="11" text-anchor="end">gate = IQR(BFI_obs)</text>
+<text x="442" y="83" fill="#48a9ff" font-size="11">0.02845</text>
+<text x="150" y="112" fill="#2ecc71" font-size="10.5">error sits inside the spread → NOT REFUTED (55 gauges)</text>
+<line x1="150" y1="126" x2="290" y2="126" stroke="#ef5f5f" stroke-width="7" opacity=".65"/>
+<text x="144" y="130" fill="#8ea3bf" font-size="11" text-anchor="end">BFI_obs range</text>
+<text x="298" y="130" fill="#ef5f5f" font-size="11">0.658 – 0.799 — compressed against the 0.80 filter ceiling</text>
+<text x="0" y="156" fill="#ef5f5f" font-size="10.5">r(BFI_sim, BFI_obs) across gauges = 0.094: the model carries almost NO between-gauge information about flow character.</text>
+<text x="0" y="172" fill="#8ea3bf" font-size="10.5">It passes because both sit near the ceiling — not because it knows which catchment is flashy. Read the pass narrowly.</text>
+</svg>`,
+
+anchor:`<svg viewBox="0 0 560 190" role="img" aria-label="Observed sediment flux at Arrancaplumas against published basin totals">
+<text x="0" y="12" fill="#8ea3bf" font-size="11">C2.4 literature anchor — observed flux vs published Magdalena totals (Mt/yr)</text>
+<line x1="40" y1="150" x2="540" y2="150" stroke="#2b3852"/>
+<rect x="40" y="30" width="33" height="22" fill="#ef5f5f" opacity=".55"/>
+<rect x="73" y="30" width="27" height="22" fill="#ef5f5f" opacity=".28"/>
+<text x="108" y="46" fill="#ef5f5f" font-size="11">Arrancaplumas, our windows: 13.3 – 23.9</text>
+<rect x="40" y="66" width="360" height="22" fill="#48a9ff" opacity=".7"/>
+<text x="408" y="82" fill="#48a9ff" font-size="11">Restrepo &amp; Kjerfve 2000: 144</text>
+<rect x="40" y="102" width="460" height="22" fill="#a879e6" opacity=".7"/>
+<text x="508" y="118" fill="#a879e6" font-size="11" text-anchor="end">Restrepo &amp; Escobar 2018: 184</text>
+<text x="0" y="170" fill="#8ea3bf" font-size="10.5">Same basin: domain area 257,097 km² vs published 257,438 km² — agree to 0.13 %. So area is not the explanation.</text>
+<text x="0" y="186" fill="#ef5f5f" font-size="10.5">The station holds 21 % of the area and 24.6 % of the outlet water, but only 10–16 % of the outlet sediment — 6–14× below the anchors.</text>
 </svg>`
 };
 
 /* ============================ DATA ============================ */
 const DATA = {
- updated:"2026-08-10 · C0 complete · C2b amendment folded in",
- banner:"Phase A ✅ · Phase B ✅ <b>closed by decision</b> — hydrology frozen at <b>H2E</b> (F 0.25931). <b>C0 ✅ COMPLETE</b> (e5126c0, b713d28): H2E reported, drivers frozen. <b>C1 pre-registered</b> (docs/32), execution pending. <b>NEW — stage C2b</b>: the two quantities MUSLE actually consumes (surface runoff, peaks) were never validated; C2b fixes that and <b>re-opens Phase B under a new pre-registration → docs/33</b>. Yields (t/km²/yr) 🚫 embargoed.",
+ updated:"2026-08-10 20:17 · C1 audit ✅ · C2 contrast ✅ · C2b gates measured · H2E-S refit running (176/1000 per seed)",
+ banner:"Phase A ✅ · Phase B ✅ frozen at <b>H2E</b>, now <b>re-opened once</b> by C2b. <b>C1 ✅ measured</b> (79/79 SSC stations classified — only <b>6 usable + 12 with caveat</b>, 61 excluded). <b>C2 ✅ measured</b> (docs/34): La Niña flux <b>rates ~3–9× El Niño</b>, <b>22 of 22 station ratios &gt; 1</b>, no counter-example. <b>C2b pre-registered (docs/33) and its gates read</b>: <b>H-BFI holds</b> (0.01625 ≤ IQR 0.02845 — but the test has little power), <b>H-PEAK REFUTED</b> (R_AMS 0.820, R_Q1 0.847, both below 0.85 ⇒ ≈ <b>−10.5 % sediment</b>, −19 % in El Niño), <b>H-CHIRPS refuted again</b> (LOOCV 0.447 ✅ / volume +7.47 % 🔴 — <b>no v3 forcing</b>). Consequence: refit cell <b>H2E-S</b> (peak term only) is <b>running now</b>, ~10 % of 1000 evals per seed. ⚠ Nothing from this run is committed yet. Yields (t/km²/yr) 🚫 still embargoed.",
  phases:[
   n("Phase A — model inputs","done",null,null,[
     n("DEM → 8,672 minibacias (nb07)","done"), n("URH: 24 types soil×land (nb08)","done"),
@@ -279,17 +327,17 @@ const DATA = {
 
   n("Phase B — water balance + discharge calibration","done","frozen at H2E; not KGE-closed, by design",null,[
     n("Engine mgb_hydrology.py (fao56/θ_crit)","done"),
-    n("Forcing QC v2 — zero-suppression repair (153/294 gauges)","done","docs/16, 18 §9-10",null,
+    n("Forcing QC v2 — zero-suppression repair (153/294 gauges)","done",null,"docs/16, 18 §9-10",null,
       {why:"Rain observers wrote NOTHING on dry days, so a blank meant 'zero' sometimes and 'unknown' other times. Averaging only the recorded days averages only the rainy ones.",
        math:"reported mean by station density:\n  >90 % of days reported →  <b>4.4 mm/day</b>\n  <50 % of days reported → <b>11.7 mm/day</b>\n\nA 2.9× spread caused by how often someone\nheld a pen. That is not geography.",
        gate:"sparse-band selectivity 1.777 → 1.040, dense band held at 1.001 (no over-repair)"}),
     n("Discharge QC — SNHT / energy-floor","done","docs/17"),
-    n("4 calibration attempts (Config B, H1, H2, H2E) — all pre-registered","done","docs/26",null,
+    n("4 calibration attempts (Config B, H1, H2, H2E) — all pre-registered","done",null,"docs/26",null,
       {why:"Attempt 1 scored best on KGE while draining groundwater 3× too slowly — the right answer for the wrong reason. Attempts 2–4 bought correct physics at the cost of score.",
        fig:"attempts",
        math:"recession ratio = k_simulated ÷ k_observed\nobserved k ≈ 9.5–11.9 days\n\nattempt 1 : 2.98×  (27–45 d — far too slow)\nattempt 4 : <b>0.98×</b>  (essentially exact)",
        gate:"H2E adopted: VAL KGE 0.356 · PBIAS +3.5 % (best volume) · recession 0.98×"}),
-    n("📌 Decision: close on ceiling; adopt H2E","decision","docs/30 §1",null,
+    n("📌 Decision: close on ceiling; adopt H2E","decision",null,"docs/30 §1",null,
       {why:"12 parameter configurations moved El Niño r by <0.016. When a result will not move across an order of magnitude of parameter change, it is not a parameter problem — it is the input.",
        fig:"ceiling",
        math:"F uses  C2M(k) = k / (2 − k)\ninverting:  k = 2F / (1 + F)\n\n F = 0.259 (ours)  → KGE ≈ 0.41\n F = <b>0.500</b> (target) → KGE ≈ <b>0.667</b>\n\nBut KGE ≤ r always, and our CAL r = 0.518.\n→ even with PERFECT bias and variance, max F ≈ 0.35.\n<b>F = 0.5 is arithmetically out of reach with this rain data.</b>"}),
@@ -315,68 +363,103 @@ const DATA = {
          gate:"521 MB written · round-trip verified · column sums match the water balance to 1e-6"}),
       n("C0.6 commit","done")]),
 
-    n("C1 — SSC-quality gate  (the real unblock)","wip","pre-registered 2026-08-10 (docs/32); execution → Claude Code","docs/31 → docs/32",[
+    n("C1 — SSC-quality gate  (the real unblock)","wip","AUDIT COMPLETE — 79/79 classified: 6 usable, 12 usable-with-caveat, 61 excluded. 0 deletions. Only C1.7 (commit) outstanding.","docs/32",[
       n("C1.0 network-size decision — run on 28-station subset (24 safe); 46-fetch → B5","decision","F1"),
-      n("C1.1 coverage census (pre-register N)","todo"),
-      n("C1.2 sampling-selectivity — null = calendar-regular stations","todo","F4",null,
+      n("C1.1 coverage census (N pre-registered before any screen)","done",null,null,null,
+        {why:"Register how much data exists BEFORE looking at it, so the sample size cannot be chosen after seeing which stations flatter the result. N was fixed at 91 station-window records.",
+         math:"registered N = <b>91</b>\n(knee in the coverage curve: 34 → 91 jumps by 57,\n next-largest gap 29 — an unambiguous break)\n\nstation-windows with NO usable SSC : <b>27 of 56</b>\ncoverage: both windows <b>7</b> · La Niña only 8\n          El Niño only 6 · neither 7",
+         gate:"N frozen at 91 before C1.2–C1.6 ran"}),
+      n("C1.2 sampling-selectivity — 3 stations flagged, fleet median percentile 0.47","done",null,"F4",null,
         {why:"SSC is campaign-sampled. If crews go out when the river is high, the station's mean concentration is inflated — and every value in the file still looks perfectly normal. Only the sampling DATES reveal it.",
          fig:"selectivity",
-         math:"for each sample date d at station S:\n  p(d) = percentile of Q(d) within S's full record\n\nunbiased sampling → median p ≈ <b>0.50</b>\nflag S if median p > p99 of the null pool\n\nNULL POOL = <b>calendar-regular</b> stations\n(low dispersion of inter-sample gaps),\nNOT merely dense ones.",
-         risk:"The circularity we avoided (fix F4): a densely-sampled station can itself be flow-chasing. Calendar-driven sampling is unbiased with respect to flow BY CONSTRUCTION — density is not."}),
-      n("C1.3 value screens (corrected nulls)","todo"),
-      n("C1.4 rating-era segmentation (SNHT)","todo",null,null,null,
+         math:"for each sample date d at station S:\n  p(d) = percentile of Q(d) within S's full record\n\nMEASURED, fleet: median percentile <b>0.47</b>\n → the network as a whole is NOT flow-chasing\n\nflagged flow-selective: <b>3</b> stations\nworst — Peñalta: median percentile <b>0.678</b>,\n         spread across windows 0.276",
+         gate:"3 stations flagged and carried as a caveat — not deleted (C1 deleted nothing)",
+         risk:"The pre-registered null pool nearly vanished: only <b>2</b> stations qualified as calendar-regular, too few to build an empirical p99. The fallback was the theoretical Uniform(0,1) — a WEAKER null, recorded as such. The 3 flags are therefore indicative, not decisive."}),
+      n("C1.3 value screens (corrected nulls) — flatlines, zeros, extremes","done",null,null,null,
+        {why:"Repeated identical values and zeros can be transcription artefacts — or real. The screen is only meaningful against a null that already contains the river's own persistence.",
+         math:"flatline share observed : <b>35.35 %</b> of runs\n vs whole-year shuffle null : <b>11.8×</b> excess\n vs 14-day local  null : <b>1.51×</b> excess\n\n→ almost all 'flatlining' is genuine seasonal\n  persistence; the wrong null would have\n  condemned a third of the archive.\nmax share from any one station: 3.4 %\n\nzero rows 385 — of which <b>380</b> are\n  missing values coded as zero (the same\n  defect class as the rainfall repair)\nextreme candidates 33 → corroborated <b>2</b>\n<b>deletions: 0</b>",
+         gate:"No record deleted; findings recorded as flags. Low-end truncation test: negative."}),
+      n("C1.4 rating-era segmentation (SNHT) — 30 eras","done",null,null,null,
         {why:"SSC usually rides the same stage record as discharge. When a rating curve is re-fitted or the channel shifts, the relationship changes — so fits must never be pooled across a break.",
-         math:"docs/17 found <b>25 SNHT breaks</b> inside 2009-2017,\n12 strong, shifts −65 % to +88 %.\nEach segment between breaks = one ERA.\nRating fits are per-era, never pooled."}),
-      n("C1.5 rating relations per station/era","todo",null,null,null,
+         math:"docs/17 found <b>25 SNHT breaks</b> inside 2009-2017,\n12 strong, shifts −65 % to +88 %.\nEach segment between breaks = one ERA.\n\nMEASURED: <b>30 eras</b> across the SSC network,\n <b>2</b> stations actually split by a break,\n <b>0</b> unusable rating fits after splitting.",
+         gate:"Rating fits are per-era, never pooled across a break"}),
+      n("C1.5 rating relations per station/era — measured","done",null,null,null,
         {why:"Discharge itself is not measured — water LEVEL is, then converted by a fitted curve. The same is true of sediment flux. Their quality bounds everything C2 can claim.",
-         math:"log Qs = log a + b · log Q\n\nfleet median R² ≈ <b>0.5</b>  (docs/13)\n→ usable WITH stated uncertainty,\n   not disqualifying, never silent."}),
-      n("C1.6 classify 79/79 with evidence → docs/32","todo"),
-      n("C1.7 commit","todo")]),
+         math:"log Qs = log a + b · log Q\n\nfleet median R²(Qs vs Q) = <b>0.546</b>   ✅ as docs/13 expected\nfleet median R²(C  vs Q) = <b>0.125</b>   ← concentration itself\n                                   is barely predictable\nmedian exponent b = <b>1.409</b>\nresidual σ (ln space) = <b>0.809</b>\n\n→ usable WITH stated uncertainty, never silent.",
+         risk:"R² = 0.125 on concentration is the honest number: the rating estimator works because flux is dominated by discharge, not because the model knows the concentration. That is why C2 reports two independent estimators instead of trusting the curve."}),
+      n("C1.6 classify 79/79 with evidence → docs/32","done",null,null,null,
+        {why:"The point of C1 was never to bless the network — it was to find out how much of it can carry a claim. The answer is: very little, and that is the result.",
+         math:"79 stations classified, evidence-tagged:\n  usable              <b>6</b>\n  usable-with-caveat  <b>12</b>\n  excluded            <b>61</b>\n     ├ no coordinates      46\n     ├ mapped but excluded 10\n     └ outside domain       5\n\ngeography: 8 mainstem · 20 tributary\nMagdalena TRUNK stations with SSC: <b>1</b>\nC4 tributary set: <b>13</b>\n\nwindows: 13 usable in La Niña 2011,\n         12 in El Niño 2015-16, <b>7 in both</b>",
+         risk:"One trunk station is not a mainstem record. Any basin-outlet sediment statement in C4/C5 rests on tributaries plus routing, not on observation."}),
+      n("C1.7 commit","todo","commit agent — docs/32 results and the C1 artifacts are still untracked")]),
 
-    n("C2 — observed ENSO contrast (model-free, publishable)","todo",null,"writes docs/33 → renumber, 33 now taken",[
-      n("C2.1 pre-register windows + rates-only rule","todo",null,null,null,
+    n("C2 — observed ENSO contrast (model-free, publishable)","wip","C2 PASSES — La Niña flux RATES ~3–9× El Niño, direction unanimous, no counter-example. Only C2.5 (commit) outstanding.","docs/34",[
+      n("C2.1 pre-register windows + rates-only rule","done",null,null,null,
         {why:"The two ENSO windows are different lengths. Comparing their totals would make the dry window look bigger purely for lasting twice as long.",
          fig:"windows",
-         math:"La Niña 2011      = 12 months\nEl Niño 2015–16   = 24 months\n\n✅ compare  t/day  (a rate)\n🚫 never    total t  as a wet:dry ratio"}),
-      n("C2.2 flux (t/day), monthly shape, bootstrap CIs","todo",null,null,null,
-        {math:"flux (t/day) = Q (m³/s) × C (mg/L) × <b>0.0864</b>\n\n(1 m³/s × 1 mg/L = 86.4 kg/day = 0.0864 t/day)"}),
-      n("C2.3 consistency checks","todo"),
-      n("C2.4 literature anchor vs docs/06 (~145–169 Mt/yr)","todo"),
-      n("C2.5 commit","todo")]),
+         math:"La Niña 2011      = 12 months\nEl Niño 2015–16   = 24 months\n\n✅ compare  t/day  (a rate)\n🚫 never    total t  as a wet:dry ratio\n\nscope actually available: <b>72</b> station-windows,\nof which <b>26</b> have NO paired discharge at all.",
+         gate:"Rates-only rule held throughout; no window total was used as a wet:dry ratio"}),
+      n("C2.2 flux (t/day), two estimators, bootstrap CIs — THE RESULT","done",null,null,null,
+        {why:"The publishable, model-free half of the project: what the rivers actually did, measured two independent ways so neither the sampling calendar nor the rating curve can carry the answer alone.",
+         math:"flux (t/day) = Q (m³/s) × C (mg/L) × <b>0.0864</b>\n\nLa Niña ÷ El Niño, median RATE ratio:\n  PRIMARY  (a) sample-day        <b>4.62</b>\n           (a) less the single-point station 6.79\n           (b) rating, headline  <b>2.84</b>   (all: 2.95)\n  SENSITIV (a) 9.32 · (b) 6.40 headline\n\ndirection: <b>22 of 22</b> station-ratios &gt; 1\nCIs excluding 1: <b>16 of 22</b>\nDuan smearing applied: 1.080–1.832 (median 1.478)",
+         gate:"PASSED — direction unanimous; magnitude quoted as a RANGE (~3–9×), never a single number",
+         risk:"Two honesty flags travel with this. (1) The magnitude is window-definition dependent — 4.62 primary vs 9.32 sensitivity on the same estimator — so a single headline multiplier would be a choice, not a measurement. (2) The adversarial critic found that docs/34's '22 of 22' does not tie out to a single artifact row: its own table shows 6/6, 5/5, 7/7, 4/4 … so 22 is a POOLED count across estimators and window pairs. The unanimity is real per row; the label is loose. Unresolved."}),
+      n("C2.3 consistency checks — estimator agreement, monotonicity","done",null,null,null,
+        {why:"Two estimators that agree prove little if they agree by construction. The useful question is where they DISagree, and whether the disagreement has a physical explanation.",
+         math:"testable pairs 38 (8 disjoint)\ndisagreement fraction <b>0.211</b>\nmedian b/a = <b>1.068</b>  (no systematic offset)\n\ncorr( ln(b/a) , ln(Q_sampled/Q_window) ) = <b>−0.649</b>\n → the disagreement is explained by WHICH flows\n   were sampled — exactly the mechanism C1.2 screens\n\nnested-station monotonicity: <b>0 violations of 40</b>\n (22 nested pairs — no child exceeds its parent)",
+         risk:"Single-observation leverage is severe at small stations: at El Profundo one spike moves the window mean by <b>156.7 %</b> (112.47 → 43.82 t/day without it). That is why the primary table also reports the ratio with the single-point-dominated station dropped."}),
+      n("C2.4 literature anchor — Arrancaplumas vs Restrepo","done",null,null,null,
+        {why:"Before any model reproduces this contrast, the observed LEVEL has to be placed against the published basin totals. It does not land where a reader would expect, and that has to be said plainly.",
+         fig:"anchor",
+         math:"Arrancaplumas (the trunk station):\n  estimator (a) 41,272 t/day\n  estimator (b) 64,096 t/day\n  → annualised <b>13.3 – 23.9 Mt/yr</b>\n\npublished basin totals:\n  Restrepo &amp; Kjerfve 2000  144 Mt/yr → <b>6.0–10.8×</b> above us\n  Restrepo &amp; Escobar 2018 184 Mt/yr → <b>7.7–13.8×</b> above us\n\nnot an area problem: domain 257,097 km² vs\npublished 257,438 km² — agree to <b>0.13 %</b>\n\nthe station holds 21 % of the basin area and\n24.6 % of the outlet water, but only 10–16 %\nof the outlet sediment.",
+         risk:"This is a LEVEL anchor, not a contrast anchor. C2's claim is about the RATIO, which is unaffected. But no absolute Mt/yr figure from this network may be quoted as a basin total — the observed record is an order of magnitude below the literature, and the reason (station position, sampling coverage, or the literature itself) is not resolved here."}),
+      n("C2.5 commit","todo","commit agent — docs/34 and the C2 artifacts are still untracked")]),
 
-    n("C2b — runoff-signature validation  ⚠ NEW (re-opens Phase B)","todo","4–6 sessions · needs pre-registration in docs/33 · parallel-capable with C1/C2","docs/33 (to write)",[
-      n("Why this stage exists at all","decision",null,null,null,
-        {why:"MUSLE consumes SURFACE RUNOFF and PEAK FLOW. Neither has ever been validated. We calibrated on total discharge — and total discharge is blind to how the water was split, and under-weights peaks.",
+    n("C2b — runoff-signature validation  (re-opened Phase B)","wip","PRE-REGISTERED (docs/33) AND READ: H-BFI holds · H-PEAK refuted · H-CHIRPS refuted. Outcome table row 3 → refit cell H2E-S, running now.","docs/33",[
+      n("Why this stage exists at all — vindicated","decision",null,null,null,
+        {why:"MUSLE consumes SURFACE RUNOFF and PEAK FLOW. Neither had ever been validated. We calibrated on total discharge — and total discharge is blind to how the water was split, and under-weights peaks.",
          fig:"musle",
-         math:"Sed = α · (Q_sur · q_peak · A)^β · K · C · P · LS2D\n            ↑        ↑\n     never validated   biased low (α&lt;1)",
-         risk:"Same failure class as the two defects we already caught: a metric that is structurally blind to the error. Value screens could not see absent rain records; daily KGE could not see a 3× recession error (Morris μ* = 0.044). This is the third."}),
-      n("C2b.1 baseflow separation → observed BFI vs simulated","todo",null,null,null,
-        {why:"Split every observed hydrograph into quickflow and baseflow, then ask whether the model splits it the same way. Only quickflow erodes soil, so this is the single most important unvalidated quantity in the project.",
-         fig:"bfi",
-         math:"Eckhardt digital filter:\n  b(t) = [ (1−BFI_max)·a·b(t−1) + (1−a)·BFI_max·Q(t) ]\n         ÷ [ 1 − a·BFI_max ]\n\n  BFI = Σ b(t) ÷ Σ Q(t)\n\nmodel says: surface 51.3 / subsurface 29.2 / base <b>19.5 %</b>\nobserved  : <b>unknown — this task measures it</b>",
-         gate:"If simulated and observed BFI disagree beyond the between-gauge spread → add a BFI term to the objective (the pattern that fixed recession, 2.98× → 0.98×)"}),
-      n("C2b.2 peak-signature term (annual maxima / Q1–Q5 exceedance)","todo",null,null,null,
-        {why:"α below 1 means the simulated flow is less variable than reality — peaks too low. MUSLE multiplies by q_peak, so this bias goes straight into the sediment estimate, in the direction that under-predicts.",
-         fig:"alpha",
-         math:"α = σ_simulated ÷ σ_observed      (1.0 = correct)\n\nH2E:  CAL 0.920 · VAL 0.905 · El Niño 0.911\nConfig B El Niño: <b>0.793</b>\n\n→ peaks under-simulated in EVERY period."}),
-      n("C2b.3 finish CHIRPS refit (B1) — for SPATIAL runoff, not r","todo",null,null,null,
-        {why:"The merge was rejected on volume, not on skill. Its value for sediment is different from its value for discharge: it fills 41,180 cells that currently get extrapolated rainfall, and C5's whole contribution is spatial attribution.",
-         math:"LOOCV r  0.429 → <b>0.447</b>  ✅ passed\nvolume   2,036 → <b>2,188 mm/yr</b>  🔴 +7.5 %, failed\n\nCause: quantile maps fitted on reporting-day pairs\nre-inherited the rain-selective bias we had repaired.\nFix: refit on the repaired series (inferred-dry days included)."}),
+         math:"Sed = α · (Q_sur · q_peak · A)^β · K · C · P · LS2D\n            ↑        ↑\n     never validated   biased low (α&lt;1)\n\nFIRST MEASUREMENT SETTLED IT: the peak channel\nis wrong by <b>18 %</b> (R_AMS 0.820) — invisible to\nevery score Phase B ever optimised.",
+         risk:"Same failure class as the two defects we already caught: a metric that is structurally blind to the error. Value screens could not see absent rain records; daily KGE could not see a 3× recession error (Morris μ* = 0.044). This was the third, and it was real."}),
+      n("C2b.1 baseflow separation → BFI observed vs simulated — H-BFI HOLDS","done","55 of 63 gauges (8 dropped: <1095 days); 9/9 self-tests passed","docs/33 §6",null,
+        {why:"Split every observed hydrograph into quickflow and baseflow, then ask whether the model splits it the same way. Only quickflow erodes soil. The model's split survives its pre-registered test — but the test turned out to have little power, and that qualification travels with the pass.",
+         fig:"bfi+bfigate",
+         math:"Eckhardt digital filter:\n  b(t) = [ (1−BFI_max)·a·b(t−1) + (1−a)·BFI_max·Q(t) ]\n         ÷ [ 1 − a·BFI_max ]\n  BFI = Σ b(t) ÷ Σ Q(t)\n\nmedian BFI_obs <b>0.7811</b> · median BFI_sim <b>0.7965</b>\nfleet-median |sim − obs| = <b>0.01625</b>\ngate = IQR(BFI_obs)      = <b>0.02845</b>   → NOT REFUTED\n\nrobustness, BFImax 0.50 : 0.00308 vs 0.00487 → same verdict\nfitted recession a = 0.9087, k_obs ≈ 10.44 d\nmax single-gauge error 0.1173 · none above 0.20",
+         gate:"NOT REFUTED — 0.01625 ≤ 0.02845 · verdict stable under the BFImax 0.50 robustness column ⇒ the BFI term is NOT triggered and must not be added",
+         risk:"Read the pass narrowly. BFI_obs spans only 0.658–0.799 (compressed against the 0.80 filter ceiling), so the yardstick is short; r(BFI_sim, BFI_obs) across gauges is <b>0.094</b> — the model carries essentially no between-gauge information about flow character. 48 of 55 gauges are slower than observed, 23 of 55 sit outside the IQR, and the error concentrates in small catchments (0.0317 in the smallest area quartile vs 0.0081 in the largest). Separately, the filter's BFI_sim 0.7965 is NOT the model's internal 19.5 % baseflow store — a 0.602 gap between two different quantities (docs/33 §2.2/§6.4), not a contradiction."}),
+      n("C2b.2 peak signatures (annual maxima / Q1–Q5 exceedance) — H-PEAK REFUTED","done","63 gauges, full 2009–2018 scored record","docs/33 §7",null,
+        {why:"α below 1 said the simulated flow is less variable than reality. C2b.2 measured what that costs where it matters: the annual flood peaks MUSLE multiplies by. The model is 18 % short at the peak, and the shortfall goes straight into the sediment estimate in the under-predicting direction.",
+         fig:"peakgate",
+         math:"gate (docs/33 §1): fleet-median ratio ∈ [0.85, 1.15]\n\n R_AMS = <b>0.820</b>   🔴 below band\n R_Q1  = <b>0.847</b>   🔴 below band\n R_Q5  = 0.975    (in band — not a gate)\n R_POT = 0.567    (1,285 sim vs 2,236 obs events)\n\nby period: El Niño 15-16 <b>0.686</b> · La Niña 11 0.808\n           VAL 2018 0.589 · CAL 2012-14 0.648\n\nsediment propagation, MUSLE β = 0.56:\n 0.820^0.56 = 0.895 → <b>−10.5 %</b> sediment\n                      <b>−19.0 %</b> in El Niño 2015-16",
+         gate:"REFUTED — both gate statistics fail independently, on the low side, exactly as α 0.90–0.92 predicted. Triggers the peak term in the objective.",
+         risk:"The fleet median hides a wide per-gauge spread: 36 of 63 gauges below the band but <b>18 above 1.15</b> and 9 inside — so 'peaks too low' is a fleet statement, not a per-gauge one. R_AMS shows no catchment-size trend (Spearman 0.088, p 0.49) even though correlation strongly does (0.58, p 6.3e-7): the peak deficit is not a big-river artefact. Timing is fine (median |lag| 4 d, median signed lag 0 d), so this is an amplitude error, not a phase error."}),
+      n("C2b.R refit — cell H2E-S, PEAK term only  ⏳ RUNNING","wip","detached DDS, seeds 20260907/20260908, 1000 evals each · 176/1000 both seeds at 20:17 (F 0.1891 / 0.1883), ≈10.1 s/eval, ETA ~22:38. DO NOT relaunch — a kill resumes from the checkpoints.","docs/33 §3.3",null,
+        {why:"The outcome table was fixed before the measurements: 'H-BFI holds / H-PEAK refuted' selects exactly one row — refit with the peak term and nothing else. No BFI term, because adding a term for a hypothesis that held would be the fabricated problem docs/33 §3.4 warns against.",
+         math:"frozen weight vector (docs/33 §3.2):\n W_KGE 0.34 · W_LOG 0.34 · W_REC 0.17 · W_PEAK <b>0.15</b>\n W_BFI — <b>not triggered</b>\n\nZERO-WEIGHT REPRODUCTION GATE (blocking):\n peak term COMPUTED but weighted 0, incumbent weights\n H2E → F = 0.25930593639066796  |Δ| = <b>0.000e+00</b>  (bar 1e-10)\n H2  → F = 0.25336518371172073  |Δ| = 0.000e+00\n k1, k2, k_sim, rc, resid all bit-identical.\n Not vacuous: term evaluated at <b>51 of 63</b> gauges.",
+         gate:"PASSED before launch — the new term provably changes nothing at weight zero, so any change in the refit is the term, not a code edit",
+         risk:"Window asymmetry, journalled as an issue and followed as written: the search scores annual maxima on the CAL 2012–14 window, where H2E's own R_AMS is <b>0.6482</b> — much worse than the 0.820 that was actually judged on the full record. So the search optimises a harsher peak statistic than the one the gate read. The recession term already carries the same asymmetry. No threshold was touched."}),
+      n("C2b.3 CHIRPS refit on the repaired series — H-CHIRPS REFUTED AGAIN","done","291 gauges · 4,018 days · no v3 forcing written","docs/33 §8",null,
+        {why:"The merge had failed on volume, and the diagnosed cause was that the quantile maps were fitted on reporting-day pairs — re-inheriting the rain-selective bias the zero-suppression repair had removed. C2b.3 applied that fix. It moved the number in the right direction and still did not clear the band.",
+         math:"gate: ADOPT only if LOOCV r &gt; 0.429 <b>AND</b> volume in band\n\n LOOCV  merged median daily r = <b>0.447</b>  ✅ (287 gauges)\n VOLUME 2,188.5 mm/yr vs band [2,016.0, 2,056.8]\n        = target 2,036.4 ±1 %  →  <b>+7.47 %</b>  🔴\n\nthe fix DID work, just not enough:\n including inferred-dry days shed <b>105.6 mm/yr</b>\n  = 41 % of the surplus\n without them the merge is 2,294.1 mm/yr (+12.65 %)\n residual surplus 152.1 · still <b>131.7</b> from the band",
+         gate:"DO NOT ADOPT — both gates were required, one failed. No v3 forcing exists; every downstream stage still runs on v2.",
+         risk:"Per gauge the merge is close to a wash — 149 improved / 51 worsened / 87 unchanged, median Δr +0.0003 — and the gain is not where C5 needs it: r improves at 10–30 km (0.426 → 0.449) but DEGRADES beyond 30 km (0.343 → 0.300), which is precisely the sparse region spatial attribution would lean on. Adopting it for 'spatial coverage' would have traded the far-field away."}),
       n("C2b.4 final driver run on implementation B (inertial + floodplain)","todo",null,null,null,
         {why:"Implementation B has the floodplain physics the Momposina needs but costs 1,510 s per run — impossible to search. So: keep A's cheap calibration, then re-fit ONLY the routing parameters on B.",
          math:"freeze  : soil, ET, partition params (routing-independent)\nre-fit  : celerity / routing only, ~50–100 evals\ncost    : 1–2 days, not 13\n\ngain: Momposina deposition represented, and celerity\nbecomes a physical velocity instead of a storage surrogate\n(it is currently 0.221 m/s, doing the floodplain's job)."}),
       n("C2b.5 signature vector instead of a single F (Pareto front)","todo",null,null,null,
-        {why:"One number can hide a sacrificed signature — that is exactly how a 3× recession error survived four attempts. Reporting a vector makes the trade visible instead of silent.",
-         math:"report  { volume, recession, BFI, peaks }\nas a Pareto front — not collapsed into one F."})]),
+        {why:"One number can hide a sacrificed signature — that is exactly how a 3× recession error survived four attempts, and how an 18 % peak deficit survived all of Phase B. Reporting a vector makes the trade visible instead of silent.",
+         fig:"partition",
+         math:"report  { volume, recession, BFI, peaks }\nas a Pareto front — not collapsed into one F.\n\nfirst full row now exists:\n volume    PBIAS +3.5 %\n recession 0.98×\n BFI       |Δ| 0.01625 (gate 0.02845) ✅\n peaks     R_AMS <b>0.820</b> (band 0.85–1.15) 🔴"})]),
 
     n("C3 — MUSLE hillslope erosion","todo","consumes C2b's validated drivers",null,[
       n("C3.1 LS2D from conditioned DEM","todo",null,null,null,
         {why:"Steeper and longer slopes erode more. LS2D is the only static MUSLE input we have not built yet.",
          math:"Desmet &amp; Govers (1996), per cell:\n LS = (m+1) · (A/22.13)^m · (sin β / 0.0896)^n\n\n A = upslope contributing area\n β = slope angle\n expect basin median ≈ 2–10 for mountainous terrain"}),
       n("C3.2 C &amp; P factors (8 land classes)","todo"),
-      n("C3.3 qpeak proxy — pre-register + α&lt;1 bias (slope from nb07 DEM)","todo","F6",null,
+      n("C3.3 qpeak proxy — pre-register + the MEASURED peak deficit (R_AMS 0.820)","todo",null,"F6",null,
         {why:"A daily model has no sub-daily peak, so q_peak must be a proxy. The bias direction must be written down BEFORE calibration, or α and β will silently absorb it — exactly as celerity silently absorbed floodplain storage.",
-         math:"options (pre-register ONE):\n 1. q_peak = Q_sur / 86400        (floor estimate)\n 2. SCS triangular, t_c from reach length/slope\n 3. Fagundes' own formulation      ← preferred\n\nknown bias: α &lt; 1 ⇒ peaks low ⇒ MUSLE under-erodes,\nworst at the largest catchments.",
+         fig:"alpha",
+         math:"options (pre-register ONE):\n 1. q_peak = Q_sur / 86400        (floor estimate)\n 2. SCS triangular, t_c from reach length/slope\n 3. Fagundes' own formulation      ← preferred\n\nknown bias, NOW MEASURED not assumed (C2b.2):\n R_AMS <b>0.820</b> ⇒ 0.820^0.56 = 0.895\n ⇒ MUSLE under-erodes by ≈10.5 % (19 % in El Niño)\n and it is NOT worst at the largest catchments\n (Spearman R_AMS vs log area 0.088, p 0.49).",
          risk:"If this is not stated in advance, a calibrated α/β will look fine while encoding a known error. That is the celerity mistake, repeated."}),
       n("C3.4 src/mgb_sediment.py + engine tests","todo"),
       n("C3.5 cross-check vs impl-B musle.py — file NOT in repo, acquire first","blocked","F5"),
@@ -394,14 +477,14 @@ const DATA = {
       n("C5.1 contrast run (primary + sensitivity windows)","todo"),
       n("C5.2 prediction vs C2 target (label out-of-sample)","todo",null,null,null,
         {why:"Every ENSO number is a PREDICTION — those years never entered any calibration. That single sentence is the credibility of the whole project.",
-         risk:"Inherited caveat, must be quantified not waved at: the dry-phase hydrology sits at its input ceiling and H2E scores −0.0005 against climatology there, so El Niño sediment error is bounded below by the water error."}),
+         risk:"Two inherited caveats, both now quantified rather than waved at. (1) The dry-phase hydrology sits at its input ceiling and H2E scores −0.0005 against climatology there, so El Niño sediment error is bounded below by the water error. (2) C2b.2 measured a peak deficit that propagates as ≈<b>−10.5 %</b> sediment fleet-wide and <b>−19 %</b> in El Niño 2015-16 — a known, signed, pre-declared bias in the same direction as the phase we predict worst."}),
       n("C5.3 spatial attribution + pre-registered factor-swaps","todo",null,null,null,
         {why:"This is what a process model adds over a correlation: not just THAT the contrast exists, but WHICH sub-basins drive it and BY WHICH mechanism.",
          math:"swap experiments (register the list first):\n a) 2011 rainfall on 2015 antecedent moisture\n b) the reverse\n c) rainfall AMOUNT scaled vs PATTERN swapped\n\neach isolates one mechanism: amount / pattern / state"}),
       n("C5.4 write-up → docs/35 + figures","todo")])]),
 
   n("Background track (bounded, never gating)","wip",null,"docs/30 §5",[
-    n("B1 CHIRPS refit — merge rejected (r 0.447✅/volume +7.5%🔴); now folded into C2b.3","wip","F3"),
+    n("B1 CHIRPS refit — CLOSED: rejected twice, second time WITH the diagnosed fix applied","done","measured in C2b.3 — LOOCV r 0.447 ✅ / volume +7.47 % 🔴. No v3 forcing exists; everything downstream stays on v2.","F3"),
     n("B2 k_int_frac floor probe (0.02→0.005)","todo",null,null,null,
       {why:"A new near-rail appeared after the seed expansion: the search wants interflow as fast as the bounds allow, in 7 of 8 v2-forcing seeds. Reconnaissance only — no adoption without a fresh pre-registration.",
        math:"k_int_frac = k_int ÷ k_bas,  bound [0.02, 0.90]\nH2E landed at <b>0.0201</b> — 0.19 % of range (its floor)"}),
@@ -414,11 +497,26 @@ const DATA = {
   n("Open registers &amp; embargo","wip",null,null,[
     n("docs/21 §4 — PET review ✅ · PET_READY gate ✅ · rest open (routing, provenance, intake regex…)","wip","docs/21 §4"),
     n("docs/31 register — #1 railed-count RESOLVED ✅; kc_mult>1.2, k_int_frac floor, Restrepo anchor open","wip","docs/31"),
+    n("⚠ Nothing from this run is committed — docs/33, docs/34 and every C1/C2/C2b artifact are untracked","blocked","raised by the adversarial critic; a dedicated commit agent handles git"),
+    n("Doc numbering fixed only inside docs/33 §5.2 — docs/31 still says C2 writes docs/33","blocked","live mapping: 33 = C2b pre-registration · 34 = C2 observed contrast","docs/33 §5.2"),
+    n("New open items from this run (thresholds frozen, none acted on)","wip",null,null,null,
+      {why:"Every one of these was found AFTER its gate was frozen, so none of them could touch a verdict. They are recorded here so the next pre-registration can decide them in advance instead of during.",
+       math:"1. H-BFI had little power to fail (r(sim,obs)=0.094,\n   BFI_obs range 0.658–0.799). A sharper flow-character\n   test needs a NEW pre-registration — and note the\n   BFImax 0.50 column passed too, so lowering the\n   ceiling is not obviously the fix.\n2. H2E-S optimises R_AMS on CAL 2012-14 (H2E scores\n   0.6482 there vs 0.820 full record) — window asymmetry,\n   shared with the recession term.\n3. docs/34's '22 of 22' is a POOLED count across\n   estimators and window pairs, not one artifact row.\n4. R_Q1's estimator is not pinned by docs/33 §2.3;\n   a different percentile convention moves it slightly.\n5. C1's null pool for flow-selectivity had only 2\n   calendar-regular stations → theoretical Uniform(0,1)\n   fallback, a weaker null.",
+       risk:"The rule that keeps these honest: a threshold changed after seeing data invalidates the result. All five were journalled as issues and the frozen rules were followed as written."}),
     n("🚫 Yields t/km²/yr embargoed until areas resolved (B3)","embargoed","docs/23",null,null,
       {why:"Not a caution — a hard embargo. Any per-area sediment number inherits the catchment-area disagreement one-for-one.",
        math:"36 % of 85 shared gauges disagree by &gt;2×\nmedians agree to 1 % → the ERROR IS PER-GAUGE,\nwhich is exactly the level a yield is reported at."})])
  ],
  discoveries:[
+  {d:"2026-08-10 · docs/33 §7",t:"🔴 <b>H-PEAK REFUTED — the model is 18 % short at the flood peak.</b> R_AMS <b>0.820</b> and R_Q1 <b>0.847</b>, both below the pre-registered 0.85 floor, both failing independently. Worst in the phase we care about: El Niño 15-16 R_AMS 0.686 (VAL 2018 0.589). Propagates through MUSLE β=0.56 as ≈<b>−10.5 % sediment</b>, <b>−19 % in El Niño</b>. Timing is fine (median signed lag 0 d) — this is amplitude, not phase. C2b existed to look for exactly this, and it was there."},
+  {d:"2026-08-10 · docs/33 §6",t:"✅ <b>H-BFI HOLDS — a null result, stated as one.</b> Fleet-median |BFI_sim − BFI_obs| = <b>0.01625</b> against the frozen gate IQR(BFI_obs) = <b>0.02845</b> (55 gauges; same verdict on the BFImax 0.50 robustness column). <b>No BFI term is added.</b> But the pass is weak by construction: BFI_obs spans only 0.658–0.799 and r(BFI_sim, BFI_obs) across gauges is <b>0.094</b> — the model carries almost no between-gauge information about flow character. 'Baseflow validated' would be an over-read."},
+  {d:"2026-08-10 · docs/33 §3.3",t:"⏳ <b>Refit cell H2E-S launched</b> — the outcome table's third row (holds/refuted) selects the peak term ALONE: W_KGE 0.34 · W_LOG 0.34 · W_REC 0.17 · W_PEAK 0.15, no e_bfi. Blocking gate passed first: the new term computed at weight zero reproduces H2E's F = 0.25930593639066796 to <b>0.000e+00</b> (and H2 likewise), while being evaluated at 51/63 gauges — so it is provably inert, not vacuous. Two seeds, 1000 evals each, running."},
+  {d:"2026-08-10 · docs/34",t:"✅ <b>C2 PASSES — the observed ENSO contrast is unanimous.</b> La Niña 2011 sediment flux <b>rates</b> ran ~<b>3–9×</b> El Niño 2015-16 (median 4.62 sample-day / 2.84 rating; sensitivity windows 9.32 / 6.40). <b>22 of 22 station-ratios &gt; 1</b>, 16 with CIs excluding 1, 0 monotonicity violations in 40 nested tests, no counter-example. Magnitude is window-definition dependent, so it must be quoted as a range — never one number. This is the target C5 has to reproduce."},
+  {d:"2026-08-10 · docs/34 §4",t:"⚠ <b>The observed LEVEL does not match the literature.</b> Arrancaplumas annualises to <b>13.3–23.9 Mt/yr</b> against Restrepo &amp; Kjerfve 144 and Restrepo &amp; Escobar 184 — <b>6–14× below</b>. Not an area artefact (our domain 257,097 km² vs published 257,438, agreeing to 0.13 %). The station carries 21 % of the basin area and 24.6 % of the outlet water but only 10–16 % of its sediment. The ratio claim is unaffected; no absolute Mt/yr from this network may be quoted as a basin total."},
+  {d:"2026-08-10 · docs/32",t:"🔴 <b>C1 audit complete — the SSC network is far thinner than the station count suggests.</b> 79 classified: <b>6 usable</b>, 12 usable-with-caveat, <b>61 excluded</b> (46 have no coordinates at all). Only <b>1</b> Magdalena TRUNK station has SSC, and 7 stations cover BOTH ENSO windows. 0 deletions — everything is flagged, nothing discarded."},
+  {d:"2026-08-10 · docs/32",t:"🧪 <b>The null choice decided a third of the archive.</b> Flatline runs are 35.35 % of SSC records — <b>11.8×</b> excess against a whole-year shuffle, but only <b>1.51×</b> against a 14-day local null. Against the wrong null we would have condemned genuine seasonal persistence. Separately, 380 of 385 zero rows are missing values coded as zero — the same defect class as the rainfall zero-suppression. 33 extreme candidates, only 2 corroborated."},
+  {d:"2026-08-10 · docs/33 §8",t:"🔴 <b>CHIRPS merge rejected AGAIN, with the fix applied.</b> Refitting the quantile maps on the repaired series (inferred-dry days included) shed <b>105.6 mm/yr</b> — 41 % of the surplus — and still landed at <b>2,188.5 mm/yr</b> vs the band [2,016.0, 2,056.8]: <b>+7.47 %</b>. LOOCV r passed (0.447 &gt; 0.429). Both gates were required, so: <b>DO NOT ADOPT, no v3 forcing written</b>. And it would not have bought spatial coverage anyway — r improves at 10–30 km (0.426→0.449) but DEGRADES beyond 30 km (0.343→0.300)."},
+  {d:"2026-08-10",t:"⚠ <b>Housekeeping, not yet resolved:</b> nothing from this run is committed — docs/33, docs/34 and every C1/C2/C2b artifact are untracked. Document numbering is fixed only inside docs/33 §5.2 (33 = C2b pre-registration, 34 = C2 contrast); docs/31 still points C2 at 33."},
   {d:"2026-08-10",t:"⚠ <b>C2b added</b> — MUSLE eats surface runoff + peaks; the flow partition (51.3/29.2/19.5) was NEVER validated and α&lt;1 means peaks are biased low. Re-opens Phase B under a new pre-registration (docs/33)."},
   {d:"2026-08-10",t:"🎯 <b>Objective reframed</b>: stop chasing F. F=0.5 needs KGE≈0.667 but KGE≤r and CAL r=0.518 → max F≈0.35. New goal: the most trustworthy surface-runoff and peak field for sediment."},
   {d:"2026-08-10",t:"✅ <b>C0 complete</b> (e5126c0, b713d28). H2E: VAL KGE 0.356, PBIAS +3.5 % (best volume of four), recession 0.98×. Drivers frozen (521 MB)."},
@@ -448,7 +546,7 @@ document.getElementById('cards').innerHTML=cardDefs.map(([k,l])=>
 document.getElementById('overall').innerHTML=cardDefs.map(([k])=>
  `<span style="width:${100*by(k)/tot}%;background:${C[k]}"></span>`).join('');
 document.getElementById('overallpct').innerHTML=
- `<b>${Math.round(100*done/tot)} %</b> of tracked leaves complete — ${done}/${tot}. Phase A+B done; Phase C underway (C0 ✅).`;
+ `<b>${Math.round(100*done/tot)} %</b> of tracked leaves complete — ${done}/${tot}. Phase A+B done; Phase C underway: C0 ✅ · C1 audit ✅ · C2 contrast ✅ · C2b gates read (1 held, 2 refuted) · H2E-S refit running.`;
 
 /* ---- tree ---- */
 const tree=document.getElementById('tree');
@@ -475,7 +573,7 @@ function render(node,depth){
     const box=document.createElement('div'); box.className='xbox hidden'; box.id=myx;
     let h='<h4>'+node.t.replace(/<[^>]+>/g,'')+'</h4>';
     if(node.x.why) h+='<p>'+node.x.why+'</p>';
-    if(node.x.fig) h+='<figure style="margin:0">'+FIG[node.x.fig]+'</figure>';
+    if(node.x.fig) h+=node.x.fig.split('+').map(f=>'<figure style="margin:0">'+(FIG[f]||'')+'</figure>').join('');
     if(node.x.math) h+='<div class="math">'+node.x.math+'</div>';
     if(node.x.risk) h+='<div class="risk"><b>Watch out:</b> '+node.x.risk+'</div>';
     if(node.x.gate) h+='<div class="gate">GATE · '+node.x.gate+'</div>';
