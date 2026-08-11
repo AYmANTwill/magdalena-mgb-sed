@@ -880,3 +880,72 @@ records only, or by repairing the remaining rain-selective stations first. A v3 
 never launched (it would need an nb12 rebuild and a new pre-registered cell; recorded as
 follow-up in the run journal). A negative result under a pre-registered rule is a finding: the
 gate did precisely the job it was registered to do.
+
+### 15.5 C2b.3 - the refit was re-run, both gates re-measured, and the question is closed
+
+*(Registered as H-CHIRPS in [doc 33](33_c2b_preregistration.md) s1, gates carried over from
+s15.1 unchanged and NOT re-derived. Implementation `src/merge_chirps_gauges.py`
+(`--qmap-inferred-dry`); per-gauge scores `data/processed/merge_loocv_report_v2.csv`; run
+journal `docs/agents/journal_chirps-refit.md`. **No forcing file was written - v2 stands.**)*
+
+Doc 33 registered one change, and only one: fit the per-(elevation band x hydrographic zone)
+quantile maps on the **repaired** series *including* the `approval == 'Inferido_seco'` days, so
+the maps see the true dry-day frequency instead of only the days someone wrote down. Everything
+else - stratification, lag, blending weights, gap-fill, determinism - was to stay identical.
+
+**The first thing the refit found is that this was already the code's behaviour.** Measured
+before anything was edited: `load_gauges()` reads `precip_gauges_daily_qc_v2.csv` - 926,910 rows,
+of which **240,158 are `Inferido_seco` zeros**, and `precip_mm` has zero NaN - and no approval
+filter exists anywhere in the path (`grep Inferido_seco src/*.py` returns only the repair script
+and `idw_forcing.APPROVAL_RANK`). The pools were built on `obs = ~isnan(Gv)`, so those inferred
+zeros were in every pool from the start: **240,115 of 926,268 paired station-days, 25.9 %**. The
+fit input is now stated and *asserted* rather than merely true by accident, and the counterfactual
+is available behind a flag. The proof that nothing else moved is that the re-run reproduces the
+rejected Aug-3 run to the last printed digit, and
+`merge_loocv_report_v2.csv` is **bit-identical** to `merge_loocv_report.csv` on every scored
+column across all 291 rows (max |diff| 0.000e+00).
+
+| gate | window | result |
+|---|---|---|
+| baseline self-check | 2008-2018 station-days | 287 gauges, median daily r **0.429** - nb11 s6 reproduced (assert tolerance 6e-4) |
+| **LOOCV gate** | 2008-2018 station-days | merged median daily r **0.447** > 0.429 - **PASSES**. Baseline-mask-only 0.449 |
+| **VOLUME gate** | **2009-2017**, area-weighted over 8,672 minibacias | **2,188.5 mm/yr** vs the band **[2,016.0, 2,056.8]** - **FAILS (+7.47 %)**. 2008-2018 context 2,219.2 mm/yr |
+| **decision** | | **DO NOT ADOPT.** The rule, quoted: *"ADOPT if merged median r > 0.429 by any margin AND the volume gate holds; otherwise DO NOT ADOPT"* - both were required, one failed |
+
+Per gauge, the LOOCV picture is unchanged: 149 improved, 51 worsened, 87 unchanged, median
+per-gauge delta +0.0003; the fleet shift lives in the 10-30 km blend band (0.426 -> 0.449, n=169),
+while < 10 km loses a little (0.481 -> 0.475, n=98) and > 30 km loses a lot (0.343 -> 0.300, n=20).
+
+**What the counterfactual measured.** Running the fit with the inferred-dry days *removed*
+(`--qmap-inferred-dry exclude`, diagnostic only - it writes nothing and takes no decision) drops
+the pools from 926,268 to 686,153 pairs and gives, on the same 2009-2017 window,
+**2,294.1 mm/yr (+12.65 %)** against the include run's 2,188.5 (+7.47 %). So the repair's inferred
+dry days were already removing **105.6 mm/yr, 41.0 % of the surplus** - and the remaining
+**+152.1 mm/yr** is what is left *after* that lever has been pulled all the way. Correlation is
+indifferent to the choice (0.448 exclude vs 0.447 include), which is the volume/correlation
+independence of [doc 26](26_phase3_refit.md) H2 - H1 showing up again in the forcing.
+
+**Where the surplus actually is.** At the 287 LOOCV gauges the merged field is very nearly
+unbiased against the gauges themselves: median per-gauge bias **+2.00 %** merged vs **+1.73 %**
+gauge-only, per-gauge delta median **+0.00 pts** (108 gauges wetter, 92 drier). A field that is
+unbiased where it can be tested and +7.5 % over the basin puts its whole surplus in the terrain
+with no gauge to test it - and that is precisely where the blend weight goes to 1. The per-band
+bias deltas say the same thing monotonically: **+0.00 pts** below 10 km, **+0.24 pts** at
+10-30 km, **+0.89 pts** beyond 30 km.
+
+**Correction to s15.3.** That section attributed the volume failure to maps "fitted on
+reporting-day pairs", implying the inferred-dry days were absent. They were not: they were 25.9 %
+of the fit input. The half of s15.3 that survives is the other half - the days the repair *never
+inferred*, at the 139 stations that still report rain-selectively after it (s9.3). Those cannot be
+put into a pool by any change to `merge_chirps_gauges.py`, because they are not in the record at
+all. Correcting a diagnosis is worth as much as the measurement that forced it.
+
+**Consequence.** This closes the CHIRPS question as it currently stands. The intervention doc 33
+registered has been executed and measured; it was already in force, it is worth 41 % of the
+surplus, and it is not enough. **v2 remains the forcing**, the r-ceiling of doc 22 s4.7 is
+unmoved, and no route to a passing volume gate exists inside the merge code. The only remaining
+route is upstream: repair the 139 residual rain-selective stations so the gauge record itself
+carries its true dry-day frequency, exactly as s9.4 and s15.4 both predicted from opposite
+directions. Nothing downstream changes - C1 and C2 are model-free and were never gated on this
+(doc 31 B1), the H2E drivers stay frozen, and the +0.018 median LOOCV gain remains a measured
+but unbankable result.

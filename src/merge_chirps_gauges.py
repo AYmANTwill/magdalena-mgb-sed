@@ -36,7 +36,20 @@ DECISION GATES (pre-registered in docs/agents/journal_chirps-merge.md BEFORE thi
   ADOPT only if merged median r > 0.429 by any margin AND the volume gate holds.
   Adoption is justified by r, never by volume (doc 22 s4.7).
 
-Outputs: always data/processed/merge_loocv_report.csv (per-gauge scores).
+C2b.3 REFIT (docs/33 H-CHIRPS): the registered change was to fit the quantile maps on the
+REPAIRED series *including* the `approval == 'Inferido_seco'` days, so the maps see the true
+dry-day frequency rather than only the days a gauge wrote down. Measured before changing
+anything: that was ALREADY what this script did - `load_gauges()` reads
+`precip_gauges_daily_qc_v2.csv` (926,910 rows, of which 240,158 are `Inferido_seco` zeros,
+0 NaN in `precip_mm`) and no approval filter exists anywhere in the path, so those zeros
+were already in every pool. The fit input is therefore now made EXPLICIT and asserted
+(`--qmap-inferred-dry include`, the default and the registered configuration), and the
+counterfactual is available as a diagnostic (`--qmap-inferred-dry exclude`, which drops
+inferred-dry days from the fit pool ONLY - never from `obs`, the IDW, or the LOOCV scoring
+masks). The gate decision is taken on `include`.
+
+Outputs: always data/processed/merge_loocv_report_v2.csv (per-gauge scores; the C2b.3 run.
+The pre-refit merge_loocv_report.csv from docs/18 s15 is never overwritten).
 If adopted, additionally forcing_minibacia_precip_v3.csv + the .npy trio (via
 src/forcing_npy.py, which re-verifies the CSV against its own byte counts) +
 forcing_minibacia_provenance_v3.csv. Never overwrites v2.
@@ -45,6 +58,7 @@ Run:  python src/merge_chirps_gauges.py
 """
 from __future__ import annotations
 
+import argparse
 import os
 import pathlib
 import sys
@@ -79,6 +93,7 @@ MIN_SCORED_DAYS = 300         # nb11 s6 evaluation threshold
 BASELINE_MEDIAN_R = 0.429     # nb11 s6, 287 gauges - reproduced below as a self-check
 VOLUME_TARGET = 2036.4        # v2 gauge-only, area-weighted, 2009-2017
 VOLUME_TOL = 0.01
+INFERRED_DRY = "Inferido_seco"   # repair marker, src/repair_precip_zero_suppression.py
 
 
 def chirps_weight(d_km: np.ndarray) -> np.ndarray:
@@ -88,7 +103,12 @@ def chirps_weight(d_km: np.ndarray) -> np.ndarray:
 
 
 def load_gauges():
-    """The nb11 gauge set: QC v2 daily + inventory, co-located clusters merged."""
+    """The nb11 gauge set: QC v2 daily + inventory, co-located clusters merged.
+
+    Also returns `INF`, the (days x gauges) boolean flagging repair-inferred dry days
+    (`approval == 'Inferido_seco'`). Those rows are ordinary 0.0 mm records in the v2 file;
+    the flag exists only so the quantile-map fit input can be stated and asserted.
+    """
     inv = (pd.read_csv(PROC / "precip_gauges_inventory_qc.csv", dtype={"code": str})
              .dropna(subset=["lat", "lon"]).reset_index(drop=True))
     daily = (pd.read_csv(PROC / "precip_gauges_daily_qc_v2.csv", dtype={"code": str})
@@ -100,9 +120,16 @@ def load_gauges():
     dates = pd.date_range(daily.date.min(), daily.date.max(), freq="D")
     W = (daily.pivot_table(index="date", columns="code", values="precip_mm")
               .reindex(columns=inv.code.values).reindex(dates))
+    daily["_inf"] = (daily.approval == INFERRED_DRY).astype("float32")
+    INF = ((daily.pivot_table(index="date", columns="code", values="_inf", aggfunc="max")
+                 .reindex(columns=inv.code.values).reindex(dates)
+                 .to_numpy("float32") > 0.5))
     print(f"gauges: {len(inv)}  matrix {W.shape[0]} days x {W.shape[1]} gauges  "
           f"{dates.min().date()}..{dates.max().date()}")
-    return W, inv, dates
+    print(f"repair-inferred dry station-days in the matrix: {int(INF.sum()):,} "
+          f"({100*INF.sum()/max(int((~np.isnan(W.to_numpy('float32'))).sum()), 1):.1f} % of "
+          f"all reporting station-days)")
+    return W, inv, dates, INF
 
 
 def load_centroids() -> pd.DataFrame:
@@ -233,18 +260,45 @@ def apply_qmap(x: np.ndarray, qmap) -> np.ndarray:
 
 
 class QmapPools:
-    """Per-stratum paired samples with a fallback hierarchy and holdout support."""
+    """Per-stratum paired samples with a fallback hierarchy and holdout support.
 
-    def __init__(self, inv, band_g, zone_g, Gv, obs, C_gauge):
+    THE FIT INPUT (C2b.3). `inferred_dry` says which station-days the zero-suppression
+    repair inserted. `mode='include'` (registered, default) fits on the full repaired
+    series, so the pools carry the repaired dry-day frequency; `mode='exclude'` is the
+    counterfactual that keeps only days someone actually wrote down. The mode touches the
+    QUANTILE-MAP FIT POOL and nothing else - `obs`, the IDW field and the LOOCV scoring
+    masks are identical either way.
+    """
+
+    def __init__(self, inv, band_g, zone_g, Gv, obs, C_gauge, inferred_dry,
+                 mode: str = "include"):
+        assert mode in ("include", "exclude"), mode
+        assert inferred_dry.shape == obs.shape
+        assert not (inferred_dry & ~obs).any(), \
+            "inferred-dry flag outside the reporting mask - the pivots disagree"
+        self.mode = mode
         self.members: dict[object, list[str]] = {}
         self.pairs: dict[str, tuple[np.ndarray, np.ndarray]] = {}
+        n_pair = n_inf = 0
         for j, code in enumerate(inv.code.values):
             m = obs[:, j] & ~np.isnan(C_gauge[:, j])
+            if mode == "exclude":
+                m = m & ~inferred_dry[:, j]
+            n_pair += int(m.sum())
+            n_inf += int((m & inferred_dry[:, j]).sum())
             self.pairs[code] = (Gv[m, j].astype("float64"),
                                 C_gauge[m, j].astype("float64"))
             for key in [("bz", band_g[j], zone_g[j]), ("z", zone_g[j]),
                         ("b", band_g[j]), ("all",)]:
                 self.members.setdefault(key, []).append(code)
+        self.n_pairs_total, self.n_pairs_inferred = n_pair, n_inf
+        if mode == "include":
+            assert n_inf > 0, ("mode 'include' but not one inferred-dry day reached a "
+                               "quantile-map pool - the fit input is not what is claimed")
+        else:
+            assert n_inf == 0, "mode 'exclude' but inferred-dry days remain in the pools"
+        print(f"quantile-map fit pools [{mode}]: {n_pair:,} paired station-days, "
+              f"{n_inf:,} of them repair-inferred dry ({100*n_inf/max(n_pair,1):.1f} %)")
         self._cache: dict = {}
 
     def levels(self, band: int, zone: str) -> list:
@@ -359,7 +413,17 @@ def areal_mean(field: np.ndarray, dates: pd.DatetimeIndex, area: np.ndarray,
 
 
 def main() -> None:
-    W, inv, dates = load_gauges()
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--qmap-inferred-dry", choices=("include", "exclude"),
+                    default="include",
+                    help="quantile-map FIT POOL only: 'include' is the C2b.3 registered "
+                         "configuration; 'exclude' is the reporting-days-only "
+                         "counterfactual and is diagnostic - it writes nothing.")
+    args = ap.parse_args()
+    mode = args.qmap_inferred_dry
+    print(f"=== CHIRPS-gauge merge, quantile-map fit pool: {mode} inferred-dry days ===")
+
+    W, inv, dates, INF = load_gauges()
     cent = load_centroids()
 
     demc, tr = coarse_dem()
@@ -389,7 +453,7 @@ def main() -> None:
     Dg = idwf.km(inv.lat.values[:, None], inv.lon.values[:, None],
                  inv.lat.values[None, :], inv.lon.values[None, :])
     np.fill_diagonal(Dg, np.inf)
-    pools = QmapPools(inv, band_g, zone_g, Gv, obs, C_gauge)
+    pools = QmapPools(inv, band_g, zone_g, Gv, obs, C_gauge, INF, mode=mode)
 
     # ---- LOOCV gate ------------------------------------------------------------
     rep = loocv(inv, Gv, obs, Dg, C_gauge, band_g, zone_g, pools)
@@ -431,8 +495,14 @@ def main() -> None:
           f"volume {'holds' if vol_ok else 'fails'}")
     print(f"  => {'ADOPT v3' if adopt else 'DO NOT ADOPT'}")
 
-    rep.to_csv(PROC / "merge_loocv_report.csv", index=False)
-    print(f"wrote {PROC / 'merge_loocv_report.csv'} ({len(rep)} gauges)")
+    if mode != "include":
+        print("\ndiagnostic mode ('exclude'): nothing written, no decision taken. "
+              "The gate decision is the 'include' run.")
+        return
+
+    rep["qmap_inferred_dry"] = mode
+    rep.to_csv(PROC / "merge_loocv_report_v2.csv", index=False)
+    print(f"wrote {PROC / 'merge_loocv_report_v2.csv'} ({len(rep)} gauges)")
 
     if not adopt:
         print("not adopted: no forcing files written (pre-registered).")
