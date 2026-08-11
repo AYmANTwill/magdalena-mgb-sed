@@ -335,6 +335,11 @@ fraction of that, so the alarm fires long before full compensation is reached.
 
 Reference: **α = 11.8** (Williams 1975; adopted unchanged by Buarque 2015 eq. 5 *with the
 same daily-mean `q_peak`*, so it is the like-for-like reference under §4).
+**Caveat added 2026-08-11 — this band is the band for the SOURCE LS formulation.** α = 11.8 is
+paired with Buarque's LS, and ours has been measured at 2.37×–3.00× that level on the same 90 m
+grid; since MUSLE is linear in LS, every number in the table below must be divided by that
+bracket before it is compared with an α fitted on **our** LS. The registered values stay as
+written. See **§9.3** and `docs/37` §4 candidate 0.
 
 | band | α (at the §4 pixel scale) | C4 action |
 |---|---|---|
@@ -464,7 +469,7 @@ with the scalar path; negative inputs rejected; NaN propagation not silently zer
 | Bias statement | §5.3 (magnitude) + §5.4 (ENSO direction) |
 | C4 rule | §6 — α band 5.9–23.6, hard stop α > 35.4 or α < 3.9; β hard stop outside 0.45–0.65; tests T1, T2, T3 mandatory |
 | Sources of every measured number | docs/33 §7.3–§7.5 (peak ratios, executed output), docs/34 (observed contrast), `topology.npz` / `parameters.npz` / `h2e_drivers.npz` (read-only, 2026-08-11) |
-| Amendments | **§9.1 (2026-08-11)** — MUSLE area-unit enumeration completed; registered choice UNCHANGED |
+| Amendments | **§9.1 (2026-08-11)** — MUSLE area-unit enumeration completed; registered choice UNCHANGED · **§9.2 (2026-08-11)** — convention ADOPTED: `williams_m3` + US-customary `K`; two model defaults changed; §6.1 α band unchanged in value but only now meaningful, and §6.1 has lost one of its jobs · **§9.3 (2026-08-11)** — the C3.1 **LS-formulation** comparison PRE-REGISTERED, and §9.2's "like-for-like" claim qualified: unit equivalence yes, **level** equivalence measured 2.37×–3.00× violated; nothing changed in the model |
 
 ---
 
@@ -540,3 +545,241 @@ carries the date it was written (2026-08-11), *after* the C3.6 gate-(b) result i
 and it revises that result rather than replacing the record of it. C3.5 (cross-check against
 implementation B's `musle.py`) remains **BLOCKED** — that file is not in this repo (§8 item 2,
 unchanged).
+
+---
+
+### 9.2 Amendment — 2026-08-11 — the unit convention is ADOPTED, and `K` was in the wrong unit system
+
+**What changed:** two **model defaults** in `src/mgb_sediment.py`, and nothing else.
+`q_peak` (§4), `a_p` = 0.0081 km², the α band and hard stops (§6.1), the β rule (§6.3), the
+residual tests (§6.4) and the bias statement (§5) are **all unchanged in value**. §9.1 said
+explicitly that adopting a different convention "remains an amendment under this §9, with its
+own date and reason". This is that amendment.
+
+| default | was | is | factor on the load |
+|---|---|---|---|
+| `volume_convention` | `pixel_km2` | **`williams_m3`** | ×47.8630 (`1000^0.56`) |
+| `k_unit_system` (new option) | — (behaved as `si_stored`) | **`us_customary`** | ×7.593014 (`1/0.1317`) |
+| `ls2d_aggregation` (new option, explicit) | — (behaved as area-weighted mean) | `area_weighted_mean` | ×1.000 |
+| `ls2d_resolution` (new option, explicit) | — (behaved as native 90 m) | `native_90m` | ×1.000 |
+
+Combined: **×363.4245196**. Every prior convention remains reachable by name, so the
+pre-amendment numbers of §9.1 stay exactly reproducible.
+
+**Reason 1 — the volume convention.** Williams' regression in its original English units is
+`Y[short ton] = 95 (Q[acre-ft] · q_p[cfs])^0.56 · K C P LS`. Converting only the dimensional
+quantities (1 acre-ft = 1233.4818375 m³, 1 cfs = 0.028316846592 m³/s,
+1 short ton = 0.90718474 t):
+
+```
+95 × 0.90718474 / (1233.4818375 × 0.028316846592)^0.56
+  = 95 × 0.90718474 / 34.92823^0.56 = 86.1826 / 7.31494 = 11.7818
+```
+
+— i.e. **11.8 is the coefficient for runoff volume in m³ with `q_peak` in m³/s**, 0.15 % from
+the published value. The same derivation read as mm·ha gives 42.78 and as mm·km² gives 563.95,
+so neither `swat_mm_ha` nor the originally registered `pixel_km2` can carry α = 11.8. Derived
+independently by two passes (a decision pass and an audit pass) that agreed.
+
+**Reason 2 — the `K` unit system, a fourth error that §9.1 did not see.** The conversion above
+converts `Y`, `Q` and `q_p` and leaves `K`, `C`, `P`, `LS` untouched, so α = 11.8 belongs to the
+**US-customary numeric** values of those four. But `minibacia_soil_params.csv:K` is stored in
+SI. `notebooks/09_soil_parameters.ipynb` §4 says so in as many words —
+
+> "**K by texture family** — mid-range Wischmeier & Smith (1978) class values **converted to SI
+> (×0.1317)** … Coarse 0.020 / Medium 0.045 / Fine 0.028"
+
+— and `src/nbgen/make_nb12.py` labels the array `t.ha.h/ha/MJ/mm`. Undoing the documented
+transform returns the textbook US-customary numbers it was built from (0.020 → 0.1519 ≈ sand
+0.15; 0.045 → 0.3417 ≈ silt loam 0.34; 0.028 → 0.2126 ≈ clay 0.21), which **identifies** the
+transform rather than inferring it. Pairing SI `K` with α = 11.8 is therefore a dimensional
+error of exactly `1/0.1317 = 7.593014`. Stated imprecision: the stored SI table is rounded to
+three decimals, so the recovered US numerics carry ≤ 1.3 % rounding residue. `K` is stored in
+`SedGeometry` as read (SI) and converted at use in `mgb_sediment.effective_k`, so the
+geometry-vs-CSV tests remain straight comparisons.
+
+**Is the §6.1 α guard still meaningful under the adopted convention?** Two separate answers,
+and they point in opposite directions — both must be carried forward.
+
+1. **In level: it is meaningful for the first time, unchanged.** Before this amendment a fitted
+   α was being compared against Williams' 11.8 across two different unit systems, 363.4245×
+   apart. The band (expected 5.9 – 23.6; hard stops α > 35.4 and α < 3.9) could not have fired
+   for the right reason. It is now a like-for-like comparison in **units**, and **no threshold
+   changes** on that account.
+
+   > **CONDITIONAL — qualified 2026-08-11, see §9.3.** "Like-for-like" here means *unit*
+   > equivalence only. It does **not** yet mean **level** equivalence, and the sentence above
+   > should not be read as claiming it does. α = 11.8 is paired with a specific LS
+   > *formulation*, and our LS has since been measured — on the same 90 m grid, all 30,235,916
+   > basin cells — at **2.37× – 3.00×** that formulation's level (area-weighted mean 39.812 vs
+   > source-faithful 16.775 = ×0.421; ×0.333 with the literal Desmet–Govers `L`;
+   > `docs/agents/journal_decide-ls-resolution.md` §1a, §3b). Because MUSLE is **linear** in LS,
+   > that level ratio passes one-for-one into any fitted α: the like-for-like reference for **our**
+   > LS is **≈ 3.9 – 5.0, not 11.8**, the expected band 5.9 – 23.6 becomes ≈ **2.0 – 9.9**, the
+   > hard stop α > 35.4 becomes ≈ **11.8 – 14.9** and α < 3.9 becomes ≈ **1.3 – 1.6**. So
+   > thresholds **do** change once the LS formulation is settled, and they change in the
+   > *tightening* direction — far enough that the adopted, unfitted α = 11.8 would itself sit at
+   > or above the corrected upper stop at the 3.00× end. The registered §6.1 numbers stay as
+   > written (they are the numbers for the *source* LS and must not be quietly rescaled), but any
+   > guard verdict quoted before C3.1 closes must carry this bracket with it.
+2. **In function: §6.1 has LOST one of its jobs, and this is a new trap.** At the adopted
+   convention, an α fitted to make **gross** erosion equal the outlet load — i.e. a fit with no
+   channel-deposition step — lands at **α = 6.83 – 8.73**, comfortably *inside* the expected
+   band, and `check_musle_parameters` will return `status: ok`. Before the amendment the same
+   mistake needed α ≈ 2,483 and tripped the hard stop instantly. **A fitted α at or below the
+   low teens, obtained without an explicit deposition/routing step, silently encodes SDR = 1.0
+   and must be treated as a failure regardless of what the guard reports.** The guard is
+   necessary and is no longer sufficient. For reference at the adopted convention: SDR = 0.30
+   needs α = 22.8 – 29.1 (inside/at the watch band), SDR = 0.15 needs 45.5 – 58.2 and
+   SDR = 0.05 needs 136.6 – 174.6 (both past the hard stop).
+
+**§6.3 (β) and §6.2 (scale) are untouched, and this is structural rather than a checked
+coincidence.** A constant unit factor `F` on the runoff product moves α by `F^β` and cannot
+move β at all, and the `K` factor is outside the power entirely; so the β band 0.45 – 0.65
+stands exactly as registered. §6.2's `N^(2β−1)` rescaling is dimensionless and also stands.
+
+**Gate (b) re-measured under the adopted default** (frozen H2E drivers, 2009–2018,
+uncalibrated α = 11.8 / β = 0.56, τ = 0, FG = 1.0, `qsur_rel_mm`; mass-ledger residual exactly
+0.0; `cells` and `collapsed` backends agree to exactly 0.0; anchors 144 / 184 Mt/yr, docs/34
+§5.1):
+
+| convention | basin total | vs 144 | vs 184 | implied SDR |
+|---|---|---|---|---|
+| `pixel_km2` + `si_stored` (§9.1 row 1) | 0.6844 Mt/yr | 210.4× low | 268.8× low | — (impossible) |
+| `swat_mm_ha` + `si_stored` (§9.1 row 2) | 9.0222 Mt/yr | 15.96× low | 20.39× low | — (impossible) |
+| `williams_m3` + `si_stored` (§9.1 row 3) | 32.7577 Mt/yr | 4.40× low | 5.62× low | — (impossible) |
+| **`williams_m3` + `us_customary` (ADOPTED)** | **248.730 Mt/yr** | 1.73× above | 1.35× above | **0.579 – 0.740** |
+
+Gate (b)'s direction failure is **fixed at our LS level** — gross hillslope erosion now exceeds
+the outlet load, as a delivery ratio < 1 requires, where all three §9.1 rows were on the
+impossible side. **That is contingent on the LS level (see the CONDITIONAL box above and §9.3):
+applying the measured source-formulation bracket ×0.421 … ×0.333 gives 104.8 … 82.8 Mt/yr, below
+both anchors, implied SDR 1.37 – 2.22 — the direction failure would return.** Gate
+(b)'s magnitude question is **not** closed: an implied SDR of 0.579 – 0.740 sits above the
+0.05 – 0.30 range quoted for a basin of this size, i.e. gross erosion is still 1.93 – 14.8× too
+low. `docs/37_c3_closure.md` records C3 as **OPEN** for exactly that reason and names the
+candidate residual terms (`C` at the low end of Roose's range; the §5 peak deficit, whose own
+1.4 – 4.8× bracket spans the SDR = 0.30 end; and the fact that the 0.05 – 0.30 SDR band is
+itself uncited in this repository).
+
+**Disclosure, per the fix protocol:** no frozen artifact was modified —
+`sim_calibrated_v2/{h2e_drivers.npz, parameters_H2E.csv, q_gauge_H2E.csv, q_gauge_H2E.npz}`
+were opened read-only and the basin decade was executed from a scratchpad script that wrote
+nothing to the repository. No calibration was launched. Nothing is backdated: this amendment
+carries the date it was written (2026-08-11), after the §9.1 result it revises. The decision
+and its justification were written into `docs/agents/journal_recompute.md` **before** the
+corrected basin total was computed, and that journal records openly that the auditor's
+post-correction figure had already been disclosed in the task brief, so the ordering claim is
+about the derivation and not about ignorance of the number. C3.5 (cross-check against
+implementation B's `musle.py`) remains **BLOCKED** (§8 item 2, unchanged).
+
+---
+
+### 9.3 Amendment — 2026-08-11 — the C3.1 **LS-formulation** comparison, PRE-REGISTERED
+
+**What changed in the model: NOTHING.** No default, no threshold, no registered choice, no code,
+no `data/` product. This section (a) records that §9.2's "like-for-like" claim is *unit*
+equivalence and not *level* equivalence, and (b) pre-registers the comparison that would settle
+the level, **before** it is run, so that its outcome cannot be selected.
+
+#### 9.3.1 The finding that forces this section
+
+`docs/agents/journal_decide-ls-resolution.md` resolved the LS **resolution** question (keep native
+90 m; §D1–D6) and, in the same run, *measured* a separate and larger problem it explicitly left
+**UNRESOLVED**: our LS **formulation** is not the formulation α = 11.8 is paired with. Measured on
+the same 90 m grid, all 30,235,916 basin cells, with a harness that reproduces our own
+`ls2d_hs` area-weighted mean 39.812 bitwise:
+
+| lever | ours | Buarque (2015), the MGB-SED source | × on basin area-wtd LS |
+|---|---|---|---|
+| slope-length limiter | upslope **area** ≤ 1 km² ⇒ unit length up to 1e6/92 ≈ 10,870 m (~118 px) | p. 94: slope length ≤ **one DEM pixel** | **0.351** |
+| `m` | continuous McCool (1989), basin median 0.584 | eq. 14, step function capped at **0.5** | 0.502 |
+| `S` | Moore & Burch (1986) `(sinθ/0.0896)^1.3` | eq. 18, Wischmeier & Smith (1978) | 1.714 |
+| **all three** | area-wtd mean **39.812** | area-wtd mean **16.775** | **0.421** |
+
+With the literal Desmet–Govers finite-difference `L` instead of our continuous form, a further
+×0.790 ⇒ bracket **×0.333 – ×0.421**, i.e. our LS is **2.37× – 3.00×** the reference level. The
+levers interact (0.502 × 1.714 × 0.351 = 0.302 ≠ 0.421), so they must be decided as a set.
+
+#### 9.3.2 The question, and the decision rule — fixed here, before the comparison is run
+
+**Question C3.1-LS:** which formulation of `L`, `m` and `S` does the engine use?
+
+**Decision rule, in priority order. Every criterion is a source or a derivation; none refers to
+the basin total.**
+
+1. **Fidelity to the transposed method wins by default.** `docs/35` §4 registers this project as
+   transposing MGB-SED (Buarque 2015), and §6.1's α = 11.8 is that lineage's coefficient. Because
+   MUSLE is **linear** in LS, an LS level that differs from the source's passes one-for-one into α
+   and silently invalidates the §6.1 guard. Therefore the **source formulation is the registered
+   default outcome** of C3.1: slope length limited to one DEM pixel, `m` stepped and capped at 0.5
+   (his eq. 14), `S` = Wischmeier & Smith 1978 (his eq. 18).
+2. **A deviation is admissible only with its own written source justification**, naming a citable
+   reason why the source's choice is wrong *for this basin*, dated, in this §9, and **written before
+   the resulting basin total is computed**. "Our terrain is steeper" is not such a reason unless a
+   citation says the source's choice fails on steep terrain.
+3. **A deviation adopted under (2) requires the §6.1 α band to be rescaled by the measured level
+   ratio** `mean(LS_ours)/mean(LS_source)`, reported in the same table as any fitted α. This is the
+   LS analogue of §6.2's scale rescaling, and it is registered here so that a level change can never
+   again be silently absorbed by leaving the band alone. For the current code the ratio is
+   2.37 – 3.00, giving expected ≈ 2.0 – 9.9 and hard stop ≈ 11.8 – 14.9.
+4. **Ties are broken toward the lower LS level**, because the source's own verdict on his Andean LS
+   (p. 121) is that even the pixel-capped `L` "tende a fazer com que as estimativas da erosão
+   laminar do solo em áreas íngremes, como nos Andes, seja **superestimado**", and our limiter is
+   looser than his. A tie must not be broken by the basin total.
+
+#### 9.3.3 Registered expected consequence — stated NOW so the outcome cannot surprise anyone
+
+Adopting the source formulation multiplies the basin load by **≈ 0.421** (0.333 with the
+Desmet–Govers `L`): 248.730 → **≈ 104.8** or **≈ 82.8 Mt/yr**, which is **below** the 144–184 Mt/yr
+outlet anchor and implies **SDR 1.37 – 2.22**, i.e. physically impossible. That is written here, in
+advance, for one reason: **an unattractive total is not evidence against the source formulation.**
+If C3.1 adopts it and the implied SDR exceeds 1, the correct report is that the residual widened
+and C3 remains OPEN with a larger gap — *not* a re-opening of the formulation choice.
+
+**Precision note on that arithmetic:** ×0.421 is a ratio of **area-weighted** per-cell LS means,
+while the basin total weights LS by each cell's `Qsur·q_peak·K·C`. So 104.8 Mt/yr is a **proxy**.
+It is a defensible one (the swap gives ×0.416 on Andean terrain >1000 m vs ×0.421 basin-wide, and
+erosion is concentrated there — `docs/37` §3 gate (a)), but C3.1 must report the **exact** re-run,
+not this proxy.
+
+#### 9.3.4 Method, deliverables and the ordering guarantee
+
+1. Recompute per-cell `L`, `m`, `S` under each of the four variants of §9.3.1 at 90 m, then
+   re-aggregate to (minibacia, URH) with the **registered** `area_weighted_mean` (`docs/37` §1
+   decision 3) into a *new* column/file — **do not overwrite** `data/processed/urh_ls2d.csv` or
+   `minibacia_ls2d.csv`; every variant must stay reachable by name, as the volume conventions are.
+2. Write the chosen variant and its §9.3.2 justification into the C3.1 record **first**; then run
+   the decade; then report the total with `SedParams.convention_summary()` beside it (§6.4 test T3)
+   and with the rescaled α band of §9.3.2 item 3.
+3. Report the per-lever decomposition, not just the joint factor, since the levers interact.
+4. **Interpretation risk, disclosed:** the "slope length ≤ one pixel" reading of p. 94 is the
+   reading consistent with both p. 94 and p. 121, but it is an interpretation. If a different
+   reading is adopted, the ×0.351 row and the whole bracket must be recomputed and this section
+   amended — not quietly re-quoted.
+
+#### 9.3.5 Two traps this pre-registration exists to prevent
+
+1. **Do not use the retired "mountainous LS 2–10" band as evidence for the source formulation.**
+   The source-formulation LS happens to have basin per-cell median **7.262**, inside 2–10, where
+   ours is 12.486, outside it. That is an interesting *fingerprint* — it suggests 2–10 is a band for
+   pixel-length-limited LS — but the band is **uncited** and was retired by `docs/37` §1 decision 4.
+   An uncited band cannot be used to pass a choice any more than it could be used to fail one. The
+   case for the source formulation rests on §9.3.2 item 1, not on this.
+2. **Do not stack the upward candidates of `docs/37` §4 (C revision ×2–5, `f_peak` ×2.1) on top of
+   an unfixed LS.** Until C3.1 closes, those corrections would be applied to a base that is
+   2.4 – 3.0× too high for its own α, and their sum would look like agreement with the anchor for
+   the wrong reason. Candidate 0 is first in that list for this reason.
+
+#### 9.3.6 Disclosure for this amendment
+
+Written 2026-08-11, after the §9.2 result it qualifies, and it revises rather than replaces that
+record — §9.2's derivations, its adopted defaults and every registered number stand. No frozen
+artifact was touched (`sim_calibrated_v2/{h2e_drivers.npz, parameters_H2E.csv, q_gauge_H2E.csv,
+q_gauge_H2E.npz}` not opened by this amendment). No calibration launched, no fit performed, no
+code and no `data/` product changed. The bracket quoted here was measured by
+`docs/agents/journal_decide-ls-resolution.md` §3b *before* this amendment existed and its direction
+is **against** the adopted result; the reasoning trail for publishing it is in
+`docs/agents/journal_fixer.md` (run 2), which records the arithmetic and the direction disclosure
+before these edits were made. C3.5 (cross-check against implementation B's `musle.py`) remains
+**BLOCKED** (§8 item 2, unchanged).
