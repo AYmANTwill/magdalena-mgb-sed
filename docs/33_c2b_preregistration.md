@@ -686,3 +686,250 @@ would be exactly the fabricated problem §3.4 warns about.
 For the record, §6.5's own numbers do not argue for the BFI term either: `e_bfi` scores
 zero at an error of 0.20, and **no gauge in the fleet reaches 0.12**.
 
+---
+
+## 7 — C2b.2 RESULTS: flood-peak bias (H-PEAK)
+
+**Measured 2026-08-10 by the `peaks` agent (`docs/agents/journal_peaks.md`), following §2.3
+and §2.4 as frozen. §1–§5 above are unaltered.** Artifacts on disk:
+`data/processed/c2b/peaks_per_gauge.csv` (63 rows, §2.5's required per-gauge table),
+`data/processed/c2b/peaks_summary.json`, `data/processed/c2b/peaks_measure.py`,
+`figures/deck/gen_peaks.png`.
+
+*(§6 is deliberately left free for the C2b.1 / H-BFI results, which were being measured
+concurrently by a separate agent; this section took §7 so the two appends could not collide.)*
+
+Source: `data/processed/sim_calibrated_v2/q_gauge_H2E.npz`, `q_obs_m3s` vs `q_sim_fit_m3s`,
+shape (3652, 63), 2009-01-01 → 2018-12-31. No frozen artifact was modified.
+
+### 7.1 The verdict
+
+> **H-PEAK is REFUTED.**
+
+The rule, quoted from §1: *"Refuted if the fleet-median annual-maximum-series ratio `R_AMS`
+lies outside [0.85, 1.15], **or** the fleet-median Q1-exceedance ratio `R_Q1` lies outside
+[0.85, 1.15]."*
+
+| gate statistic | fleet median | IQR over gauges | band | in band? |
+|---|---|---|---|---|
+| `R_AMS` | **0.820** | 0.529 – 1.186 | [0.85, 1.15] | **NO — below** |
+| `R_Q1` | **0.847** | 0.633 – 1.234 | [0.85, 1.15] | **NO — below** |
+
+Both gate statistics fail, and each fails on its own; the disjunction is not doing any work.
+The failure is **on the low side**, which is the direction docs/26 §A.4's `alpha` 0.90–0.92
+predicted. The prediction is confirmed but the magnitude is larger than `alpha` implied:
+`alpha` is a whole-record standard-deviation ratio, and the peak deficit at the annual
+maximum (−18.0 %) is roughly twice the whole-record dispersion deficit (−8 to −10 %).
+
+`R_Q1` at 0.847 sits 0.003 below its bound and would be called marginal on its own. It is
+recorded as marginal and it is **not** the load-bearing number: `R_AMS` at 0.820 is 0.030
+clear of the bound, the two are rank-correlated at Spearman 0.928, and both point the same
+way. Per §1 the two diagnostics below could not have rescued either gate in any case.
+
+Consequence, from §3.1, now that §6 has recorded **H-BFI holds**: the outcome table's
+**"holds / refuted"** row applies — **refit with the peak term only**, at weights
+`W_KGE` 0.34 / `W_LOG` 0.34 / `W_REC` 0.17 / `W_BFI` — / `W_PEAK` 0.15, using
+`e_peak = 1 − |ln R_AMS| / ln(1.5)` through `c2m`, in cell `H2E-S` (§3.3: v2 forcing, FAO-56
+ET with `theta_crit` 0.6, 63 gauges, DDS, 1000 evaluations, seeds 20260907 and 20260908).
+**The `e_bfi` term is NOT triggered** — §6.6 says so from the BFI side and this section
+confirms it from the peak side. This section **triggers** the refit; it does not run it, and
+§3.5's three success criteria (signature inside its bound; `F` on the **incumbent** (0.40,
+0.40, 0.20) scale within 0.02 of 0.25931; no new rails beyond `k_sup@global`,
+`k_int_frac@global`, `wm_mult@R2`) are the bar it will be judged against.
+
+The frozen artifacts stay frozen (§5.1): this measurement read
+`q_gauge_H2E.npz` and wrote nothing into `sim_calibrated_v2/`.
+
+### 7.2 Fleet statistics, full 2009–2018 scored record, n = 63
+
+| statistic | fleet median | IQR | role |
+|---|---|---|---|
+| `R_AMS` — annual-maximum ratio | **0.820** | 0.529 – 1.186 | **gate** |
+| `R_Q1` — 1 %-exceedance ratio | **0.847** | 0.633 – 1.234 | **gate** |
+| `R_Q5` — 5 %-exceedance ratio | 0.975 | 0.740 – 1.279 | diagnostic (§1) |
+| `R_POT` — independent events above observed Q5 | 0.567 | 0.155 – 1.141 | diagnostic (§1) |
+| median absolute timing lag, top-10 observed events | 4 d | 2 – 7 d | not pre-registered (§7.6) |
+
+Geometric mean of `R_AMS` (log-symmetric, matching the §3.2 peak term's own form): **0.810**.
+
+**The shape of the error is a tail effect, not a level shift.** `R_Q5` is 0.975 — the model
+reproduces the flow exceeded 5 % of days almost exactly — while `R_Q1` is 0.847 and `R_AMS`
+is 0.820. The bias switches on somewhere between the 95th and the 99th percentile and
+deepens all the way to the annual maximum. A uniform multiplicative correction on discharge
+would therefore be the wrong repair; the deficit lives in the extreme tail only.
+
+**Event count is worse than event size.** Applying the *observed* Q5 as the threshold to both
+series (§2.3(c)), the model produces **1,285 independent peaks against 2,236 observed
+(0.575 fleet-wide, 0.567 as a median over gauges)** — it misses **43 %** of the events that
+cross the observed high-flow threshold at all, and it under-produces events at **42 of 63**
+gauges. Four gauges produce **zero** simulated exceedances of their observed Q5 over ten
+years. This is diagnostic only under §1 and cannot move the verdict, but it is the more
+alarming number for MUSLE: sediment is delivered in events, and a model that generates
+little more than half of them will under-deliver load even where the surviving peaks are the
+right size.
+
+### 7.3 Per-gauge scale — the median is not hiding a uniform bias
+
+| `R_AMS` | gauges |
+|---|---|
+| below 0.85 | **36** |
+| inside [0.85, 1.15] | 9 |
+| above 1.15 | **18** |
+
+Range 0.247 – 3.169. The fleet is **bimodal, not uniformly low**: a majority under-predicts
+badly and a substantial minority over-predicts badly, and the median lands at 0.820 because
+the low group is bigger, not because the typical gauge is 18 % low. Nine gauges out of
+sixty-three have a peak ratio a sediment modeller would accept.
+
+Worst under-prediction: `21257090` (486 km², `R_AMS` 0.247, 20 observed POT events, **0**
+simulated), `26017060` (152 km², 0.273, 48 obs / 1 sim), `23147040` (1,569 km², 0.280,
+40 obs / 0 sim). Worst over-prediction: `21107030` (288 km², 3.169), `22077060` (731 km²,
+3.075), `26237020` (210 km², 2.293, 20 obs POT / 94 sim).
+
+Seven gauges have fewer than the 1,095 valid scored days that §2.1 requires *for the BFI
+statistic*; §2.3 does not repeat that rule and it was therefore **not** applied to the peak
+statistics. They are `23087300`, `26127150`, `26157080`, `26187170`, `26197020`, `26217050`,
+`28047010`, and they are flagged in the `lt_1095_days` column of the per-gauge table.
+Excluding them moves nothing material — they are 7 of 63 and split both ways.
+
+**Robustness (reported, not a gate).** Recomputing on the raw validity mask, with no ≤3-day
+gap interpolation and no ≥180-day segmentation, gives `R_AMS` **0.820**, `R_Q1` **0.840**,
+`R_Q5` **0.974**. The verdict is identical under both day sets.
+
+### 7.4 By period (§2.4: reported, but no gate reads these)
+
+Fleet medians over gauges; `n` varies because §2.3(a) needs ≥ 300 valid days in a year and
+the sub-period Q1/Q5 need ≥ 90 valid days.
+
+| period | `R_AMS` | `R_Q1` | `R_Q5` | `R_POT` | n (AMS) |
+|---|---|---|---|---|---|
+| CAL 2012-14 | 0.648 | 0.863 | 0.957 | 0.423 | 46 |
+| VAL all | 0.854 | 0.879 | 0.954 | 0.667 | 63 |
+| VAL La Niña 11 | 0.808 | 0.894 | 0.977 | 0.500 | 48 |
+| **VAL El Niño 15-16** | **0.686** | **0.744** | 0.858 | 0.464 | 39 |
+| VAL other 09/10/17 | 0.794 | 0.927 | 0.958 | 0.571 | 60 |
+| VAL 2018 | 0.589 | 0.744 | 0.863 | 0.375 | 34 |
+
+Every period is below 1. **El Niño 2015-16 is the second-worst period on `R_AMS` (0.686) and
+the equal-worst on `R_Q1` (0.744)**, which is consistent with everything already established
+about the dry phase: skill-over-climatology −0.0005, r pinned at 0.556–0.572. 2018 is worst
+of all (0.589 / 0.744), matching its VAL-2018 skill-over-climatology of −0.110.
+
+The sub-period ordering is **not** an argument about calibration transfer: CAL 2012-14 scores
+0.648 against VAL-all's 0.854, i.e. the calibration years are *worse* on peaks than the
+held-out years. That is not overfitting reversed — it is a reminder that the incumbent
+objective never contained a peak term, so the CAL years carry no peak advantage to lose. It
+is precisely the gap §3.2's peak term exists to close.
+
+### 7.5 Relationship to catchment area — the opposite of the correlation pattern
+
+Areas are the model-topology `gauge_upstream_area_km2` carried in `q_gauge_H2E.npz`, not the
+IDEAM catalogue areas that docs/23 §13.2 shows disagree by more than 2× on 36 % of shared
+gauges. No t/km²/yr quantity is computed here, so the embargo is untouched.
+
+| statistic | Spearman ρ vs log₁₀ area | p | n |
+|---|---|---|---|
+| `R_AMS` | **+0.088** | 0.49 | 63 |
+| `R_Q1` | +0.027 | 0.84 | 63 |
+| `R_Q5` | −0.139 | 0.28 | 63 |
+| `R_POT` | −0.102 | 0.43 | 63 |
+| per-gauge Pearson r (obs vs sim) | **+0.580** | **6.3 × 10⁻⁷** | 63 |
+| median absolute lag | −0.224 | 0.078 | 63 |
+
+| area tercile | n | area range (km²) | `R_AMS` | `R_Q1` | `R_Q5` | Pearson r | lag (d) |
+|---|---|---|---|---|---|---|---|
+| small | 21 | 68 – 288 | 0.769 | 1.001 | 1.257 | 0.530 | 4.0 |
+| mid | 21 | 298 – 1,563 | 0.725 | 0.839 | 0.965 | 0.589 | 4.5 |
+| large | 21 | 1,569 – 257,097 | 0.981 | 0.847 | 0.888 | 0.739 | 2.0 |
+
+**The answer to the question as posed: peaks do NOT follow the correlation pattern.**
+Correlation reproduces it emphatically — per-gauge Pearson r rises with area, ρ = +0.580 at
+p = 6 × 10⁻⁷ (median r 0.530 → 0.589 → 0.739 across terciles), so the "largest catchments
+correlate best" behaviour is confirmed on this data set with the same gauges and the same day
+mask. Peak bias does not: ρ(`R_AMS`, area) = +0.088 at p = 0.49, indistinguishable from zero.
+
+The tercile table hints that the largest catchments have the *least biased* peaks
+(0.981 vs 0.769 and 0.725), which would make peaks weakly agree with the correlation pattern
+— but the rank correlation says that is not a monotone relationship and is not significant at
+n = 63, and the two largest gauges in the fleet (`29037020`, 257,097 km², `R_AMS` 1.690, and
+`21237020`, 54,035 km², 1.523) over-predict badly. **Reported as measured: correlation
+improves with area, peak bias does not vary with area, and the tercile medians are not
+evidence to the contrary.** The honest reading is that aggregation cancels peak errors of both
+signs in the median without removing them at any individual large gauge.
+
+### 7.6 Event timing — measured, NOT pre-registered, cannot touch the verdict
+
+Timing was not part of §2.3 and is therefore an addition made by the measuring session, with
+its own choices declared: the ten largest **observed** POT events per gauge, and the lag of
+the simulated maximum inside a ±15-day window (the window is this session's choice; ±10 and
+±20 are reported for sensitivity). **No pre-registered gate reads any of this.**
+
+- Median absolute lag **4 d**, fleet IQR 2–7 d; **median signed lag 0 d**, IQR −1 to +1 d —
+  there is **no systematic early or late bias**, only scatter.
+- Pooled over 599 events: **36.4 %** matched within ±1 d, **44.9 %** within ±2 d, **56.9 %**
+  within ±5 d, and **15.2 %** land on the ±15-day window edge.
+- The window-edge fraction is why the median absolute lag scales with the window (2 d / 4 d /
+  6 d at ±10 / ±15 / ±20). **The absolute-lag median is therefore partly a property of the
+  search window and should not be quoted as "the model is 4 days off".** The
+  window-independent statements are the ones above: no signed bias, and roughly 45 % of large
+  observed events have a simulated peak within two days.
+- Event-matched magnitude, the strictest form of the peak question: the simulated maximum
+  within ±15 d of each of the ten largest observed events is **0.552 × observed** (median over
+  599 events, IQR 0.305 – 0.887). This is far worse than `R_AMS` 0.820, and the difference is
+  informative rather than contradictory: `R_AMS` compares each series' *own* annual maximum,
+  so the model is credited for producing a big flood at the right scale in the wrong week,
+  whereas 0.552 asks whether it produced *this* flood. **For MUSLE, which multiplies event
+  runoff by event peak, 0.552 is the more relevant number and the more damaging one.** It is
+  recorded here as a diagnostic and is explicitly **not** substituted for the gate.
+
+### 7.7 Propagation into sediment — the number C3 and C4 inherit
+
+MUSLE carries peak flow as `qpeak^beta` with `beta ≈ 0.56` (Williams 1975; docs/31 §0), so a
+peak ratio `R` becomes a sediment ratio `R^0.56`:
+
+| source | `R` | `R^0.56` | implied sediment bias |
+|---|---|---|---|
+| **fleet-median `R_AMS` (the gate statistic)** | **0.820** | **0.895** | **−10.5 %** |
+| fleet-median `R_Q1` | 0.847 | 0.911 | −8.9 % |
+| El Niño 2015-16 `R_AMS` | 0.686 | 0.810 | −19.0 % |
+| event-matched peak ratio (§7.6, diagnostic) | 0.552 | 0.723 | −27.7 % |
+
+> **The one sentence C3 and C4 inherit: the measured fleet-median annual-maximum peak deficit
+> of 18.0 % propagates through MUSLE's `qpeak^0.56` to an expected sediment under-prediction
+> of about 10.5 %, rising to about 19 % in the El Niño 2015-16 dry phase where the peak
+> deficit is deepest.**
+
+Three qualifications that must travel with that number:
+
+1. **It is a floor, not a total.** It counts the peak term only. `Qsur` is the other MUSLE
+   driver and is tested by H-BFI, and the event-count deficit (§7.2: 43 % of events above the
+   observed Q5 never occur in the simulation) is not in the `R^0.56` arithmetic at all. An
+   event that does not happen contributes zero load, not `0.895 ×` its load.
+2. **The direction is asymmetric across the fleet.** 18 gauges over-predict peaks by more
+   than 15 %, so at those gauges the sediment bias runs the other way. A basin-total sediment
+   number inherits the −10.5 %; a per-gauge sediment number inherits that gauge's own ratio,
+   which the per-gauge table supplies.
+3. **It bites hardest exactly where the ENSO contrast is measured.** The dry phase is both
+   the phase with the deepest peak deficit (0.686) and the phase where the hydrology has no
+   skill over climatology. A Niña-minus-Niño sediment contrast computed from these drivers
+   will be biased *toward* a larger contrast, because the dry phase is under-predicted by
+   19 % against the wet phase's 11.5 % (La Niña `R_AMS` 0.808 → 0.885).
+
+### 7.8 Issues journalled under the §5.4 freeze rule
+
+Each was journalled and then the frozen rule was followed unchanged.
+
+1. The commissioning brief asked for annual maxima per **water year**; §2.3(a) specifies
+   **calendar** years 2009–2018 with ≥ 300 valid days. **The calendar year was used.**
+2. §2.3 says its statistics use "the same masked, paired day set as §2.1", and §2.1's data
+   handling includes ≤3-day gap interpolation and ≥180-day segmentation. That reading was
+   taken as primary; the raw-mask variant is in §7.3 as robustness and changes no verdict.
+3. §2.1's ≥1,095-valid-day gauge exclusion is written for "the BFI statistic". It was **not**
+   applied to peaks; the 7 affected gauges are named in §7.3 and flagged in the table.
+4. §2.3(c) fixes the POT *independence* rule but not the *candidate* rule. Candidates were
+   taken as all local maxima above the threshold, then merged pairwise while either
+   independence condition failed — applied **identically to both series**, which is what
+   §2.3(c)'s "applied unchanged to both series" requires.
+5. Timing (§7.6) is not in the pre-registration at all and is fenced off accordingly.
+
+---
