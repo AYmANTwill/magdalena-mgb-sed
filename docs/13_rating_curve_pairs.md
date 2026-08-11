@@ -1,5 +1,7 @@
 # Discharge ↔ sediment station pairing (for calibration / rating curves)
 
+> **STATUS — HISTORICAL.** This first pairing pass is superseded for Phase C by the rating relations fitted under the frozen C1 registration — [docs/32 §R5](32_ssc_qc_audit.md) (30 eras, all n ≥ 15) — and by the flux estimators of [docs/34 §1.5](34_observed_enso_contrast.md). Entry point: [docs/00_INDEX.md](00_INDEX.md).
+
 Cross-match of all `caudal/*.csv` (143 discharge stations) against `sedimento/*.csv` (39 sediment stations,
 variable CM = daily mean concentration, kg/m³). "Common days" = dates where the station has BOTH a discharge value
 and a concentration value — the points usable to fit an empirical rating curve.

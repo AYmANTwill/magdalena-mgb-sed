@@ -1,5 +1,7 @@
 # Open questions (decisions to lock with the advisor)
 
+> **STATUS — SUPERSEDED; all three questions are resolved.** Q1 (mainstem sediment) → [docs/19](19_sediment_qc_audit.md) and [docs/32 §R6](32_ssc_qc_audit.md): one Magdalena-trunk SSC station exists (`21237020`). Q2 (study years) → [docs/07](07_enso_years.md), re-decided explicitly in [docs/30 §1](30_phase_c_plan.md): **2011 vs 2015–16, kept**. Q3 (basin extent) → [docs/15](15_domain_correction.md): whole basin, 8,672 minibacias. The project's current open registers are listed in [docs/00_INDEX.md](00_INDEX.md) §4.
+
 These three decisions gate the project. Until resolved, downstream work carries risk.
 
 ## Q1 — IDEAM sediment stations on the Magdalena (HIGHEST RISK)

@@ -1,5 +1,7 @@
 # Methodology (workflow)
 
+> **STATUS — STALE (phase markers only).** The workflow logic below still holds; the DONE / IN PROGRESS markers predate Phases A–C. Current phase status: `CLAUDE.md` "Phase status" and the live tracker `progress_map.html`; Phase C's plan is [docs/30](30_phase_c_plan.md) and [docs/31](31_phase_c_workplan.md). Entry point: [docs/00_INDEX.md](00_INDEX.md).
+
 The project follows the MGB-SED workflow, phased. Hydrology is always calibrated **before** sediments.
 
 ## Phase 0 — Environment (DONE)

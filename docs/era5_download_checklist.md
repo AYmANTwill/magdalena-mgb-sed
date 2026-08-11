@@ -1,5 +1,7 @@
 # ERA5-Land download checklist (whole-basin study, 90 m)
 
+> **STATUS — HISTORICAL: the download completed.** ⚠ The domain on the next line (east edge −72.9) was **corrected before the real download** — the locked box is `Xmin −77.0, Xmax −72.3, Ymin 1.4, Ymax 11.4` ([docs/15](15_domain_correction.md)), and the files in use are the mosaicked `era5land_ext_*.nc`. What exists now: [docs/16 §1, §3.5](16_forcing_pipeline_audit.md). Entry point: [docs/00_INDEX.md](00_INDEX.md).
+
 **Domain:** whole Magdalena-Cauca basin — box `N 11.4, W −77.0, S 1.4, E −72.9`.
 **Files:** 108 monthly NetCDFs (2009–2017 × 12), named **`era5land_basin_<year>_M<mm>.nc`**, in `data/raw/climate/`.
 **Script:** `src/download_era5.py` (already set to this box + naming). Run: `python src/download_era5.py` — resumable.

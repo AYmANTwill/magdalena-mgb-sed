@@ -1,5 +1,7 @@
 # Data download guide (step by step)
 
+> **STATUS — recipes LIVE, bounding box SUPERSEDED.** The portal click-paths below are still the way to fetch each dataset, but the pilot box quoted in the next line is obsolete — the locked domain is `Xmin −77.0, Xmax −72.3, Ymin 1.4, Ymax 11.4` ([docs/15](15_domain_correction.md)). Entry point: [docs/00_INDEX.md](00_INDEX.md).
+
 Current pilot region (lower Magdalena, near the sea): **Xmin −75.4, Xmax −73.7, Ymin 8.2, Ymax 11.3** (WGS84, EPSG:4326).
 Save each dataset into its `data/raw/<folder>/`.
 

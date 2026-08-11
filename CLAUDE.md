@@ -5,6 +5,17 @@ study: La Niña 2011 (wet) vs El Niño 2015–16 (dry). UMNG internship, advisor
 
 ## Read these first
 
+- **`docs/00_INDEX.md` — START HERE. The single entry point.** One-paragraph project statement,
+  the five-document reading order for a newcomer, a status table for *every* doc (live /
+  historical / superseded / reserved, with successors), a WHERE-IS-IT table answering the
+  questions people actually ask (adopted hydrology and its skill · why Phase B closed · the
+  r-ceiling · the peak deficit · which SSC stations are usable · the observed ENSO contrast ·
+  what is embargoed · what is pre-registered · the open registers), and a list of findings that
+  still live only in `docs/agents/`. If a doc below disagrees with the index, **the doc wins** —
+  the index is a map, not a source. Live *status* is `progress_map.html`.
+
+The rest of this list is the deep reference — read the one the task touches, not all of them:
+
 - `docs/16_forcing_pipeline_audit.md` — **the knowledge base**: pipeline order, data defects found
   (zero-suppressed gauges!), development errors, and a traps reference (ERA5/DHIME/IDW pitfalls that
   produce plausible wrong numbers). Do not touch precipitation or ERA5 code before reading §6.

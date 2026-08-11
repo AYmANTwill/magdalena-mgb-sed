@@ -1,5 +1,7 @@
 # Report outline — MGB-SED / Magdalena (UMNG internship · EMINES)
 
+> **STATUS — STALE.** Every `[done]/[in progress]/[pending]` tag below predates docs/16 and everything after it; the report itself has not been written. For what the project now claims, read [docs/00_INDEX.md](00_INDEX.md) §4. The *presentation* deliverables that were produced are [docs/24](24_presentation_outline.md), [docs/27](27_presentation_script.md) and [docs/28](28_presentation_explained.md).
+
 Structure for the internship report. EMINES evaluates two components: a **research component** (this modelling study,
 assessed by UMNG via the report) and a **human-experience component** (a focused Colombia/Morocco comparison). Both are
 covered below. Status tags: **[done]**, **[in progress]**, **[pending]**.

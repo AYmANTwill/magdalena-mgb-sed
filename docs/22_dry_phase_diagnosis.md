@@ -1,5 +1,7 @@
 # 22 — The dry-phase diagnosis
 
+> **STATUS — LIVE, and still the document to read before touching calibration.** Forward context only: Phase B has since closed on this very result — the ceiling was adopted as the closing statement, with H2E as the configuration ([docs/30 §1](30_phase_c_plan.md), [docs/29](29_seed_expansion.md)) — and §4.7's ceiling was independently reconfirmed from the peak side by [docs/36 §2](36_peak_deficit_options.md). Nothing below is retracted. Entry point: [docs/00_INDEX.md](00_INDEX.md).
+
 Split out of [doc 18](18_hydrology_journal.md) §4 when that document passed 65 KB. This is
 the measured diagnosis of why the El Niño 2015–16 half of the ENSO contrast fails, and it is
 the document to read before touching calibration.

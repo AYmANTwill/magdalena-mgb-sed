@@ -1,5 +1,7 @@
 # Data sources (model inputs)
 
+> **STATUS — STALE (acquisition statuses only).** The roles and sources below are still correct; the "to obtain / status" column predates Phase A. What actually exists now is in [docs/16 §1](16_forcing_pipeline_audit.md) (forcing) and [docs/20 §2](20_reproduction_guide.md) (every artifact and how it rebuilds). Entry point: [docs/00_INDEX.md](00_INDEX.md).
+
 Inputs are grouped by role: data that build the **physical structure**, **climate forcing**, **parameters**, and
 **observed data** used for calibration/validation. See `04_model_structure.md` for the flow diagram.
 

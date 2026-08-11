@@ -1,5 +1,7 @@
 # Presentation plan — MGB-SED / Magdalena (methodology-focused)
 
+> **STATUS — SUPERSEDED.** This is the July deck (the "how do you plan to do all this?" answer). The delivered August deck is [docs/24](24_presentation_outline.md) (outline), [docs/27](27_presentation_script.md) (script) and [docs/28](28_presentation_explained.md) (every number explained). Entry point: [docs/00_INDEX.md](00_INDEX.md).
+
 **Audience:** Prof. Briceño Zuluaga (UMNG, EMINES).
 **Framing (critical):** the advisor's reply to our proposed solutions was *"how do you plan to do all this?"* — so the **spine of the deck is the methodology and the work plan**, not the context. Every slide should visibly answer *how*. Context/motivation is kept to a minimum; the middle third (model + preprocessing + calibration) and the work plan are the heart.
 **Scope of THIS talk (important):** the focus is the **hydrological modelling (MGB-SA)** — water balance, runoff generation, discharge calibration/validation, and the ENSO signal in discharge. The **sediment module / final MGB-SED implementation is NOT the centrepiece**; it appears only briefly as the **next phase (outlook)**. Rationale: hydrology must be calibrated first, and it is where our data is already collected and validated — so it is the defensible, concrete story for the advisor.

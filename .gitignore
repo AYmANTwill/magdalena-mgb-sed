@@ -42,3 +42,8 @@ cds_keys.txt
 # regenerable presentation artifacts
 figures/deck/
 *.pptx
+
+# superseded reference documents — knowledge extracted into docs/38
+Protocolo_descarga_*.docx
+Guia_descarga_*.docx
+Explanation_script_*.pdf

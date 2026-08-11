@@ -1,5 +1,7 @@
 # 25 — Plan to close the hydrological phase
 
+> **STATUS — HISTORICAL: this plan was executed.** Its stages produced [docs/26](26_phase3_refit.md) (the refit and H2 − H1) and [docs/29](29_seed_expansion.md) (the seed expansion and H2E), and the closing decision it was written to enable is recorded in [docs/30 §1](30_phase_c_plan.md). Read it for the *definition of done*, not for status. Entry point: [docs/00_INDEX.md](00_INDEX.md).
+
 **Scope decision: this plan ENDS at a defensible calibrated hydrological model.**
 Sediment (Phase C) is explicitly out of scope. Everything below exists to answer one
 question — *is the discharge model good enough to stand as a result on its own, and do we

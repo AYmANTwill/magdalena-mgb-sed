@@ -1,5 +1,7 @@
 # Sediment data status — BREAKTHROUGH (variable CM)
 
+> **STATUS — SUPERSEDED.** The "variable CM" discovery below stands, but every coverage claim here has been replaced by measurement: QC and the honest ceiling in [docs/19](19_sediment_qc_audit.md), and **which stations are actually usable** in [docs/32 §R6](32_ssc_qc_audit.md) (79 classified · 28 mapped · 6 usable + 12 with caveat). Its "Phase C blocked" framing is superseded by [docs/30 §1](30_phase_c_plan.md). Entry point: [docs/00_INDEX.md](00_INDEX.md).
+
 A colleague retrieved IDEAM sediment as the variable **CM = "Concentración media diaria" (kg/m³)** — the *mean daily
 suspended-sediment concentration*. This is far richer than the earlier "Concentración superficial promedio diario"
 (which was sparse and did not cover the study years). Files live in `data/raw/observed/sedimento/`.

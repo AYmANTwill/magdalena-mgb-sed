@@ -1,5 +1,7 @@
 # IDEAM discharge download tracker — Caudal medio diario
 
+> **STATUS — HISTORICAL.** The download it tracks is complete; what was consolidated and what was wrong with it is [docs/17 §1, §3](17_discharge_qc_audit.md). The código 21–29 basin filter below is still the correct rule. Entry point: [docs/00_INDEX.md](00_INDEX.md).
+
 Goal: daily discharge (`Caudal medio diario`) for **every station in the Magdalena-Cauca basin**, full
 historical record, to calibrate/validate MGB-SA hydrology (split-sample) and to feed the sediment rating curves.
 

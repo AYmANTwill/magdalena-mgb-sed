@@ -1,5 +1,7 @@
 # 21 — Project state and handoff
 
+> **STATUS — HISTORICAL SNAPSHOT (2026-08-03).** The reasoning below is live and this is still the best narrative introduction; the *status* is not. Phase B has since **closed on H2E** ([docs/30 §1](30_phase_c_plan.md), [docs/29](29_seed_expansion.md), [docs/26](26_phase3_refit.md) Addendum) and Phase C is in flight ([docs/31](31_phase_c_workplan.md)). Live status: `progress_map.html`. Entry point: [docs/00_INDEX.md](00_INDEX.md).
+
 Written 2026-08-03, at the close of the documentation debt push. Audience: a newcomer with
 no conversation history. This is *what the project currently claims and owes*; how to
 rebuild any of it is [doc 20](20_reproduction_guide.md).

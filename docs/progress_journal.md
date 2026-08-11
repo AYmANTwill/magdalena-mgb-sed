@@ -1,5 +1,7 @@
 # Progress journal
 
+> **STATUS — LIVE as a chronology, but it stops at 2026-08-03.** Everything after that date (Phase B's closure, and Phase C stages C0–C3) is recorded in [docs/30](30_phase_c_plan.md)–[docs/36](36_peak_deficit_options.md) and in the live tracker `progress_map.html`. Entry point: [docs/00_INDEX.md](00_INDEX.md).
+
 Dated log of understanding and realization. **Updated at each new step.** Newest entries on top.
 
 ---

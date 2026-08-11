@@ -1,5 +1,7 @@
 # PROGRESS — the whole project as one checklist tree
 
+> **STATUS — SUPERSEDED by `progress_map.html`** (repo root, open in a browser), which is the live tracker and is kept current. ⚠ The document index near the bottom of this file still carries the **pre-collision numbering** (33/34/35); the correct assignment is 33 = C2b pre-registration · 34 = C2 observed contrast · 35 = q_peak registration · 36 = peak-deficit adjudication. Entry point: [docs/00_INDEX.md](00_INDEX.md).
+
 **What this is.** A single, maintained map of every phase, stage, subtask, document, and
 key artifact in `magdalena-mgb-sed`, with a status marker on each. It is the *index of
 truth for where we are*; the *why* for any item lives in the doc cited next to it. The

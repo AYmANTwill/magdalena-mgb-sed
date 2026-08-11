@@ -1,5 +1,7 @@
 # Data collection plan (MGB-SA / hydrology)
 
+> **STATUS — STALE.** The provisional bounding box below (lat 1.8–7.0 N, lon 76.7–73.3 W) and the pilot-first scope were both superseded: the locked domain is in [docs/15](15_domain_correction.md) and the study runs on the **whole basin** (8,672 minibacias, 257,097 km²). Environment and regeneration: [docs/20](20_reproduction_guide.md). Entry point: [docs/00_INDEX.md](00_INDEX.md).
+
 Living checklist of every dataset needed to build and calibrate MGB-SA on the Magdalena. Sediment-specific data
 (IDEAM sediment stations, MUSLE factors) are deferred with the sediment module.
 
