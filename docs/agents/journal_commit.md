@@ -833,3 +833,53 @@ I did NOT amend (the sequence is cleaner to audit with the error visible). The c
 into the NEXT commit's message (`92cf372`, final paragraph) and is handed back in my output. The
 lesson for the next agent: an inherited journal's "known gaps" list is a snapshot, and a later area
 may have closed one — re-grep before repeating it.
+
+## Steps 13-15 — journals committed, PUSH DONE, confirmed against the remote ref
+
+- group 8 (15 area journals): `c74467f`, +2453/-202, 12 `create mode`
+- my own journal: `7bbd4ee`, +160
+- pre-push `git status --short -uall`: **EMPTY**
+- pre-push safety sweep, `git diff --name-only 1f131d7..HEAD | grep -Ei '(^data/|\.pptx$|\.docx$|figures/deck/|cds_keys|\.claude/)'`
+  returns **only the three `.docx`**, and `--diff-filter=D` confirms all three are DELETIONS, not
+  additions. `git ls-files --error-unmatch cds_keys.txt` and `... MGB-SED_Magdalena_FIGURES.pptx`
+  both error "did not match any file(s) known to git" — neither is tracked, as required.
+- frozen artifacts re-checked immediately before the push: 546,366,478 B @ 08-10 13:54 /
+  1,278 B @ 14:03 / 3,017,869 B @ 14:03 — identical to step 1. **Untouched.**
+- `git push origin main` -> `1f131d7..7bbd4ee  main -> main`
+- confirmed against the remote, not assumed: `git fetch origin main` then
+  `git rev-list --left-right --count origin/main...HEAD` -> **0	0**, and
+  `git rev-parse origin/main HEAD` -> both `7bbd4eee3dfbe8db0f2ce90b6554238c568db96b`
+- post-push `git status --short`: **EMPTY**. Eight commits, 52 paths, nothing outstanding.
+
+## Handback (also in my structured output)
+
+1. **`tests/` is still 2 failed / 94 passed on `main`** — third run in a row this is handed on. Root
+   cause is unchanged: `data/processed/urh_cp_factors.csv` is **gitignored**, so the revised
+   C-factor table that `docs/41` adopted cannot be versioned, and `test_sediment.py`'s literal C set
+   `{0.003, 0.005, 0.01, 0.2, 1.0, 0.0, 0.001}` does not contain the new `{0.015, 0.03, 0.5}`. Two
+   fixes are possible and it is a decision, not a chore: version the table (change `.gitignore`), or
+   parameterise the assertions over `cp_revision`. Until one is chosen, a clean clone cannot pass.
+2. **`docs/00_INDEX.md` line 154 is stale**: its WHERE-IS-IT answer still ends "it is failed - the
+   model is under-erosive by 1.03-2.27x", which `docs/37` A1.9 superseded with 4'' NOT ESTABLISHED /
+   direction unknown. `progress_map.html` and `docs/PROGRESS.md` are fine (verified by grep; see
+   step 6a). Not in this run's mandate.
+3. **`docs/00_INDEX.md` still lists 38 and 39 as RESERVED** though both now exist and are committed,
+   and its §7.5 repeats a register list that `docs/39` N2 refutes (`journal_hygiene-critic.md`).
+   It also does not mention `docs/40`, `41` or `42` at all — the index is now three documents behind
+   the repository it maps.
+4. **`docs/38` §1.1 silently prefers OMAR.docx's values** where the two source protocols disagree,
+   and the source `.docx` are now DELETED — so PRECIPITACION.docx's "Periods 2011 + 2015-16, two
+   separate queries" and its per-station `<codigo>.csv` output spec exist nowhere in the repo. This
+   is the one place where the hygiene deletion lost information. Recoverable from git history
+   (`git show b06d6e3^:Protocolo_descarga_PRECIPITACION.docx`), which is why the deletions were
+   committed rather than left as untracked `rm`s.
+5. `journal_critic.md` FINDING 5 stands unaddressed as a **process** matter: a run's summary drifted
+   optimistic relative to its own documents (1.59-2.74x vs the correct 1.03-2.27x, and re-spending
+   the C revision that was already inside it). The documents are right; anything quoting the summary
+   is not.
+6. `notebooks/15-18` are committed as EXECUTED, ~11.9 MB of outputs. Precedent existed
+   (`13_baseline_run.ipynb` is 2.78 MB) but the repo is now materially heavier; if that becomes a
+   problem the generators alone are sufficient to rebuild them.
+
+CHECKLIST (run 4): [x]0 [x]1 [x]2 [x]3 [x]4 [x]5 [x]6 [x]7 [x]8 [x]9 [x]10 [x]11 [x]12 [x]13 [x]14
+[x]15. TASK COMPLETE — 8 commits, pushed, `git status` clean.
