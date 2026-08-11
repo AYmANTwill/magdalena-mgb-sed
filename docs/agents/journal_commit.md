@@ -597,3 +597,43 @@ still `a4746a8`. So for untracked paths I must `git add` them first. I add them 
 (never `-A`, never `.`), then still commit WITH a pathspec so the three `.docx` deletions that
 were already sitting in the index cannot ride along. `git diff --cached --name-only` is printed
 before each commit and `git show --stat HEAD` after it, so what landed is read from output.
+
+## Steps 5-9 — five content commits, each verified from `git show --stat HEAD`
+
+| # | commit | files | what |
+|---|---|---|---|
+| 1 | evidence | **5** | units / ls-aggregation / ls-resolution / dimensional-audit journals + this journal |
+| 2 | code | **3** | `src/mgb_sediment.py`, `tests/test_sediment.py`, `journal_recompute.md` |
+| 3 | verdict | **2** | `docs/37_c3_closure.md` (line 1 = OPEN), `docs/35` §9.1-§9.3 amendments |
+| 4 | fixer | **2** | `docs/39_contradiction_audit.md`, `journal_fixer.md` |
+| 5 | tracker | **2** | `progress_map.html`, `journal_tracker.md` |
+
+**14 files total, largest commit 5 — no commit came near the 40-file stop.** Mandated order
+held: evidence landed before the verdict that rests on it, and the code between them.
+Every `git show --stat HEAD` was read; the three staged `.docx` deletions appear in **none** of
+the five stats, which is the proof that the pathspec commits excluded them as intended.
+
+## Step 10 — pre-push verification (all from executed output)
+
+- `git diff --name-only` over all 13 mandate paths -> **empty**. The committed state IS the
+  on-disk state; no concurrent agent moved a file of mine between commit and check.
+- `src/mgb_sediment.py` mtime 08:54 immediately before AND immediately after commit 2 -> the
+  `reverdict` run did not write during the commit, so nothing torn was recorded.
+- Frozen artifacts re-listed: 546,366,478 / 1,278 / 3,017,869 B, mtimes 2026-08-10 13:54 /
+  14:03 / 14:03 — **identical to step 2**, untouched by this run.
+- Never used `git add -A` or `git add .`; the only `git add` calls named 6 individual untracked
+  paths. No `--no-verify`, no `--force`, no amend, no rebase.
+
+### What I am deliberately leaving uncommitted (NOT mine, and I did not touch any of it)
+
+34 dirty paths remain and every one belongs to an area outside my WORK list: `.gitignore`,
+`CLAUDE.md`, 14 modified `docs/*.md` (02, 03, 05, 08, 09, 11, 12, 13, 14, 21, 22, 25, PROGRESS,
+progress_journal, open_questions, era5_download_checklist), `journal_critic.md`, the three
+already-staged `.docx` deletions, and 13 untracked files from areas that finished alongside me —
+`docs/00_INDEX.md`, `docs/38`, **`docs/40_sdr_evidence.md`**, **`docs/41_cfactor_evidence.md`**,
+**`docs/42_c4_guards.md`**, and the `alpha-guard` / `cite-sdr` / `cite-cfactor` / `consolidate` /
+`contradictions` / `hygiene` / `hygiene-critic` / **`reverdict`** journals. docs/40-42 and the
+still-running `reverdict` output are the substantive handback: they are the citation runs whose
+C-factor table is what turned my test suite red, and they need their own commit agent.
+
+Next: `git push origin main`.
