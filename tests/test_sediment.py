@@ -148,7 +148,10 @@ def test_engine_strictly_increasing_in_k_c_ls2d():
 # 3. hand-computed single-cell case, to 1e-12
 # --------------------------------------------------------------------------------------
 
-# One COP90 pixel, 0.0081 km2, one day, Qsur = 10 mm, K = 0.03, C = 0.2, P = 1, LS2D = 5.
+# One COP90 pixel, 0.0081 km2, one day, Qsur = 10 mm, K = 0.03, C = 0.2, P = 1, LS2D = 5,
+# at the PRE-AMENDMENT convention (volume_convention='pixel_km2', k_unit_system='si_stored').
+# Kept as-is so the pre-2026-08-11 arithmetic stays pinned and the amendment's factor is
+# measurable against something fixed.
 #
 #   q_peak = 10 mm * 0.0081 km2 / 86.4        = 0.0009375        m3/s
 #   product = 10 * 0.0009375 * 0.0081         = 7.59375e-05
@@ -158,6 +161,15 @@ HAND_QSUR_MM = 10.0
 HAND_QPEAK_M3S = 10.0 * 0.0081 / 86.4
 HAND_PRODUCT = 10.0 * HAND_QPEAK_M3S * 0.0081
 HAND_LOAD_T = 11.8 * math.pow(HAND_PRODUCT, 0.56) * 0.03 * 0.2 * 1.0 * 5.0
+
+#: The pre-amendment parameter set, by name.  Every test that compares against HAND_LOAD_T
+#: must pass this explicitly - after 2026-08-11 the DEFAULTS are a different convention.
+LEGACY = dict(volume_convention="pixel_km2", k_unit_system="si_stored")
+
+#: The same pixel-day under the ADOPTED convention.  The two unit corrections are
+#: 1000**beta (inside the power) and 1/0.1317 (linear on K), i.e. 47.8630 x 7.593014.
+ADOPTED_UNIT_FACTOR = math.pow(1000.0, 0.56) / 0.1317
+HAND_LOAD_T_ADOPTED = HAND_LOAD_T * ADOPTED_UNIT_FACTOR
 
 
 def test_hand_computed_single_pixel_primitive():
@@ -173,17 +185,136 @@ def test_hand_computed_single_pixel_through_the_engine():
     """The engine on a one-pixel URH must reproduce the same number to 1e-12 relative.
 
     This is the end-to-end unit check: it goes through the registered q_peak proxy, the
-    pixel-count scaling, the delivery reservoir and the ledger.
+    pixel-count scaling, the delivery reservoir and the ledger.  Run twice: at the
+    pre-amendment convention (against HAND_LOAD_T) and at the adopted default (against
+    HAND_LOAD_T_ADOPTED), so the amendment is pinned from both sides.
     """
     g = sed.build_geometry(
         mini_ids=[7], mini_area_km2=[0.0081], cell_mini=[0], cell_urh_code=[14],
         cell_area_km2=[0.0081], mini_k=[0.03], class_c={4: 0.2}, class_p={4: 1.0},
         cell_ls2d=[5.0],
     )
-    r = sed.simulate_sediment(g, sed.SedParams(), np.array([[HAND_QSUR_MM]]),
+    for params, expect in ((sed.SedParams(**LEGACY), HAND_LOAD_T),
+                           (sed.SedParams(), HAND_LOAD_T_ADOPTED)):
+        r = sed.simulate_sediment(g, params, np.array([[HAND_QSUR_MM]]),
+                                  backend="cells", dtype_out=np.float64)
+        assert abs(float(r.delivered_t_day[0, 0]) - expect) <= 1e-12 * expect
+        assert abs(r.ledger["eroded_t"] - expect) <= 1e-12 * expect
+
+
+# --------------------------------------------------------------------------------------
+# 3b. the audit's hand-computed REAL unit-day (regression, exact value)
+# --------------------------------------------------------------------------------------
+
+# The 2026-08-11 independent audit hand-computed one real minibacia-day entirely from the
+# frozen inputs, with the unit chosen by a rule fixed BEFORE any sediment number was looked
+# at: the minibacia at the basin median of decadal Qsur, on its own maximum-Qsur day.
+#
+#   minibacia 16115, 2009-04-11 (its own max-Qsur day, verified below against the frozen npz)
+#   Qsur   = 26.677167892456055 mm/day     h2e_drivers.npz:qsur_rel_mm[100, col(16115)]
+#   area   = 24.49 km2                     minibacias.csv x urh_fractions.csv (fraction 1.0)
+#   ONE URH cell, code 11 = Forest         urh_fractions.csv: '11' is the only non-zero column
+#   K      = 0.019   (SI, as stored)       minibacia_soil_params.csv
+#   C      = 0.003, P = 1.0                urh_cp_factors.csv class_id 1
+#   LS2D   = 118.245                       urh_ls2d.csv:ls2d_hs (mini 16115, urh 11)
+#
+# The arithmetic, at the ADOPTED convention (f_vol = 1000, f_K = 1/0.1317):
+#   n_pix   = 24.49 / 0.0081                   = 3023.456790123457
+#   q_peak  = 26.677167892456055*0.0081/86.4   = 2.5009844899177547e-03  m3/s
+#   product = Qsur * q_peak * a_p * 1000       = 0.54042538338511248
+#   ^0.56                                      = 0.70848720916668628
+#   K_us    = 0.019 / 0.1317                   = 0.14426727410782078
+#   per pixel = 11.8 * 0.70848...  * K_us * 0.003 * 1.0 * 118.245 = 0.42784443518775633 t
+#   x n_pix                                    = 1293.5691626849571 tonnes/day
+UNIT_DAY_QSUR_MM = 26.677167892456055
+UNIT_DAY_MINI_ID = 16115
+UNIT_DAY_DATE = "2009-04-11"
+UNIT_DAY_ROW = 100
+UNIT_DAY_LOAD_T = 1293.5691626849571
+
+
+def _unit_day_geometry():
+    return sed.build_geometry(
+        mini_ids=[UNIT_DAY_MINI_ID], mini_area_km2=[24.49], cell_mini=[0],
+        cell_urh_code=[11], cell_area_km2=[24.49], mini_k=[0.019],
+        class_c={1: 0.003}, class_p={1: 1.0}, cell_ls2d=[118.245],
+    )
+
+
+def test_audit_hand_computed_real_unit_day_exact_value():
+    """REGRESSION: the audit's real unit-day must give 1293.5691626849571 t/day.
+
+    The expected value is a hand computation (the comment block above walks every
+    intermediate), NOT a recorded engine output, so this test can fail the engine rather than
+    merely echo it.  It pins the whole adopted chain at once: the registered q_peak proxy, the
+    pixel count, ``volume_convention='williams_m3'`` and ``k_unit_system='us_customary'``.
+    """
+    g = _unit_day_geometry()
+    r = sed.simulate_sediment(g, sed.SedParams(), np.array([[UNIT_DAY_QSUR_MM]]),
                               backend="cells", dtype_out=np.float64)
-    assert abs(float(r.delivered_t_day[0, 0]) - HAND_LOAD_T) <= 1e-12 * HAND_LOAD_T
-    assert abs(r.ledger["eroded_t"] - HAND_LOAD_T) <= 1e-12 * HAND_LOAD_T
+    got = float(r.delivered_t_day[0, 0])
+    assert abs(got - UNIT_DAY_LOAD_T) <= 1e-12 * UNIT_DAY_LOAD_T, got
+    # the collapsed backend must reach the same number by its own route
+    r2 = sed.simulate_sediment(g, sed.SedParams(), np.array([[UNIT_DAY_QSUR_MM]]),
+                               backend="collapsed", dtype_out=np.float64)
+    assert abs(float(r2.delivered_t_day[0, 0]) - UNIT_DAY_LOAD_T) <= 1e-12 * UNIT_DAY_LOAD_T
+    # and re-derive it from the literal arithmetic, independently of the module's internals
+    n_pix = 24.49 / 0.0081
+    q_peak = UNIT_DAY_QSUR_MM * 0.0081 / 86.4
+    product = UNIT_DAY_QSUR_MM * q_peak * 0.0081 * 1000.0
+    expect = (n_pix * 11.8 * math.pow(product, 0.56) * (0.019 / 0.1317) * 0.003 * 1.0
+              * 118.245)
+    assert abs(expect - UNIT_DAY_LOAD_T) <= 1e-12 * UNIT_DAY_LOAD_T
+
+
+def test_audit_unit_day_at_the_pre_amendment_convention():
+    """The same day at the pre-amendment convention, and the ratio between them.
+
+    3.559388794358739 t/day was what this engine produced before 2026-08-11 for that cell-day;
+    the amendment multiplies it by exactly ``1000**0.56 / 0.1317 = 363.4245196``.  Pinning
+    both ends means the amendment cannot be silently widened or narrowed later.
+    """
+    g = _unit_day_geometry()
+    q = np.array([[UNIT_DAY_QSUR_MM]])
+    legacy = float(sed.simulate_sediment(g, sed.SedParams(**LEGACY), q, backend="cells",
+                                        dtype_out=np.float64).delivered_t_day[0, 0])
+    assert abs(legacy - 3.559388794358739) <= 1e-12 * 3.559388794358739
+    assert abs(UNIT_DAY_LOAD_T / legacy - 363.424519607167) <= 1e-9 * 363.424519607167
+    assert abs(ADOPTED_UNIT_FACTOR - 363.424519607167) <= 1e-9 * 363.424519607167
+
+
+@needs_csvs
+@needs_drivers
+def test_audit_unit_day_reproduces_from_the_real_files(basin_geometry):
+    """The same number, but with every input read from the real CSVs and the frozen npz.
+
+    This is the join guard for the regression above: the synthetic version could pass while
+    ``load_geometry`` handed minibacia 16115 the wrong LS2D or the driver column order was
+    scrambled.  Here the id, the date and all five factors come from disk.
+    """
+    drivers = sed.load_drivers(DRIVERS)
+    col = int(np.flatnonzero(drivers.mini_ids == UNIT_DAY_MINI_ID)[0])
+    row = int(np.flatnonzero(
+        drivers.dates.astype("datetime64[D]") == np.datetime64(UNIT_DAY_DATE))[0])
+    assert row == UNIT_DAY_ROW
+    q = float(drivers.qsur_mm[row, col])
+    assert q == UNIT_DAY_QSUR_MM
+    # the rule that selected the day: it is that minibacia's own maximum-Qsur day
+    assert int(np.argmax(drivers.qsur_mm[:, col])) == row
+
+    g = basin_geometry
+    j = int(np.flatnonzero(g.cell_mini == int(g.index_of([UNIT_DAY_MINI_ID])[0]))[0])
+    assert int(g.cell_urh_code[j]) == 11
+    assert abs(g.cell_ls2d[j] - 118.245) < 1e-9
+    assert abs(g.cell_k[j] - 0.019) < 1e-12
+    assert abs(g.cell_c[j] - 0.003) < 1e-12
+    assert abs(g.cell_area_km2[j] - 24.49) < 1e-9
+
+    r = sed.simulate_sediment(g, sed.SedParams(), drivers.qsur_mm[row:row + 1],
+                              backend="collapsed", dtype_out=np.float64,
+                              record_ids=[UNIT_DAY_MINI_ID])
+    got = float(r.delivered_t_day[0, 0])
+    assert abs(got - UNIT_DAY_LOAD_T) <= 1e-9 * UNIT_DAY_LOAD_T, got
 
 
 # --------------------------------------------------------------------------------------
@@ -220,32 +351,33 @@ def test_units_audit_tonnes_per_day():
     one_pixel = sed.musle_load_tonnes(10.0, water_m3 / 86400.0, 0.0081, 0.03, 0.2, 1.0, 5.0)
     assert abs(float(one_pixel) - HAND_LOAD_T) <= 1e-12 * HAND_LOAD_T
 
-    # stage 3a: exactly linear in area (100 pixels = 0.81 km2)
+    # stage 3a: exactly linear in area (100 pixels = 0.81 km2), at the pre-amendment
+    # convention so the comparison is against the hand arithmetic above
     g100 = sed.build_geometry(
         mini_ids=[1], mini_area_km2=[0.81], cell_mini=[0], cell_urh_code=[14],
         cell_area_km2=[0.81], mini_k=[0.03], class_c={4: 0.2}, class_p={4: 1.0},
         cell_ls2d=[5.0],
     )
-    r1 = sed.simulate_sediment(g100, sed.SedParams(), np.array([[10.0]]),
+    r1 = sed.simulate_sediment(g100, sed.SedParams(**LEGACY), np.array([[10.0]]),
                                dtype_out=np.float64)
     assert abs(r1.ledger["eroded_t"] - 100.0 * HAND_LOAD_T) <= 1e-12 * 100.0 * HAND_LOAD_T
 
     # stage 3b: exactly additive over days
-    r3 = sed.simulate_sediment(g100, sed.SedParams(), np.full((3, 1), 10.0),
+    r3 = sed.simulate_sediment(g100, sed.SedParams(**LEGACY), np.full((3, 1), 10.0),
                                dtype_out=np.float64)
     assert abs(r3.ledger["eroded_t"] - 3.0 * r1.ledger["eroded_t"]) <= 1e-12 * r3.ledger["eroded_t"]
 
 
 def test_volume_convention_factor_is_exactly_1000_to_the_beta():
-    """The two unit conventions of the docstring differ by exactly 1000**beta = 47.86x.
+    """The unit conventions of the docstring differ by exactly 1000**beta = 47.8630x.
 
-    This is the open unit question stated in the module docstring: it is a documented
-    constant, and pinning it here is what stops it from being quietly folded into alpha
-    (which would need alpha ~ 565, 16x past the docs/35 §6.1 hard stop of 35.4).
+    A documented constant; pinning it here is what stops it from being quietly folded into
+    alpha (which would need alpha ~ 565, 16x past the docs/35 §6.1 hard stop of 35.4).
     """
     g = _geom()
     q = np.full((4, 2), 7.0)
-    a = sed.simulate_sediment(g, sed.SedParams(), q).ledger["eroded_t"]
+    a = sed.simulate_sediment(g, sed.SedParams(volume_convention="pixel_km2"),
+                              q).ledger["eroded_t"]
     b = sed.simulate_sediment(g, sed.SedParams(volume_convention="williams_m3"),
                               q).ledger["eroded_t"]
     factor = math.pow(1000.0, sed.WILLIAMS_BETA)
@@ -253,6 +385,108 @@ def test_volume_convention_factor_is_exactly_1000_to_the_beta():
     assert abs(factor - 47.863009232263856) < 1e-9
     # and the compensation it would require is past the registered hard stop
     assert sed.SedParams(alpha=sed.WILLIAMS_ALPHA * factor).check()["status"] == "STOP"
+
+
+# --------------------------------------------------------------------------------------
+# 4b. the convention matrix: every named option returns its DOCUMENTED factor
+# --------------------------------------------------------------------------------------
+
+#: name -> (documented load multiplier relative to the option's own reference member)
+DOCUMENTED_VOLUME_LOAD_FACTORS = {
+    "pixel_km2": 1.0,
+    "swat_mm_ha": math.pow(100.0, 0.56),      # 13.1826
+    "williams_m3": math.pow(1000.0, 0.56),    # 47.8630
+}
+DOCUMENTED_K_FACTORS = {"si_stored": 1.0, "us_customary": 1.0 / 0.1317}
+DOCUMENTED_LS_AGG_FACTORS = {"area_weighted_mean": 1.0, "per_cell_median": 16.555 / 30.605}
+DOCUMENTED_LS_RES_FACTORS = {"native_90m": 1.0, "rescale_740m_ref": 7.51 / 12.5}
+
+
+@pytest.mark.parametrize("name,expect", sorted(DOCUMENTED_VOLUME_LOAD_FACTORS.items()))
+def test_each_volume_convention_returns_its_documented_load_factor(name, expect):
+    """Measured on the engine, relative to ``pixel_km2``: 1 / 13.1826 / 47.8630.
+
+    The volume factor sits inside ``^beta``, so the LOAD factor is ``F**beta`` and not ``F``.
+    Getting that wrong is a 1000-vs-47.9 error, which is why it is asserted and not commented.
+    """
+    g, q = _geom(), np.full((3, 2), 6.5)
+    ref = sed.simulate_sediment(g, sed.SedParams(volume_convention="pixel_km2", **{
+        "k_unit_system": "si_stored"}), q).ledger["eroded_t"]
+    got = sed.simulate_sediment(g, sed.SedParams(volume_convention=name,
+                                                k_unit_system="si_stored"),
+                                q).ledger["eroded_t"]
+    assert abs(got / ref - expect) <= 1e-12 * expect
+    p = sed.SedParams(volume_convention=name)
+    assert p.volume_factor == sed.VOLUME_FACTORS[name]
+    assert abs(p.convention_summary()["volume_load_multiplier"] - expect) <= 1e-12 * expect
+
+
+@pytest.mark.parametrize("name,expect", sorted(DOCUMENTED_K_FACTORS.items()))
+def test_each_k_unit_system_returns_its_documented_load_factor(name, expect):
+    """K multiplies the load LINEARLY (it is outside ``^beta``): 1.0 or 7.593014.
+
+    7.593014 = 1/0.1317, the exact inverse of the SI conversion
+    ``notebooks/09_soil_parameters.ipynb`` §4 documents applying to Wischmeier & Smith's
+    US-customary class values.  ``alpha`` = 11.8 belongs to the US-customary numerics.
+    """
+    g, q = _geom(), np.full((3, 2), 6.5)
+    ref = sed.simulate_sediment(g, sed.SedParams(k_unit_system="si_stored"),
+                                q).ledger["eroded_t"]
+    got = sed.simulate_sediment(g, sed.SedParams(k_unit_system=name), q).ledger["eroded_t"]
+    assert abs(got / ref - expect) <= 1e-12 * expect
+    assert abs(sed.SedParams(k_unit_system=name).k_factor - expect) <= 1e-12 * expect
+    assert abs(sed.K_US_PER_K_SI - 7.593014426727411) < 1e-9
+
+
+@pytest.mark.parametrize("name,expect", sorted(DOCUMENTED_LS_AGG_FACTORS.items()))
+def test_each_ls2d_aggregation_returns_its_documented_load_factor(name, expect):
+    """LS2D multiplies linearly too.  ADOPTED ``area_weighted_mean`` is EXACTLY 1.000.
+
+    The 1.000 is the point: the LS aggregation choice contributes nothing to the C3.6
+    order-of-magnitude gap, and this test is what keeps that claim honest.
+    """
+    g, q = _geom(), np.full((3, 2), 6.5)
+    ref = sed.simulate_sediment(g, sed.SedParams(), q).ledger["eroded_t"]
+    got = sed.simulate_sediment(g, sed.SedParams(ls2d_aggregation=name), q).ledger["eroded_t"]
+    assert abs(got / ref - expect) <= 1e-12 * expect
+    if name == sed.DEFAULT_LS2D_AGGREGATION:
+        assert expect == 1.0
+        assert got == ref                      # x1.0 is bitwise identity, not near-identity
+
+
+@pytest.mark.parametrize("name,expect", sorted(DOCUMENTED_LS_RES_FACTORS.items()))
+def test_each_ls2d_resolution_returns_its_documented_load_factor(name, expect):
+    """ADOPTED ``native_90m`` is EXACTLY 1.000 - no resolution rescaling is applied."""
+    g, q = _geom(), np.full((3, 2), 6.5)
+    ref = sed.simulate_sediment(g, sed.SedParams(), q).ledger["eroded_t"]
+    got = sed.simulate_sediment(g, sed.SedParams(ls2d_resolution=name), q).ledger["eroded_t"]
+    assert abs(got / ref - expect) <= 1e-12 * expect
+    if name == sed.DEFAULT_LS2D_RESOLUTION:
+        assert expect == 1.0
+        assert got == ref
+
+
+def test_the_adopted_default_is_exactly_363_424x_the_pre_amendment_default():
+    """The whole 2026-08-11 amendment, as one number, on the engine.
+
+    ``1000**0.56 * (1/0.1317) = 363.4245196``.  Any future edit that changes a default without
+    an amendment moves this ratio and fails here.
+    """
+    g, q = _geom(), np.full((5, 2), 4.25)
+    legacy = sed.simulate_sediment(g, sed.SedParams(**LEGACY), q).ledger["eroded_t"]
+    adopted = sed.simulate_sediment(g, sed.SedParams(), q).ledger["eroded_t"]
+    assert abs(adopted / legacy - 363.424519607167) <= 1e-10 * 363.424519607167
+
+
+def test_unknown_convention_names_are_rejected_not_silently_ignored():
+    for kwargs, match in (
+        ({"volume_convention": "m3"}, "volume_convention"),
+        ({"k_unit_system": "metric"}, "k_unit_system"),
+        ({"ls2d_aggregation": "median"}, "ls2d_aggregation"),
+        ({"ls2d_resolution": "90m"}, "ls2d_resolution"),
+    ):
+        with pytest.raises(ValueError, match=match):
+            sed.SedParams(**kwargs)
 
 
 def test_pixel_scale_matters_by_the_registered_factor():
@@ -398,14 +632,26 @@ def test_params_are_frozen():
 
 
 def test_registered_defaults_are_the_williams_starting_values():
-    """Pin the documented defaults: 11.8 / 0.56 / FG 1.0 / pixel 0.0081 km2 / tau 0."""
+    """Pin the documented defaults, INCLUDING the 2026-08-11 convention amendment.
+
+    ``volume_convention`` and ``k_unit_system`` changed on 2026-08-11 (module docstring,
+    CONVENTION AMENDMENT; docs/35 §9.2).  If this test fails, a default moved - reconcile the
+    docstring, docs/35 §9 and docs/37 before touching the assertion.
+    """
     p = sed.SedParams()
     assert (p.alpha, p.beta) == (11.8, 0.56)
     assert p.fg == 1.0
     assert p.pixel_area_km2 == 0.0081
     assert p.tau_delivery_days == 0.0
-    assert p.volume_convention == "pixel_km2"
+    assert p.volume_convention == "williams_m3" == sed.DEFAULT_VOLUME_CONVENTION
+    assert p.k_unit_system == "us_customary" == sed.DEFAULT_K_UNIT_SYSTEM
+    assert p.ls2d_aggregation == "area_weighted_mean" == sed.DEFAULT_LS2D_AGGREGATION
+    assert p.ls2d_resolution == "native_90m" == sed.DEFAULT_LS2D_RESOLUTION
+    assert p.ls2d_factor == 1.0
     assert p.check()["status"] == "ok"
+    # every prior convention is still reachable by name (the choice stays reversible)
+    assert set(sed.VOLUME_CONVENTIONS) == {"pixel_km2", "swat_mm_ha", "williams_m3"}
+    assert set(sed.K_UNIT_SYSTEMS) == {"si_stored", "us_customary"}
 
 
 # --------------------------------------------------------------------------------------

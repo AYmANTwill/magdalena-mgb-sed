@@ -17,13 +17,21 @@ It re-runs NOTHING.  The hydrology is read from
 ``theta_crit`` 0.6, F 0.25931).  ``src/mgb_hydrology.py`` and that file are frozen twice
 over (Phase B closed twice, docs/33 §8) and are opened read-only here.
 
-THE EQUATION, EXACTLY AS PRE-REGISTERED (docs/35 §4, registered 2026-08-11)
---------------------------------------------------------------------------
+THE EQUATION, AS PRE-REGISTERED (docs/35 §4, registered 2026-08-11) AND AS AMENDED
+---------------------------------------------------------------------------------
 ::
 
-    Sed_URH = (A_URH / a_p) * alpha * (Qsur * q_peak * a_p)^beta * K * C * P * LS2D * FG
+    Sed_URH = (A_URH / a_p) * alpha * (Qsur * q_peak * a_p * f_vol)^beta
+                            * (K * f_K) * C * P * (LS2D * f_LS) * FG
     q_peak  = Qsur * a_p / 86.4                        (Buarque 2015 eq. 7)
     a_p     = 0.0081 km2                               (COP90 pixel, the registered scale)
+    f_vol   = 1000  (``volume_convention='williams_m3'``, DEFAULT since 2026-08-11)
+    f_K     = 7.593014  (``k_unit_system='us_customary'``, DEFAULT since 2026-08-11)
+    f_LS    = 1.0   (``ls2d_aggregation='area_weighted_mean'`` x ``ls2d_resolution='native_90m'``)
+
+``f_vol`` and ``f_K`` are the two unit-system corrections adopted on 2026-08-11 (see
+CONVENTION AMENDMENT below).  They are NOT calibration knobs: each is a fixed, derived
+constant, and each is reversible by name.
 
 i.e. MUSLE is evaluated **per DEM pixel** and multiplied by the number of pixels in the
 URH cell, which is what keeps a fitted ``alpha`` comparable to Williams' 11.8 with no
@@ -53,16 +61,79 @@ adopted unchanged by Buarque (2015) eq. 5 *with this same daily-mean* ``q_peak``
 are here only so the module runs before stage C4 fits them.  C4's registered bands and hard
 stops live in ``qpeak.check_musle_parameters`` - call it, do not retype the numbers.
 
-UNITS - AND THE ONE OPEN UNIT QUESTION, STATED NOT HIDDEN
----------------------------------------------------------
-* ``Qsur`` mm/day, ``q_peak`` m3/s, areas km2, ``K`` t.ha.h/(ha.MJ.mm), ``C``/``P``/``LS2D``
-  dimensionless, output **tonnes/day**.
+CONVENTION AMENDMENT - 2026-08-11 - TWO DEFAULTS CHANGED, WITH THEIR REASONS
+---------------------------------------------------------------------------
+Stated here, at the top, because a silently changed default is the failure mode this module's
+docstring exists to prevent.  Both changes are unit-system corrections resolved from source
+derivations, and both are recorded as an amendment in docs/35 §9.2.
+
+1. ``volume_convention``: ``'pixel_km2'`` -> ``'williams_m3'`` (x1000 product, x47.8630 load).
+   REASON.  Williams' English-unit regression is ``Y[short ton] = 95 (Q[acre-ft] * q_p[cfs])^0.56
+   K C P LS``.  Converting the dimensional quantities only (1 acre-ft = 1233.4818375 m3,
+   1 cfs = 0.028316846592 m3/s, 1 short ton = 0.90718474 t) gives
+   ``95 * 0.90718474 / (1233.4818375*0.028316846592)^0.56 = 95*0.90718474/34.92823^0.56 =
+   11.7818``, i.e. **11.8 is the coefficient for runoff volume in m3 and q_peak in m3/s**
+   (0.15 % from the published 11.8).  Read as ``mm*ha`` the same derivation gives 42.78, read
+   as ``mm*km2`` it gives 563.95 - so neither ``swat_mm_ha`` nor the previously registered
+   ``pixel_km2`` can carry ``alpha`` = 11.8.  Independently re-derived twice (a decision pass
+   and an audit pass) with the same result.
+
+2. ``k_unit_system``: NEW option, default ``'us_customary'`` (stored SI K x 7.593014).
+   REASON.  The conversion in (1) leaves ``K``, ``C``, ``P`` and ``LS`` untouched, so
+   ``alpha`` = 11.8 goes with the **US-customary NUMERIC** values of those factors.  But
+   ``minibacia_soil_params.csv:K`` is stored in SI: ``notebooks/09_soil_parameters.ipynb`` §4
+   says so in as many words - "mid-range Wischmeier & Smith (1978) class values **converted to
+   SI (x0.1317)**", table Coarse 0.020 / Medium 0.045 / Fine 0.028 - and
+   ``src/nbgen/make_nb12.py`` labels the array ``t.ha.h/ha/MJ/mm``.  Undoing the documented
+   transform returns the textbook US-customary numbers it was built from
+   (0.020/0.1317 = 0.1519 ~ sand 0.15; 0.045/0.1317 = 0.3417 ~ silt loam 0.34;
+   0.028/0.1317 = 0.2126 ~ clay 0.21), which identifies the transform rather than inferring
+   it.  Using SI K with ``alpha`` = 11.8 is therefore a dimensional error of exactly
+   ``1/0.1317 = 7.593014``.  Stated imprecision: the SI table is rounded to three decimals, so
+   the recovered US numerics carry <= 1.3 % rounding residue.  Not a fitted quantity.
+
+   CONSEQUENCE FOR THE docs/35 §6.1 GUARD, spelled out because it cuts both ways: before this
+   amendment a fitted ``alpha`` was being compared against Williams' 11.8 across two different
+   unit systems, 363.42x apart, so the guard was **not meaningful** - it could not have fired
+   for the right reason.  Under the adopted convention the comparison is like-for-like and the
+   band (5.9 - 23.6, hard stops 3.9 and 35.4) is meaningful **for the first time**, unchanged.
+   The §6.3 ``beta`` guard was never affected: a constant unit factor ``F`` moves ``alpha`` by
+   ``F^beta`` and leaves ``beta`` untouched, so 0.45-0.65 stands as registered.  §6.2's
+   scale rescaling ``N^(2*beta-1)`` is dimensionless and also stands.
+
+3. NOT changed, and named so the absence is auditable: ``ls2d_aggregation`` and
+   ``ls2d_resolution`` are new EXPLICIT options whose adopted values reproduce exactly what
+   this module already did (factor 1.000 each).  See LS2D AGGREGATION AND RESOLUTION below.
+
+INPUT AMENDMENT - 2026-08-11 - THE COVER FACTOR C (docs/41; a THIRD default moved)
+---------------------------------------------------------------------------------
+4. ``load_geometry(cp_revision=...)``: NEW option, default ``'cited_central_2026_08_11'``
+   (x1.2043 on the basin total, 248.730 -> 299.539 Mt/yr).  This one is NOT a unit convention -
+   it is the INPUT table, ``urh_cp_factors.csv``, re-sourced.  REASON.  docs/37 residual 1
+   recorded that ``C`` was "a choice, and it is at the low end of its own range", with three
+   classes carrying an uncited ASSUMED value.  docs/41 gives all 8 rows a source, a stated land
+   condition and a low/central/high range.  The revision is a NET of Forest 0.003 -> 0.005
+   (x1.243), Grassland 0.010 -> 0.015 (x1.137) and **Bare 1.00 -> 0.50 (x0.822)** - the
+   largest single move in the table LOWERS the model, which is why the net is only x1.20 and
+   not the x2-5 docs/37 candidate 1 estimated for itself.  The prior table stays reachable as
+   ``cp_revision='prior_2026_08_11'``, and docs/41's band endpoints as
+   ``cited_low_2026_08_11`` / ``cited_high_2026_08_11`` (the low end is REFUTED by mass
+   balance).  Unlike (1) and (2) this is NOT a pure level shift: Bare and Forest move in
+   opposite directions, so the spatial and land-class ATTRIBUTION changes too (docs/37
+   Amendment A1 §3 re-runs both pattern gates on it).  The ENSO ratios are invariant - ``C``
+   has no seasonality, so every window rescales identically.
+
+UNITS - AND THE CONVENTION LADDER, STATED NOT HIDDEN
+---------------------------------------------------
+* ``Qsur`` mm/day, ``q_peak`` m3/s, areas km2, ``K`` as stored t.ha.h/(ha.MJ.mm) (converted at
+  use, see (2) above), ``C``/``P``/``LS2D`` dimensionless, output **tonnes/day**.
 * MUSLE is an empirical, dimensionally inhomogeneous regression: the tonne scale is set
   entirely by ``alpha`` *at one particular unit convention*.  **THREE** conventions exist in
   the literature for the ``(Qsur * q_peak * A)`` product; they differ only by a constant
-  factor, and no reading of the sources rules any of them out on its own:
+  factor, and the derivation in (1) above is what selects among them:
 
-  ``volume_convention='pixel_km2'`` (**default - the registered one, docs/35 §4**)
+  ``volume_convention='pixel_km2'`` (the ORIGINALLY registered one, docs/35 §4 - **no longer
+  the default**, kept reachable so the first-run numbers stay reproducible)
       the product is ``Qsur[mm] * q_peak[m3/s] * a_p[km2]``, i.e. the area is carried in
       **km2**, the unit Buarque (2015) eq. 7 needs for ``q_pico = Dsup*A/86.4``.
       CORRECTED 2026-08-11 (this module previously asserted that Buarque's MUSLE ``A`` "is
@@ -84,41 +155,69 @@ UNITS - AND THE ONE OPEN UNIT QUESTION, STATED NOT HIDDEN
       product is exactly ``100`` times the registered one and the load exactly
       ``100**beta = 13.18x`` larger (at ``beta`` = 0.56).
 
-  ``volume_convention='williams_m3'`` (non-default, diagnostic only)
+  ``volume_convention='williams_m3'`` (**DEFAULT since 2026-08-11**)
       Williams (1975) writes ``Y = 11.8 (V * q_p)^0.56 K C P LS`` with ``V`` the runoff
       **volume in m3**.  ``V = 1000 * Qsur[mm] * A[km2]``, so this convention's product is
-      exactly ``1000`` times the registered one and its load is exactly
-      ``1000**beta = 47.86x`` larger (at ``beta`` = 0.56).
+      exactly ``1000`` times the originally registered one and its load exactly
+      ``1000**beta = 47.8630x`` larger (at ``beta`` = 0.56).  Adopted because the
+      unit-by-unit conversion of Williams' English form lands on 11.78 here and on 42.78 /
+      563.95 in the two alternatives - see CONVENTION AMENDMENT (1).
 
-  MEASURED on this basin with the uncalibrated defaults, 2009-2018, executed 2026-08-11
-  (all three numbers are gross HILLSLOPE erosion, before any channel deposition, which is
-  C4).  This is docs/35 §9.1's restated gate (b) - three rows, so the convention is CHOSEN,
-  not inherited by taking the smallest:
+  ``k_unit_system`` is the second, independent unit ladder, and it multiplies ``K`` rather
+  than the runoff product (so it is LINEAR, not raised to ``beta``):
 
-  =========================  =============  =====================  ===================
-  convention                 basin total    vs 144 / 184 Mt/yr     orders of magnitude
-  =========================  =============  =====================  ===================
-  ``pixel_km2`` (registered) 0.684 Mt/yr    210x / 269x below      2.32 - 2.43
-  ``swat_mm_ha`` (x13.18)    9.02 Mt/yr     16.0x / 20.4x below    1.20 - 1.31
-  ``williams_m3`` (x47.86)   32.76 Mt/yr    4.4x / 5.6x below      0.64 - 0.75
-  =========================  =============  =====================  ===================
+  ``k_unit_system='us_customary'`` (**DEFAULT since 2026-08-11**)
+      stored SI ``K`` x ``1/0.1317 = 7.593014``, the exact inverse of the conversion nb09 §4
+      documents applying.  This is the numeric system Williams' 11.8 belongs to.
+  ``k_unit_system='si_stored'``
+      use ``minibacia_soil_params.csv:K`` as stored (x1.0).  This is what the module did before
+      2026-08-11 and it is a dimensional error when paired with ``alpha`` = 11.8; kept
+      reachable only so the pre-amendment numbers remain reproducible.
 
-  Gross hillslope erosion should EXCEED the load measured at the outlet (a delivery ratio is
-  < 1), so all three conventions are low - the registered one by two orders of magnitude,
-  the SWAT/hectare one by ~1.2 orders.  **This module does not resolve that, and does not
-  let ``alpha`` resolve it either.**  MEASURED (same run): reaching the 144 Mt/yr anchor with
-  ``alpha`` alone would need ``alpha`` = 2483 (``pixel_km2``), 188 (``swat_mm_ha``) or 52
-  (``williams_m3``) - respectively 70.1x, 5.3x and 1.5x past the pre-registered
-  ``alpha`` > 35.4 hard stop.  Every convention still fails the hard stop, so the stop's
-  verdict does not depend on which is chosen - but the SIZE of the residual gap does, by
-  13.18x, which is why the enumeration had to be completed before C4 reads it.  (Separately,
-  and not the same quantity: an ``alpha`` of ~565 in ``pixel_km2`` units merely reproduces
-  the ``williams_m3`` LEVEL, 11.8 x 47.86.)  That is the
-  hard stop doing exactly the job docs/35 §6.1 defines for it: "a fit that needs alpha far
-  below Williams means something upstream is over-producing, and that must be found, not
-  offset" - here in the opposite direction.  It is C3.6's gate and C4's problem, not a
-  default to change quietly: switching the default convention is an AMENDMENT to
-  docs/35 §9, with a date and a reason.
+  MEASURED on this basin, 2009-2018, gross HILLSLOPE erosion before any channel deposition
+  (C4).  Rows 1-3 are the 2026-08-11 first run (``si_stored`` K, docs/35 §9.1); row 4 is the
+  adopted default after the amendment.  The convention is CHOSEN by the derivations above,
+  never by which row is closest to the anchor:
+
+  ================================  ==============  ====================
+  convention                        basin total     vs 144 / 184 Mt/yr
+  ================================  ==============  ====================
+  ``pixel_km2`` + ``si_stored``      0.684 Mt/yr    210x / 269x below
+  ``swat_mm_ha`` + ``si_stored``     9.022 Mt/yr    16.0x / 20.4x below
+  ``williams_m3`` + ``si_stored``   32.758 Mt/yr    4.4x / 5.6x below
+  **``williams_m3`` + ``us_customary`` (DEFAULT)  248.72 Mt/yr   1.35x / 1.73x ABOVE**
+  ================================  ==============  ====================
+
+  Gross hillslope erosion must EXCEED the load measured at the outlet (a delivery ratio is
+  < 1), so the first three rows are all on the physically impossible side.  The adopted row is
+  on the right side of the outlet anchor at last - but only barely: it implies a basin
+  sediment delivery ratio of 0.58 - 0.74, where the published range for a basin of
+  257,097 km2 is roughly 0.05 - 0.3.  **This module does not resolve that residual, and does
+  not let ``alpha`` resolve it either** - see ``docs/37_c3_closure.md``, which records C3 as
+  OPEN for exactly this reason.  Switching a convention default is an AMENDMENT to docs/35 §9
+  with a date and a reason (done: §9.2), never a quiet code change.
+
+LS2D AGGREGATION AND RESOLUTION - NAMED, ADOPTED, AND FACTOR 1.000
+------------------------------------------------------------------
+Two more choices that could each have been an order-of-magnitude error were resolved on
+2026-08-11 and both came out as what this module already did.  They are now explicit names on
+:class:`SedParams` so that a future reader can see they were decided rather than defaulted:
+
+* ``ls2d_aggregation='area_weighted_mean'`` (**adopted**, factor 1.000) - ``urh_ls2d.csv``'s
+  ``ls2d_hs`` column IS the per-minibacia/per-URH area-weighted arithmetic mean of the
+  per-cell LS2D, and MUSLE is applied per DEM pixel and summed, which is what an
+  area-weighted mean of a LINEAR factor requires.  ``'per_cell_median'`` (factor 0.5410, the
+  measured 16.555 / 30.605 basin-median ratio, ``docs/agents/journal_c31-ls2d.md`` §101/§133)
+  is reachable as a DIAGNOSTIC ONLY: a median is not an admissible aggregate for a factor that
+  enters linearly, because the sum of a linear factor over cells is its mean times the count,
+  never its median times the count.
+* ``ls2d_resolution='native_90m'`` (**adopted**, factor 1.000) - keep LS2D at the native COP90
+  90 m resolution with no correction and no reference-resolution rescaling.
+  ``'rescale_740m_ref'`` (factor 0.6008 = 7.51 / 12.5, the measured basin per-cell medians at
+  740 m and 90 m) is reachable as a DIAGNOSTIC ONLY.  The "published mountainous LS of 2-10"
+  comparison that motivated a rescale is UNCITED and is retired, not acted on.
+
+Neither of these contributes to the order-of-magnitude gap: 1.000 x 1.000.
 * No quantity in ``t/km2/yr`` is produced anywhere in this module, by design: per-area
   sediment yields are EMBARGOED (catchment areas disagree by >2x on 36 % of shared gauges,
   docs/23 §13.2).  Area enters only as the MUSLE application unit, and only as each
@@ -198,18 +297,33 @@ then reflects only per-day float rounding (measured < 1e-15 relative).
 INPUTS AND THE CAVEATS THEY BRING WITH THEM
 -------------------------------------------
 * ``K`` (``minibacia_soil_params.csv:K``) is per MINIBACIA, not per URH: 8,672 values,
-  texture-derived (nb09 §4), 0 NaN, range 0.019-0.0495.  The same file's ``Wm_mm`` is a
+  texture-derived (nb09 §4), 0 NaN, range 0.019-0.0495 **in SI** - i.e. 0.1443-0.3759 in the
+  US-customary numerics MUSLE with ``alpha`` = 11.8 requires, which is the conversion
+  ``k_unit_system`` performs (CONVENTION AMENDMENT (2)).  :class:`SedGeometry` stores the
+  column AS READ, in SI; the conversion happens at use in :func:`effective_k`, so what the
+  geometry tests assert against the CSV stays a straight comparison.  The same file's ``Wm_mm`` is a
   hydrological parameter and is NOT read here, mirroring the reverse warning in
   ``mgb_hydrology.py``: the two columns are numerically similar and confusing them runs
   without error and is silently wrong.
-* ``C`` (C3.2) is per land class, and its dominant term is a low-end choice: grassland
-  ``C`` = 0.01 (Roose's "good condition"), which carries 36.8 % of the area-weighted basin
-  ``C`` while Roose's own table spans a factor of 10 up to overgrazed/burnt.  Basin-mean
-  ``C`` is nearly linear in it.  ``P`` = 1.0 basin-wide is an EXPLICIT assumption (no
-  conservation-practice layer exists), which makes the practice term an upper bound on
-  erosion.  Bare ``C`` = 1.0 is applied above the treeline where the surface is rock, ash
-  and ice: with ``K`` non-zero everywhere, the model erodes bare rock.  See
-  ``urh_cp_factors.csv``'s own ``note`` column - it is loaded, not paraphrased.
+* ``C`` (C3.2) is per land class and is now a NAMED, REVERSIBLE choice, exactly like the unit
+  conventions above: ``load_geometry(cp_revision=...)``, values in :data:`CP_REVISIONS`.
+  **DEFAULT since 2026-08-11 is ``cited_central_2026_08_11``** (docs/41): every one of the 8
+  rows carries a source, a stated land condition and a low/central/high range, and the
+  basin area-weighted ``C`` is 0.013083 against the prior 0.010823, i.e. **x1.2043** on the
+  basin total (248.730 -> 299.539 Mt/yr).  That is a NET of two opposing corrections - Forest
+  0.003 -> 0.005 (x1.243) and Grassland 0.010 -> 0.015 (x1.137) up, **Bare 1.00 -> 0.50
+  (x0.822) down**, which is the largest single revision in the table and it LOWERS the model.
+  ``cp_revision='prior_2026_08_11'`` reproduces the pre-revision level and every number in
+  docs/37 §2-§3 as first published.
+  Three things that survive the revision and must still travel with any load:
+  ``P`` = 1.0 basin-wide is an EXPLICIT assumption (AH-537 defines ``P`` for support
+  PRACTICES and no practice layer exists for this basin), which makes the practice term an
+  upper bound on erosion; the ``C`` **level** is confounded with ``alpha`` and can never be
+  fitted (docs/42 §3.1), so it must be pinned from outside or printed UNVALIDATED; and
+  ``Bare`` is still an interpolation (0.50 = sqrt(0.25 x 1.00)) applied above the treeline
+  where the surface is rock, ash and ice, so with ``K`` non-zero everywhere the model still
+  erodes bare rock, at half the former rate.  See ``urh_cp_factors.csv``'s own
+  ``land_condition`` / ``source`` / ``note`` columns - they are loaded, not paraphrased.
 * ``LS2D``: the default column is ``ls2d_hs``, the hillslope-limited variant (upslope area
   capped at a 1 km2 channel-initiation threshold).  ``scripts/c3/ls2d.py`` states in its own
   docstring that this is "the column MUSLE should use": the uncapped ``ls2d`` lets channel
@@ -306,7 +420,25 @@ __all__ = [
     "WILLIAMS_BETA",
     "WILLIAMS_M3_PER_MM_KM2",
     "VOLUME_CONVENTIONS",
+    "VOLUME_FACTORS",
+    "DEFAULT_VOLUME_CONVENTION",
+    "K_SI_PER_K_US",
+    "K_US_PER_K_SI",
+    "K_UNIT_FACTORS",
+    "K_UNIT_SYSTEMS",
+    "DEFAULT_K_UNIT_SYSTEM",
+    "LS2D_AGGREGATION_FACTORS",
+    "LS2D_AGGREGATIONS",
+    "DEFAULT_LS2D_AGGREGATION",
+    "LS2D_RESOLUTION_FACTORS",
+    "LS2D_RESOLUTIONS",
+    "DEFAULT_LS2D_RESOLUTION",
+    "CP_REVISIONS",
+    "CP_REVISION_NAMES",
+    "DEFAULT_CP_REVISION",
     "QSUR_FIELDS",
+    "effective_k",
+    "effective_ls2d",
     "LAND_CLASS_NAMES",
     "SedGeometry",
     "SedParams",
@@ -384,6 +516,96 @@ VOLUME_FACTORS = {
     "williams_m3": WILLIAMS_M3_PER_MM_KM2,
 }
 VOLUME_CONVENTIONS = tuple(VOLUME_FACTORS)
+
+#: The name of the adopted volume convention, as amended on 2026-08-11 (docs/35 §9.2).
+#: Named rather than inlined so the default and the amendment cannot drift apart.
+DEFAULT_VOLUME_CONVENTION = "williams_m3"
+
+#: SI USLE K per US-customary USLE K.  ``notebooks/09_soil_parameters.ipynb`` §4 states that
+#: the stored K was produced by multiplying Wischmeier & Smith (1978) US-customary class values
+#: by this constant ("converted to SI (x0.1317)"), and undoing it returns the textbook numbers
+#: (0.020 -> 0.1519 ~ sand 0.15; 0.045 -> 0.3417 ~ silt loam 0.34; 0.028 -> 0.2126 ~ clay 0.21).
+#: It is the repository's OWN conversion constant, so undoing it exactly is the correct inverse
+#: rather than an independent literature value.
+K_SI_PER_K_US = 0.1317
+#: 7.593014 - the factor MUSLE needs on the stored SI K for ``alpha`` = 11.8 to be Williams'
+#: coefficient (his conversion left K/C/P/LS in US-customary numerics).  Not a knob.
+K_US_PER_K_SI = 1.0 / K_SI_PER_K_US
+
+#: Multiplier applied to the stored ``K`` for each named unit system.  ``us_customary`` is the
+#: adopted default; ``si_stored`` reproduces the pre-2026-08-11 (dimensionally wrong) behaviour.
+K_UNIT_FACTORS = {
+    "si_stored": 1.0,
+    "us_customary": K_US_PER_K_SI,
+}
+K_UNIT_SYSTEMS = tuple(K_UNIT_FACTORS)
+DEFAULT_K_UNIT_SYSTEM = "us_customary"
+
+#: Basin-median within-minibacia per-cell MEDIAN over the area-weighted MEAN of ``ls2d_hs``
+#: (16.555 / 30.605, ``docs/agents/journal_c31-ls2d.md``).  The mean is the adopted aggregate;
+#: this ratio exists only so the rejected alternative is reproducible and its size visible.
+LS2D_MEDIAN_OVER_MEAN = 16.555 / 30.605
+#: Basin per-cell median LS2D at 740 m over the same at 90 m (7.51 / 12.5).  Adopted choice is
+#: NO rescaling; this ratio exists only to make the retired option reproducible.
+LS2D_740M_OVER_90M = 7.51 / 12.5
+
+#: LS2D aggregation choices.  Adopted: ``area_weighted_mean`` (factor 1.000 - the ``ls2d_hs``
+#: column already is that mean, and MUSLE is applied per pixel and summed, which is what a
+#: LINEAR factor requires).  ``per_cell_median`` is a DIAGNOSTIC: a median is not an admissible
+#: aggregate for a linear factor.
+LS2D_AGGREGATION_FACTORS = {
+    "area_weighted_mean": 1.0,
+    "per_cell_median": LS2D_MEDIAN_OVER_MEAN,
+}
+LS2D_AGGREGATIONS = tuple(LS2D_AGGREGATION_FACTORS)
+DEFAULT_LS2D_AGGREGATION = "area_weighted_mean"
+
+#: LS2D resolution treatment.  Adopted: ``native_90m`` (factor 1.000 - no correction, no
+#: reference-resolution rescaling; the "mountainous 2-10" comparison that motivated one is
+#: uncited and retired).  ``rescale_740m_ref`` is a DIAGNOSTIC only.
+LS2D_RESOLUTION_FACTORS = {
+    "native_90m": 1.0,
+    "rescale_740m_ref": LS2D_740M_OVER_90M,
+}
+LS2D_RESOLUTIONS = tuple(LS2D_RESOLUTION_FACTORS)
+DEFAULT_LS2D_RESOLUTION = "native_90m"
+
+#: Named C/P revisions of ``urh_cp_factors.csv``.  Each name maps to the (C column, P column)
+#: PAIR :func:`load_geometry` reads, so a change in the cover-factor LEVEL is a named,
+#: reversible choice - the same pattern as ``volume_convention`` / ``k_unit_system`` - and the
+#: prior level stays reachable by name rather than only in a spreadsheet column.
+#:
+#: * ``cited_central_2026_08_11`` (DEFAULT since 2026-08-11, docs/41): the loader-facing ``C``
+#:   / ``P`` columns, which carry docs/41's cited-and-conditioned central values.  Basin
+#:   area-weighted C 0.013083; **x1.2043** on the basin total (248.73 -> 299.54 Mt/yr).  It is
+#:   a NET of two opposing corrections: Forest 0.003 -> 0.005 (x1.243) and Grassland 0.010 ->
+#:   0.015 (x1.137) up, Bare 1.00 -> 0.50 (x0.822) down.
+#: * ``prior_2026_08_11``: the pre-revision values, preserved in the CSV's own
+#:   ``value_prior_2026_08_11`` / ``P_prior_2026_08_11`` columns.  Reproduces 248.730 Mt/yr
+#:   and every number in docs/37 §2-§3 as first published.  Its provenance was
+#:   Wischmeier & Smith (1978) / Roose (1977) with three classes ASSUMED and uncited.
+#: * ``cited_low_2026_08_11`` / ``cited_high_2026_08_11``: docs/41's low/high band endpoints
+#:   (x0.4315 / x7.6238).  DIAGNOSTIC ONLY.  The low end is REFUTED by mass balance - it
+#:   implies an outlet-to-hillslope ratio of 1.34-1.72, i.e. the basin exporting more than it
+#:   erodes (docs/41 §7).  The high end is not adopted because picking a C to close a residual
+#:   is the failure mode docs/35 §6 RULE 0 forbids for ``alpha``.
+#: * ``pacheco_practice_2026_08_11``: the cited C with the land-use-keyed P of
+#:   Rengifo-Rengifo et al. (2022) Cuadro 5 after Pacheco et al. (2019).  DIAGNOSTIC ONLY and
+#:   REJECTED as a category error (P is defined for support PRACTICES, not for land use, so it
+#:   double-counts the cover effect C already carries - docs/41 §5).  Kept reachable because
+#:   it is the measured direction: x0.542, i.e. any P < 1 LOWERS erosion and WIDENS the
+#:   residual (docs/37 residual 4).
+CP_REVISIONS = {
+    "cited_central_2026_08_11": ("C", "P"),
+    "prior_2026_08_11": ("value_prior_2026_08_11", "P_prior_2026_08_11"),
+    "cited_low_2026_08_11": ("C_low", "P_central"),
+    "cited_high_2026_08_11": ("C_high", "P_central"),
+    "pacheco_practice_2026_08_11": ("C", "P_low"),
+}
+CP_REVISION_NAMES = tuple(CP_REVISIONS)
+#: The adopted C/P revision, as of docs/41 (2026-08-11).  Named rather than inlined so the
+#: default and the document that argues for it cannot drift apart.
+DEFAULT_CP_REVISION = "cited_central_2026_08_11"
 #: Frozen-driver fields that can play ``Qsur``.  ``qsur_rel_mm`` is the registered one.
 QSUR_FIELDS = ("qsur_rel_mm", "qsur_gen_mm")
 
@@ -598,6 +820,7 @@ def load_geometry(
     urh_fractions: str = "urh_fractions.csv",
     soil_params: str = "minibacia_soil_params.csv",
     cp_factors: str = "urh_cp_factors.csv",
+    cp_revision: str = DEFAULT_CP_REVISION,
     urh_ls2d: str = "urh_ls2d.csv",
     ls2d_column: str = "ls2d_hs",
     mini_ids: Optional[Sequence[int]] = None,
@@ -612,11 +835,22 @@ def load_geometry(
     column ``scripts/c3/ls2d.py`` states MUSLE should use; ``ls2d`` (uncapped) is available
     but lets channel cells carry the whole upstream catchment into a hillslope equation.
 
+    ``cp_revision`` names WHICH pair of C/P columns is read (:data:`CP_REVISIONS`).  The
+    default is docs/41's cited central revision; ``'prior_2026_08_11'`` reproduces the
+    pre-revision level, and the band endpoints stay reachable as diagnostics.  The chosen name
+    and the two column names are recorded in ``SedGeometry.audit`` so a load can never be
+    quoted without its C provenance - the same discipline
+    :meth:`SedParams.convention_summary` enforces for the unit conventions (docs/37 §5.3).
+
     Cell areas come from ``urh_fractions`` x ``minibacias``, NOT from ``urh_ls2d:area_km2``.
     The two disagree (see the module docstring); this function re-measures the disagreement
     on the spot and warns above ``area_tol_frac`` so the choice cannot rot silently.
     """
     import pandas as pd
+
+    if cp_revision not in CP_REVISIONS:
+        raise ValueError(f"cp_revision must be one of {CP_REVISION_NAMES}, got {cp_revision!r}")
+    c_col, p_col = CP_REVISIONS[cp_revision]
 
     d = pathlib.Path(processed_dir)
     mb = pd.read_csv(d / minibacias)
@@ -629,12 +863,16 @@ def load_geometry(
         (minibacias, mb, ("id", "area_km2")),
         (urh_fractions, uf, ("mini",)),
         (soil_params, sp, ("id", "K")),
-        (cp_factors, cp, ("class_id", "C", "P")),
+        (cp_factors, cp, ("class_id", c_col, p_col)),
         (urh_ls2d, ul, ("mini", "urh", "area_km2", ls2d_column)),
     ):
         missing = [c for c in cols if c not in df.columns]
         if missing:
-            raise ValueError(f"{name} is missing column(s) {missing}")
+            hint = ""
+            if df is cp:
+                hint = (f" (cp_revision={cp_revision!r} reads {c_col!r} and {p_col!r}; a table "
+                        "written before the docs/41 revision carries neither)")
+            raise ValueError(f"{name} is missing column(s) {missing}{hint}")
 
     ids = mb.id.to_numpy(dtype=np.int64) if mini_ids is None else np.asarray(mini_ids, np.int64)
     mb = mb.set_index("id")
@@ -665,8 +903,25 @@ def load_geometry(
     k_mini = sp.loc[ids, "K"].to_numpy(dtype=np.float64)
 
     cp = cp.set_index("class_id")
-    class_c = {int(i): float(v) for i, v in cp["C"].items()}
-    class_p = {int(i): float(v) for i, v in cp["P"].items()}
+    class_c = {int(i): float(v) for i, v in cp[c_col].items()}
+    class_p = {int(i): float(v) for i, v in cp[p_col].items()}
+    # Drift guard: the DEFAULT revision reads the loader-facing ``C``/``P`` columns and CLAIMS
+    # they hold docs/41's central values.  If the table also carries ``C_central``/``P_central``
+    # and they disagree, the name and the number have come apart - say so rather than let the
+    # audit record a provenance the file no longer has.
+    if cp_revision == DEFAULT_CP_REVISION:
+        for adopted, central in (("C", "C_central"), ("P", "P_central")):
+            if central in cp.columns and not np.allclose(
+                cp[adopted].to_numpy(dtype=np.float64),
+                cp[central].to_numpy(dtype=np.float64),
+                rtol=0.0, atol=1e-12,
+            ):
+                warnings.warn(
+                    f"{cp_factors}: column {adopted!r} does not equal {central!r}, but "
+                    f"cp_revision={cp_revision!r} names the central revision. The adopted "
+                    f"column is used AS READ; fix the table or pass an explicit cp_revision.",
+                    stacklevel=2,
+                )
 
     ul_idx = ul.set_index(["mini", "urh"])
     want = list(zip(ids[cell_mini].tolist(), cell_code.tolist()))
@@ -693,6 +948,12 @@ def load_geometry(
         "area_total_urh_fractions_km2": float(cell_area.sum()),
         "area_total_urh_ls2d_km2": float(ls_area.sum()),
         "ls2d_column": ls2d_column,
+        "cp_factors": cp_factors,
+        "cp_revision": cp_revision,
+        "cp_c_column": c_col,
+        "cp_p_column": p_col,
+        "class_c": {int(k): float(v) for k, v in class_c.items()},
+        "class_p": {int(k): float(v) for k, v in class_p.items()},
     }
     if frac_off > 0.0:
         warnings.warn(
@@ -745,17 +1006,39 @@ class SedParams:
     #: because the registered Qsur (``qsur_rel_mm``) has ALREADY been through the engine's
     #: surface linear reservoir; a second one would double-count the lag (docs/35 §8 item 4).
     tau_delivery_days: float = 0.0
-    #: Unit convention for the (Qsur * q_peak * A) product: 'pixel_km2' is the registered
-    #: form (docs/35 §4); 'swat_mm_ha' is SWAT's standard hectare form (x100 product,
-    #: 100**beta = 13.18x load) which is the form alpha = 11.8 is normally quoted with;
-    #: 'williams_m3' is Williams' literal m3-volume form, exactly 1000**beta = 47.86x larger.
-    #: The two non-default forms are for the C3.6 order-of-magnitude diagnostic ONLY.
-    #: Switching the default is an amendment to docs/35 §9, not a code change.
-    volume_convention: str = "pixel_km2"
+    #: Unit convention for the (Qsur * q_peak * A) product.  DEFAULT since 2026-08-11 is
+    #: 'williams_m3', Williams' literal m3-volume form - the only one of the three whose
+    #: unit-by-unit conversion of Y = 95 (Q[ac-ft] q_p[cfs])^0.56 lands on alpha = 11.8
+    #: (11.7818; the mm*ha reading gives 42.78 and the mm*km2 reading 563.95).  'pixel_km2'
+    #: (the originally registered form, docs/35 §4) and 'swat_mm_ha' are kept reachable so the
+    #: pre-amendment numbers stay reproducible.  Changing this default is an amendment to
+    #: docs/35 §9 (done: §9.2) plus a dated note in the module docstring - never a quiet edit.
+    volume_convention: str = DEFAULT_VOLUME_CONVENTION
+    #: Unit system of the K values fed to MUSLE.  DEFAULT since 2026-08-11 is 'us_customary':
+    #: minibacia_soil_params.csv:K is stored in SI (nb09 §4 says it multiplied Wischmeier's
+    #: US-customary values by 0.1317) while Williams' alpha = 11.8 requires the US-customary
+    #: numerics, so the stored K must be multiplied by 1/0.1317 = 7.593014.  This factor is
+    #: LINEAR in the load (it is not inside the ^beta term).  'si_stored' reproduces the
+    #: pre-amendment behaviour and is a dimensional error when paired with alpha = 11.8.
+    k_unit_system: str = DEFAULT_K_UNIT_SYSTEM
+    #: How the per-cell LS2D field was aggregated to the (minibacia, URH) cell.  ADOPTED
+    #: 'area_weighted_mean', factor 1.000 - what urh_ls2d.csv:ls2d_hs already is.
+    #: 'per_cell_median' (x0.5410) is a diagnostic; a median is not admissible for a factor
+    #: that enters linearly.
+    ls2d_aggregation: str = DEFAULT_LS2D_AGGREGATION
+    #: Resolution treatment of LS2D.  ADOPTED 'native_90m', factor 1.000 - no correction and no
+    #: reference-resolution rescaling.  'rescale_740m_ref' (x0.6008) is a diagnostic only.
+    ls2d_resolution: str = DEFAULT_LS2D_RESOLUTION
 
     def __post_init__(self) -> None:
         if self.volume_convention not in VOLUME_CONVENTIONS:
             raise ValueError(f"volume_convention must be one of {VOLUME_CONVENTIONS}")
+        if self.k_unit_system not in K_UNIT_SYSTEMS:
+            raise ValueError(f"k_unit_system must be one of {K_UNIT_SYSTEMS}")
+        if self.ls2d_aggregation not in LS2D_AGGREGATIONS:
+            raise ValueError(f"ls2d_aggregation must be one of {LS2D_AGGREGATIONS}")
+        if self.ls2d_resolution not in LS2D_RESOLUTIONS:
+            raise ValueError(f"ls2d_resolution must be one of {LS2D_RESOLUTIONS}")
         for name in ("alpha", "beta", "fg", "pixel_area_km2", "tau_delivery_days"):
             v = float(getattr(self, name))
             if not math.isfinite(v):
@@ -775,8 +1058,50 @@ class SedParams:
 
     @property
     def volume_factor(self) -> float:
-        """Multiplier on the ``(Qsur * q_peak * A)`` product for the chosen convention."""
+        """Multiplier on the ``(Qsur * q_peak * A)`` product for the chosen convention.
+
+        This one sits INSIDE the ``^beta`` power, so it moves the load by
+        ``volume_factor**beta``, not by ``volume_factor``.
+        """
         return VOLUME_FACTORS[self.volume_convention]
+
+    @property
+    def k_factor(self) -> float:
+        """Multiplier on the stored ``K`` for the chosen unit system (LINEAR in the load)."""
+        return K_UNIT_FACTORS[self.k_unit_system]
+
+    @property
+    def ls2d_factor(self) -> float:
+        """Multiplier on the stored ``LS2D`` = aggregation x resolution (LINEAR in the load).
+
+        Both adopted choices are 1.0, so the adopted product is exactly 1.0 and neither
+        contributes to the C3.6 magnitude gap.  The non-adopted names exist so the rejected
+        alternatives are reproducible instead of merely asserted.
+        """
+        return (LS2D_AGGREGATION_FACTORS[self.ls2d_aggregation]
+                * LS2D_RESOLUTION_FACTORS[self.ls2d_resolution])
+
+    def convention_summary(self) -> dict:
+        """Every named convention this parameter set carries, with its numeric factor.
+
+        Meant to be printed beside any reported load: docs/35 §6.4 test T3 requires the
+        application unit and the reference band in the same table as the number, and after the
+        2026-08-11 amendment the unit CONVENTION belongs there too - a load without its
+        convention is 363x ambiguous.
+        """
+        return {
+            "volume_convention": self.volume_convention,
+            "volume_factor": self.volume_factor,
+            "volume_load_multiplier": float(self.volume_factor ** float(self.beta)),
+            "k_unit_system": self.k_unit_system,
+            "k_factor": self.k_factor,
+            "ls2d_aggregation": self.ls2d_aggregation,
+            "ls2d_resolution": self.ls2d_resolution,
+            "ls2d_factor": self.ls2d_factor,
+            "pixel_area_km2": float(self.pixel_area_km2),
+            "alpha": float(self.alpha),
+            "beta": float(self.beta),
+        }
 
     @property
     def delivery_release_coef(self) -> float:
@@ -805,15 +1130,36 @@ class SedParams:
 # ---------------------------------------------------------------------------
 
 
+def effective_k(geom: SedGeometry, params: SedParams) -> np.ndarray:
+    """``geom.cell_k`` in the unit system MUSLE is being evaluated in, ``(N,)``.
+
+    The stored K is SI (``minibacia_soil_params.csv``, nb09 §4); ``alpha`` = 11.8 needs the
+    US-customary numerics, hence the default x7.593014.  Kept as a named function, not inlined,
+    so both backends and the reference cell path go through the SAME conversion - a factor
+    applied in one path and not the other would show up only as a backend disagreement.
+    """
+    return geom.cell_k * params.k_factor
+
+
+def effective_ls2d(geom: SedGeometry, params: SedParams) -> np.ndarray:
+    """``geom.cell_ls2d`` after the named aggregation/resolution choices, ``(N,)``.
+
+    Both adopted choices are factor 1.0, so this returns the stored column times exactly 1.0
+    by default (``x * 1.0`` is bitwise ``x`` for every finite float, so the adopted path adds
+    no rounding).
+    """
+    return geom.cell_ls2d * params.ls2d_factor
+
+
 def cell_static_factor(geom: SedGeometry, params: SedParams) -> np.ndarray:
     """Per-cell part of MUSLE that does not depend on the day, ``(N,)``.
 
-    ``(A_cell / a_p) * alpha * K * C * P * LS2D * FG`` - the pixel count times every static
-    factor.  Multiply by :func:`runoff_energy_term` to get tonnes/day.
+    ``(A_cell / a_p) * alpha * (K*f_K) * C * P * (LS2D*f_LS) * FG`` - the pixel count times
+    every static factor.  Multiply by :func:`runoff_energy_term` to get tonnes/day.
     """
     n_pix = geom.cell_area_km2 / float(params.pixel_area_km2)
-    return (n_pix * float(params.alpha) * geom.cell_k * geom.cell_c * geom.cell_p
-            * geom.cell_ls2d * float(params.fg))
+    return (n_pix * float(params.alpha) * effective_k(geom, params) * geom.cell_c
+            * geom.cell_p * effective_ls2d(geom, params) * float(params.fg))
 
 
 def mini_static_factor(geom: SedGeometry, params: SedParams) -> np.ndarray:
@@ -855,7 +1201,7 @@ def erode_day(geom: SedGeometry, params: SedParams, qsur_mini_mm) -> np.ndarray:
     qpeak_cell = qpeak_daily_mean(q_cell, a_p)
     per_pixel = musle_load_tonnes(
         q_cell, qpeak_cell, a_p,
-        geom.cell_k, geom.cell_c, geom.cell_p, geom.cell_ls2d,
+        effective_k(geom, params), geom.cell_c, geom.cell_p, effective_ls2d(geom, params),
         alpha=float(params.alpha), beta=float(params.beta), fg=float(params.fg),
         volume_factor=params.volume_factor, validate=False,
     )
