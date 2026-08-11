@@ -475,3 +475,125 @@ printed with `git diff --cached --name-only` BEFORE the commit.
    this repo. Recorded, not attempted.
 
 TASK COMPLETE (run 2).
+
+---
+
+# RUN 3 — commit + push the "closing the order-of-magnitude gap" run
+
+Slug `commit`. Goal: stage EXPLICIT paths only, commit in the mandated order
+(evidence -> code -> verdict -> fixer -> tracker), push to `origin main`, and verify the push
+against the remote ref from executed output.
+
+## Checklist (run 3)
+- [ ] 0. Journal section opened (this block) before any staging or commit
+- [ ] 1. Confirm every area journal reports complete; list the exact repo paths per area
+- [ ] 2. Verify frozen artifacts untouched (size + mtime, read-only)
+- [ ] 3. Verify the code change from EXECUTED test output, not from the recompute journal's claim
+- [ ] 4. Review the `src/`+`tests/` diff for debug statements / stray edits
+- [ ] 5. Commit 1 — the four decision/audit journals + this journal
+- [ ] 6. Commit 2 — `src/mgb_sediment.py`, `tests/test_sediment.py`, `journal_recompute.md`
+- [ ] 7. Commit 3 — `docs/37_c3_closure.md`, `docs/35_qpeak_preregistration.md` (the verdict)
+- [ ] 8. Commit 4 — `docs/39_contradiction_audit.md`, `journal_fixer.md`
+- [ ] 9. Commit 5 — `progress_map.html`, `journal_tracker.md`
+- [ ] 10. `git show --stat HEAD` after each commit; STOP if any commit exceeds 40 files
+- [ ] 11. `git push origin main`; confirm with `rev-list --left-right --count origin/main...HEAD`
+
+## Step 0 — the working tree is much larger than my mandate (recorded before I touch anything)
+
+`git status --short` at start shows 24 modified + 20 untracked paths. My task names only 13
+repo paths. Files I am deliberately NOT touching, even though they are dirty:
+- `.gitignore`, `CLAUDE.md`, `docs/PROGRESS.md`, `docs/00_INDEX.md`, `docs/02/03/05/08/09/11/
+  12/13/14/21/22/25`, `docs/38`, `docs/40`, `docs/41`, `docs/42`, `docs/era5_download_checklist.md`,
+  `docs/open_questions.md`, `docs/progress_journal.md`
+- journals not in my list: `journal_critic.md`, `journal_alpha-guard.md`, `journal_cite-cfactor.md`,
+  `journal_cite-sdr.md`, `journal_consolidate.md`, `journal_contradictions.md`,
+  `journal_hygiene.md`, `journal_hygiene-critic.md`, `journal_reverdict.md`
+- **three `.docx` deletions are ALREADY STAGED in the index** (`D  Protocolo_descarga_*.docx`)
+  by an earlier agent. The rules forbid me to stage `.docx`. I will therefore commit with a
+  **pathspec** (`git commit -- <paths>`), which records the working-tree content of the named
+  paths and IGNORES everything else already in the index. I will not `git add` at all, so I
+  cannot accidentally sweep the deletions in, and I will not unstage them either (not my files).
+  Every commit is followed by `git show --stat HEAD` to prove what actually landed.
+
+## Step 1-2 — areas verified complete; frozen artifacts untouched
+
+All seven area journals close with an explicit done-checklist: `decide-units` ("Task complete",
+1a-5 all ✔), `decide-ls-aggregation` ([x]1-[x]6), `decide-ls-resolution` ([x]0-[x]5),
+`dimensional-audit` ("all 8 items done"), `recompute` ([x]1-[x]9), `fixer` (R11 addendum,
+96 passed after its last edit), `tracker` ([x]0-[x]6). No area reported failure, so no
+`git checkout --` restore is due on that ground.
+
+Frozen artifacts, read-only `ls -l` (no open, no write):
+- `data/processed/sim_calibrated_v2/h2e_drivers.npz`  546,366,478 B  2026-08-10 13:54
+- `data/processed/sim_calibrated_v2/parameters_H2E.csv`     1,278 B  2026-08-10 14:03
+- `data/processed/sim_calibrated_v2/q_gauge_H2E.npz`    3,017,869 B  2026-08-10 14:03
+- `q_gauge_H2E.csv` does not exist in this repo (only `q_gauge_{H1,H2,H2E}.npz`) — recorded, not created.
+Byte-for-byte identical to what run 2 recorded yesterday. Nothing this run touched them.
+
+## Step 3 — THE TEST SUITE IS RED, AND IT IS NOT THE CODE I AM COMMITTING (risky finding)
+
+`python3.10 -m pytest tests/ -q` -> **2 failed, 94 passed in 9.85s**. The recompute agent
+reported 96 passed. Both numbers are true; 94 + 2 = 96, no test was lost. Cause, established
+from executed output before I decided anything:
+
+1. `test_real_geometry_shape_and_ranges` fails on a C-value whitelist. That assertion is
+   **byte-identical to HEAD** — `git show HEAD:tests/test_sediment.py` line 438 ==
+   working-tree line 684: `[0.003, 0.005, 0.01, 0.2, 1.0, 0.0, 0.001]`. The recompute run did
+   not write it. Working-tree C values are now `{0.0, 0.005, 0.015, 0.03, 0.2, 0.5}` — three
+   values (0.015, 0.03, 0.5) outside the pre-existing whitelist.
+2. `test_audit_unit_day_reproduces_from_the_real_files` fails identically at one cell:
+   URH 11 has `C = 0.005`, the test expects `0.003`.
+3. Source of the change: `data/processed/urh_cp_factors.csv` (**gitignored data, NOT in my
+   mandate**) was rewritten **2026-08-11 08:42** by the `cite-cfactor` area, gaining columns
+   `C_low/C_central/C_high` and `value_prior_2026_08_11`. Timeline from mtimes:
+   `tests/test_sediment.py` 08:02 -> `journal_recompute` 08:10 (96 green, true then) ->
+   `journal_fixer` 08:31 -> **CSV rewritten 08:42** -> `docs/41` 08:47 -> `progress_map` 08:52.
+4. DECISIVE proof it is the data and not the code: the engine's own named option reloads the
+   old table — `load_geometry('data/processed', cp_revision='prior_2026_08_11')` gives
+   `C = [0.0, 0.001, 0.003, 0.005, 0.01, 0.2, 1.0]`, which is a **subset of the committed
+   whitelist -> True**. Same code, same tests, prior C table => the assertions hold.
+
+I am NOT editing either test to make it pass. Repairing a stale expectation against revised
+C-factor evidence is a content decision belonging to whoever owns the C-factor revision, and
+silently greening a suite is exactly the failure mode this run exists to avoid. Disclosed, not
+patched.
+
+## Step 4 — DECISION on `src/mgb_sediment.py`: commit the snapshot, do NOT restore
+
+`src/mgb_sediment.py` mtime is **08:54**, i.e. AFTER the recompute area that owns it finished
+(08:10) and after the fixer (08:31). `docs/agents/journal_reverdict.md` (08:55, untracked, NOT
+in my file list) shows why: the **`reverdict` area is still running** and has already added
+`CP_REVISIONS` / `CP_REVISION_NAMES` / `DEFAULT_CP_REVISION` / `load_geometry(cp_revision=...)`
+to that file. Its journal's next step is a basin-decade re-run and a docs/37 amendment — both
+still pending. So one file in my mandate carries two areas' work, one of them unfinished.
+
+DECISION, with reasons, written before I ran a single git command:
+- **I will not `git checkout -- src/mgb_sediment.py`.** The restore rule is for an area that
+  FAILED and left `src/` dirty. `reverdict` has not failed, it is mid-flight; reverting would
+  destroy live work AND the recompute changes that a completed area verified. Destroying work
+  to satisfy a tidiness rule is the wrong reading of it.
+- **I will not hand-separate the two areas' edits.** Reconstructing a "recompute-only" version
+  means me authoring code content, which is outside a commit agent's authority.
+- **I will commit the snapshot and label it truthfully** — the commit message names both
+  contributions and says the `reverdict` area had not reported at commit time. A commit is
+  additive; it does not disturb the working tree, so `reverdict` can keep going and its later
+  edits simply stay uncommitted for the next commit agent.
+- Anti-torn-write check: the module imports and 94 tests exercise it, so the 08:54 state is
+  syntactically and semantically coherent, not a half-written file.
+- I will re-check the mtime immediately after the commit and disclose any further drift.
+
+Same logic for `docs/37` / `docs/35`: I commit their 08:28-08:30 state (which already includes
+the fixer's corrections, since fixer and recompute edited the same two never-committed files).
+`reverdict`'s planned docs/37 amendment will land as a later, separate change.
+
+Checklist: [x]0 [x]1 [x]2 [x]3 [x]4 — proceeding to commit 1.
+
+## Step 5a — pathspec-only commit refused the new journals; explicit `git add` added
+
+First attempt `git commit -F - -- <5 journals>` failed: `error: pathspec ... did not match any
+file(s) known to git` for all four evidence journals — they are UNTRACKED, and a pathspec commit
+can only name paths git already tracks. Verified no commit was created: `git log --oneline -1`
+still `a4746a8`. So for untracked paths I must `git add` them first. I add them BY EXPLICIT NAME
+(never `-A`, never `.`), then still commit WITH a pathspec so the three `.docx` deletions that
+were already sitting in the index cannot ride along. `git diff --cached --name-only` is printed
+before each commit and `git show --stat HEAD` after it, so what landed is read from output.
