@@ -939,3 +939,70 @@ Each was journalled and then the frozen rule was followed unchanged.
 5. Timing (§7.6) is not in the pre-registration at all and is fenced off accordingly.
 
 ---
+
+
+---
+
+## §8 — H2E-S verdict: the signature and the objective are in conflict
+
+Read out 2026-08-11. Both seeds completed (exit 0, 156 min each, 1000 evaluations).
+Reproduction check first: the recomputed peak-scale F reproduces each archived F exactly
+(0.21669, 0.22689), so the evaluation below is sound before it is interpreted.
+
+### The three pre-registered conditions (§3.3)
+
+| condition | required | seed 20260907 | seed 20260908 | verdict |
+|---|---|---|---|---|
+| 1 — signature inside bound | R_AMS ∈ [0.85, 1.15] | **0.9364** | **0.9970** | **PASS** |
+| 2 — no material cost in F | mean incumbent-scale F within 0.02 of 0.25931 | 0.22489 | 0.22984 | **FAIL** — mean 0.22737, Δ −0.0319 (1.6× the budget) |
+| 3 — no new rails | railed ⊆ {k_sup@global, k_int_frac@global, wm_mult@R2} | kc_mult 0.975, k_int_frac 0.008 | lai_mult 0.006, k_int_frac 0.014 | **FAIL** — two new rails |
+
+§3.3's rule, quoted: *"Anything else = signature and objective in conflict, itself
+reportable, and licenses no further refit."* That is the outcome. **No further refit.**
+
+### What the peak term actually did, and what it cost
+
+It worked on its own terms: **R_AMS 0.820 → 0.94–1.00**, comfortably inside the band. The
+annual-maximum deficit is fixable by parameters. The problem is the price.
+
+**How it paid.** Both seeds abandoned the canopy: `lai_mult` at its floor (0.006) on one
+seed, and `kc_mult` railed high again (0.975 of range ≈ 1.95) on the other. Removing
+interception delivers rainfall to the soil undelayed and unbuffered — which is exactly how
+you manufacture a bigger peak — and the high crop coefficient then evaporates the surplus
+back out over the following days to keep the volume defensible.
+
+**This re-breaks what H2E had just fixed.** H2E's whole purpose (docs/29) was releasing
+`kc_mult` from its 2.00 rail; the FAO-56 threshold form achieved it (1.662/1.836). Adding
+the peak term puts it straight back on the rail. The two objectives want opposite things
+from the same parameter.
+
+### The conclusion this forces
+
+**The peak deficit is structural, not a calibration oversight.** A daily model cannot
+represent a sub-daily flood peak; the only lever it has is to remove physical buffers, and
+in a heavily forested basin setting canopy interception to zero is not a defensible way to
+be right about peaks. This is the same compensating-error signature the project has caught
+three times before (celerity absorbing floodplain storage; `kc` absorbing the linear ET
+form; `k_int` absorbing the store ordering) — recognised here *before* it was adopted,
+which is what the pre-registration was for.
+
+### What C3 and C4 inherit
+
+H2E remains the adopted configuration. The peak bias becomes a **named, quantified caveat**
+rather than a hidden one:
+
+- fleet-median **R_AMS 0.820** (annual maxima ~18 % low), **R_Q1 0.847**, El Niño 0.686
+- **R_POT 0.567** — the model produces 1,285 independent events against 2,236 observed,
+  i.e. it misses ~43 % of the flood events entirely
+- propagated through MUSLE's β ≈ 0.56, the magnitude bias alone implies roughly a
+  **10 % sediment under-prediction**, before the event-count deficit is considered
+- therefore **C3/C4 must treat simulated sediment as a lower bound on flood-driven
+  transport**, and C4's α/β must not be allowed to silently absorb it (docs/31 C3.3)
+
+### Phase B closes for the second time
+
+Not on exhausted headroom, and not on a clean validation either — on a **measured
+conflict**. H-BFI held (with its power caveat, §6), H-PEAK is refutable and was refuted,
+and the refit that would have fixed it costs more than the registered budget and undoes an
+earlier gain. That is a complete answer to the question C2b asked, and it is the honest
+basis on which the sediment phase proceeds.
