@@ -442,3 +442,36 @@ is commit 7. `data/` untouched and unstageable; frozen `h2e_drivers.npz` still 5
 bytes / mtime 2026-08-10 13:54 (yesterday). Six content commits `21fe174 5eaabf5 a230428
 56dc565 fa8a6e9 2296988`, largest 13 files, total 21 files across the run — no commit came
 near the 40-file stop.
+
+## Step 17 — PUSH DONE, verified from output
+
+`git push origin main` -> `3eec668..2697c47  main -> main` (to
+github.com/AYmANTwill/magdalena-mgb-sed.git). Fast-forward, no force, no `--no-verify`
+(there were no hooks to bypass).
+Post-push, all read from executed output:
+- `git status --short` -> **empty** (clean tree).
+- `git rev-list --left-right --count origin/main...HEAD` -> **`0  0`** — local and remote are
+  the same commit; the push is not merely reported, it is confirmed against the remote ref.
+- frozen `data/processed/sim_calibrated_v2/h2e_drivers.npz` -> still 546,366,478 bytes,
+  mtime 2026-08-10 13:54. Untouched by this run, as required.
+
+Seven commits pushed: `21fe174` docs/35+journals (13 files) · `5eaabf5` ls2d (1) ·
+`a230428` qpeak+tests (2) · `56dc565` engine+tests (2) · `fa8a6e9` docs/36 (1) ·
+`2296988` tracker (1) · `2697c47` this journal (1) = **21 files, 6,395 insertions**.
+Never used `git add -A`/`git add .`; every stage was an explicit path list and every list was
+printed with `git diff --cached --name-only` BEFORE the commit.
+
+## Open items I am handing back (all in my structured output too)
+1. `data/processed/urh_cp_factors.csv` — hand-curated literature table, NOT regenerable, NOT
+   versioned. Highest-priority provenance gap of the run.
+2. `peakgap/subdaily_data_inventory.md` and `peakgap/method_research.md` — prose findings
+   sitting in a gitignored data dir; they belong in `docs/`.
+3. The C3.6 driver script and `peakgap.py` / `peakgap_fig.py` exist only in a session
+   scratchpad: three figures and a four-file diagnosis have no versioned producer.
+4. The fixer's edit could not be its own commit (same never-committed files as the engine).
+5. `tests/test_sediment.py` still lacks the `swat_mm_ha == 100**beta` assertion the fixer
+   verified by hand (disclosed in journal_fixer.md).
+6. C3.5 (cross-check vs implementation B's `musle.py`) remains BLOCKED — file absent from
+   this repo. Recorded, not attempted.
+
+TASK COMPLETE (run 2).
