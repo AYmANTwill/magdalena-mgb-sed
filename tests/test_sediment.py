@@ -231,6 +231,13 @@ UNIT_DAY_MINI_ID = 16115
 UNIT_DAY_DATE = "2009-04-11"
 UNIT_DAY_ROW = 100
 UNIT_DAY_LOAD_T = 1293.5691626849571
+# The SYNTHETIC tests above pass class_c={1: 0.003} explicitly and assert convention
+# arithmetic, so they are unaffected by the CSV.  The FILE-BASED join guard reads
+# urh_cp_factors.csv, whose cited-central revision (docs/41, 2026-08-11) moved Forest
+# C from 0.003 to 0.005.  MUSLE is linear in C, so the same unit-day load scales by
+# 0.005/0.003 exactly:
+UNIT_DAY_C_FROM_CSV = 0.005
+UNIT_DAY_LOAD_T_FROM_CSV = UNIT_DAY_LOAD_T * UNIT_DAY_C_FROM_CSV / 0.003   # 2155.9486044749287
 
 
 def _unit_day_geometry():
@@ -307,14 +314,14 @@ def test_audit_unit_day_reproduces_from_the_real_files(basin_geometry):
     assert int(g.cell_urh_code[j]) == 11
     assert abs(g.cell_ls2d[j] - 118.245) < 1e-9
     assert abs(g.cell_k[j] - 0.019) < 1e-12
-    assert abs(g.cell_c[j] - 0.003) < 1e-12
+    assert abs(g.cell_c[j] - UNIT_DAY_C_FROM_CSV) < 1e-12
     assert abs(g.cell_area_km2[j] - 24.49) < 1e-9
 
     r = sed.simulate_sediment(g, sed.SedParams(), drivers.qsur_mm[row:row + 1],
                               backend="collapsed", dtype_out=np.float64,
                               record_ids=[UNIT_DAY_MINI_ID])
     got = float(r.delivered_t_day[0, 0])
-    assert abs(got - UNIT_DAY_LOAD_T) <= 1e-9 * UNIT_DAY_LOAD_T, got
+    assert abs(got - UNIT_DAY_LOAD_T_FROM_CSV) <= 1e-9 * UNIT_DAY_LOAD_T_FROM_CSV, got
 
 
 # --------------------------------------------------------------------------------------
@@ -680,8 +687,11 @@ def test_real_geometry_shape_and_ranges(basin_geometry):
         assert np.all(np.isfinite(arr)), name
         assert np.all(arr >= 0.0), name
     assert 0.019 <= g.cell_k.min() and g.cell_k.max() <= 0.0495
+    # urh_cp_factors.csv, cited-central revision (docs/41 2026-08-11):
+    # Forest .005 Shrub .015 Grassland .015 Cropland .2 Urban .03 Bare .5
+    # Water 0 Wetland .005  -> six distinct values
     assert set(np.unique(g.cell_c).tolist()) <= set(
-        [0.003, 0.005, 0.01, 0.2, 1.0, 0.0, 0.001])
+        [0.0, 0.005, 0.015, 0.03, 0.2, 0.5])
     assert np.all(g.cell_p == 1.0)                 # P = 1.0 basin-wide (C3.2, stated)
     assert g.audit["frac_cells_area_off"] > 0.0    # the area disagreement is real, not hidden
 
