@@ -43,6 +43,35 @@ WHAT CHANGED IN THE OBJECTIVE, AND WHY (docs/18 s5 item 3, docs/22 s4.4 and s4.6
    its observed recession constant, so the stores are constrained by a signature the data
    actually contains rather than by a metric that cannot see them.
 
+WHAT CHANGED FOR STAGE C2b (docs/33 s3.1 and s3.2)
+--------------------------------------------------
+4. A PEAK-signature term is added, and it is added because a pre-registered measurement
+   refuted H-PEAK: the fleet-median annual-maximum ratio `R_AMS` came out 0.820 and the
+   Q1-exceedance ratio 0.847, both below the frozen [0.85, 1.15] bound, on the low side
+   exactly as docs/26 s A.4's alpha 0.90-0.92 predicted.  H-BFI was measured at the same
+   time and HOLDS (fleet-median |BFI_sim - BFI_obs| 0.01625 <= IQR(BFI_obs) 0.02845), so
+   docs/33 s3.1's outcome table resolves on its third row: **the peak term only**, at the
+   weight vector (0.34, 0.34, 0.17, 0.15).  The BFI term of docs/33 s3.2 is NOT triggered
+   and is deliberately NOT wired into this objective - `src/baseflow.py` stays a
+   measurement module.  Adding an untriggered term would be inventing a cell.
+
+   The term is `e_peak = 1 - |ln R_AMS| / ln(1.5)`, symmetric in log space for the same
+   reason the recession term is: a peak 1.5x too high must cost exactly what one 1.5x too
+   low costs, or the objective quietly encodes a preferred direction.  `R_AMS` per gauge
+   is the MEDIAN over calendar years of `Qmax_sim,y / Qmax_obs,y`, over years with
+   >= 300 valid days, on the PAIRED day set (the simulation is masked to the observed
+   validity mask before its annual maximum is taken - otherwise a simulated peak on a day
+   the gauge never reported could enter the ratio).  Both scales, the 300-day rule and the
+   weights were frozen in docs/33 before any C2b number existed; none is derived from data.
+
+   Everything about the incumbent objective is left alone.  `W_KGE`, `W_LOG`, `W_REC`
+   still read 0.40 / 0.40 / 0.20 and `blend`'s default weight vector is still the
+   incumbent 3-tuple, so a cell that does not ask for the peak term computes exactly the
+   F it computed before.  That is a gate, not a hope: it was verified by recomputing
+   H2E's stored best vector with the peak term PRESENT at weight zero and requiring the
+   result to reproduce F = 0.25930593639066796 to <= 1e-10 relative
+   (docs/agents/journal_refit-launch.md, step 3; measured relative difference 0.0).
+
 Rejected alternatives for term 3, and why:
   * a hard penalty / constraint on `k_bas` itself.  Rejected: the recession the gauge sees
     is a property of the whole store cascade plus routing, not of one parameter, so
@@ -95,6 +124,17 @@ SOIL_PARAMS = ['adr']
 W_KGE, W_LOG, W_REC = 0.40, 0.40, 0.20
 REC_SCALE = float(np.log(2.0))      # a factor of two out scores exactly zero
 
+# --- the C2b peak signature (docs/33 s3.2), FROZEN there before any C2b number existed --
+PEAK_SCALE = float(np.log(1.5))     # a peak 1.5x out EITHER way scores exactly zero
+AMS_MIN_DAYS = 300                  # docs/33 s2.3a: a year needs >= 300 valid days
+W_PEAK = 0.15                       # a new term takes 0.15, drawn proportionally
+# docs/33 s3.2, row "H-PEAK refuted only": each incumbent weight x (1 - 0.15), i.e.
+# 0.40 x 0.85 = 0.34 and 0.20 x 0.85 = 0.17.  Written as the literals the table quotes,
+# not as the products, so the numbers in the code are the numbers in the frozen document.
+W_SET_PEAK = (0.34, 0.34, 0.17, W_PEAK)
+W_SET_INCUMBENT = (W_KGE, W_LOG, W_REC)
+assert abs(sum(W_SET_PEAK) - 1.0) < 1e-12, 'the refit weights must still sum to 1'
+
 CAL_YEARS = [2012, 2013, 2014]
 SEARCH_WU_YEAR = 2011
 ANCHOR_EXCLUDE = '29037020'         # the outlet: it cannot be a region anchor
@@ -114,6 +154,18 @@ CELLS = {
     'H2E': dict(bundle='model_inputs_v2', label='H2E v2 forcing + new objective + FAO-56 ET',
                 scored=('2009-01-01', '2018-12-31'), cache='H2',
                 et_stress='fao56', theta_crit=0.6),
+    # H2E-S = H2E + the C2b PEAK signature term, and NOTHING else (docs/33 s3.3: forcing,
+    # ET, parameter box, gauges, split, algorithm and budget all identical to H2E; only
+    # the objective gains a term).  Registered here so a phase-3 session cannot invent a
+    # cell: docs/33 s3.3 authorises this cell and no other, at seeds 20260907/20260908 and
+    # budget 1000.  `use_peak` is separate from the weight on purpose - it lets the peak
+    # term be COMPUTED at weight zero, which is what makes the "did I extend the objective
+    # or change it?" gate a real test rather than a tautology.
+    'H2E-S': dict(bundle='model_inputs_v2',
+                  label='H2E-S v2 + FAO-56 ET + C2b peak signature term',
+                  scored=('2009-01-01', '2018-12-31'), cache='H2',
+                  et_stress='fao56', theta_crit=0.6,
+                  use_peak=True, weights=W_SET_PEAK),
 }
 WU_SPAN = ('2008-01-01', '2008-12-31')
 
@@ -242,19 +294,87 @@ def rec_efficiency(k_sim, k_obs):
         return 1.0 - np.abs(np.log(rat)) / REC_SCALE
 
 
+def ams_fleet(Q, years, min_days=AMS_MIN_DAYS):
+    """Annual maximum series of every column of a (time, gauge) matrix, docs/33 s2.3a.
+
+    A calendar year contributes its maximum only if that gauge has at least `min_days`
+    FINITE days in it; otherwise the year is NaN and drops out of the ratio.  The rule is
+    on the number of valid days, not on the number of calendar days, because a gauge that
+    reported for two months of a year has not observed that year's flood and its
+    "annual maximum" would be a within-year maximum masquerading as one.
+
+    Returns (ams, years_used) with `ams` of shape (n_year, n_gauge).
+    """
+    Q = np.asarray(Q, dtype=float)
+    years = np.asarray(years)
+    uy = np.unique(years)
+    out = np.full((uy.size, Q.shape[1]), np.nan)
+    for i, y in enumerate(uy):
+        blk = Q[years == y]
+        fin = np.isfinite(blk)
+        cnt = fin.sum(axis=0)
+        # max over the finite entries only; -inf is never selected where cnt > 0, and
+        # the cnt >= min_days test discards the column before the -inf could escape.
+        mx = np.max(np.where(fin, blk, -np.inf), axis=0)
+        out[i] = np.where(cnt >= min_days, mx, np.nan)
+    return out, uy
+
+
+def ams_ratio(ams_sim, ams_obs):
+    """R_AMS per gauge = MEDIAN over years of Qmax_sim,y / Qmax_obs,y (docs/33 s2.3a).
+
+    The median, not the mean, for the same reason `recession_k` takes one over segments:
+    a single year in which the gauge's own maximum is suspect would otherwise set the
+    gauge's answer.  A gauge with no usable year is NaN and `blend` renormalises it away
+    rather than crediting it a zero.
+    """
+    ams_sim = np.asarray(ams_sim, dtype=float)
+    ams_obs = np.asarray(ams_obs, dtype=float)
+    with np.errstate(divide='ignore', invalid='ignore'):
+        rat = np.where((ams_sim > 0) & (ams_obs > 0), ams_sim / ams_obs, np.nan)
+    out = np.full(rat.shape[1], np.nan)
+    for j in range(rat.shape[1]):
+        col = rat[:, j]
+        ok = np.isfinite(col)
+        if ok.any():
+            out[j] = float(np.median(col[ok]))
+    return out
+
+
+def peak_efficiency(r_ams):
+    """1 at a perfect annual-maximum match, 0 at 1.5x either way, negative beyond.
+
+    docs/33 s3.2: e_peak = 1 - |ln R_AMS| / ln(1.5).  Symmetric in log space on purpose -
+    an over-predicted peak is exactly as damaging to a sediment claim as an under-predicted
+    one, even though docs/26 s A.4's alpha 0.90-0.92 makes the low side the expected
+    failure and the C2b measurement found it there (R_AMS 0.820).
+    """
+    r = np.asarray(r_ams, dtype=float)
+    with np.errstate(divide='ignore', invalid='ignore'):
+        rr = np.where(r > 0, r, np.nan)
+        return 1.0 - np.abs(np.log(rr)) / PEAK_SCALE
+
+
 def blend(k1, k2, e_rec=None, sel=None,
-          w=(W_KGE, W_LOG, W_REC), use_rec=True):
+          w=(W_KGE, W_LOG, W_REC), use_rec=True, e_peak=None, use_peak=False):
     """The fleet objective.
 
         F = mean over gauges of  sum_t w_t * C2M(score_t)  /  sum_t w_t
 
-    where t runs over {KGE(Q), KGE(log Q), recession} and the sum is taken over the
+    where t runs over {KGE(Q), KGE(log Q), recession, peak} and the sum is taken over the
     terms that are DEFINED at that gauge, with the weights renormalised.  A gauge with no
     usable recession is therefore scored on its two KGE terms alone rather than being
     dropped or silently credited with a zero.
 
     `use_rec=False` reproduces the v1 objective exactly at w=(0.5, 0.5, 0), which is what
     makes the old and new numbers comparable in the report.
+
+    THE PEAK TERM IS OPT-IN AND OFF BY DEFAULT.  `use_peak=False` and the default
+    3-element `w` mean every existing caller - notebook 14's identity checks, the H1/H2/H2E
+    cells, the report - computes exactly the number it computed before docs/33 existed.
+    The peak weight is `w[3]`, and a 3-element `w` gives it weight 0.0, so the incumbent
+    weight vector cannot accidentally acquire a fourth term.  This is the same "keep the
+    old function on one axis" discipline as `blend_v1` below, applied to the new term.
     """
     k1 = np.asarray(k1, dtype=float)
     k2 = np.asarray(k2, dtype=float)
@@ -263,6 +383,9 @@ def blend(k1, k2, e_rec=None, sel=None,
     if use_rec and e_rec is not None:
         terms.append(c2m(np.asarray(e_rec, dtype=float)))
         ws.append(w[2])
+    if use_peak and e_peak is not None:
+        terms.append(c2m(np.asarray(e_peak, dtype=float)))
+        ws.append(w[3] if len(w) > 3 else 0.0)
     V = np.stack(terms, 0)
     W = np.array(ws, dtype=float)[:, None] * np.ones_like(V)
     ok = np.isfinite(V)
@@ -441,6 +564,14 @@ class Cell:
         self.ET_STRESS = spec.get('et_stress', 'linear')
         self.THETA_CRIT = float(spec.get('theta_crit', 0.6))
 
+        # --- objective weights of this cell (H2E-S; everything else stays incumbent) --
+        # A cell that does not declare weights gets the incumbent 3-tuple, so H1, H2 and
+        # H2E keep the objective they were searched with.
+        self.W = tuple(float(v) for v in spec.get('weights', W_SET_INCUMBENT))
+        self.USE_PEAK = bool(spec.get('use_peak', False))
+        assert abs(sum(self.W) - 1.0) < 1e-9, (
+            f'{name}: objective weights {self.W} do not sum to 1, so F(perfect) != 1')
+
         ids = self.TOP['minibacia_id'].astype(np.int64)
         self.ids = ids
         self.A_MB = self.TOP['own_area_km2'].astype(np.float64)
@@ -526,6 +657,14 @@ class Cell:
         for pn, pm in self.PERIODS:
             self.K_OBS[pn] = recession_fleet(self.QOBS[pm])[0]
 
+        # --- observed annual maxima on the CAL window, computed ONCE -----------------
+        # Same pattern as K_OBS_CAL: the observed side of the signature is a property of
+        # the gauges and never changes during a search, so it is computed once here and
+        # only the simulated side is recomputed per evaluation.
+        self.AMS_OBS_CAL, self.AMS_YEARS_CAL = ams_fleet(self.QOBS[self.M_CAL],
+                                                         yr[self.M_CAL])
+        self.N_AMS_OBS = int(np.isfinite(self.AMS_OBS_CAL).sum())
+
         # --- day-of-year climatology benchmark, from the whole scored record ----------
         self.QCLIM = doy_climatology(self.QOBS, self.D_SC)
 
@@ -537,6 +676,10 @@ class Cell:
                   f'{self.D_FULL[-1].date()} ({len(self.D_FULL)} d), '
                   f'scored {len(self.D_SC)} d, {self.NG} primary gauges, '
                   f'{self.NREG} regions', flush=True)
+            print(f'{name}: weights {self.W}  peak term '
+                  f'{"ON" if self.USE_PEAK else "off"}'
+                  + (f', {self.N_AMS_OBS} of {self.AMS_OBS_CAL.size} observed CAL '
+                     f'gauge-years usable' if self.USE_PEAK else ''), flush=True)
 
     # ---------------------------------------------------------------- parameters
     def build_params(self, x, reg_over=None, soil_over=None):
@@ -637,7 +780,11 @@ class Cell:
 
     # ---------------------------------------------------------------- objective
     def score_cal(self, qsim):
-        """The three per-gauge terms on the CAL window.  `qsim` rows align with POS_CAL."""
+        """The per-gauge terms on the CAL window.  `qsim` rows align with POS_CAL.
+
+        Returns (k1, k2, k_sim, r_ams).  `r_ams` is all-NaN unless this cell asked for the
+        peak term, so a cell without it pays nothing for its existence.
+        """
         obs = self.QOBS[self.M_CAL]
         k1 = np.full(self.NG, np.nan)
         k2 = np.full(self.NG, np.nan)
@@ -648,15 +795,27 @@ class Cell:
             k2[j] = kge_terms(np.log(np.maximum(s, 0) + self.QLOG0[j]),
                               np.log(np.maximum(o, 0) + self.QLOG0[j]))['kge']
         k_sim, _ = recession_fleet(qsim)
-        return k1, k2, k_sim
+        r_ams = np.full(self.NG, np.nan)
+        if self.USE_PEAK:
+            # PAIRED day set (docs/33 s2.3): the simulation is masked to the observed
+            # validity mask BEFORE its annual maximum is taken, so a simulated peak on a
+            # day the gauge did not report can never enter the ratio.  The min-days test
+            # then reads the same count on both sides by construction.
+            sim_paired = np.where(np.isfinite(obs), np.asarray(qsim, dtype=np.float64),
+                                  np.nan)
+            ams_sim, _ = ams_fleet(sim_paired, self.yr[self.M_CAL])
+            r_ams = ams_ratio(ams_sim, self.AMS_OBS_CAL)
+        return k1, k2, k_sim, r_ams
 
     def F_of(self, x, reg_over=None, soil_over=None):
         res = self.run_seg(x, reg_over, soil_over)
-        k1, k2, k_sim = self.score_cal(res.q_m3s)
+        k1, k2, k_sim, r_ams = self.score_cal(res.q_m3s)
         e_rec = rec_efficiency(k_sim, self.K_OBS_CAL)
-        f = blend(k1, k2, e_rec)
+        e_peak = peak_efficiency(r_ams)
+        f = blend(k1, k2, e_rec, w=self.W, e_peak=e_peak, use_peak=self.USE_PEAK)
         return f, dict(k1=k1.astype(np.float32), k2=k2.astype(np.float32),
                        k_sim=k_sim.astype(np.float32),
+                       r_ams=r_ams.astype(np.float32),
                        rc=float(res.balance['runoff_coefficient']),
                        resid=float(res.balance['residual_relative']))
 
@@ -766,13 +925,18 @@ def get_cell(name):
 
 
 def _arch_arrays(arch):
+    # `r_ams` is appended LAST so the tuple's existing positions are untouched; it is
+    # written for every cell (all-NaN where the peak term is off) rather than
+    # conditionally, because a checkpoint whose contents depend on a cell flag is a
+    # checkpoint that eventually gets read by the wrong reader.
     return (np.array([a[0] for a in arch], dtype=np.float64),
             np.array([a[1] for a in arch], dtype=np.float64),
             np.array([a[2]['k1'] for a in arch], dtype=np.float32),
             np.array([a[2]['k2'] for a in arch], dtype=np.float32),
             np.array([a[2]['k_sim'] for a in arch], dtype=np.float32),
             np.array([a[2]['rc'] for a in arch], dtype=np.float64),
-            np.array([a[2]['resid'] for a in arch], dtype=np.float64))
+            np.array([a[2]['resid'] for a in arch], dtype=np.float64),
+            np.array([a[2]['r_ams'] for a in arch], dtype=np.float32))
 
 
 def run_dds_cell(job):
@@ -796,8 +960,16 @@ def run_dds_cell(job):
                 z = np.load(part, allow_pickle=True)
                 if int(z['budget'][0]) == budget and int(z['seed'][0]) == seed \
                         and str(z['cell'][0]) == name:
+                    # a checkpoint written before the C2b peak term existed carries no
+                    # arch_ra; it is replayed with NaN there, which is exactly what a
+                    # peak-less cell produces anyway.  The replay's RNG assertion is the
+                    # thing that guarantees the search is the same search, not this array.
+                    has_ra = 'arch_ra' in z.files
+                    nan_ra = np.full(z['arch_k1'].shape[1], np.nan, dtype=np.float32)
                     ex = [dict(k1=z['arch_k1'][i], k2=z['arch_k2'][i],
-                               k_sim=z['arch_ks'][i], rc=float(z['arch_rc'][i]),
+                               k_sim=z['arch_ks'][i],
+                               r_ams=z['arch_ra'][i] if has_ra else nan_ra,
+                               rc=float(z['arch_rc'][i]),
                                resid=float(z['arch_resid'][i]))
                           for i in range(z['arch_f'].size)]
                     replay = (z['arch_x'], z['arch_f'], ex)
@@ -808,12 +980,12 @@ def run_dds_cell(job):
                 print(f'    checkpoint unreadable ({e}) - starting from scratch', flush=True)
 
     def _save(arch):
-        ax, af, k1, k2, ks, rc, rs = _arch_arrays(arch)
+        ax, af, k1, k2, ks, rc, rs, ra = _arch_arrays(arch)
         tmp = part.with_suffix('.tmp.npz')
         np.savez_compressed(tmp, cell=np.array([name]), seed=np.array([seed]),
                             budget=np.array([budget]), arch_x=ax, arch_f=af,
                             arch_k1=k1, arch_k2=k2, arch_ks=ks, arch_rc=rc,
-                            arch_resid=rs)
+                            arch_resid=rs, arch_ra=ra)
         tmp.replace(part)          # atomic: a kill mid-write cannot leave a torn file
 
     import time
@@ -828,7 +1000,8 @@ def run_dds_cell(job):
                 arch_f=np.array([a[1] for a in r['archive']], dtype=np.float64),
                 arch_k1=np.array([a[2]['k1'] for a in r['archive']], dtype=np.float32),
                 arch_k2=np.array([a[2]['k2'] for a in r['archive']], dtype=np.float32),
-                arch_ks=np.array([a[2]['k_sim'] for a in r['archive']], dtype=np.float32))
+                arch_ks=np.array([a[2]['k_sim'] for a in r['archive']], dtype=np.float32),
+                arch_ra=np.array([a[2]['r_ams'] for a in r['archive']], dtype=np.float32))
 
 
 # ============================================================ CLI worker
@@ -860,7 +1033,7 @@ def _main():
         budget=np.array([r['budget']]), wall_s=np.array([r['wall_s']]),
         names=np.array(r['names']), x=r['x'], f=np.array([r['f']]), hist=r['hist'],
         arch_x=r['arch_x'], arch_f=r['arch_f'], arch_k1=r['arch_k1'],
-        arch_k2=r['arch_k2'], arch_ks=r['arch_ks'])
+        arch_k2=r['arch_k2'], arch_ks=r['arch_ks'], arch_ra=r['arch_ra'])
     if part.exists():
         part.unlink()
     print(f'DONE {a.cell} seed {a.seed}: F {r["f"]:.6f} in {r["wall_s"]/60:.1f} min '

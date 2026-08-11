@@ -1,8 +1,21 @@
-"""Detached queue runner for the docs/29 seed-expansion calibration jobs.
+"""Detached queue runner for the pre-registered calibration job lists.
 
-Runs the pre-registered job list (docs/29_seed_expansion.md, table fixed in advance)
-with AT MOST `MAX_CONCURRENT` workers: each worker holds ~465 MB resident and the
-machine cannot take more than four. Jobs are fed to free slots in table order.
+Runs a pre-registered job list - a table fixed in a frozen document BEFORE any of its
+numbers exist - with AT MOST `MAX_CONCURRENT` workers: each worker holds ~465 MB
+resident and the machine cannot take more than four. Jobs are fed to free slots in
+table order.
+
+Two queues are registered, and the runner takes the queue name as its only argument
+(default: the active one, `c2b`):
+
+    docs29  the seed expansion of docs/29_seed_expansion.md - COMPLETE, all 10 final
+            .npz on disk, `logs/queue_runner.log` ends
+            "2026-08-05 02:26:49  QUEUE COMPLETE  ok 10  crashed 0  skipped 0".
+            Kept verbatim rather than deleted so the list that produced the adopted
+            H2E can still be read off the runner that ran it.
+    c2b     the docs/33 §3.3 refit: cell H2E-S (H2E + the C2b peak signature term),
+            seeds 20260907 and 20260908, budget 1000. docs/33 §3.3 authorises this
+            cell and no other - no third seed, no budget change.
 
 Each job is the SAME CLI entry point the four completed runs used:
 
@@ -21,7 +34,7 @@ calib_v2.dds replays with an RNG assertion.
 Launch DETACHED (shell '&' does not survive session close on this box):
 
     Start-Process -WindowStyle Hidden python3.10 `
-        -ArgumentList 'scripts\\calib_queue_runner.py' `
+        -ArgumentList 'scripts\\calib_queue_runner.py','c2b' `
         -WorkingDirectory 'c:\\dev\\magdalena-mgb-sed'
 """
 from __future__ import annotations
@@ -42,12 +55,21 @@ POLL_SECONDS = 20
 ERR_TAIL_LINES = 40
 CREATE_NO_WINDOW = 0x08000000  # workers must not pop console windows when detached
 
-# The pre-registered queue, in launch order (docs/29 s2). Do not edit mid-run.
-JOBS: list[tuple[str, int]] = [
-    ('H1', 20260903), ('H1', 20260904), ('H1', 20260905), ('H1', 20260906),
-    ('H2', 20260903), ('H2', 20260904), ('H2', 20260905), ('H2', 20260906),
-    ('H2E', 20260901), ('H2E', 20260902),
-]
+# The pre-registered queues, in launch order. Do not edit either one mid-run.
+QUEUES: dict[str, list[tuple[str, int]]] = {
+    # docs/29 §2 - COMPLETE 2026-08-05 (ok 10, crashed 0). Left here as the record.
+    'docs29': [
+        ('H1', 20260903), ('H1', 20260904), ('H1', 20260905), ('H1', 20260906),
+        ('H2', 20260903), ('H2', 20260904), ('H2', 20260905), ('H2', 20260906),
+        ('H2E', 20260901), ('H2E', 20260902),
+    ],
+    # docs/33 §3.3 - the C2b refit. Two seeds, verified unused: _calib_cache holds
+    # 20260901-06 for H1/H2 and 20260901-02 for H2E, and nothing at all for H2E-S.
+    'c2b': [
+        ('H2E-S', 20260907), ('H2E-S', 20260908),
+    ],
+}
+DEFAULT_QUEUE = 'c2b'
 
 
 def stamp() -> str:
@@ -101,12 +123,19 @@ def record_crash(cell: str, seed: int, code: int) -> pathlib.Path:
 
 
 def main() -> int:
+    qname = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_QUEUE
+    if qname not in QUEUES:
+        print(f'unknown queue {qname!r}; known: {", ".join(sorted(QUEUES))}')
+        return 2
+    jobs = QUEUES[qname]
+
     LOGS.mkdir(parents=True, exist_ok=True)
     hb = Heartbeat(LOGS / 'queue_runner.log')
-    hb.line(f'QUEUE START  {len(JOBS)} jobs, max {MAX_CONCURRENT} concurrent, '
-            f'budget {BUDGET}, python {sys.executable}')
+    hb.line(f'QUEUE START  queue {qname}  {len(jobs)} jobs '
+            f'({", ".join(f"{c}_{s}" for c, s in jobs)}), max {MAX_CONCURRENT} '
+            f'concurrent, budget {BUDGET}, python {sys.executable}')
 
-    pending = list(JOBS)
+    pending = list(jobs)
     running: dict[str, tuple[subprocess.Popen, str, int, float]] = {}
     n_ok = n_crashed = n_skipped = 0
     launched = 0
@@ -141,12 +170,13 @@ def main() -> int:
             launched += 1
             running[name] = (proc, cell, seed, time.time())
             hb.line(f'START {name}  pid {proc.pid}  '
-                    f'({launched + n_skipped}/{len(JOBS)}, slot {len(running)})')
+                    f'({launched + n_skipped}/{len(jobs)}, slot {len(running)})')
 
         if running:
             time.sleep(POLL_SECONDS)
 
-    hb.line(f'QUEUE COMPLETE  ok {n_ok}  crashed {n_crashed}  skipped {n_skipped}')
+    hb.line(f'QUEUE COMPLETE  queue {qname}  ok {n_ok}  crashed {n_crashed}  '
+            f'skipped {n_skipped}')
     return 0 if n_crashed == 0 else 1
 
 
