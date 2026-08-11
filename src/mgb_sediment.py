@@ -174,28 +174,59 @@ UNITS - AND THE CONVENTION LADDER, STATED NOT HIDDEN
       2026-08-11 and it is a dimensional error when paired with ``alpha`` = 11.8; kept
       reachable only so the pre-amendment numbers remain reproducible.
 
-  MEASURED on this basin, 2009-2018, gross HILLSLOPE erosion before any channel deposition
-  (C4).  Rows 1-3 are the 2026-08-11 first run (``si_stored`` K, docs/35 §9.1); row 4 is the
-  adopted default after the amendment.  The convention is CHOSEN by the derivations above,
-  never by which row is closest to the anchor:
+  MEASURED on this basin, 2009-2018, summed over hillslopes before any channel routing (C4) -
+  and read the QUANTITY note below before calling that sum a "gross erosion", because that
+  label is an ASSUMPTION, not a definition.  Rows 1-3 are the 2026-08-11 first run
+  (``si_stored`` K, docs/35 §9.1); row 4 is the level docs/37 §2-§3 published; **row 5 is
+  what this module actually returns today**, because the default now also carries the docs/41
+  cover factor (``cp_revision='cited_central_2026_08_11'``, x1.2043).  A row is quoted with
+  BOTH its unit conventions and its ``cp_revision``, never without:
 
-  ================================  ==============  ====================
-  convention                        basin total     vs 144 / 184 Mt/yr
-  ================================  ==============  ====================
-  ``pixel_km2`` + ``si_stored``      0.684 Mt/yr    210x / 269x below
-  ``swat_mm_ha`` + ``si_stored``     9.022 Mt/yr    16.0x / 20.4x below
-  ``williams_m3`` + ``si_stored``   32.758 Mt/yr    4.4x / 5.6x below
-  **``williams_m3`` + ``us_customary`` (DEFAULT)  248.72 Mt/yr   1.35x / 1.73x ABOVE**
-  ================================  ==============  ====================
+  ================================================================  ==============  ====================
+  convention @ ``cp_revision``                                      basin total     vs 144 / 184 Mt/yr
+  ================================================================  ==============  ====================
+  ``pixel_km2`` + ``si_stored`` @ ``prior``                          0.684 Mt/yr    210x / 269x below
+  ``swat_mm_ha`` + ``si_stored`` @ ``prior``                         9.022 Mt/yr    16.0x / 20.4x below
+  ``williams_m3`` + ``si_stored`` @ ``prior``                       32.758 Mt/yr    4.4x / 5.6x below
+  ``williams_m3`` + ``us_customary`` @ ``prior_2026_08_11``        248.730 Mt/yr    1.35x / 1.73x ABOVE
+  **``williams_m3`` + ``us_customary`` @ ``cited_central_2026_08_11``  299.539 Mt/yr  2.08x / 1.63x ABOVE  <- THE DEFAULT**
+  ================================================================  ==============  ====================
 
-  Gross hillslope erosion must EXCEED the load measured at the outlet (a delivery ratio is
-  < 1), so the first three rows are all on the physically impossible side.  The adopted row is
-  on the right side of the outlet anchor at last - but only barely: it implies a basin
-  sediment delivery ratio of 0.58 - 0.74, where the published range for a basin of
-  257,097 km2 is roughly 0.05 - 0.3.  **This module does not resolve that residual, and does
-  not let ``alpha`` resolve it either** - see ``docs/37_c3_closure.md``, which records C3 as
-  OPEN for exactly this reason.  Switching a convention default is an AMENDMENT to docs/35 §9
-  with a date and a reason (done: §9.2), never a quiet code change.
+  The anchor column is CONTEXT, not the selector.  The convention was chosen by the unit
+  derivations above - ultimately by SWAT's own source code (docs/35 §9.2) - and rows 1-3 are
+  ruled out there, not by being far from 144/184 Mt/yr.
+
+  WHAT QUANTITY IS THIS SUM?  AND WHY THE SDR SENTENCE THAT USED TO STAND HERE IS DELETED
+  (2026-08-11).  This docstring previously said the adopted row "implies a basin sediment
+  delivery ratio of 0.58 - 0.74, where the published range for a basin of 257,097 km2 is
+  roughly 0.05 - 0.3", and that C3 is OPEN "for exactly this reason".  All three parts of that
+  are now wrong, and the correction is the point of docs/40:
+
+  * **The 0.05 - 0.3 band is UNCITED and RETIRED** (docs/40 §2, §8; docs/37 A1.2).  A published
+    SDR puts ALL water erosion in its denominator - gullies, valley trenches, streambanks -
+    while this module computes sheet-and-rill only, so the ratio is a DIFFERENT quantity (an
+    "apparent delivery ratio"), and USDA's own reference example has it at 1.7778 in a
+    watershed whose true SDR is 0.6957.  Per this project's standing rule an uncited
+    plausibility band may not be used to pass OR fail a gate, so it is retired in BOTH
+    directions.  Do not reinstate it.
+  * **C3 is not open for that reason.**  It is open on docs/37 A1.1 clauses 2 (the LS
+    FORMULATION level is UNRESOLVED - our LS sits 2.37x-3.00x above the level ``alpha`` = 11.8
+    is paired with), 3 (the three 2026-08-11 decisions are unaudited) and 4'' (NOT ESTABLISHED,
+    docs/37 A1.9).
+  * **And the "gross erosion" label itself is unresolved.**  SWAT's theoretical documentation
+    for this exact equation (v2009, Section 4 Ch. 1, p. 252; quoted verbatim in docs/40 §0 and
+    docs/37 A1.9.1) defines its output as "the sediment yield on a given day", whose runoff
+    factor "represents energy used in detaching AND TRANSPORTING sediment" - which is why MUSLE
+    "eliminates the need for delivery ratios".  Under that reading the residual's SIGN INVERTS
+    (docs/37 A1.9.2: 2.03x-2.27x LOW as an erosion, 1.33x-1.49x HIGH as a yield), and a
+    per-pixel sum over 30 M pixels is not cleanly either.  **The residual's direction is
+    UNKNOWN.**
+
+  **This module does not resolve that residual, and does not let ``alpha`` resolve it either**
+  (docs/35 §6 RULE 0; docs/42 G5, which fires on any fit lacking a NAMED transport sink -
+  note the yield-reading ``alpha`` of 7.92-8.86 overlaps G5's deposition-free 6.83-8.73).
+  Switching a convention or a ``cp_revision`` default is an AMENDMENT with a date and a reason
+  (done: docs/35 §9.2, docs/37 A1.3), never a quiet code change.
 
 LS2D AGGREGATION AND RESOLUTION - NAMED, ADOPTED, AND FACTOR 1.000
 ------------------------------------------------------------------
