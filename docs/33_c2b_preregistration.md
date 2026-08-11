@@ -505,3 +505,184 @@ window registration stand unchanged.
 three refit success criteria. **None of it may be changed once any C2b number has been
 computed.** A session that believes a rule is wrong journals the objection and follows the
 rule.
+
+## 6 — C2b.1 RESULT: H-BFI measured
+
+**Added 2026-08-10 by the `bfi` agent (`docs/agents/journal_bfi.md`). §1–§5 above are
+frozen and are NOT edited by this section.** Artifacts on disk: `src/baseflow.py` (the
+filter, the MRC estimator, and the self-test), `data/processed/c2b/bfi_per_gauge.csv`
+(63 rows — §2.5's required per-gauge table), `data/processed/c2b/bfi_summary.json`,
+`data/processed/c2b/bfi_measure.py`, `data/processed/c2b/bfi_figure.py`,
+`figures/deck/gen_bfi.png`. No frozen artifact was modified: `q_gauge_H2E.npz` and
+`discharge.npz` were read only.
+
+### 6.0 The gate came first
+
+`python src/baseflow.py --selftest` — **9/9 pass**, run before any real series was
+filtered, as the task's gate requires. The two anchors are analytic rather than empirical:
+
+| check | result |
+|---|---|
+| pure exponential recession sampled at the filter's own `a` | BFI = **1.000000000000** (tol 1e-9) |
+| spike train on a dry bed, `a = exp(-1/60)` | BFI = **0.062014**, identical to the analytic `(1-a)B/(1-aB)`; bar was < 0.10 |
+| `0 <= b <= y` on a random gamma hydrograph | max(b − y) = 0.000e+00 |
+| mixed hydrograph, monotone in the knob | BFI(0.50) 0.4573 < BFI(0.80) 0.6295 |
+| gap rule | 3-day hole filled exactly; 4-day hole breaks the record |
+| segments + warm-up | segments [(0,200),(260,500)], n_scored 380 = 440 − 2×30 |
+| sub-180-day segments | dropped entirely (BFI NaN) |
+| MRC recovers a known constant | **k = 25.000 d** from a synthetic 25 d sawtooth, 12 segments |
+| `a = exp(-1/k)` round trip | exact |
+
+Two things are worth recording because they are the kind of error that would have produced
+a confident wrong answer:
+
+- The MRC check first returned **27.078 d against a true 25.0 d**. The defect was in the
+  *test*, not the estimator: the synthetic carried an additive `+1.0` offset, and
+  `A e^{-t/k} + c` is curved in log space, so an OLS fit of `ln Q` must read `k` high.
+  Removing the offset gives 25.000 exactly. No tolerance was loosened to make it pass.
+- A **constant** series does **not** give BFI = 1; it gives BFI = `BFImax`. That is a
+  correct Eckhardt property, and no test asserts otherwise. A "BFI = 1 for constant flow"
+  test would have been a test of a misunderstanding.
+
+### 6.1 What was filtered
+
+Verified from the arrays, not from filenames: `q_gauge_H2E.npz['gauge_code']` is
+element-wise equal to `discharge.npz['gauge_code'][is_calibration_safe]` (63); its dates
+2009-01-01…2018-12-31 align with rows 366:4018 of `discharge.npz`;
+`isnan(q_obs_m3s)` equals `~q_valid` exactly (50,464 invalid of 230,076) and the values
+agree where valid; `q_sim_fit_m3s` has zero NaN.
+
+**55 of 63 gauges are included.** Eight are excluded by the pre-registered
+`>= 1,095` scored-day rule and are counted here as §2.1 requires:
+`23087300, 23127050, 26127150, 26157080, 26187170, 26197020, 26217050, 28047010`
+(scored days 703–1,032). None failed for want of a recession constant. Included gauges
+carry 1,351–3,650 scored days (median 2,862).
+
+Recession constants from the **observed** master recession curve: median
+`k_obs = 10.44 d` (p10 5.34, p90 17.24) → median `a = 0.9087`. The same `a` filtered both
+series at each gauge, on the same days.
+
+One implementation choice, journalled: the simulated series is passed through the
+*identical* code path, so the ≤3-day interpolated gaps are interpolated in the simulation
+too rather than taking the simulation's own values there. Symmetric treatment was
+preferred over using more information on one side. It is immaterial — forcing the
+simulation to use its own values on those days moves `BFI_sim` by a median **6.2e-05**
+(max 1.8e-03), against a median of 10 filled days per gauge.
+
+### 6.2 The verdict, against the rule as written
+
+> **§1, H-BFI, quoted:** *"Refuted if the fleet-median `|BFI_sim − BFI_obs|` **exceeds the
+> between-gauge spread of `BFI_obs`**, where 'spread' is fixed here as the **interquartile
+> range (p75 − p25) of `BFI_obs` across the gauge set of §2.4**."*
+
+| quantity | value |
+|---|---|
+| fleet-median `BFI_obs` | **0.7811** |
+| fleet-median `BFI_sim` | **0.7965** |
+| **fleet-median abs difference** | **0.01625** |
+| **IQR(`BFI_obs`) — the gate** | **0.02845** (p25 0.7593, p75 0.7878) |
+| p10–p90 of `BFI_obs` (also requested) | **0.0673** (p10 0.7267, p90 0.7939) |
+| SD of `BFI_obs` (§1: context only, cannot change the verdict) | 0.0307 |
+| fleet-median signed difference | **+0.0128** (simulation slower) |
+
+**0.01625 ≤ 0.02845, so H-BFI is NOT REFUTED.**
+
+**Robustness at `BFImax = 0.50` (§2.1: reported, cannot change a verdict):** median
+absolute difference **0.00308** against IQR **0.00487** → the same verdict. **The verdict
+does not flip between 0.80 and 0.50**, so the instability clause of §2.1 is not triggered.
+
+Per gauge, as §2.5 requires: **48 of 55** gauges have `BFI_sim > BFI_obs` (the simulation
+is the slower hydrograph almost everywhere), 7 the other way; **23 of 55** individually
+exceed the fleet IQR; **0 of 55** exceed 0.20, the scale at which §3.2's `e_bfi` term would
+score zero. Largest errors: `21237040` +0.117 (243 km²), `21167090` +0.113 (345 km²),
+`24017610` +0.103 (298 km²); largest negative `26237110` −0.073 (171 km²).
+
+### 6.3 By period (reported; §2.4 evaluates every gate on the full record)
+
+| period | median days | median `BFI_obs` | median `BFI_sim` | median abs diff | IQR(`BFI_obs`) | would refute on this window alone |
+|---|---|---|---|---|---|---|
+| CAL 2012–14 | 974 | 0.7803 | 0.7981 | 0.0186 | 0.0281 | no |
+| VAL all | 2,040 | 0.7807 | 0.7960 | 0.0154 | 0.0286 | no |
+| VAL La Niña 2011 | 365 | 0.7807 | 0.7962 | 0.0183 | 0.0358 | no |
+| **VAL El Niño 2015–16** | 606 | 0.7698 | 0.7918 | **0.0295** | **0.0290** | **yes, by 0.0005** |
+| VAL other 09/10/17 | 904 | 0.7792 | 0.7965 | 0.0191 | 0.0262 | no |
+| VAL 2018 | 331 | 0.7800 | 0.7990 | 0.0157 | 0.0336 | no |
+
+The El Niño window is the one place the statistic crosses its own bar, and by a hair
+(0.0295 vs 0.0290). **It does not change the verdict**, and it must not: §2.4 fixes every
+gate on the full 2009–2018 record precisely so that a verdict cannot be extracted from a
+favourable — or an unfavourable — sub-window. It is recorded because it points the same
+way as everything else in this project's dry phase (docs/22, docs/26 §7): the model's
+worst flow-character error, like its worst skill, falls in the El Niño years, where the
+simulated hydrograph is **+0.0255** too slow at the median.
+
+### 6.4 Consistency check — a DIFFERENT quantity, no threshold (§2.2)
+
+The H2E model's **internal, generation-side** partition is
+**51.3 % surface / 29.2 % subsurface / 19.5 % baseflow**. The filter-derived
+`BFI_sim` at the gauge has a fleet median of **0.7965**.
+
+**Gap: +0.602.** Not one of the 55 gauges has `BFI_sim` below 0.195.
+
+§2.2 anticipated the sign — routing and channel storage move water out of the fast
+components into the slow tail — but the magnitude is worth stating plainly: **roughly three
+quarters of what the model generates as "fast" arrives at the gauge carrying the temporal
+signature of baseflow.** The routing cascade, not the runoff-generation split, is what sets
+the character of the simulated hydrograph. Two consequences follow, and neither is a C2b
+verdict:
+
+- **The filter cannot see the partition.** A BFI comparison is not evidence about
+  51.3/29.2/19.5 in either direction, and this result must not be quoted as validating it.
+  The internal partition remains **never validated against observation**.
+- **MUSLE consumes the un-routed `Qsur`**, which is precisely the quantity this check shows
+  the gauge hydrograph cannot constrain. That is an argument for C2b.2's peak signatures
+  carrying the weight, not the BFI.
+
+Note the same gap applies to the observation: `BFI_obs` medians 0.781, so the real rivers
+are equally "slow" under this filter. The two are compared with each other, as designed —
+never against 0.195.
+
+### 6.5 The caveat that has to travel with the verdict
+
+H-BFI passes, and the pass is real by the rule that was frozen. But **the filter has very
+little discriminating power on this fleet**, and a reader who takes "BFI validated" to mean
+"flow character validated" would be over-reading it.
+
+- `BFI_obs` spans only **0.658–0.799** and 12 of 55 gauges sit above 0.79 — both
+  distributions are compressed against the `BFImax = 0.80` ceiling. That is why the
+  yardstick IQR is 0.028 rather than something like 0.2.
+- **`r(BFI_sim, BFI_obs)` across gauges is 0.094.** The model carries essentially **no
+  between-gauge information** about flow character. It passes because both it and the
+  observation sit near the ceiling, not because it tracks which catchment is flashy.
+- `r(difference, BFI_obs) = −0.825`: the difference is almost entirely "the observation
+  departs from the ceiling and the simulation does not follow".
+- The error is systematically a **small-catchment** error: median absolute difference is
+  **0.0317** in the smallest area quartile (68–236 km²) and **0.0081** in the largest
+  (2,868–257,097 km²); `r(difference, log area) = −0.21`. Big rivers agree trivially; small
+  flashy ones are where the model is too smooth.
+
+This is journalled as an issue rather than acted on. **The rule is frozen and the verdict
+stands as computed.** Anyone proposing a sharper flow-character test (a lower `BFImax`, a
+flow-duration-curve slope, an event-scale runoff ratio) needs a new pre-registration —
+§5.4 — and should note that the `BFImax = 0.50` robustness column showed the *same* pass,
+so a simple ceiling change is not obviously the fix.
+
+### 6.6 Where this leaves §3.1
+
+H-BFI **holds**. C2b.2 was measured concurrently by a separate agent and **H-PEAK is
+refuted** (§7.1). The §3.1 table therefore resolves on its third row — *"holds / refuted →
+refit with the peak term"* — and the weight vector that applies is
+
+| case | W_KGE | W_LOG | W_REC | W_BFI | W_PEAK |
+|---|---|---|---|---|---|
+| **H-PEAK refuted only** (the row this result selects) | 0.34 | 0.34 | 0.17 | — | 0.15 |
+
+**The BFI term `e_bfi` is NOT triggered.** It must not be added to the objective on the
+strength of §6.5's caveat, and the both-refuted row (0.28 / 0.28 / 0.14 / 0.15 / 0.15) must
+not be used: H-BFI passed its pre-registered gate at 0.01625 against 0.02845, and passed
+again on the `BFImax = 0.50` robustness column. Adding a term for a hypothesis that held
+would be exactly the fabricated problem §3.4 warns about.
+
+For the record, §6.5's own numbers do not argue for the BFI term either: `e_bfi` scores
+zero at an error of 0.20, and **no gauge in the fleet reaches 0.12**.
+
