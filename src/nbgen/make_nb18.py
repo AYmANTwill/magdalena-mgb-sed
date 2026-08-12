@@ -694,9 +694,12 @@ for name, (c_col, p_col) in sed.CP_REVISIONS.items():
 
 with warnings.catch_warnings(record=True) as caught:
     warnings.simplefilter('always')
-    GEO = sed.load_geometry(PROC, mini_ids=DRV.mini_ids)                     # adopted C
-    GEO_PRIOR = sed.load_geometry(PROC, mini_ids=DRV.mini_ids,
-                                  cp_revision='prior_2026_08_11')            # previous C
+    # V0 pin: ACT 2 (2026-08-12) moved the engine default to V4_dg; this notebook is a V0
+    # (ls2d_hs, f_LS=1.000) record, so it names the V0 LS column explicitly.
+    GEO = sed.load_geometry(PROC, mini_ids=DRV.mini_ids,
+                            urh_ls2d='urh_ls2d.csv', ls2d_column='ls2d_hs')  # adopted C, V0 pin
+    GEO_PRIOR = sed.load_geometry(PROC, mini_ids=DRV.mini_ids, cp_revision='prior_2026_08_11',
+                                  urh_ls2d='urh_ls2d.csv', ls2d_column='ls2d_hs')  # previous C, V0 pin
 WARN_TEXT = sorted({str(w.message) for w in caught})
 print(f'\ngeometry: {GEO.n_mini} minibacias, {GEO.n_cells} URH cells, '
       f'covered area {GEO.covered_area_km2:,.2f} km2')

@@ -241,15 +241,19 @@ UNITS - AND THE CONVENTION LADDER, STATED NOT HIDDEN
       and the span between them, ln(0.43194/0.25146) = 0.5410, is the **L-form lever exactly** -
       a lever, not an error bar.  docs/46 §4.2's outcome exercised is **ADOPT-SOURCE**.
 
-    **NOTHING IN THIS MODULE CHANGES BECAUSE OF A3, AND THAT IS DELIBERATE.**  A3's status is
-    **DETERMINED and RECORDED, NOT YET EXERCISABLE**: it does not propose the engine-default
-    switch, ``ls2d_column`` stays ``"ls2d_hs"`` and ``urh_ls2d`` stays ``"urh_ls2d.csv"``, and
-    the switch is a separate, separately dated act that is not draftable until a gated
-    ``V4_dg`` column exists as a committed product.  Enactment is a written amendment, not a
-    code edit.  The LS **LEVEL** remains **UNVALIDATED** (docs/42 G4.2): a CITED formulation is
-    not a validated level, and a fitted one is not either.  Clause 2 therefore stays NOT MET -
-    also because it needs the LS **SHAPE** decision, which A3 does not touch - and C4.3 stays
-    BLOCKED (docs/47).
+    **ACT 2 MADE 2026-08-12 - the engine default now points at the source LS field.**  ACT 1
+    materialised the gated ``V4_dg`` column into the committed product
+    ``urh_ls2d_variants.csv`` (``scripts/c3/ls2d_variants.py``; self-checks f_area =
+    0.2446790094097074), which made the default switch draftable; ``load_geometry`` now
+    defaults to ``ls2d_column="V4_dg"``, ``urh_ls2d="urh_ls2d_variants.csv"`` (ADOPT-SOURCE,
+    docs/37 A3, docs/54 §5).  The former V0 default (``ls2d_hs`` in ``urh_ls2d.csv``,
+    f_LS = 1.000) stays reachable by passing both names, and the historical V0 records
+    (nb18/nb19, the V0 reference tests, ``scripts/c3/ls_erosion_weights.py``) pin themselves
+    that way.  This switch discharges blocker 3 of docs/47 §9.2 **only**.  The LS **LEVEL**
+    remains **UNVALIDATED** (docs/42 G4.2): a CITED formulation is not a validated level, and a
+    fitted one is not either.  **C4.3 stays BLOCKED** - blockers 1 (Branch B / first-run on the
+    adopted field), 4 (owed deliverables) and the LS **SHAPE** decision are untouched by this
+    switch (docs/47, docs/54 §4).
 
     One related label correction, unconditional (docs/46 §1.1 Defect A, §2.2, §7.3 item 2;
     measured in docs/49): Buarque's **eq. 14 is a STEP FUNCTION** - m = 0.2 / 0.3 / 0.4 / 0.5
@@ -917,8 +921,8 @@ def load_geometry(
     soil_params: str = "minibacia_soil_params.csv",
     cp_factors: str = "urh_cp_factors.csv",
     cp_revision: str = DEFAULT_CP_REVISION,
-    urh_ls2d: str = "urh_ls2d.csv",
-    ls2d_column: str = "ls2d_hs",
+    urh_ls2d: str = "urh_ls2d_variants.csv",  # ACT 2 (2026-08-12): adopted source LS product
+    ls2d_column: str = "V4_dg",               # ADOPT-SOURCE buarque_2015_dg (docs/37 A3, docs/54)
     mini_ids: Optional[Sequence[int]] = None,
     area_tol_frac: float = 0.05,
 ) -> SedGeometry:
@@ -927,9 +931,12 @@ def load_geometry(
     ``mini_ids`` orders the output (pass ``h2e_drivers.npz:minibacia_id`` so the geometry and
     the drivers share one column order - a mismatch there is a silent spatial scramble).
 
-    ``ls2d_column`` defaults to ``ls2d_hs``, the hillslope-limited LS2D, because that is the
-    column ``scripts/c3/ls2d.py`` states MUSLE should use; ``ls2d`` (uncapped) is available
-    but lets channel cells carry the whole upstream catchment into a hillslope equation.
+    ``ls2d_column`` defaults to ``V4_dg`` in ``urh_ls2d_variants.csv`` - the adopted source
+    formulation ``ls_formulation = 'buarque_2015_dg'`` (docs/37 A3, ADOPT-SOURCE), switched in
+    by ACT 2 (2026-08-12).  The former default ``ls2d_hs`` in ``urh_ls2d.csv`` (V0, f_LS =
+    1.000) is still reachable by passing BOTH names explicitly, which is how the historical V0
+    records pin themselves.  Note ``ls2d`` (uncapped) lets channel cells carry the whole
+    upstream catchment into a hillslope equation - never a substitute.
 
     ``cp_revision`` names WHICH pair of C/P columns is read (:data:`CP_REVISIONS`).  The
     default is docs/41's cited central revision; ``'prior_2026_08_11'`` reproduces the

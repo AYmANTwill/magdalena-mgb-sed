@@ -589,7 +589,8 @@ def basin_decade():
 
     net = tr.load_network(TOPOLOGY)
     drivers = sed.load_drivers(DRIVERS)
-    geom = sed.load_geometry(PROCESSED, mini_ids=drivers.mini_ids)
+    geom = sed.load_geometry(PROCESSED, mini_ids=drivers.mini_ids,
+                             urh_ls2d="urh_ls2d.csv", ls2d_column="ls2d_hs")  # V0 pin (ACT 2 moved default to V4_dg); this mass gate is level-agnostic
     # dtype_out=float64 for the COUPLING array, deliberately: mgb_sediment's default float32
     # output rounds each daily minibacia load at ~1e-7 relative, which shows up as a 3.9e-11
     # relative gap between the two modules' ledgers - measured, and large enough to swamp the

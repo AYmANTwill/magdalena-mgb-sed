@@ -115,7 +115,11 @@ def erosion_weights() -> pd.DataFrame:
     """Decade gross hillslope erosion per (minibacia, URH) unit, at adopted defaults."""
     t0 = time.time()
     drv = sed.load_drivers(FROZEN / "h2e_drivers.npz")
-    geom = sed.load_geometry(PROC, mini_ids=drv.mini_ids)
+    # V0 pin: the erosion WEIGHTS behind f_LS = 0.25146 are defined on the baseline (ls2d_hs /
+    # V0) erosion field.  ACT 2 (2026-08-12) moved the engine default to V4_dg; this harness
+    # must keep computing weights on V0 or the f_LS it derives becomes self-referential.
+    geom = sed.load_geometry(PROC, mini_ids=drv.mini_ids,
+                             urh_ls2d="urh_ls2d.csv", ls2d_column="ls2d_hs")
     ndays = drv.qsur_mm.shape[0]
     years = ndays / 365.25
     L.log(f"drivers {drv.qsur_mm.shape} ({drv.dates[0]}..{drv.dates[-1]}, {years:.4f} yr) "

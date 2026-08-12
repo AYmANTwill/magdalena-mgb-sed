@@ -670,9 +670,45 @@ def test_registered_defaults_are_the_williams_starting_values():
 def basin_geometry():
     if not HAVE_CSVS:
         pytest.skip("processed CSV inputs not present")
+    # V0 reference geometry: pin ls2d_hs / urh_ls2d.csv EXPLICITLY.  ACT 2 (2026-08-12) moved
+    # the engine default to V4_dg; every assertion below is about the historical hillslope-
+    # limited (V0) level, so it must ask for that column by name.  The adopted default is
+    # checked separately in test_default_ls_column_is_adopted_v4dg.
+    with pytest.warns(UserWarning, match="differ by more than"):
+        g = sed.load_geometry(PROCESSED, urh_ls2d="urh_ls2d.csv", ls2d_column="ls2d_hs")
+    return g
+
+
+@needs_csvs
+def test_default_ls_column_is_adopted_v4dg():
+    """ACT 2 (2026-08-12): the bare engine default is now the source LS field ``V4_dg``.
+
+    The former default was ``ls2d_hs`` in ``urh_ls2d.csv`` (V0, f_LS = 1.000).  After the
+    switch, ``load_geometry()`` with no LS arguments must read the ``V4_dg`` column from
+    ``urh_ls2d_variants.csv``, and that field must be ~0.2447x the V0 field area-weighted -
+    the f_area the ACT 1 harness self-checks (0.2446790094097074).  The V0 reference tests in
+    this file pin ``ls2d_hs``/``urh_ls2d.csv`` by name so they still assert the V0 level.
+    """
+    import pandas as pd
+
     with pytest.warns(UserWarning, match="differ by more than"):
         g = sed.load_geometry(PROCESSED)
-    return g
+    assert g.ls2d_column == "V4_dg"                 # the adopted default (docs/37 A3, docs/54)
+
+    var = pd.read_csv(PROCESSED / "urh_ls2d_variants.csv").set_index(["mini", "urh"])
+    rng = np.random.default_rng(1)
+    for i in rng.integers(0, g.n_cells, 200):
+        mid = int(g.mini_ids[g.cell_mini[i]])
+        code = int(g.cell_urh_code[i])
+        assert abs(g.cell_ls2d[i] - var.loc[(mid, code), "V4_dg"]) < 1e-9, (mid, code)
+
+    # the adopted level is ~1/4 of V0: assert the ACT 1 self-check straight from the committed
+    # summary (its area_wtd_mean convention is the canonical one; a raw column reweight here
+    # would sit on a different area basis and miss the exact number).
+    import json
+    s = json.loads((PROCESSED / "ls2d_variants_summary.json").read_text())["variants"]
+    ratio = s["V4_dg"]["area_wtd_mean"] / s["V0_ours_2026_08"]["area_wtd_mean"]
+    assert abs(ratio - 0.2446790094097074) < 1e-9, ratio
 
 
 @needs_csvs
