@@ -7,6 +7,24 @@ adversarial lenses plus a three-agent LS track, and it adds one measurement of i
 It does not edit `docs/35`, `docs/37`, `docs/42`, `docs/43` or `docs/45`, all of which are frozen
 or closed to this pass.
 
+> ## ⚠ BACK-ANNOTATED 2026-08-12 — READ §9 BEFORE QUOTING ANY STATUS FROM THIS FILE
+>
+> **This document was written 2026-08-11 and its statuses are as of that date.** By 2026-08-12
+> **four of the five repairs of §6.1 and three of the twelve open items of §7 had been discharged
+> by other documents**, which back-annotated themselves and not this one. Every such site is now
+> struck in place in the house pattern (`~~old~~` → **new**, dated, with the owning doc named) and
+> the full item-by-item ledger — including what was checked and found **still open** — is **§9**,
+> appended 2026-08-12 by the `backannotate-47` agent
+> (process record `docs/agents/journal_backannotate-47.md`).
+>
+> **THE VERDICT ITSELF DOES NOT MOVE. `C4.3-BLOCKED-UNTIL-LS-LANDS` STILL HOLDS**, re-affirmed on
+> 2026-08-12 by every downstream owner: `docs/37` A3.4 (*"Is C4.3 thereby UNBLOCKED? **NO**"*),
+> `docs/45` §8.5.10 item 8 (*"It does not unblock C4.3"*), `docs/46` §9, `docs/51` §THE FOUR
+> ANSWERS item 4, `docs/53` §8. **What moves is the REASON**, and the title now under-describes it:
+> the LS **formulation** landed 2026-08-12 (`docs/37` **A3**, ADOPT-SOURCE), so the block no longer
+> rests on B1. See **§9.2** for the corrected blocking condition, which is *narrower in name and
+> not weaker in force*.
+
 ---
 
 > ## THE VERDICT
@@ -31,9 +49,25 @@ or closed to this pass.
 > registration to produce it.**
 >
 > **The condition for unblocking is a single named event: C3.1 lands** — the LS-formulation
-> decision of `docs/35` §9.3, executed under the pre-registration drafted as
-> `docs/46_ls_preregistration_DRAFT.md`, frozen, with a `ls_formulation` value and an evidence
-> grade recorded. When it lands, C4.3 starts under the six-item contract of §6.2 below.
+> decision of `docs/35` §9.3, executed under the pre-registration ~~drafted as
+> `docs/46_ls_preregistration_DRAFT.md`~~ → **`docs/46_ls_preregistration.md`, FROZEN (READ OUT)
+> 2026-08-11; §10 is its amendment slot** (`docs/46`:1, :3 — *"⚠ FROZEN 2026-08-11. §1–§8 ARE IN
+> FORCE. §10 IS THE AMENDMENT SLOT."*; no `_DRAFT` file exists on disk), frozen, with a
+> `ls_formulation` value and an evidence grade recorded. When it lands, C4.3 starts under the
+> six-item contract of §6.2 below.
+>
+> > **⚠ BACK-ANNOTATION 2026-08-12 — THIS SENTENCE IS NOW WRONG IN ONE DIRECTION ONLY, AND IT IS
+> > NOT THE PERMISSIVE ONE. C3.1 HAS LANDED; C4.3 IS STILL BLOCKED.**
+> > `docs/37` **A3** (2026-08-12) — the owner of C3.1, named as this event by `docs/46` §9's
+> > registration card — reads: *"**THE C3.1 ENACTMENT.** The LS *formulation* is DECIDED on source
+> > grounds: **ADOPT-SOURCE**, `ls_formulation = buarque_2015_dg`. **No engine default moves here.
+> > C3 stays OPEN. C4.3 stays BLOCKED.**"* So **the single named event was necessary and is now
+> > measured NOT to have been sufficient**, and `docs/37` A3.4 says so in its own heading: *"Is
+> > C4.3 thereby UNBLOCKED? **NO** — and this amendment is the act that makes the block
+> > *dischargeable*, not the act that discharges it."*
+> > **The corrected blocking condition is in §9.2.** It is not one event; it is four, none of them
+> > B1. This document's title is retained unchanged as the record of what was decided on
+> > 2026-08-11.
 >
 > **One bounded exception is granted** (§6.3): the **LS-invariant** preparation — the C4.3
 > machinery, the artifact contract, `Δ_shape` (`docs/46` §6.1), the four blocking repairs of §2 —
@@ -116,6 +150,16 @@ project has measured — the LS level, `docs/37` §4 candidate 0 at its **regist
 lifts implied α only to **2.87 – 3.63**: over the box floor, still under the 3.9 hard stop, and
 2.87 is inside the 5 %-of-box-edge rail band (α̂ must be ≥ 3.40).
 
+> **⚠ 2026-08-12 — this paragraph runs on the bracket THIS DOCUMENT'S OWN §4.3 retires 280 lines
+> later, and it is preserved because that is how the defence was actually mounted.** *"×2.37–3.00"*
+> was superseded **as a measurement** by §4.3's **`f_LS` ∈ [0.25146, 0.43194]** ⇒ **2.3151× –
+> 3.9768×** — re-affirmed by `docs/51` §THE FOUR ANSWERS item 1 (*"This **supersedes ×0.333 – ×0.421
+> and '2.37× – 3.00×'**"*) and enacted in `docs/37` A3.3.1, `docs/43` §7 amd 3, `docs/45` §8 amd 3.
+> **Re-derived at the corrected bracket the finding STRENGTHENS**, which is why it is annotated and
+> not rewritten: `1.211 × 2.3151 = 2.804` and `1.211 × 3.9768 = 4.816`, so the upper end now crosses
+> 3.9 instead of stopping at 3.63. §5.2 already carries that arithmetic; this paragraph does not.
+> **The conclusion of this paragraph — that the Π-not-α defence fails — is unchanged.**
+
 **Two clauses of the original finding are NOT established and are dropped here, not carried:**
 (a) *"the gap is dominated by hillslope→station delivery"* — an attribution with no measurement
 behind it; nothing separates delivery from the LS level, the C level, the K unit system, the
@@ -184,7 +228,25 @@ rather than a descriptive note, or to replace the fixed ±38 % with the station-
 `docs/45` §4.2 already imports for every other interval. Either is an amendment to `docs/45` §8,
 not a new registration.
 
-### 2.3 D3 — the per-node mass audit is blind to NaN and reports PASS on an all-NaN run **BLOCKING (one line)**
+### 2.3 D3 — the per-node mass audit is blind to NaN and reports PASS on an all-NaN run **BLOCKING (one line)** — ✅ **RESOLVED 2026-08-12**
+
+> **⚠ BACK-ANNOTATION 2026-08-12 — D3 is RESOLVED and B3 is DISCHARGED. Verified on disk by this
+> pass, read directly and not taken on trust.** `src/mgb_transport.py`:**908** now reads
+> `if not (m <= max_resid):` — the NaN-safe form this section prescribes — with the IEEE-754
+> rationale in the comment at :902–907 (*"every IEEE-754 comparison against NaN is False, so a NaN
+> residual would leave max_resid at 0.0 and this module would then announce
+> `node_partition_exact: True` - its STRONGEST mass claim - on a run carrying no usable mass"*).
+> The regression test is `tests/test_transport.py`:**245–277**,
+> `test_the_partition_claim_does_not_survive_an_overflowing_run`, whose input is **all finite**
+> (`assert np.all(np.isfinite(load))`) and which asserts at :**274**
+> `assert math.isnan(res.ledger["max_node_residual_t"])` and at :271 `assert not
+> res.ledger["node_partition_exact"]`. A second test at :**232**,
+> `test_a_nan_local_load_is_rejected_at_the_door`, pins the door screen so the overflow route is
+> the only one left. Independently confirmed by `docs/37` A3.4 item 1 (*"B3 — `src/mgb_transport.py`:908
+> reads `if not (m <= max_resid)` … The all-NaN run can no longer publish a false PASS"*) and by
+> commit `a0d8afb` *"fix: the per-reach mass claim no longer survives a non-finite run"*.
+> **The finding's text below is preserved verbatim — it is the provenance for the fix**, and the
+> line numbers it quotes (`:901-903`, `:803`, `tests/test_transport.py:583`) are the PRE-FIX ones.
 
 **File:** `src/mgb_transport.py:901-903`.
 
@@ -216,7 +278,29 @@ the docstring points them to.
 **Fix:** `if not (m <= max_resid): max_resid = m`, or raise on `np.isnan(m)`. **BLOCKING because
 it is one line and because C4.3 would publish the false PASS.**
 
-### 2.4 D4 — the `docs/42` §9 transcription is unperformed and C4 has already started **BLOCKING (audit trail)**
+### 2.4 D4 — the `docs/42` §9 transcription is unperformed and C4 has already started **BLOCKING (audit trail)** — ✅ **CLOSED 2026-08-11/12**
+
+> **⚠ BACK-ANNOTATION 2026-08-12 — D4 is CLOSED and B4 is DISCHARGED. The owning document says so
+> itself.** `docs/42` §9's amendment log now exists and carries **A-P1** (§9.2 — the fitting set is
+> the **CAL 8**), **A-P2** (§9.3 — `21237020` ARRANCAPLUMAS is evaluation-only), **A-P3** (§9.4 —
+> deposition `k` FIXED at 0), **A-P1.1** (§9.5 — the power table corrected and the
+> 0.0096-vs-0.0104 discrepancy resolved), all dated 2026-08-11, plus **A-P4** (§9.7, 2026-08-12).
+> `docs/42`:**648** — the §9 card cell now reads *"⚠ **THREE, all dated 2026-08-11 — A-P1, A-P2,
+> A-P3, plus A-P1.1 … Plus A-P4, dated 2026-08-12 (§9.7)** … This cell read `none` until
+> 2026-08-11 while C4 was already under way; that gap is the audit-trail defect `docs/47` §2.4
+> (D4) recorded, and §9.1 states plainly that the transcription is late."* `docs/42`:**660** heads
+> the log *"§9.1 — Amendment log: opened 2026-08-11, and it is late."* `docs/42`:**644** now carries
+> *"the fitting set is **SUPERSEDED by amendment A-P1 (§9.2): it is the CAL 8**"*, and the all-18
+> clause and the never-fit rule are stated there as **unchanged**. `docs/42` §9.6 **F5** adjudicates
+> this item by name: *"**`docs/47` §2.4 D4** (this transcription unperformed) **is discharged** by
+> §9.1–§9.5. **D4 may be CLOSED.**"*
+> **The "carried defect inside the defect" below is also settled — see open item O7 (§9.3).**
+> `docs/42`:**901** F5's companion **F4** reads: *"**`docs/47` open item O7** … is answered by §9.5.
+> O7 may be **CLOSED**: 0.00964 is correct, `docs/42` §4.2 was wrong, reason recorded."*
+> **The finding's text below is preserved verbatim as the provenance for the repair.**
+> *(One residue this pass did not close and does not claim: `docs/42` §9.6 **F1** records that
+> §4.2's **body** still prints `0.0104`, so the retired number remains quotable from `docs/42`
+> outside its amendment slot. That is `docs/42`'s owner's, not this document's.)*
 
 `docs/43` §3.1 declares P1/P2/P3 **blocking preconditions on C4's start**, to be transcribed into
 `docs/42` §9, dated, "before C4 begins". **Read directly this pass:** `docs/42` §9 still reads
@@ -243,7 +327,7 @@ over-weighted. **None is blocking.**
 
 | # | finding | grade | disposition |
 |---|---|---|---|
-| **C1** | **`docs/43` §3.4's load-bearing "These overlap" mixes the prior and adopted `C` levels.** 6.83–8.73 is `11.8 × {144,184} / 248.730` (prior C); the reading-B band 7.92–8.86 is at the adopted C. At the adopted C the deposition-free band is `11.8 × {144,184} / 299.5387` = **5.67 – 7.25**, which is **disjoint** from 7.92–8.86 (gap 0.67). | medium | **Correct in place at C5 or at the next `docs/42` amendment.** Propagated verbatim into `docs/42:15, :299, :472` and `docs/45:404`. The resulting caution is in the safe direction, so the conclusion is unaffected; the *reasoning* is wrong and `docs/37`'s own rule is "never quote a load without its convention **and** its `cp_revision`". |
+| **C1** | **`docs/43` §3.4's load-bearing "These overlap" mixes the prior and adopted `C` levels.** 6.83–8.73 is `11.8 × {144,184} / 248.730` (prior C); the reading-B band 7.92–8.86 is at the adopted C. At the adopted C the deposition-free band is `11.8 × {144,184} / 299.5387` = **5.67 – 7.25**, which is **disjoint** from 7.92–8.86 (gap 0.67). | medium — **PARTLY ENACTED 2026-08-12; the site list is stale** | ~~**Correct in place at C5 or at the next `docs/42` amendment.** Propagated verbatim into `docs/42:15, :299, :472` and `docs/45:404`.~~ The resulting caution is in the safe direction, so the conclusion is unaffected; the *reasoning* is wrong and `docs/37`'s own rule is "never quote a load without its convention **and** its `cp_revision`". — **⚠ 2026-08-12: (a) ENACTED at its home site.** `docs/43` §7 **Amendment 5** strikes §3.4's *"These overlap"* in place and prints the re-based table: deposition-free `11.8 × 144 / 299.5387088405831` = **5.6727**, `11.8 × 184 / …` = **7.2485**, against reading-B **7.92 – 8.86** ⇒ *"**Gap between 7.2485 and 7.92 = 0.6715 in α. The two bands are DISJOINT.**"* `docs/35` §9.4.4 and `docs/37` A3.3.1 (:355–359) carry the same re-basing. **(b) The propagation list above has DRIFTED and must not be used as line refs**: this pass read `docs/42`:299 (a C-class erosion-share table row) and `docs/42`:472 (G3.3's opening) and **neither carries the band**; `docs/45`:404 is inside §3.5's ONI clause. Quote the *sentence*, not the line. **(c) The remaining live copies are OWED, with a named refusal on the record**: `docs/42` §9.7 **F7** registers `docs/42`'s own copies as owed *"as a further `docs/42` amendment"* and explicitly declines to smuggle them into A-P4's slot — correct process, not an oversight. **(d) O12 — whether the now-disjoint bands change §3.4's "doubly load-bearing" conclusion about G5 — is still OPEN and `docs/43` amd 5 declines to decide it** (*"deciding it needs a judgement about reading B that this pass has no standing to make, and the safe-direction caution is retained regardless"*). |
 | **C2** | **`docs/43` §5.1's mandatory registered C5 statement embeds the comparison-basis artifact §5.3 of the same document forbids** — a basin-total simulated ratio against a fleet median of tributary-**station** observed ratios, the three-way mismatch measured at ×2.14 (est a) / ×1.27 (b). Repaired to like-for-like the simulated median is **4.903** against observed **4.620** (obs/sim 0.9423) — the simulated contrast *exceeds* the observed in the only admissible frame. | medium | **Carry as a correction to `docs/43` §5.1, to be applied before C5 quotes it.** The qualifier sits after the blockquote, and registered statements are quoted verbatim by design. It could be used to reject a legitimate C4 result. |
 | **C3** | **`docs/37` A2's evidentiary base is primary and verifies, but is unreproducible from the repository.** Four citations followed to origin and verbatim-confirmed (`fagundes2018` L3773 / L4907 / L4189; `swat2009` L24759/24765/24804). But none of `fagundes2018.pdf`, `buarque2015.pdf`, `swat2009.pdf`, `parse_appIV.py`, `guard_vs_source.py` is in the repository. And "two independent legs" is **one primary leg plus one self-citation** (leg 2 cites `docs/42` §3.1). | low | **A one-line provenance record is owed** (retrieval source, file hash, page numbers) for the evidence behind C3's central reclassification. `docs/00` §6 already records scratchpad-only analysis code as a known loss mode. |
 | **C4** | The **ENSO-neutrality of CAL 2012–14** is **UNCITED** — no ONI table exists in this repository. It is the premise of the fit/evaluation split. | UNCITED | **Already has a registered remedy** (`docs/45` §3.5: record NOAA CPC ONI v5 with retrieval date in `report_C4.json`, or downgrade "out-of-phase" to "out-of-window" everywhere). Carry. |
@@ -260,6 +344,13 @@ Not defects of this run's making, but limitations that must travel with every C4
 2. **`k = 0.0 /km` and the asserted `SDR = 1.0`** (`docs/45` §2.3, G5 option 2). This is a claim,
    not a measurement, and the guard that would betray it now has a corrected power of **~10× over
    342 km**, not 2.12× (§2.2). State the corrected bound.
+   > **⚠ 2026-08-12 — the bound's *comparative* is inverted wherever this document states it; see
+   > §6.2 item 4 as annotated.** The registered form is *"no first-order channel sink **WEAKER**
+   > than ≈ 10× over ~342 km is **detectable**"* (`docs/42` §9.7 A-P4:1005–1009 — *"`k_min` is a
+   > **detection floor**"*), the ≈ 10× is the **all-18 G1.2** figure, and the **CAL-8 fit-set** floor
+   > is **`k_min` = 0.0838 /km ⇒ ≈ 173× over 61.5 km** (`docs/45` §8.1 row 4). **The limitation
+   > itself is unchanged and gets STRONGER, not weaker** — `docs/42` §9.7 re-affirms A-P3's decision
+   > to fix `k` at 0 on exactly this ground.
 3. **Station heterogeneity is irreducible at this fleet size** — I² 96 – 99.2 %, τ 2.03 – 3.40×
    per station, 18 of 24 station-cells with CIs excluding 1. Certifying the residual's constancy
    to ±50 % needs n ≈ 19 stations; to ±20 %, n ≈ 94. We have 8 in the fit and 18 in the guards.
@@ -388,8 +479,41 @@ All rows below: 90 m, same grid, same aggregation, engine re-run (**not** a scal
 | + `m` capped at 0.5 | 155.0053 | 0.5175 | 0.5023 |
 | + S = W&S 1978 | 507.4346 | 1.6941 | 1.7143 |
 | + slope length ≤ 1 pixel | 108.5632 | 0.3624 | 0.3512 |
-| **source method, continuous L** | **129.3840** | **0.43194** | 0.42135 |
-| **source method, Desmet–Govers L** | **75.3235** | **0.25146** | 0.24466 |
+| **source method, continuous L** | **129.3840** | **0.43194** | 0.42135 ᴬ |
+| **source method, Desmet–Govers L** | **75.3235** | **0.25146** | 0.24466 ᴬ |
+
+> **ᴬ ⚠ 2026-08-12 — THE AREA-WEIGHTED COLUMN IS A THIRD AREA SUPPORT. The values are not wrong;
+> they are not `docs/46` §3.3's `f_area` either, and they must not be quoted as it.** This is not
+> this pass's adjudication — **it is the owning amendment's**, which reached `docs/47`'s cell by
+> name before this pass existed. `docs/46` **§10 Amendment 2 (v) item 1**, verbatim:
+>
+> > *"**`docs/47` §4.3's area-weighted column prints 0.42135** for this cell. That is **not** a
+> > rounding of the corrected value — 0.42136300143291305 both rounds *and* truncates to 0.42136 at
+> > five decimals. It reconstructs as the **`urh_ls2d_variants.csv` `area_km2` weighting**,
+> > 0.4213519856784954 … The same table's DG cell prints **0.24466** where the registered value is
+> > 0.2446790094097074 (→ 0.24468). **So `docs/47` §4.3's area column is a third support**, owed to
+> > `docs/47`'s owner, and it changes no `docs/47` verdict (all three propositions are
+> > erosion-side)."*
+>
+> **Recomputed independently by this pass, read-only from `data/processed/`, rather than copied:**
+> the `area_km2` weighting of `urh_ls2d_variants.csv` (32,782 rows) gives
+> `V4/V0` = **0.421351985678496** → **0.42135**, reproducing the printed cell; the `n_cells`
+> weighting gives 0.42136472954222043 and the `area_frac` weighting 0.4216185646720824. The
+> **registered** `f_area(V4)` — `docs/46` §3.3's per-cell basin quantity over all **30,235,916**
+> cells — is `ls2d_variants_summary.json:variants.V4_buarque_2015.ratio_to_V0` =
+> **0.42136300143291305**, corroborated at **0.42136300143291344** by
+> `ls2d_defect_b.json:decomposition.V4_over_V0`. The registered DG endpoint is
+> `ls2d_defect_b.json:decomposition.V4dg_over_V0` = **0.2446790094097074** (→ **0.24468**).
+>
+> **THE REGISTERED VALUES, which supersede this column for every purpose outside this table:**
+> **`f_area` ∈ [0.2446790094097074, 0.42136300143291305]** (`docs/46` §10 amd 2; `docs/51` §9 amd 1;
+> `docs/43` §7 amd 8; `docs/37` A3.3.4). **NOTHING THIS DOCUMENT DECIDES MOVES**: `f_ero` is
+> untouched at **0.43194417543884817** / **0.25146**, and `docs/46` §3.3 ground **G-ii** governs —
+> *"`f_ero` decides; `f_area` is reported beside it, always, and can never override it."*
+>
+> **Do NOT "correct" §4.1's `×0.4214`** (the harness-validation line above): `16.7754 / 39.8123 =
+> 0.42136224…` → **0.4214** at 4 d.p., which is the **corrected** value; the superseded 0.42147514
+> would round to 0.4215. Recomputed this pass. It is right as printed.
 
 > **REGISTERED HERE AS THE MEASURED BRACKET, superseding `docs/37` §4 candidate 0's
 > ×0.333 – ×0.421 as a *measurement* (not as a decision):**
@@ -409,7 +533,25 @@ MDE"*). That reading is now **corroborated by a second, independent sentence** o
 (*"o maior valor permitido pelo modelo para o fator L é igual ao limite da dimensão de cada
 pixel"*), which resolves the interpretation risk `docs/35` §9.3.4 item 4 flagged. But under that
 cap `a_in → 0`, so the D&G finite difference degenerates to `L = (D/(22.13·x))^m` and loses its
-finite-difference character. **A different reading of p. 94 moves both rows.**
+finite-difference character. ~~**A different reading of p. 94 moves both rows.**~~
+
+> **⚠ WITHDRAWN 2026-08-12 — the source was obtained and read verbatim; the interval is not a
+> reading ambiguity.** `docs/51` §1 records the primary text on disk (Buarque 2015, `lume.ufrgs.br`
+> handle `10183/129875`, 182 pp., sha256 `3047624f…c0037`; PDF p. 63 = printed p. 47). `docs/51`
+> §THE FOUR ANSWERS item 1, verbatim: *"**And the interval is not an uncertainty over readings of
+> the source**: with Buarque eq. 13 now read verbatim (§1), the source formulation read whole is a
+> **POINT at ×0.25146**, and ×0.43194 is a documented **hybrid** that keeps *our* `L`. The span
+> between them is the `L`-form lever, not a reading ambiguity."* `docs/46`:119 — *"Every lever is
+> **CITED** … there is no admissible reading in which `L` is our point-rate form."*
+> **The p. 94 limiter reading specifically is settled by the same two-sentence device this
+> paragraph already invokes** (p. 94 + p. 98), and eq. 14's `Sf` units — the last open source
+> question — closed **against** the direction that would have narrowed the bracket (`docs/51` §1
+> (R6): *"`Sf` is slope PERCENT"*, printed p. 47, corroborated p. 48).
+> **Consequence for §6.2 item 2:** what travels with every α̂ under `docs/37` A3 is the **POINT**
+> branch — `f_LS` = **0.25146** erosion-weighted (area proxy **0.2446790094097074**), `1/f_LS` =
+> **3.976775630318937**, grade *formulation CITED / factor DERIVED / LEVEL UNVALIDATED* — **and not
+> the `[0.25146, 0.43194]` bracket** (`docs/37` A3.4, "The contract C4.3 would start under").
+> **The bracket survives as a measurement**; it is no longer the thing that travels.
 
 ### 4.4 The α-absorption factor
 
@@ -492,6 +634,37 @@ Against the registered thresholds — box floor **2.0**, the 5 %-of-box-range ra
 term in the C4 verdict.** It is worth the difference between *a guaranteed rail* and *a possible
 clean fit*, and no other registered quantity in C4.3 has that leverage.
 
+> **⚠ BACK-ANNOTATION 2026-08-12 — P2 IS CONVENTION-DEPENDENT AND DOES NOT SURVIVE THE B2 FIX. THE
+> VERDICT IS STRENGTHENED, NOT WEAKENED.** This correction was **owed to this document by name**;
+> `docs/45` §8.5.12 item 3, verbatim:
+>
+> > *"**`docs/47` §5.2's *'one corner of the registered parameter space clears both thresholds'* and
+> > §5.2's conclusion *'the LS decision is the dominant term in the C4 verdict'* do not survive the
+> > fix B2 asks for.** Both are convention-(i) statements; under the enacted convention no corner
+> > clears and the LS decision does not move the rail verdict (§8.5.8). **`docs/47`'s VERDICT is
+> > strengthened, not weakened** — the rail becomes certain rather than probable. Owed to `docs/47`'s
+> > owner, along with a note that its §5's three propositions should be re-ordered: **P1 is
+> > discharged by this amendment; P3 and Branch B / `Δ_shape` now carry the block.**"*
+>
+> **The mechanism, so this is not taken on authority.** This section rescales the α **axis** and
+> then reads the rescaled α̂ against a box **held literal** — convention (i). `docs/45` §8 Amendment 4
+> enacts convention (ii): the box `[2.0, 30.0]` and the stop 3.9 were registered at `f_LS` = 1, so
+> **an `f_LS ≠ 1` moves the thresholds too**, and the gate is re-expressed in the invariant unit Π.
+> Under (ii) the LS swap moves the axis **and** the boundary by the same factor, so **it cannot move
+> the rail verdict at all**: `docs/45` §8.5.8 measures the rail in **three** of the three G2.3 β
+> corners rather than two, with a shortfall of **×1.5516** at the box floor that the maximal
+> favourable shape-driven lift `exp(+Δ_shape)` = **1.1387665371423883** still leaves short by
+> **×1.3625** (§8.5.9).
+>
+> **What this changes and what it does not.** ~~*"one corner … clears both thresholds"*~~ and
+> ~~*"the LS decision is the dominant term in the C4 verdict"*~~ are **WITHDRAWN as stated**. What
+> the LS decision still moves is (a) the **shape** of the residual vector — `Δ_shape` = 0.1299456916752905
+> > 0, hence O5 and `docs/46` §6.1's mandatory re-run; (b) the basin load (75.32347104056149 vs
+> 299.5387088405831 Mt/yr); (c) the `docs/35` pairing. **§5's three propositions re-ordered, per the
+> owing document: P1 is DISCHARGED by `docs/45` §8 amd 4; P3 and Branch B / `Δ_shape` now carry the
+> block.** §5's headline answer — *"NO. It is not acceptable, and the reason is arithmetic, not
+> caution"* — **is unchanged and is now more certain.**
+
 *(Honesty about the limits of this measurement: rescaling the α axis is **exact** for the level
 but does not hand me `F_report` values at the new box endpoints, because the LS swap also moves
 each station's residual by up to ±1.287× relative to the fleet. So "may clear" is the strongest
@@ -564,18 +737,42 @@ for pausing and re-registering the α axis, not for hurrying to run before anyon
 
 ### 6.1 The four repairs that must land before C4.3 starts
 
+> **⚠ BACK-ANNOTATION 2026-08-12 — FOUR OF THE FIVE REPAIRS HAVE LANDED. C4.3 IS STILL BLOCKED.**
+> Status column added below; **no repair's text is altered**. Summary, each verified against the
+> document that enacted it:
+>
+> | repair | status 2026-08-12 | enacted by |
+> |---|---|---|
+> | **B1** — land C3.1 | **LANDED, in a reduced form** | `docs/37` **A3** (ADOPT-SOURCE, `ls_formulation = buarque_2015_dg`) |
+> | **B2** — re-express the gate in Π | **DISCHARGED** | `docs/45` **§8 Amendment 4** (`gate-reexpression`) |
+> | **B3** — the NaN-blind mass audit | **DISCHARGED** | `src/mgb_transport.py`:908 + `tests/test_transport.py`:274 (verified on disk, §2.3) |
+> | **B4** — the `docs/42` §9 transcription | **DISCHARGED** | `docs/42` §9.1–§9.5 (A-P1, A-P2, A-P3, A-P1.1) + §9.7 (A-P4) |
+> | **B5** — replace the ±38 % Π band | **DISCHARGED** | `docs/45` **§8 Amendment 1**, with `docs/42` §9.7 A-P4 and `docs/43` §7 amd 1/4 |
+> | the **§5.5** disclosure | **DISCHARGED** | `docs/45` **§8 Amendment 2** |
+>
+> **Landing B1–B5 was necessary and is now measured not to have been sufficient.** The blockers
+> that remain are listed in **§9.2** and none of them is a §6.1 repair. **Nothing here licenses a
+> C4.3 start.**
+
 | # | repair | from | cost | why blocking |
 |---|---|---|---|---|
-| **B1** | **Land C3.1** — the LS-formulation decision, under `docs/46` frozen, with `ls_formulation`, its evidence grade, and the negative-result branch (`docs/46` §7) live. | §5 | ≈ 4 min per LS pass; hours for the full variant set | The α box is denominated in the quantity C3.1 decides (§5.1–§5.2). |
-| **B2** | **Re-express the C4.3 gate in Π, or re-register the α box against the adopted `f_LS`.** Whichever C3.1 returns — including *"not resolvable from the available literature"* — `docs/45` §2.1's box and `docs/35` §6.1's 3.9/35.4 must be restated in a unit that survives it. A `docs/35` §9 amendment may only be **proposed** by the session that hits the stop (`docs/45` §6.1), so this is owed to the document owners, not to C4.3. | §5.1 | one amendment | Otherwise C4.3 runs against a floating threshold. |
-| **B3** | **Fix `src/mgb_transport.py:902`** (`if not (m <= max_resid)`) and add a NaN regression test; `tests/test_transport.py:583` currently passes on an all-NaN run. | §2.3 | one line + one test | C4.3 would publish the false PASS. |
-| **B4** | **Transcribe P1/P2/P3 into `docs/42` §9**, dated, and correct §4.2's CAL-13 power row — resolving the 0.0096-vs-0.0104 discrepancy in writing (§2.4, O7). | §2.4 | one amendment | `docs/43` §3.1 already declares these blocking; they are unperformed. |
+| **B1** ✅ **LANDED 2026-08-12** | **Land C3.1** — the LS-formulation decision, under `docs/46` frozen, with `ls_formulation`, its evidence grade, and the negative-result branch (`docs/46` §7) live. | §5 | ≈ 4 min per LS pass; hours for the full variant set | The α box is denominated in the quantity C3.1 decides (§5.1–§5.2). — **`docs/37` A3: ADOPT-SOURCE, `ls_formulation = buarque_2015_dg`, evidence grade recorded. A3.4 item 1: *"B1 lands here, in the reduced form A3.1.6 permits … What B1 does not carry is the default-switch proposal, because ADOPT-SOURCE is not yet exercisable."* `docs/45` §8.5.10 item 8 words the same state as *"B1 is not"* discharged; both describe one fact — the formulation is DECIDED and RECORDED, and NOT EXERCISABLE. §9.2.** |
+| **B2** ✅ **DISCHARGED 2026-08-12** | **Re-express the C4.3 gate in Π, or re-register the α box against the adopted `f_LS`.** Whichever C3.1 returns — including *"not resolvable from the available literature"* — `docs/45` §2.1's box and `docs/35` §6.1's 3.9/35.4 must be restated in a unit that survives it. A `docs/35` §9 amendment may only be **proposed** by the session that hits the stop (`docs/45` §6.1), so this is owed to the document owners, not to C4.3. | §5.1 | one amendment | Otherwise C4.3 runs against a floating threshold. — **`docs/45` §8 Amendment 4 (§8.5): *"Discharges `docs/47` §6.1 repair B2"*, taking route (A), the gate re-expressed in Π. Its own one-line verdict: *"the re-expression does NOT fix `docs/47`'s `FAIL — RAILED` / `FAIL — NUMERIC` pre-computability problem. It RELABELS it — and in the Π coordinate the problem is measurably WORSE, not better … `C4.3-BLOCKED-UNTIL-LS-LANDS` is unchanged."* The `docs/35` §6.1 half is PROPOSED, not enacted (§8.5.11 item 2), and `docs/35` §9 carries no α-box re-registration — verified on disk: §9.1–§9.4 only.** |
+| **B3** ✅ **DISCHARGED 2026-08-12** | **Fix `src/mgb_transport.py:902`** (`if not (m <= max_resid)`) and add a NaN regression test; `tests/test_transport.py:583` currently passes on an all-NaN run. | §2.3 | one line + one test | C4.3 would publish the false PASS. — **Both landed and both read on disk this pass: `src/mgb_transport.py`:908 is the NaN-safe form; `tests/test_transport.py`:245–277 is the regression test, asserting `math.isnan(...)` at :274 on an input that is all-finite by construction. §2.3.** |
+| **B4** ✅ **DISCHARGED 2026-08-11/12** | **Transcribe P1/P2/P3 into `docs/42` §9**, dated, and correct §4.2's CAL-13 power row — resolving the 0.0096-vs-0.0104 discrepancy in writing (§2.4, O7). | §2.4 | one amendment | `docs/43` §3.1 already declares these blocking; they are unperformed. — **`docs/42` §9.1–§9.5 (A-P1, A-P2, A-P3, A-P1.1) + §9.7 (A-P4). §9.6 F5: *"D4 may be CLOSED."* F4: *"O7 may be CLOSED: 0.00964 is correct."* §2.4.** |
 
 **And one repair owed before any C4 number is *printed*, which may be done in parallel:**
 
-| **B5** | **Replace the ±38 % Π band.** Either make `docs/45` **G12**'s LOO-range comparison a band-**replacement** rule, or substitute the station-bootstrap band `docs/45` §4.2 already imports for every other interval. Restate the corrected `k` bound as **~10× over 342 km**, not 2.12×. | §2.2 | a `docs/45` §8 amendment | `docs/45` §6.2 item 2 makes the band mandatory on every Π and every load; it is ~4× too narrow in log units, and G12 already fires on it (0.860 ln vs ±0.322 ln). |
+| **B5** ✅ **DISCHARGED 2026-08-12** | **Replace the ±38 % Π band.** Either make `docs/45` **G12**'s LOO-range comparison a band-**replacement** rule, or substitute the station-bootstrap band `docs/45` §4.2 already imports for every other interval. Restate the corrected `k` bound as **~10× over 342 km**, not 2.12×. | §2.2 | a `docs/45` §8 amendment | `docs/45` §6.2 item 2 makes the band mandatory on every Π and every load; it is ~4× too narrow in log units, and G12 already fires on it (0.860 ln vs ±0.322 ln). — **`docs/45` §8 Amendment 1: *"the ±38 % Π band REPLACED by the station bootstrap, and the `k` bound restated at ≈ 10× over ~342 km (discharges `docs/47` §6.1 B5)"*. The band is registered as a **procedure, not a constant**; the pre-fit value is ×0.29–×3.73. Enacted in parallel in `docs/42` §9.7 (A-P4) and `docs/43` §7 amd 1 + amd 4. Note `docs/42` §9.6 F5's *"`docs/47` B5… remains open"* was written 2026-08-11 and is superseded by A-P4 the next day.** |
 
 **Plus the disclosure of §5.5**, as a dated `docs/45` §8 amendment.
+✅ **DISCHARGED 2026-08-12 — `docs/45` §8 Amendment 2**, the PRE-FIT DISCLOSURE: *"the registered
+objective has already been profiled across the whole registered α box (discharges `docs/47` §5.5;
+`docs/47` **O9** carried, not decided)"*. `docs/45` §7.2's *"It does not … produce a number that any
+gate here judges"* now carries an inline `[WARN]` block saying it is *"STILL TRUE OF THIS PASS, NO
+LONGER TRUE OF THE PROJECT."* **O9 — whether this requires a fresh pre-registration rather than a
+§8 amendment — is still OPEN and is still undecided** (`docs/45` §8.5.11 item 3: *"`docs/47` O9
+remains OPEN and is not decided here"*).
 
 ### 6.2 The contract C4.3 starts under, once B1–B4 land
 
@@ -586,9 +783,31 @@ for pausing and re-registering the α axis, not for hurrying to run before anyon
    point and its grade travel instead.
 3. **The Π band is the corrected one (B5)**, and the sentence *"the level is set by 8 stations
    whose residuals span a factor of 412"* appears beside it.
-4. **The `k` bound is stated at its corrected power** — *"no first-order channel sink stronger
-   than ~10× over 342 km is detectable on this fit set"* — together with the asserted `SDR = 1.0`
-   claim in the words `docs/45` §2.3 registers.
+4. **The `k` bound is stated at its corrected power** — ~~*"no first-order channel sink stronger
+   than ~10× over 342 km is detectable on this fit set"*~~ → **the comparative here is INVERTED and
+   the set is mis-named; corrected 2026-08-12 to the form the owning documents register:**
+   > **"No first-order channel sink WEAKER than ≈ 10× over ~342 km is detectable"** — the **all-18
+   > G1.2** joint-regression bound (`k_min` 0.0065–0.0069 /km). **On the CAL-8 fit set the floor is
+   > `k_min` = 0.0838 /km ⇒ ≈ 173× over 61.5 km** (0.0883 /km ⇒ ≈ 164× on `docs/42` §4.1's printed
+   > `Lw`).
+   >
+   > **Owners:** `docs/42` §9.7 (A-P4):1005–1009 — *"`k_min` is a **detection floor**. With the verb
+   > *detectable* the true comparative is **weaker** (a sink with `|k| < k_min` leaves no visible
+   > trace) … §6 G1.2, §9.4 and `docs/45` §2.3 all pair **"stronger"** with **"detectable"**, which
+   > asserts the opposite of what the statistic supports. **A-P4 registers the `weaker` /
+   > `detectable` pairing.**"* `docs/45` §8.1's site table separates the two sets explicitly: row 5
+   > (§2.3) — *"≈ 2.12× over 348.4 km at best, **all-18 test**"* → *"`k_min` 0.0065–0.0069 /km ⇒
+   > **≈ 10× over ~342 km**, in the **'weaker than'** sense"*; row 4 (§2.2) — *"`k_min` on the **fit
+   > set**"* → *"**0.0838 /km ⇒ ≈ 173× over 61.5 km**"*. `docs/43` §7 amd 4 and `docs/42` §9.7 row 10
+   > carry the same pair.
+   >
+   > **Both figures must travel**, because §2.6 item 1 and G9 make the all-18 span the reporting
+   > frame while the fit is CAL 8. *(`docs/45`'s own registered sentence at §8.1:838 still reads
+   > "…detectable on this fit set"; that wording is `docs/45`'s to own and is NOT contradicted here
+   > — what is corrected here is this document's **comparative** and its silent conflation of the
+   > two sets.)*
+
+   — together with the asserted `SDR = 1.0` claim in the words `docs/45` §2.3 registers.
 5. **Everything else in `docs/45` §2–§6 is imported unchanged and obeyed**, including the
    asymmetric-bar statement, G9's 66.53 % disclosure, G6's five reporting elements, G10's
    mandatory "the calibration determined a level and essentially nothing else" statement, the
@@ -601,9 +820,19 @@ for pausing and re-registering the α axis, not for hurrying to run before anyon
 **Permitted** (LS-invariant, consumes no registered budget, produces no number any `docs/45` gate
 judges):
 
-- **`docs/46` §6.1's `Δ_shape` pre-test.** It is the registered Branch A/B discriminator, it has
+- ~~**`docs/46` §6.1's `Δ_shape` pre-test.** It is the registered Branch A/B discriminator, it has
   **not been run** (O6), and it costs minutes. Run it and record the number **before** C3.1
-  reports, so it cannot be read backwards.
+  reports, so it cannot be read backwards.~~
+  > **✅ DONE 2026-08-11 — and the ordering held.** `docs/53_delta_shape_pretest.md`:19 —
+  > **`Δ_shape` = 0.1299456916752905** (variant V4, weights normalised over the 18 usable SSC
+  > stations, maximum over the CAL 8; argmax `24037390` CAPITANEJO). `docs/53`:24 — *"**VERDICT —
+  > `Δ_shape` > 0 ⇒ BRANCH B IS MANDATORY**"*. `docs/53`:397 — *"`docs/47` **O6** … **CLOSED.**
+  > Value 0.1299456916752905; Branch B."* Recorded in `docs/46` §10 amendment 1. `docs/52` fixed
+  > the bar **before** this run and **blind to its result**, so it could not be read backwards.
+  > **This REMOVES Branch A entirely and therefore strengthens §5.4**: `docs/46` §6.2's six Branch-A
+  > conditions are available *"only if `Δ_shape` = 0"*, so they are **moot rather than satisfiable**
+  > and there is no legal PROVISIONAL C4.3 at all (`docs/37` A3.4 (3) item 1). It also converts
+  > `docs/46` §6.1's re-run mandate into a live obligation — see §9.2.
 - B3 and B4 in full; B5 and the §5.5 disclosure as amendments.
 - Building the C4.3 machinery and the `docs/42` §2 artifact contract — `sed_station_daily.npz`,
   the `c4_grid.csv` writer, the guard evaluators — and testing them on synthetic input.
@@ -621,13 +850,13 @@ Named as open items, with what would settle each. **None of these is a finding.*
 
 | # | open item | what would settle it |
 |---|---|---|
-| **O1** | **Whether the LS levers can be settled from the literature at all.** Desmet & Govers (1996) primary text not obtained (paywalled); Fagundes et al. (2026) not retrieved (ScienceDirect 403 on every route). | Obtaining either. `docs/46` §7 already pre-commits *"the LS level is not resolvable from the available literature"* as a publishable **result**, which is the right posture. |
+| **O1** — **NARROWED 2026-08-12, still open** | **Whether the LS levers can be settled from the literature at all.** Desmet & Govers (1996) primary text not obtained (paywalled); Fagundes et al. (2026) not retrieved (ScienceDirect 403 on every route). | Obtaining either. `docs/46` §7 already pre-commits *"the LS level is not resolvable from the available literature"* as a publishable **result**, which is the right posture. — **⚠ 2026-08-12: the SOURCE lever question is settled, the two named PDFs are still unobtained.** `docs/51` §1: *"**The PDF is obtainable, it was obtained, and it is on disk**"* — Buarque (2015), `lume.ufrgs.br` handle `10183/129875`, 182 pp., sha256 `3047624f641b335900eb3bc2191308b03a22148bd30aeb7227031bf42e1c0037`; **(R6) RESOLVED — `Sf` is slope PERCENT**, printed p. 47 verbatim, corroborated p. 48. `docs/46`:119 — *"Every lever is **CITED** … there is no admissible reading in which `L` is our point-rate form."* Consequently **C3.1 was decided on source grounds** (`docs/37` A3, ADOPT-SOURCE) rather than under `docs/46` §7's negative branch. **What is still open and unchanged:** D&G (1996) and Fagundes et al. (2026) remain unobtained — `docs/37` A3.7 lists **O1** among the items *"still open and NOT fixed by any outcome of this amendment"*, alongside **O2**, **O3**, **O4** and **O5**. |
 | **O2** | **Which S function is valid above tanθ 0.50** — 11.26 % of cells, **35.5 % of the S signal**. | A primary source that validates any S function above 50 % slope. None exists (Schmidt et al. 2019). **No band invented.** |
 | **O3** | **The exact slope-length cap.** The literature requires one, rules out 1 km², and calls the value "arbitrary" in print. Defensible span **×0.351 – ×0.585**. | A written source-grounds choice under `docs/46` §4's decision ladder. |
 | **O4** | **Moderate vs low rill:interrill `m` column** (worth ×0.508 either way); and whether `α = 11.8` (Williams 1975) is like-for-like with **any** 2-D contributing-area LS. | AH-703 leaves (a) to the user; (b) bounds every ratio in §4.3 from above and may be unresolvable. |
 | **O5** | **Whether `F_report` clears the bar anywhere in the box under a corrected LS.** This run rescaled the α **axis**, which is exact for the level, but did not re-profile the objective on a corrected LS **field**, so the per-station residual redistribution (±1.287×) is unmodelled. | Re-running the §5.2 profile on the adopted LS field — **after** C3.1 lands, never before. |
-| **O6** | **`docs/46` §6.1's `Δ_shape` pre-test has not been run.** It is the registered Branch A/B discriminator. | Running it (§6.3). Minutes. |
-| **O7** | **The 7 % method difference between the two `k_min` computations** — `docs/42` prints 0.0104 /km, the lens computed 0.0096 /km, and `docs/43` P1 quotes the lens's number as `docs/42`'s. | The B4 transcription must pick one and record why. |
+| ~~**O6**~~ ✅ **CLOSED 2026-08-11** | ~~**`docs/46` §6.1's `Δ_shape` pre-test has not been run.** It is the registered Branch A/B discriminator.~~ | ~~Running it (§6.3). Minutes.~~ — **RUN. `docs/53_delta_shape_pretest.md`:19 — `Δ_shape` = **0.1299456916752905** (V4; weights normalised over the 18 usable stations, max over the CAL 8; argmax `24037390` CAPITANEJO; smallest of the eight `26127010` EL ALAMBRADO AUT at 0.0179854753, so **no CAL station is invariant**). :24 — *"**VERDICT — `Δ_shape` > 0 ⇒ BRANCH B IS MANDATORY**"*. :397 — *"`docs/47` **O6** … **CLOSED.** Value 0.1299456916752905; Branch B."* Recorded in `docs/46` §10 amendment 1; the bar was fixed blind beforehand by `docs/52`. Branch-invariance checked: all **thirty** measured readings of the definition lie in [0.0159907, 0.1638779], all > 0 (`docs/37` A3.4 (3)). **Consequence, not a formality: Branch A is CLOSED, so no legal PROVISIONAL C4.3 exists, and `docs/46` §6.1's re-run mandate is live — see §9.2.** |
+| ~~**O7**~~ ✅ **CLOSED 2026-08-11** | ~~**The 7 % method difference between the two `k_min` computations** — `docs/42` prints 0.0104 /km, the lens computed 0.0096 /km, and `docs/43` P1 quotes the lens's number as `docs/42`'s.~~ | ~~The B4 transcription must pick one and record why.~~ — **It did. `docs/42` §9.5 (A-P1.1) is headed *"§4.2's power table, corrected — and the **0.0096-vs-0.0104 discrepancy resolved**"*; `docs/42`:803 gives **CAL 13 → 0.009640**, against *"§4.2 prints 0.0104 — **does not reproduce**"*. `docs/42` §9.6 **F4**: *"`docs/47` open item **O7** … is answered by §9.5. O7 may be **CLOSED**: 0.00964 is correct, `docs/42` §4.2 was wrong, reason recorded."* `docs/43` §7 amd 6 enacts the matching P1 attribution fix; `docs/42` §9.6 F3 records that `journal_adj-c4-feasibility.md`:167's *"method rounding"* explanation is **WITHDRAWN**. **Residue, not re-opened: `docs/42` §4.2's body still prints 0.0104 (its own §9.6 F1).** |
 | **O8** | **The class-C detectability figures ×4.2 (CAL 8) / ×2.9 (all 18)** did not reproduce on the refuter's design matrix (obtained ×8.2 / ×3.2). They are σ_r-scaled and therefore also affected by D2. | An independent recomputation with the design matrix stated. |
 | **O9** | **Whether the pre-fit profile (§5.5) compromises `docs/45`'s freeze enough to require a fresh pre-registration** rather than a §8 amendment. | A governance decision by the document owner. This pass registers the disclosure requirement and declines to decide the governance question. |
 | **O10** | **`docs/41` remains unaudited** (C3 clause 3), and G3.1 is measured blind to its ×1.2043 revision, so C4 cannot audit it however it comes out. | An independent adversarial pass on `docs/41`. Not C4's job. |
@@ -666,12 +895,151 @@ Named as open items, with what would settle each. **None of these is a finding.*
 
 | document | relation to this one |
 |---|---|
-| `docs/37_c3_closure.md` | C3's verdict and Amendment A1/A2. §4 candidate 0's ×0.333–×0.421 is **superseded as a measurement** by §4.3; A1.9's withdrawn direction is carried unchanged. |
+| `docs/37_c3_closure.md` | C3's verdict and Amendment A1/A2. §4 candidate 0's ×0.333–×0.421 is **superseded as a measurement** by §4.3; A1.9's withdrawn direction is carried unchanged. **Added 2026-08-12: `docs/37` **A3** is this document's §6.1 **B1** event — ADOPT-SOURCE, `ls_formulation = buarque_2015_dg` — and its **A3.4** is the authoritative statement that C4.3 is nonetheless still BLOCKED. A3.3.1/A3.3.2/A3.3.4 enact the bracket, eq.-14 and `f_area` corrections in that file. C3 stays OPEN.** |
 | `docs/40_sdr_evidence.md` | the SDR retirement; §3.2 restates it so it is not re-raised. |
 | `docs/41_cfactor_evidence.md` | the adopted `C` revision; **unaudited**, open item O10. |
-| `docs/42_c4_guards.md` | G1–G9. §2.2 corrects its σ_r-derived power numbers; §2.4 records that its §9 transcription is **unperformed**. |
+| `docs/42_c4_guards.md` | G1–G9. §2.2 corrects its σ_r-derived power numbers; ~~§2.4 records that its §9 transcription is **unperformed**~~ → **the transcription landed 2026-08-11/12 as §9.1–§9.5 (A-P1, A-P2, A-P3, A-P1.1) and §9.7 (A-P4); its own §9.6 F5 states *"D4 may be CLOSED"* and F4 *"O7 may be CLOSED"*. A-P4 also settles the `weaker`/`detectable` comparative this document had inverted (§6.2 item 4).** |
 | `docs/43_c3_c4_gate.md` | the gate decision. Its reclassification **survives** (§3.2); §2.1 and §2.2 attach to its §2.1 and §3.2; §2.5 C1/C2 correct its §3.4 and §5.1. |
-| `docs/45_c4_preregistration.md` | C4.2, frozen. This document **blocks its §6 from being exercised** until B1–B4 land, and owes it three §8 amendments (B5, the §5.5 disclosure, the corrected `k` bound). It does **not** edit §2–§6. |
-| `docs/46_ls_preregistration_DRAFT.md` | the LS pre-registration. **§6.3 Branch B is selected**, on B2 (ADOPT unreachable under A3) plus the box-boundary argument of §5.4 that A6 already concedes. Its `Δ_shape` pre-test is open item O6. |
+| `docs/45_c4_preregistration.md` | C4.2, frozen. This document **blocks its §6 from being exercised** until B1–B4 land, and ~~owes it three §8 amendments (B5, the §5.5 disclosure, the corrected `k` bound)~~ → **all three landed 2026-08-12 as `docs/45` §8 Amendments 1–3, and a fourth (Amendment 4) discharges B2 by re-expressing the gate in Π. §8 is no longer empty.** It does **not** edit §2–§6. **`docs/45` §8.5.12 item 3 owes THIS document a correction, enacted at §5.2 above.** |
+| ~~`docs/46_ls_preregistration_DRAFT.md`~~ → **`docs/46_ls_preregistration.md`** *(2026-08-12: the `_DRAFT` file never existed on disk; the file was **FROZEN (READ OUT) 2026-08-11**, §10 is its amendment slot)* | the LS pre-registration. **§6.3 Branch B is selected**, on B2 (ADOPT unreachable under A3) plus the box-boundary argument of §5.4 that A6 already concedes. ~~Its `Δ_shape` pre-test is open item O6.~~ → **`Δ_shape` was COMPUTED 2026-08-11 = `0.1299456916752905` ⇒ Branch B MANDATORY (`docs/53`; recorded in `docs/46` §10 amendment 1). O6 is CLOSED — §9.3.** |
 | `docs/31_phase_c_workplan.md` | C4.3's stage definition; its entry is now gated by this document. |
 | `docs/18_hydrology_journal.md` §6, `docs/22_dry_phase_diagnosis.md` | the house register of refuted hypotheses; §3 extends it. |
+| **Added 2026-08-12** — `docs/46_ls_preregistration.md` §10, `docs/51_ls_freeze_decision.md`, `docs/52_materiality_bar_decision.md`, `docs/53_delta_shape_pretest.md` | the LS track that ran **after** this document and discharged five of its items. `docs/51` obtains the source and settles (R6); `docs/52` fixes the materiality bar blind; `docs/53` computes `Δ_shape` and closes **O6**; `docs/46` §10 amd 1–2 register both plus the `f_area` support correction. See §9. |
+
+---
+
+## 9 — BACK-ANNOTATION, 2026-08-12
+
+**Appended by the `backannotate-47` agent** (process record
+`docs/agents/journal_backannotate-47.md`). **§1–§8 above are the record of what was decided and
+believed on 2026-08-11 and are NOT rewritten** — every correction in this document is a
+strike-through with a dated pointer in the `docs/37` A2.7 / `docs/46` §10 house pattern, and every
+superseded sentence remains readable. **This section adds no measurement of its own except two
+read-only recomputations disclosed in §9.5, decides nothing, closes no C3 clause, moves no engine
+default, and does not unblock C4.3.**
+
+### 9.1 The ledger — what moved, who moved it, and what did not
+
+| item | site | what it claimed on 2026-08-11 | owning doc, and what it says now | status |
+|---|---|---|---|---|
+| **D3 / B3** | §2.3, §6.1 | *"the per-node mass audit is blind to NaN … **BLOCKING**"*; *"`tests/test_transport.py:583` currently passes on an all-NaN run"* | **`src/mgb_transport.py`:908** = `if not (m <= max_resid):`, IEEE-754 comment at :902–907; **`tests/test_transport.py`:245–277**, `math.isnan(...)` asserted at :274 on an all-finite input; door screen at :232. Confirmed by `docs/37` A3.4 item 1 and commit `a0d8afb`. | **VERIFIED-DISCHARGED** *(read on disk this pass, not taken on trust)* |
+| **D4 / B4** | §2.4, §6.1 | *"the `docs/42` §9 transcription is unperformed … **BLOCKING**"*; *"`docs/42` §9 still reads `\| Amendments \| none \|`"* | `docs/42` §9.1–§9.5 (A-P1, A-P2, A-P3, A-P1.1) + §9.7 (A-P4); §9 card at :648. **§9.6 F5**: *"**`docs/47` §2.4 D4** … **is discharged** by §9.1–§9.5. **D4 may be CLOSED.**"* | **VERIFIED-DISCHARGED** |
+| **B1** | §6.1, VERDICT | *"the condition for unblocking is a single named event: **C3.1 lands**"* | `docs/37` **A3** (2026-08-12): *"**ADOPT-SOURCE**, `ls_formulation = buarque_2015_dg`. **No engine default moves here. C3 stays OPEN. C4.3 stays BLOCKED.**"*; A3.4 item 1: *"B1 lands here, in the reduced form A3.1.6 permits."* `docs/46` §9's card names A3 as the B1 event. | **VERIFIED-LANDED (reduced form)** — see §9.4 for the one recorded disagreement |
+| **B2** | §6.1 | *"Re-express the C4.3 gate in Π … Otherwise C4.3 runs against a floating threshold"* | `docs/45` **§8 Amendment 4** (§8.5): *"**Discharges `docs/47` §6.1 repair B2**"* — route (A), the gate in Π. Its own verdict: *"the re-expression does NOT fix … the pre-computability problem. It RELABELS it — and in the Π coordinate the problem is measurably WORSE."* | **VERIFIED-DISCHARGED** |
+| **B5** | §6.1 | *"Replace the ±38 % Π band … a `docs/45` §8 amendment"* | `docs/45` **§8 Amendment 1** — band replaced by the station bootstrap (pre-fit ×0.29–×3.73, registered as a **procedure not a constant**), `k` bound at ≈ 10× over ~342 km. Parallel enactments: `docs/42` §9.7 A-P4, `docs/43` §7 amd 1 + amd 4. | **VERIFIED-DISCHARGED** |
+| **§5.5 disclosure** | §5.5, §6.1 | *"`docs/45` §8 must carry a dated amendment disclosing the pre-fit profile … before C4.3 runs"* | `docs/45` **§8 Amendment 2** — the PRE-FIT DISCLOSURE, *"(discharges `docs/47` §5.5; `docs/47` **O9** carried, not decided)"*. | **VERIFIED-DISCHARGED**; **O9 STILL-OPEN** |
+| **O6** | §6.3, §7 | *"`docs/46` §6.1's `Δ_shape` pre-test **has not been run**"* | `docs/53`:19 — **`Δ_shape` = 0.1299456916752905**; :24 — *"**BRANCH B IS MANDATORY**"*; :397 — *"`docs/47` **O6** … **CLOSED.**"* Registered in `docs/46` §10 amd 1; bar fixed blind beforehand by `docs/52`. | **VERIFIED-CLOSED** |
+| **O7** | §7, §2.4 | *"the 7 % method difference between the two `k_min` computations"* | `docs/42` §9.5 (A-P1.1) — *"the **0.0096-vs-0.0104 discrepancy resolved**"*; :803 CAL 13 = **0.009640**, *"§4.2 prints 0.0104 — does not reproduce"*; §9.6 **F4**: *"O7 may be **CLOSED**."* `docs/43` §7 amd 6 fixes the P1 attribution. | **VERIFIED-CLOSED** |
+| **O1** | §7 | *"whether the LS levers can be settled from the literature **at all**"* | `docs/51` §1 — Buarque (2015) **obtained**, sha256 `3047624f…c0037`, (R6) resolved (`Sf` is slope **PERCENT**); `docs/46`:119 — *"Every lever is **CITED**."* But `docs/37` **A3.7** still lists **O1** among items *"still open and NOT fixed"* — D&G (1996) and Fagundes (2026) remain unobtained. | **NARROWED, STILL-OPEN** |
+| **`_DRAFT` filename** | §"THE VERDICT", §8.1 | *"`docs/46_ls_preregistration_DRAFT.md`"* | **No such file exists on disk.** `docs/46_ls_preregistration.md`:1/:3 — *"**FROZEN (READ OUT)**… ⚠ FROZEN 2026-08-11. §1–§8 ARE IN FORCE. §10 IS THE AMENDMENT SLOT."* | **CORRECTED** (both sites) |
+| **`f_area` 0.42135 / 0.24466** | §4.3 table | area-weighted × **0.42135** / **0.24466** | `docs/46` §10 amd 2 (v) item 1 adjudicates **this exact cell**: *"not a rounding of the corrected value … it reconstructs as the `urh_ls2d_variants.csv` `area_km2` weighting … **a third support** … it changes no `docs/47` verdict."* Registered: **[0.2446790094097074, 0.42136300143291305]**. | **ANNOTATED, NOT REPLACED** — following the owning amendment's own adjudication (§9.5) |
+| **§5.2 P2 / "one corner clears"** | §5.2 | *"one corner of the registered parameter space clears both thresholds"*; *"the LS decision is the dominant term in the C4 verdict"* | `docs/45` §8.5.12 item 3 — *"do not survive the fix B2 asks for … **`docs/47`'s VERDICT is strengthened, not weakened** … **P1 is discharged by this amendment; P3 and Branch B / `Δ_shape` now carry the block.**"* | **WITHDRAWN as stated**; verdict strengthened |
+| **§6.2 item 4 / §2.6 item 2 `k` bound** | §6.2, §2.6 | *"no first-order channel sink **stronger** than ~10× over 342 km is **detectable on this fit set**"* | `docs/42` §9.7 A-P4:1005–1009 — *"`k_min` is a **detection floor** … the true comparative is **weaker**"*. `docs/45` §8.1 row 5 labels ≈ 10× the **all-18** figure; row 4 gives the **CAL-8 fit set** at `k_min` **0.0838 /km ⇒ ≈ 173× over 61.5 km**. | **CORRECTED** (comparative + set) |
+| **§2.1's ×2.37–3.00** | §2.1 | *"the LS level … at its **registered** ×2.37–3.00"* | This document's own §4.3 supersedes it as a measurement; `docs/51` — *"This **supersedes ×0.333 – ×0.421 and '2.37× – 3.00×'**"*. | **ANNOTATED**; finding strengthens at the corrected bracket |
+| **§4.3's p. 94 caveat** | §4.3 | *"**A different reading of p. 94 moves both rows.**"* | `docs/51` — *"the interval is **not** an uncertainty over readings of the source … the source formulation read whole is a **POINT at ×0.25146** … The span between them is the `L`-form lever, not a reading ambiguity."* | **WITHDRAWN** |
+| **C1's site list** | §2.5 | *"Propagated verbatim into `docs/42:15, :299, :472` and `docs/45:404`"* | Read this pass: `docs/42`:299 is a C-class erosion-share row, :472 is G3.3's opening — **neither carries the band**; `docs/45`:404 is in §3.5's ONI clause. The correction itself is **enacted** in `docs/43` §7 amd 5 (bands **DISJOINT**, gap 0.6715 in α). | **PARTLY ENACTED; line refs stale** |
+
+### 9.2 THE CORRECTED BLOCKING CONDITION — narrower in name, not weaker in force
+
+> ## `C4.3-BLOCKED` STILL HOLDS. **C4.3 may not start.**
+>
+> **What changed on 2026-08-12 is the NAME of the block, not its existence.** The title
+> *"BLOCKED **UNTIL LS LANDS**"* now under-describes the situation: the LS **formulation** landed
+> (`docs/37` A3), and C4.3 is still blocked — on grounds that landing B1 **created** rather than
+> removed. Re-affirmed the same day by every downstream owner: `docs/37` A3.4 (*"Is C4.3 thereby
+> UNBLOCKED? **NO** — and this amendment is the act that makes the block *dischargeable*, not the
+> act that discharges it"*), `docs/45` §8.5.10 item 8, `docs/46` §9, `docs/51`, `docs/52`, `docs/53`.
+>
+> **The block no longer rests on B1, and it does NOT rest on B2 either** — B2 was discharged the
+> same day by `docs/45` §8 Amendment 4. It rests on **four** conditions, each verified against its
+> owner by this pass:
+>
+> | # | the surviving blocker | owner, verbatim | verified how |
+> |---|---|---|---|
+> | **1** | **Branch B is MANDATORY, so the fit must be a FIRST RUN on the ADOPTED LS FIELD** — every guard statistic re-derived on new residuals, and no rescaling of a surface already seen. | `docs/46` §6.1 as amended, §6.3 **B1**; the required sentence, written in `docs/37` A3.4: *"the fit is recoverable by rescaling `α̂` **if and only if** `Δ_shape` = 0 exactly; the measured value is **0.1299456916752905**, and **the re-run is owed**."* Branch A is **CLOSED**, so *"there is no legal PROVISIONAL C4.3 at all"*. | `docs/53`:19/:24; `docs/46` §10 amd 1; `docs/37` A3.4 (3) |
+> | **2** | **The adopted variant is NOT A COMMITTED PRODUCT.** C4.3 cannot consume a variant no committed product carries. | `docs/37` A3.4 (4): *"`urh_ls2d_variants.csv` has **no `V4_dg` column** and `urh_ls2d.csv` may not be overwritten … **C4.3 cannot consume a variant that no committed product carries**, and no default can be switched by name."* | **Read on disk this pass.** `urh_ls2d_variants.csv` header = `mini,urh,n_cells,area_km2,area_frac,V0_ours_2026_08,V1_lim_pixel,V2a_m_cap05,V2b_m_step_eq14,V3_s_ws78,V4_buarque_2015,V4p_buarque_2015_cap,V5_L_dg96_fd`; `urh_ls2d.csv` = `…,ls2d,ls2d_hs,ls2d_mb86,ls2d_dg96`. **No `V4_dg` in either.** |
+> | **3** | **ACT 2 — the default switch — is NOT DONE and cannot yet be drafted.** ADOPT-SOURCE is *determined and recorded but not exercisable*. | `docs/37` A3.5.1: ACT 2 *"**NOT DONE, and it MAY NOT PRECEDE ACT 1** … **It cannot even be drafted** until the column is materialised."* `src/mgb_sediment.py` defaults still `ls2d_column = "ls2d_hs"`, `urh_ls2d = "urh_ls2d.csv"`. | `docs/37` A3.5.1; `docs/45` §8.5.2 (ii) |
+> | **4** | **Deliverables still owed before entry:** `docs/46` §3.3's **stratified report** (slope terciles per variant; per-station erosion-weighted `LS̄` as **levels**, not ratios) · `docs/46` §2.3's H-S field clause **(R7)/(R8)** items 2–3 · the **`docs/35` §9 amendment** A3.1.3 records as owed. | `docs/37` A3.4, *"The remaining blockers, listed plainly so nothing is inferred from silence."* | **`docs/35` §9 verified on disk this pass: §9.1, §9.2, §9.3, §9.4 only — there is no α-box re-registration.** `docs/45` §8.5.11 item 2 confirms the threshold-moving half of B2 is **PROPOSED, not enacted**. |
+>
+> **§5's three propositions, re-ordered as `docs/45` §8.5.12 item 3 requires:** **P1** (the box is
+> written in a unit whose scale is the open question) is **DISCHARGED** by `docs/45` §8 amd 4;
+> **P3** (deciding LS after the fit is the forbidden post-hoc move) **stands untouched** and is now
+> the second-strongest leg; **Branch B / `Δ_shape`** is the strongest leg (`docs/45` §8.5.8).
+> **§5's headline answer is unchanged and is now more certain**, because under the enacted
+> convention the rail is measured in **three** of the three G2.3 β corners rather than two.
+>
+> **The one sentence of the verdict box that survives every correction, and is the reason the block
+> holds:** *"a pre-registered search whose verdict is already known is not a test; it is a re-run of
+> an answer, and it spends a one-shot registration to produce it."* Quoted back at this document by
+> `docs/45` §8.5.8 as *"what is therefore still true after B2 is discharged"*.
+
+### 9.3 Checked and found STILL OPEN — so nobody assumes silence means closed
+
+**O2** (which `S` function above tan θ 0.50) · **O3** (the exact slope-length cap) · **O4**
+(rill:interrill `m` column; α = 11.8's like-for-likeness) · **O5** (`F_report` re-profiled on a
+corrected LS **field**, not axis) — all four re-affirmed open by `docs/37` **A3.7**: *"Also still
+open and NOT fixed by any outcome of this amendment."* `docs/45` §8.5.9 carries **O5** *"verbatim
+and unchanged"* and states *"**Nobody has re-profiled the objective on a corrected LS field.**"*
+**O8** (class-C detectability) — still open and correctly still refusing a fourth number:
+`docs/42` §9.7 row 20 — *"**NO CORRECTED VALUE — `docs/47` open item O8, and it stays open.** Three
+passes have now produced three answers … **Do not invent a number.**"*
+**O9** (whether the pre-fit profile requires a fresh pre-registration) — `docs/45` §8.5.11 item 3:
+*"**`docs/47` O9 remains OPEN and is not decided here.**"*
+**O10** (`docs/41` unaudited) — no `docs/41` audit exists in `docs/agents/`; `docs/37` and `docs/43`
+§1.5 agree.
+**O11** (the provenance record for `docs/37` A2's primary evidence) — **PARTLY discharged**:
+`docs/51` §1 supplies retrieval source, sha256 and page map for **`buarque2015.pdf`**, and
+`docs/51` §7 item 8 records that a **durable copy** plus *"the same record … for `ah703.pdf`"* and
+the parse scripts are **still owed**. **Not closed.**
+**O12** (whether the disjoint bands change §3.4's *"doubly load-bearing"* conclusion) — `docs/43`
+§7 amd 5 carries it forward by name and declines to decide it.
+**§2.5 C2, C3, C4, C5** — carried, not promoted, and none discharged here. **C4**'s registered
+remedy (record NOAA CPC ONI v5 in `report_C4.json`, or downgrade *"out-of-phase"* to
+*"out-of-window"*) is still unexercised.
+
+### 9.4 One recorded DISAGREEMENT between owners, not reconciled by preference
+
+**Is B1 discharged?** `docs/37` A3.4 item 1 says *"**B1 lands here**, in the reduced form A3.1.6
+permits"*; `docs/45` §8.5.10 item 8 says *"**B2 is discharged; B1 is not**"*. **Both were written
+2026-08-12 and both are looking at the same fact**: the LS formulation is **DECIDED and RECORDED**
+(ADOPT-SOURCE, `ls_formulation = buarque_2015_dg`, grade recorded) and **NOT EXERCISABLE** (no
+committed `V4_dg` column, no ACT 2, engine defaults unmoved) — `docs/45` §8.5.2 (ii) states exactly
+that and cites `docs/37` A3 while doing it. The disagreement is over **what to call that state**,
+not over what the state is.
+
+**This document does not adjudicate it, and does not need to.** Under RULE 0 the owner of C3.1 is
+`docs/37`, and `docs/46` §9's registration card pins the B1 event to *"`docs/37` §A3, dated,
+written by the C3.1 owner"* — so **the B1 *event* has occurred**. But the annotation above records
+**both** wordings verbatim, because **the practical consequence is identical either way: C4.3 does
+not start**, and no reading of B1 changes any of §9.2's four surviving blockers. **A reader must
+not resolve this by picking the more permissive label.** *(`docs/37` A3.1.6 also names the
+governance gap underneath it: `docs/46` §4.2's table *"contains no row for 'determined but not
+exercisable'"*. That gap is owed to `docs/46`'s owner, not settled here.)*
+
+### 9.5 Disclosure for this section
+
+- **Files written by this pass:** this section and the dated in-place annotations above in
+  `docs/47_c4_entry_verdict.md`, plus `docs/agents/journal_backannotate-47.md`. **Nothing else.**
+  `docs/30`, `docs/35`, `docs/37`, `docs/42`, `docs/43`, `docs/45`, `docs/46`, `docs/48`–`docs/53`,
+  `docs/00_INDEX.md`, `progress_map.html`, every notebook and every source file were **read and not
+  edited**. **No git command was run.**
+- **No frozen artifact was opened or written.** `sim_calibrated_v2/{h2e_drivers.npz,
+  parameters_H2E.csv, q_gauge_H2E.npz}` untouched. **No engine default moved. No calibration was
+  launched. No simulation was run. No headline number was moved. Nothing is backdated.**
+- **No original text was deleted.** Every correction is `~~struck~~` in place with a dated pointer,
+  in the `docs/37` A2.7 / `docs/46` §10 pattern. **The verdict, its title and its blocking force are
+  unchanged**; §9.2 corrects *why* the block holds, never *whether*.
+- **Two read-only recomputations were made rather than adjudicated by preference**, from
+  `data/processed/`, all files SHA-unchanged and nothing written:
+  1. `f_area(V4)` under three weightings of `urh_ls2d_variants.csv` (32,782 rows) —
+     `area_km2` **0.421351985678496** (→ **0.42135**, reproducing §4.3's printed cell), `n_cells`
+     0.42136472954222043, `area_frac` 0.4216185646720824 — against the registered per-cell value
+     `ls2d_variants_summary.json` **0.42136300143291305** and its independent corroboration
+     `ls2d_defect_b.json` 0.42136300143291344. **This confirms `docs/46` §10 amendment 2's
+     adjudication on its own terms rather than importing it.**
+  2. `16.7754 / 39.8123` = **0.42136224232209646** → **0.4214** at 4 d.p., versus the superseded
+     0.4214751420286394 → 0.4215. **§4.1's `×0.4214` is therefore CORRECT and was deliberately not
+     touched.**
+- **Nothing below HIGH was promoted to make the list look decisive**, and everything checked and
+  found **still open** is recorded in §9.3 so a later session does not re-litigate it. Where two
+  owners disagree the disagreement is printed rather than resolved (§9.4).

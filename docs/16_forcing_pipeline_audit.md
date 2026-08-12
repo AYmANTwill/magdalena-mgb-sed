@@ -1,5 +1,19 @@
 # 16 — Forcing pipeline: audit, discoveries, errors and open items
 
+> **STATUS — 2026-08-12. LIVE as a knowledge base; its *status framing* is not.**
+> **What this document is for:** the rainfall + PET pipeline record. §4 (defects found in the
+> data), §5 (errors made in development) and **§6 (traps)** are still true, nothing in them is
+> retracted, and they are why CLAUDE.md says *"Do not touch precipitation or ERA5 code before
+> reading §6."* Read it for those.
+> **What has changed since it was written:** it predates Phase B entirely. Phase B has since run
+> and **CLOSED on the adopted configuration H2E**, and Phase C (sediment) is **ACTIVE** — so every
+> *status*, *next-step* and *still-blocked* statement below is stale and is back-annotated in
+> place at **§1, §7, §8, §9 and §11**. Its forcing numbers are the **v1** field; the adopted
+> forcing is **v2** (see [docs/00_INDEX.md](00_INDEX.md) § *"Forcing versions — v1 / v2 / v3,
+> stated once"* — v1 and v2 are **both gauge-only**, and there is no v3).
+> **Where current status lives:** `progress_map.html` (RULE 0: for status, the tracker wins), then
+> [docs/00_INDEX.md](00_INDEX.md) and CLAUDE.md "Phase status".
+
 Complete record of the rainfall + PET forcing work: what was built, what was found wrong in the
 data, what was got wrong during development, and what is still outstanding.
 
@@ -22,8 +36,39 @@ picking this up cold — they contain the non-obvious knowledge.
 | **PET forcing** | 3287 days × 8672 minibacias |
 | **Model period** | **2009-01-01 → 2017-12-31 (3287 days)** — bounded by ERA5, not rainfall |
 
-**Phase A (model inputs) is complete.** Phase B (water balance + discharge calibration) has not
-started. Phase C (sediment) remains blocked on mainstem SSC data.
+> ⚠ **The table above is the v1 state. Two rows are superseded — noted 2026-08-12.**
+> **Model period.** The adopted **v2** bundle spans **2008-01-01 → 2018-12-31, 4,018 days**, not
+> 3,287. Owning doc [docs/18](18_hydrology_journal.md) §14.2: *"period assertion
+> `DATES.equals(want)` → **True**, 4,018 days"*; CLAUDE.md fixes the convention — *"2008 warms up,
+> 2009-2018 is scored."*
+> **PET forcing.** No longer the binding constraint. [docs/18](18_hydrology_journal.md) §14.1:
+> *"**Open item 3 is closed.** PET now spans the full rainfall record, so the model period is no
+> longer clipped to 2009–2017 by ERA5."*
+> Anyone sizing an array or a window off this table gets the **v1** shape.
+
+**Phase A (model inputs) is complete.** ~~Phase B (water balance + discharge calibration) has not
+started. Phase C (sediment) remains blocked on mainstem SSC data.~~
+
+> ⚠ **CORRECTED 2026-08-12 — both clauses are stale.** The struck sentence is kept because it is
+> the state of belief when this document was written; it is not the state of the project.
+>
+> - **Phase B ran, and is CLOSED.** CLAUDE.md "Phase status": *"**Phase B (water balance +
+>   discharge calibration): CLOSED on H2E**"*. The closing decision is
+>   [docs/30](30_phase_c_plan.md) §1: *"**Phase B closes on the input-ceiling result, with H2E as
+>   the adopted configuration.**"* The parameter record is [docs/26](26_phase3_refit.md) —
+>   read its §5.1 before quoting any fitted parameter, and its 2026-08-10 Addendum for the
+>   adoption.
+> - **Phase C is ACTIVE, not blocked.** [docs/30](30_phase_c_plan.md) header, verbatim: *"It
+>   supersedes the 'Phase C blocked' line in older docs."* The measured form of what the phrase
+>   actually meant is [docs/32](32_ssc_qc_audit.md) §R6 — **79/79 SSC stations classified**, 28 of
+>   them mapped to minibacias, **18 usable or usable-with-caveat** — and *"`21237020`
+>   ARRANCAPLUMAS (Magdalena — **the only Magdalena-trunk SSC station in the entire network**)"*,
+>   which §R6 calls *"the quantitative form of 'Phase C is blocked on mainstem SSC'."*
+>
+> For where Phase C stands **today** — including that stage **C4.3, the sediment calibration
+> search, is formally BLOCKED** ([docs/47](47_c4_entry_verdict.md):
+> *"`C4.3-BLOCKED-UNTIL-LS-LANDS`. **C4.3 may not start.**"*) — read `progress_map.html` and
+> [docs/00_INDEX.md](00_INDEX.md), not this document.
 
 ---
 
@@ -295,19 +340,55 @@ Recorded because several were caught only by diagnostics, not by the sanity chec
 
 ## 7 — Not done / open items
 
-### Blocking Phase B
+> ⚠ **Read-out appended 2026-08-12. Phase B has since run and closed, so this register is no
+> longer a to-do list.** Each item below carries its outcome and the doc that owns it. Original
+> wording preserved.
+
+### ~~Blocking Phase B~~ → **Phase B ran and closed on H2E ([docs/30](30_phase_c_plan.md) §1)**
 
 1. **Day-convention alignment between rainfall and discharge** (§4.2). Rainfall 07:00→07:00, discharge
    likely midnight→midnight.
-2. **Discharge dataset QC.** Never audited. Given precipitation hid a defect this severe, apply the
+   > **STILL OPEN, 2026-08-12, and its owner is now [docs/17](17_discharge_qc_audit.md).** It was
+   > *absorbed*, not resolved. docs/17 §4: *"All 2,443,316 raw `Fecha` stamps are `00:00` … —
+   > consistent with a midnight→midnight calendar-day mean, but the averaging window **cannot be
+   > proven from the export** … Allow ±1 day slack in event-scale lag analysis; immaterial at
+   > monthly aggregation."* Carried as docs/17 §5.2 item 4.
+2. ~~**Discharge dataset QC.** Never audited.~~ **DONE — [docs/17](17_discharge_qc_audit.md) is the
+   audit**, and it applied exactly the scrutiny asked for here: it found the gauge→minibacia
+   mapping broken for half the network (§3.1), ran SNHT break detection and the energy-floor
+   triage, and its §3.10–§3.11 carry the neighbour-test iteration back onto precipitation. Given
+   precipitation hid a defect this severe, apply the
    same scrutiny — especially a neighbour-ratio equivalent.
 
-### Forcing improvements (v2)
+### ~~Forcing improvements (v2)~~ → **the repair landed as v2; the merge did not**
+
+> ⚠ **Naming trap, flagged 2026-08-12.** "v2" in this section is the **older, CHIRPS-inclusive**
+> sense and is *not* what `model_inputs_v2/` contains. The canonical definition is
+> [docs/00_INDEX.md](00_INDEX.md) § *"Forcing versions — v1 / v2 / v3, stated once"*: **v2 = the
+> zero-suppression repair + deterministic IDW, still GAUGE-ONLY**, and it is the adopted forcing;
+> a CHIRPS-merged forcing would be **v3** and **does not exist**.
 
 3. **CHIRPS quantile-map merge.** Stratify by elevation band and hydrographic zone (bias is
    structured), then conditional merging so gauges dominate where they exist. Expected: wet-day error
    18.1 → ~3 pts, better-constrained headwaters. **Validate by re-running the notebook 11 LOOCV** — if
    it doesn't beat the baseline, say so.
+   > ~~**Expected**~~ → **BUILT, MEASURED, AND REJECTED TWICE. No forcing file was ever written.**
+   > It was built exactly as specified here (`src/merge_chirps_gauges.py`, stratified by elevation
+   > band × hydrographic zone). Owning read-out [docs/18](18_hydrology_journal.md) §15 —
+   > *"The CHIRPS-gauge merge: **built, validated, and NOT adopted**"*: the LOOCV gate **passed**
+   > (median daily r **0.447** > 0.429) and the **volume gate failed** (2,188.5 mm/yr, +7.5 %).
+   > The registered repair (H-CHIRPS, [docs/33](33_c2b_preregistration.md) §1) was then executed
+   > and was a **no-op**: docs/33 §1 — *"The registered intervention turned out to be a **no-op**:
+   > the quantile maps already included the inferred-dry days, so **the diagnosed cause in docs/18
+   > §15.3 was wrong**."* [docs/18](18_hydrology_journal.md) §15.5 records the re-run as
+   > bit-identical, the inferred-dry days as **25.9 %** of the fit input, and the conclusion:
+   > *"**no route to a passing volume gate exists inside the merge code**."* One **untested**
+   > hypothesis survives — the 139 stations still reporting rain-selectively after the repair,
+   > whose missing days are not in the record at all and therefore cannot be put into a pool by any
+   > change to the merge code. **This section's "Expected" numbers were never achieved, and no
+   > reader may conclude a fix is waiting.**
+   > *(docs/33 §1's own read-out pointer says "see §7"; §7 of docs/33 is the H-PEAK read-out. The
+   > CHIRPS read-out is docs/18 §15.5. docs/33 is frozen, so the pointer stands as written.)*
 4. **Orographic correction.** Plain IDW ignores elevation; headwater rainfall is interpolated from
    valley stations with no lapse adjustment. Material in an Andean basin.
 5. **The 7 residual >1.8× stations** (§4.1).
@@ -326,6 +407,19 @@ Recorded because several were caught only by diagnostics, not by the sanity chec
 
 ## 8 — Proposed next steps, in order
 
+> ⚠ **EXECUTED. Read-out appended 2026-08-12 — all four ran, and item 4's premise is superseded.**
+> Kept verbatim because the *order* it proposed turned out to be right: step 2 was run before the
+> merge, and it is what made the merge evidence-driven rather than argued.
+> 1. **DONE** → [docs/17](17_discharge_qc_audit.md) (the discharge QC audit).
+> 2. **DONE** → notebooks 13/14 and [docs/26](26_phase3_refit.md). The rationale below was correct:
+>    the calibration did show input-driven error, and [docs/22](22_dry_phase_diagnosis.md) §4.7
+>    quantified it as the **r ≈ 0.57 ceiling** inherited from the rainfall field.
+> 3. **DONE, and NEGATIVE** → the merge was built and **rejected twice**; see the §7 item 3
+>    read-out above and [docs/18](18_hydrology_journal.md) §15/§15.5. *"no route to a passing
+>    volume gate exists inside the merge code."* **No v3 forcing exists.**
+> 4. **Premise superseded** → Phase C is **ACTIVE**; [docs/30](30_phase_c_plan.md) header: *"It
+>    supersedes the 'Phase C blocked' line in older docs."*
+
 1. **Discharge dataset QC** — apply the §4.1 methodology (neighbour-relative anomaly detection, not
    just value screening).
 2. **Notebook 12: MGB-SA water balance in Python** on this forcing → simulated discharge → calibrate
@@ -334,7 +428,10 @@ Recorded because several were caught only by diagnostics, not by the sanity chec
    purpose**. If discharge reproduces well, further forcing work is wasted; if it is systematically
    biased, the CHIRPS merge becomes evidence-driven rather than argued.
 3. **CHIRPS merge (v2)** — only if step 2 shows rainfall-driven error.
-4. **Phase C sediment** — still blocked on mainstem SSC data.
+4. **Phase C sediment** — ~~still blocked on mainstem SSC data~~ → **ACTIVE.**
+   [docs/30](30_phase_c_plan.md) header: *"It supersedes the 'Phase C blocked' line in older
+   docs."* See the §7 item 3 and §1 read-outs above for what the phrase meant once measured
+   ([docs/32](32_ssc_qc_audit.md) §R6).
 
 Note: MGB-SA proper runs as a **QGIS plugin** and needs `mini.gtb` plus MGB-format forcing files. The
 Python water balance in step 2 is a *diagnostic*, not a replacement for the production run.
@@ -342,6 +439,24 @@ Python water balance in step 2 is a *diagnostic*, not a replacement for the prod
 ---
 
 ## 9 — Key numbers
+
+> ⚠ **These are the v1 numbers. Noted 2026-08-12 — the table is NOT the adopted forcing.**
+> "Final" meant final *for the 70-station repair*. A second, larger repair followed (the
+> selectivity detector: **153** stations, 240,158 inferred-dry days,
+> [docs/18](18_hydrology_journal.md) §10) and produced **v2**, which is what `model_inputs_v2/`
+> holds and what H2E was fitted on. The rows that moved most, with their v2 successors from the
+> owning doc [docs/18](18_hydrology_journal.md) §14.1–§14.2:
+>
+> | row here (v1) | v2 value | owner |
+> |---|---|---|
+> | Basin-mean rainfall **2,206 mm/yr** | **2,073.1 mm/yr** (2008–2018) · **2,036.4 mm/yr** (2009–2017) | §14.2 / §14.1 |
+> | PET **3.40 mm/day ≈ 1,255 mm/yr** | **3.41 mm/day**; basin PET **1,251.6 mm/yr** | §14.1 / §14.2 |
+> | LOOCV daily *r* 0.467 / 0.398 / 0.313 by band | gauge-only median **0.429** over 287 gauges (bands 0.481 / 0.426 / 0.343) | §14.1 · §15.2 |
+>
+> **Trap 9 of [docs/18](18_hydrology_journal.md) §7 applies to every row:** *"Interannual rainfall
+> variability here is ±21 % … No basin-mean rainfall figure means anything without its window
+> attached."* Quote the window with the number, and quote the version with both — see
+> [docs/00_INDEX.md](00_INDEX.md) § *"Forcing versions — v1 / v2 / v3, stated once"*.
 
 Final values, after the 70-station repair and the `ssrd` radiation fix.
 
@@ -474,3 +589,22 @@ merge (v2) is *independent of whether an IDEAM observer showed up*, so it does n
 mechanism — an argument for the merge beyond anything previously measured; and (b) down-weighting
 `Inferido_seco` days in the IDW rather than treating them as full observations, which the `approval`
 column already makes possible.
+
+> ⚠ **Read-out on (a), appended 2026-08-12. The argument was never refuted; the merge was.**
+> CHIRPS really is independent of observer attendance, and the merge was built on exactly this
+> reasoning — but it was **rejected twice by its volume gate** and no forcing file was written
+> (see the §7 item 3 read-out; owning docs [docs/18](18_hydrology_journal.md) §15/§15.5 and
+> [docs/33](33_c2b_preregistration.md) §1). The MNAR premise did *not* fail locally: §15.5
+> measured the merged field as *"very nearly unbiased against the gauges themselves"* (median
+> per-gauge bias **+2.00 %** merged vs **+1.73 %** gauge-only) — *"A field that is unbiased where
+> it can be tested and +7.5 % over the basin puts its whole surplus in the terrain with no gauge
+> to test it."* So the merge does not fix the MNAR problem it was argued to dodge; it relocates
+> the surplus into ungauged terrain. **Do not read (a) as a pending improvement.**
+> Note also the naming: the merged field would be **v3**, not v2 — see
+> [docs/00_INDEX.md](00_INDEX.md) § *"Forcing versions — v1 / v2 / v3, stated once"*.
+>
+> **(b) is the one that was adopted and is still true.** The repair's inferred-dry days are in
+> `precip_gauges_daily_qc_v2.csv` with `approval == 'Inferido_seco'`, and §15.5 measured what they
+> are worth on the volume side: *"the repair's inferred dry days were already removing **105.6
+> mm/yr, 41.0 % of the surplus**"* — with **+152.1 mm/yr** left *after* that lever is pulled all
+> the way.

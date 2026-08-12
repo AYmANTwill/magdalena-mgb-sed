@@ -8,11 +8,26 @@ would speak it, not the way you would write it. `[Square brackets]` are stage di
 Times are cumulative. Total as written: **~34 minutes**. If you have 25, take the three cuts
 marked **[CUT IF SHORT]** and shorten slide 4.
 
+> # ⚠ READ BEFORE DELIVERING THIS SCRIPT — annotated 2026-08-12
+>
+> This script records a talk **as delivered**. Six passages have since been overtaken by
+> measurement and would state something false if read aloud. Each is marked
+> **⚠ SUPERSEDED 2026-08-12** with the live wording immediately below it under
+> **⬇ SAY THIS INSTEAD**. **Say the replacement; the struck text is kept only as the record.**
+> The passages are on **slides 3, 9, 10, 16, 17 and 18**, plus the "what happened to the
+> sediment?" answer at the end. The single most important one: **the dry phase does not beat
+> climatology in the model we adopted — it matches it, at −0.0005**
+> ([docs/26](26_phase3_refit.md) Addendum A.5).
+
 **Three rules for delivery**
 1. Never read a number off a slide without saying what it means. "KGE 0.45" means nothing
    to a listener; "about 0.45 on a scale where 1 is perfect" does.
 2. When you show a figure, say what the axes are before you say what the result is.
-3. Slide 18 is the one you actually want discussed. Do not let slides 1–17 eat its time.
+3. ~~Slide 18 is the one you actually want discussed. Do not let slides 1–17 eat its time.~~
+   → ⚠ **CORRECTED 2026-08-12: slide 18's question was asked and the advisor declined to
+   answer it** ([docs/30](30_phase_c_plan.md) header). Slide 18 is now a **report** of the
+   decision the team took, not a question. Choose a different closing question deliberately —
+   see the note at slide 18.
 
 ---
 
@@ -22,12 +37,20 @@ marked **[CUT IF SHORT]** and shorten slide 4.
 > basin, comparing a very wet year with a very dry one."*
 >
 > *"I want to be clear about the scope up front. Today is about the **water** side —
-> the hydrology. The sediment module is built, but it is waiting on data quality, so it
-> appears only at the end as an outlook."*
+> the hydrology. The sediment module is built, but ~~it is waiting on data quality~~ **the
+> sediment stage is a separate piece of work**, so it appears only at the end as an outlook."*
+
+`[⚠ CORRECTED 2026-08-12. "Waiting on data quality" is superseded — the quality gate has since
+been run (docs/32: 79/79 stations classified, 18 usable) and Phase C started (docs/30 §1).
+Saying "waiting" would understate the project by four completed stages.]`
 >
-> *"And this is a progress talk, not a finished result. I will show you three attempts at
-> calibrating the hydrological model, what each one measured, and where we now stand — with
-> the limits stated as clearly as the successes."*
+> *"And this is a progress talk, not a finished result. I will show you ~~three~~ **four**
+> attempts at calibrating the hydrological model, what each one measured, and where we now
+> stand — with the limits stated as clearly as the successes."*
+
+`[⚠ CORRECTED 2026-08-12: there are four attempts. The fourth, H2E, is the adopted one and
+docs/24 slide 8's table was updated on 2026-08-10 to carry it. Owner: docs/26 Addendum A.4.
+Check the deck you are presenting shows four rows before saying "four".]`
 
 `[Move on quickly. The title slide should not take a minute.]`
 
@@ -66,9 +89,21 @@ marked **[CUT IF SHORT]** and shorten slide 4.
 
 ## Slide 3 — Where we are, honestly  ·  2:00 → 3:00
 
-> *"Three phases. Phase A, all the model inputs, is complete. Phase B, the hydrology, is
+> ⚠ **SUPERSEDED 2026-08-12 — say the replacement.**
+> ~~*"Three phases. Phase A, all the model inputs, is complete. Phase B, the hydrology, is
 > calibrated — three attempts — but **not closed**, and that is today's talk. Phase C, the
-> sediment, is blocked on the quality of the sediment concentration data on the main stem."*
+> sediment, is blocked on the quality of the sediment concentration data on the main stem."*~~
+>
+> **SAY:** *"Three phases. Phase A, all the model inputs, is complete. Phase B, the hydrology,
+> is calibrated — four attempts — and **closed**, by a decision I will come back to. Phase C,
+> the sediment, has **started**; it is constrained rather than blocked, and I can give you the
+> exact constraint: of seventy-nine sediment stations we classified, eighteen are usable, and
+> exactly **one** of them sits on the Magdalena trunk."*
+>
+> `[Owners: docs/30 §1 (Phase B closed on H2E; the header states it "supersedes the 'Phase C
+> blocked' line in older docs"); docs/32 §R6 — 79/79 classified, 18 usable, "21237020
+> ARRANCAPLUMAS (Magdalena — the only Magdalena-trunk SSC station in the entire network) …
+> This is the quantitative form of 'Phase C is blocked on mainstem SSC'."]`
 >
 > *"Why in that order? Because the erosion equation we use is driven by **runoff**, not by
 > rainfall. Water has to be right first. If we calibrated the sediment parameters on top of
@@ -237,9 +272,14 @@ into 24 soil-by-land-cover classes"* and move on.
 > recession, and attempt three additionally uses a repaired rainfall dataset."*
 >
 > *"One methodological point: we **wrote down which experiments we would run before running
-> them**. Two configurations, two random seeds each, four thousand model evaluations total.
-> That matters — if you run twenty variants and report the best one, you have fooled yourself.
-> Pre-registering stops that."*
+> them**. ~~Two configurations, two random seeds each, four thousand model evaluations total.~~
+> **Three pre-registered configurations — two of them at six random seeds each, the third at
+> two — fourteen thousand model evaluations in total.** That matters — if you run twenty
+> variants and report the best one, you have fooled yourself. Pre-registering stops that."*
+
+`[⚠ CORRECTED 2026-08-12. The seed expansion (docs/29) ran after this talk and enlarged the
+count: H1 and H2 at six seeds each, H2E at two, 14,000 evaluations. docs/24 slide 8 carries
+the same figure. The "two configurations / 4,000" line was true on the delivery date.]`
 
 ---
 
@@ -272,12 +312,44 @@ into 24 soil-by-land-cover classes"* and move on.
 > reason** — and it will fail the moment you ask it something new, like a different climate
 > period, or feed it into a sediment module."*
 >
-> *"And we gained something concrete. In the El Niño dry period, attempt one was **worse** than
-> a simple seasonal average; attempt two is **better** than it. First time. I will show you
-> that on the next slide."*
+> ⚠ **SUPERSEDED 2026-08-12 — DO NOT SAY THE NEXT TWO PARAGRAPHS.** They are preserved
+> because they are what was delivered; the replacement follows immediately below. Owner:
+> [docs/26](26_phase3_refit.md) Addendum **A.5**. `docs/24` slide 9 received this correction
+> on 2026-08-10; this script and `docs/28` did not, so a reader who checked one and trusted
+> the set was misled.
 >
-> *"So: three-hundredths of a metric, for physics that is right and a dry season that finally
-> works. We would make that trade again."*
+> ~~*"And we gained something concrete. In the El Niño dry period, attempt one was **worse** than
+> a simple seasonal average; attempt two is **better** than it. First time. I will show you
+> that on the next slide."*~~
+>
+> ~~*"So: three-hundredths of a metric, for physics that is right and a dry season that finally
+> works. We would make that trade again."*~~
+
+**⬇ SAY THIS INSTEAD** — the live version of slide 9's close:
+
+> *"And we gained something concrete. In the El Niño dry period, attempt one was **worse**
+> than a simple seasonal average. Attempt two was better than it — the first time that had
+> happened."*
+>
+> *"But I have to be careful with that sentence, because it is a statement about attempt one
+> versus attempt two, and it does **not** survive into the configuration we finally adopted.
+> Across attempts two, three and four the dry-season skill over climatology goes plus
+> zero-point-zero-two-six, plus zero-point-zero-zero-six, and then **minus zero-point-zero
+> zero-zero-five**. So in the model we actually adopted, the dry period sits **exactly at**
+> the seasonal average — not above it."*
+>
+> *"The wet phase beats its climatology by about **0.11**. The dry phase matches it. That is
+> the honest statement: **the wet phase is predictable, the dry phase is not** — and slide 15
+> is why."*
+>
+> *"So: three-hundredths of a metric, for physics that is right and a dry season that is no
+> longer *worse* than a seasonal average. We would make that trade again."*
+
+`[Why the change: docs/26 Addendum A.5 measured the adopted configuration (H2E) — El Niño
+skill over climatology −0.0005, La Niña +0.106. Its own words: "The deck's slide-9 argument
+('the dry phase turns from worse-than-climatology to better') was measured on attempt 1 →
+attempt 2 and remains true of that comparison; it is not true of the configuration the
+project adopted." If the advisor asks for the number, it is −0.0005, not +0.026.]`
 
 ---
 
@@ -302,12 +374,36 @@ into 24 soil-by-land-cover classes"* and move on.
 
 `[Point at the figure.]`
 
-> *"So we report this instead: how much better than that seasonal climatology is the model, in
-> each period. In the wet La Niña year we add about 0.13. In the dry El Niño period, about
-> 0.03."*
+> ⚠ **SUPERSEDED 2026-08-12 — DO NOT SAY THE NEXT TWO PARAGRAPHS.** The +0.13 / +0.03 pair is
+> **attempt 2 (H1)**, not the adopted configuration. Owner:
+> [docs/26](26_phase3_refit.md) Addendum **A.5**.
 >
-> *"That is still a real and uncomfortable asymmetry — we are five times better at wet than at
-> dry. But it is an honest statement of the gap, and it is not 'worse than the mean'."*
+> ~~*"So we report this instead: how much better than that seasonal climatology is the model, in
+> each period. In the wet La Niña year we add about 0.13. In the dry El Niño period, about
+> 0.03."*~~
+>
+> ~~*"That is still a real and uncomfortable asymmetry — we are five times better at wet than at
+> dry. But it is an honest statement of the gap, and it is not 'worse than the mean'."*~~
+
+**⬇ SAY THIS INSTEAD:**
+
+> *"So we report this instead: how much better than that seasonal climatology is the model, in
+> each period. The figure shows all the attempts. In the wet La Niña year attempt two adds
+> about 0.13; in the dry El Niño period, about 0.03."*
+>
+> *"And I want to give you the number for the model we actually adopted, because it is worse
+> and you should have it. In the adopted configuration the wet year adds **plus 0.106**, and
+> the dry period adds **minus zero-point-zero-zero-zero-five** — which is zero. The dry
+> period is **level with** the seasonal average, not above it."*
+>
+> *"That is a real and uncomfortable asymmetry: we are genuinely skilful in the wet phase, and
+> in the dry phase we are no better than knowing the time of year. But it is an honest
+> statement of the gap, it is measured, and it is not 'worse than the mean'. Slide 15 is why."*
+
+`[Numbers, from docs/26 Addendum A.5, adopted configuration H2E: median KGE La Niña 0.344 /
+El Niño 0.200; climatology 0.238 / 0.201; skill over climatology +0.106 / −0.0005. Do not
+quote "five times better" of the adopted model — the ratio is undefined when the denominator
+is zero.]`
 
 ---
 
@@ -473,20 +569,54 @@ into 24 soil-by-land-cover classes"* and move on.
 
 > *"I want to state the limits myself rather than have them found."*
 >
-> *"The calibration is **not closed**. Three attempts, none meeting every criterion we set in
-> advance."*
+> ⚠ **SUPERSEDED 2026-08-12 — say the replacement, not this line.**
+> ~~*"The calibration is **not closed**. Three attempts, none meeting every criterion we set in
+> advance."*~~
+>
+> **SAY:** *"The calibration is **closed**, but I want to be precise about how. There were
+> four attempts, and we closed it **by decision, not by hitting a target** — none of the four
+> meets every criterion we set in advance. The one we adopted scores three of our nine
+> pre-registered criteria. We adopted it on a different, separately pre-registered rule, and
+> I would rather say that plainly than let 'closed' sound like 'passed'."*
+>
+> `[Owners: docs/30 §1 — "Phase B closes on the input-ceiling result, with H2E as the adopted
+> configuration." docs/26 A.4 — "H2E scores 3/9 … it was never a claim that the
+> pre-registered adequacy criteria were met."]`
 >
 > *"We do not reach the conventional adequacy threshold — the usual benchmark for daily NSE is
 > above 0.5, and we are between 0.16 and 0.26. Slide 15 explains why, but it is still true."*
 >
-> *"The ENSO asymmetry persists. We are about five times better in the wet phase than the dry
-> phase. We set out to halve that ratio. We have not."*
+> ⚠ **SUPERSEDED 2026-08-12 — both of the next two paragraphs.**
+> ~~*"The ENSO asymmetry persists. We are about five times better in the wet phase than the dry
+> phase. We set out to halve that ratio. We have not."*~~
 >
-> *"Two or three parameters are still pressed against their allowed limits — in particular a
+> ~~*"Two or three parameters are still pressed against their allowed limits — in particular a
 > vegetation coefficient sitting at 2.0, which is beyond any physically sensible value. That
 > is the model compensating for something. We think we know what: our evaporation formula
 > throttles evaporation even when soil is quite wet, and doubling that coefficient is exactly
-> the compensation that implies. It is a one-function fix and it is next on the list."*
+> the compensation that implies. It is a one-function fix and it is next on the list."*~~
+
+**⬇ SAY THIS INSTEAD:**
+
+> *"The ENSO asymmetry persists, and in the model we adopted it is **worse** than that. In the
+> wet La Niña year we beat a seasonal climatology by about **0.11**. In the dry El Niño period
+> we beat it by **minus zero-point-zero-zero-zero-five** — that is, we match it. We set out to
+> halve the gap; we did not, and I will not put a ratio on it, because the denominator is
+> zero."*
+>
+> *"Parameters are still pressed against their allowed limits — two of the ten we search
+> globally, three of the eighteen dimensions once the regional ones are counted. The
+> vegetation coefficient that used to sit at 2.0 is the one exception, and it is worth a
+> sentence: we said last time that our evaporation formula was throttling evaporation in moist
+> soil and that a doubled coefficient was exactly the compensation that implies. **We tested
+> that, and it was right** — replacing the formula moved the coefficient to 1.66, off its
+> bound, at no cost. But 1.66 is still beyond what FAO-56 would call plausible, which is 1.2.
+> So the mechanism was real and it was not the whole story."*
+
+`[Owners: docs/26 Addendum A.5 (+0.106 / −0.0005) and A.2 (kc_mult 1.6625, "confirmed off the
+rail that held H1 at 98.8 % and H2 at 93.3 %"; 2 of 10 global / 3 of 18 dimensions railed);
+docs/29 rule (b) (SUCCESS, all three conditions) and its own caveat, "kc came OFF THE RAIL but
+is not yet plausible: 1.662/1.836 against the FAO-56 plausibility target of ≤ 1.2".]`
 >
 > *"And an important one for Phase C: we **cannot publish sediment yield per catchment**. Our
 > two implementations disagree by more than a factor of two on the catchment area for
@@ -499,49 +629,122 @@ into 24 soil-by-land-cover classes"* and move on.
 
 ## Slide 17 — Next steps  ·  32:00 → 33:00
 
-> *"Five steps, and the order is set by the measurements, not by preference."*
+> ⚠ **SUPERSEDED 2026-08-12 — steps one, two, three and five have all been EXECUTED and have
+> outcomes.** Do not read this as a plan. Owners: 1 →
+> [docs/18](18_hydrology_journal.md) §15.5; 2 and 3 → [docs/29](29_seed_expansion.md) rules
+> (b) and (a); 5 → [docs/30](30_phase_c_plan.md) §1.
 >
-> *"One: merge satellite rainfall with our repaired gauges. This is the **only** thing we have
+> ~~*"Five steps, and the order is set by the measurements, not by preference."*~~
+>
+> ~~*"One: merge satellite rainfall with our repaired gauges. This is the **only** thing we have
 > measured to be capable of moving the timing correlation — and therefore the dry season. The
 > satellite gives us spatial pattern and covers the seventeen percent of the basin with no
-> nearby gauge; we keep the gauges in control of the total volume."*
+> nearby gauge; we keep the gauges in control of the total volume."*~~
 >
-> *"Two: fix the evaporation formula. Cheap, and it should release that stuck parameter."*
+> ~~*"Two: fix the evaporation formula. Cheap, and it should release that stuck parameter."*~~
 >
-> *"Three: more random seeds, because our two rainfall versions differ by less than the
-> variation between seeds — so that comparison is not yet established."*
+> ~~*"Three: more random seeds, because our two rainfall versions differ by less than the
+> variation between seeds — so that comparison is not yet established."*~~
 >
-> *"Four: resolve the catchment areas."*
+> ~~*"Four: resolve the catchment areas."*~~
 >
-> *"Five: then sediment."*
+> ~~*"Five: then sediment."*~~
+
+**⬇ SAY THIS INSTEAD** — the same five steps, reported as results:
+
+> *"Five steps were queued after that talk, in the order the measurements dictated. Four of
+> them have since been done, and I would rather give you the results than the plan."*
+>
+> *"One: merge satellite rainfall with our repaired gauges — the only thing we had measured to
+> be capable of moving the timing correlation. **It was tried twice and rejected twice.** The
+> correlation gate passed both times — 0.447 against 0.429. The volume gate failed both times:
+> the merged field is about seven and a half percent too wet over the basin. The second run
+> applied the fix we had diagnosed, and the fix turned out to be a **no-op** — the thing we
+> thought was missing from the fit was already twenty-six percent of it, so the re-run came
+> back bit-for-bit identical. **We now do not know the cause.** There is no merged rainfall
+> product; the repaired gauge field is still the forcing."*
+>
+> *"Two: fix the evaporation formula. **Done, and it worked** — the crop coefficient came off
+> its bound, from 1.90 down to 1.66, at no cost in the objective. That configuration is the
+> one we adopted. It is still not a physically plausible value — FAO-56 would want 1.2 or
+> less — so the diagnosis was right about the mechanism and incomplete about the size."*
+>
+> *"Three: more random seeds. **Done — six per cell — and the two rainfall versions still do
+> not separate.** The gap is 0.009 against a between-seed spread of 0.051. So that comparison
+> is settled as a negative, not still pending."*
+>
+> *"Four: resolve the catchment areas. **Still open**, and it still blocks every yield number
+> we could report per unit area."*
+>
+> *"Five: sediment. **Started.** The sediment stage is running, and I can take questions on
+> it, though it is not this talk."*
 
 `[Point at the two panels.]
 
 > *"And to be clear that Phase C is not vapour: the sediment retrieval from satellite imagery
-> and the sediment transport module are both built and tested. They are waiting on data
-> quality, not on code."*
+> and the sediment transport module are both built and tested. ~~They are waiting on data
+> quality, not on code.~~ **The sediment stage has since started — the data-quality gate ran
+> and eighteen stations came through it.**"*
+
+`[⚠ CORRECTED 2026-08-12. "Waiting on data quality" is superseded: docs/32 ran the gate
+(79/79 stations classified, 18 usable) and docs/30 §1 records the decision that started
+Phase C. Do not describe Phase C as waiting.]`
 
 ---
 
 ## Slide 18 — The question for you  ·  33:00 → 34:00  ·  **THEN STOP AND DISCUSS**
 
-> *"I would like to end with a question, because your answer changes what we do next."*
+> ⚠ **SUPERSEDED 2026-08-12 — THIS QUESTION HAS BEEN ASKED AND WILL NOT BE ANSWERED. DO NOT
+> ASK IT AGAIN.** Owner [docs/30](30_phase_c_plan.md), header, quoted: *"**The advisor was
+> asked the Phase B scope question (docs/24 item 17) and declined to answer — told the team
+> to decide.**"* The team then decided ([docs/30](30_phase_c_plan.md) §1): *"**Phase B closes
+> on the input-ceiling result, with H2E as the adopted configuration.**"* The script below is
+> preserved as the record of the talk that was delivered.
 >
-> *"Is the ceiling result on slide 15 an acceptable way to **close** the hydrological phase?"*
+> ~~*"I would like to end with a question, because your answer changes what we do next."*~~
 >
-> *"If yes — then we can finish Phase B on a quantified limit, whether or not the satellite
-> merge works, and move to sediment."*
+> ~~*"Is the ceiling result on slide 15 an acceptable way to **close** the hydrological phase?"*~~
 >
-> *"If no — if you expect us to reach the conventional adequacy threshold — then the satellite
+> ~~*"If yes — then we can finish Phase B on a quantified limit, whether or not the satellite
+> merge works, and move to sediment."*~~
+>
+> ~~*"If no — if you expect us to reach the conventional adequacy threshold — then the satellite
 > merge has to succeed. And if it does not, we would need either denser rainfall input than
 > IDEAM has, or a reduced target: monthly instead of daily, or a few well-gauged sub-basins
-> instead of the whole network."*
+> instead of the whole network."*~~
 >
-> *"Either answer is workable. But it changes what 'done' means, so it is the most useful
-> thing we can settle today."*
+> ~~*"Either answer is workable. But it changes what 'done' means, so it is the most useful
+> thing we can settle today."*~~
+
+**⬇ SAY THIS INSTEAD** — report the decision, do not re-open it:
+
+> *"Last time I ended by asking you whether the ceiling result was an acceptable way to close
+> the hydrological phase. You told us to decide, so we did, and I want to report the decision
+> rather than re-ask the question."*
+>
+> *"We closed Phase B on the ceiling result, with the FAO-56 configuration adopted. The
+> grounds are all measured: twelve parameter configurations moved the dry-season correlation
+> by less than 0.016, so the headroom is exhausted; the ceiling is a property of the gauge
+> network rather than of the model; and the extra search seeds settled the last two
+> calibration questions."*
+>
+> *"Two things I have to say alongside that. First — the satellite merge, which was the one
+> lever we had measured capable of moving correlation, has since been tried twice and
+> **rejected** twice, the second time with the diagnosed fix applied. The fix turned out to be
+> a no-op, and the cause of the volume failure is now **unknown**. There is no fixed rainfall
+> product waiting in the wings. Second — the dry phase in the adopted model sits **at**
+> climatology, not above it, and every sediment number in the El Niño window inherits that."*
+>
+> *"So the question I would actually value your view on is not whether Phase B may close —
+> it has — but [the live open register: see docs/31, docs/34 §7, docs/36 §7]."*
 
 `[Stop. Let the discussion happen. Slide 19 is a backup for the summary if he asks
 "so what have you got?" — otherwise you may never need it.]`
+
+`[⚠ Pick the closing question deliberately before the meeting. Do NOT default to the old
+scope question. Owners of the live registers: docs/31 (known-open register), docs/34 §7 (six
+issues the observed contrast raised), docs/36 §7 (ten from the peak-deficit adjudication).
+Status of anything you are about to claim: progress_map.html wins.]`
 
 ---
 
@@ -564,6 +767,13 @@ into 24 soil-by-land-cover classes"* and move on.
 > achieve 0.476. We are already above our input. No parameter set beats that, so the honest
 > next step is better rainfall, not more tuning."*
 
+`[⚠ ANNOTATED 2026-08-12 — the answer is still correct, but be ready for the follow-up "so go
+and get better rainfall". The one available route was the CHIRPS merge, and it has since been
+rejected twice; its diagnosed cause was measured and proved WRONG, so the cause is now
+UNKNOWN and no fix is pending (docs/18 §15.5: "no route to a passing volume gate exists inside
+the merge code"). Say "better rainfall is the only lever, and we have shown we cannot build it
+from what exists" — do not imply a fix is in progress.]`
+
 **"Why not just use the model with the better physics?"**
 > *"We do — it is calibrated too, at 0.329, and it is what we will use for floodplain
 > processes. But it costs twenty-five minutes per run, so the search we did overnight would
@@ -579,10 +789,23 @@ into 24 soil-by-land-cover classes"* and move on.
 > assumed."*
 
 **"What happened to the sediment?"**
-> *"The module is built and tested; the satellite retrieval works. It is blocked on two data
+> ⚠ **SUPERSEDED 2026-08-12.**
+> ~~*"The module is built and tested; the satellite retrieval works. It is blocked on two data
 > issues: the concentration measurements on the main stem, and the catchment-area disagreement
 > on slide 16. Both are data problems, not modelling problems, and we would rather report no
-> yield than a yield with a factor-of-two area error in it."*
+> yield than a yield with a factor-of-two area error in it."*~~
+>
+> **SAY:** *"It has started. We ran a quality gate over the whole sediment network —
+> seventy-nine stations, every one classified with a deciding measurement — and eighteen came
+> out usable. The binding constraint is sharper than 'blocked': exactly **one** usable station
+> sits on the Magdalena trunk. And the catchment-area disagreement from slide 16 still stands,
+> so we report absolute flux and **no yield per unit area** — we would rather report no yield
+> than a yield carrying a factor-of-two area error."*
+>
+> `[Owners: docs/32 §R6 (79/79 classified; 18 usable; 21237020 ARRANCAPLUMAS the only
+> Magdalena-trunk SSC station); docs/23 §13.2 (the area problem, and the embargo it forces);
+> docs/30 §1 (Phase C proceeds). For live stage status — including which Phase C stages are
+> open or blocked — read progress_map.html, not this script.]`
 
 **"Is 6 % a big correction to the rainfall?"**
 > *"On the basin average, it sounds modest. But it cut the volume bias in our discharge by

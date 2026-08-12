@@ -9,6 +9,29 @@ everything *means*.
 **How to use it:** read Parts 0–2 once (about ten minutes) and the rest becomes easy. Part 3
 then goes slide by slide, and you can jump straight to whichever slide you are asked about.
 
+> # ⚠ READ THIS FIRST — annotated 2026-08-12
+>
+> This document explains a deck **as delivered**. Several of its numbers have since been
+> overtaken by measurement, and one of them is in the *five things to remember* list at the
+> end. Every affected passage below is marked **⚠ SUPERSEDED / CORRECTED 2026-08-12** with the
+> live statement beside it and the document that owns it named. **Where the two disagree, the
+> owning document wins** — this file owns none of these facts.
+>
+> **The one that matters most, if you read nothing else:**
+> ~~"the dry season went from worse-than-climatology to better"~~ →
+> **that is true of attempt 1 → attempt 2 only. It is NOT true of the model the project
+> adopted.** In the adopted model the dry El Niño phase scores **−0.0005** against a seasonal
+> climatology — i.e. it **matches** climatology, it does not beat it. Owner:
+> [docs/26](26_phase3_refit.md) Addendum **A.5**. Affected here: **Part 2**'s climatology
+> table, **slide 9**, **slide 10**, **slide 16**, and **Part 4 item 2**.
+>
+> Also superseded: **slide 17**'s next-step list (four of five have been executed, with
+> outcomes), **slide 18**'s advisor question (asked; the advisor declined; the team decided),
+> and the "Phase C is blocked" framing in **Part 0** and **slide 3**.
+>
+> *(Not changed, and deliberately so: the **+38 %** in Part 2's PBIAS section is a worked
+> teaching example of what percent bias means, not a project number. Leave it alone.)*
+
 ---
 
 # Part 0 — The project in one page
@@ -41,8 +64,18 @@ and mean nothing.
 **Where we actually are.** The water model works, conserves mass exactly, and is calibrated.
 It performs moderately well overall, and noticeably worse in the dry El Niño phase. We spent
 considerable effort finding out *why*, and the answer turned out to be **the rainfall data,
-not the model** — a result we can quantify. The sediment phase is built but blocked on data
-quality.
+not the model** — a result we can quantify. ~~The sediment phase is built but blocked on data
+quality.~~
+
+> **⚠ CORRECTED 2026-08-12 — the last sentence.** → **The sediment phase has started.** Owner
+> [docs/30](30_phase_c_plan.md), header: *"It supersedes the 'Phase C blocked' line in older
+> docs."* The data-quality gate was run and its result is precise
+> ([docs/32](32_ssc_qc_audit.md) §R6): **79 of 79 sediment stations classified**, each with a
+> deciding measurement; **18 usable**; and *"`21237020` ARRANCAPLUMAS (Magdalena — **the only
+> Magdalena-trunk SSC station in the entire network**)… This is the quantitative form of
+> 'Phase C is blocked on mainstem SSC'."* So the constraint is real but it is **one station on
+> the main river**, not "we cannot start". **For what stage the project is actually on today,
+> read `progress_map.html`, not this document.**
 
 ---
 
@@ -188,13 +221,36 @@ predict the long-term average flow for that day. It knows the seasons and nothin
 We score that in every window and report **model minus climatology**. This is fair across
 windows, because both are measured in the same window.
 
-| period | our gain over climatology |
+| period | our gain over climatology — ⚠ **this is ATTEMPT 2 (H1), not the adopted model** |
 |---|---|
 | La Niña 2011 (wet) | **+0.126** |
 | El Niño 2015–16 (dry) | **+0.026** |
 
-So we are about **five times better in the wet phase than the dry phase**. That is the honest
-statement of our biggest remaining problem.
+~~So we are about **five times better in the wet phase than the dry phase**. That is the honest
+statement of our biggest remaining problem.~~
+
+> **⚠ CORRECTED 2026-08-12 — these are not the project's current numbers, and the "five times"
+> ratio does not survive.** Presented unqualified as "our gain", the pair above reads as the
+> adopted model's. It is not. Owner: [docs/26](26_phase3_refit.md) Addendum **A.5**, which
+> tabulates the **adopted** configuration (H2E):
+>
+> | | La Niña 2011 | El Niño 2015–16 |
+> |---|---|---|
+> | median KGE | 0.344 | 0.200 |
+> | day-of-year climatology KGE | 0.238 | 0.201 |
+> | **skill over climatology** | **+0.106** | **−0.0005** |
+>
+> Quoted: *"**The dry phase in the adopted configuration is at climatology, not above it:
+> −0.0005.** Across attempts 2 → 3 → 4 the El Niño skill-over-climatology reads +0.026 →
+> +0.006 → −0.0005."*
+>
+> **The honest statement, in plain language:** in the wet La Niña year the model is genuinely
+> better than just knowing the time of year — by about 0.11. In the dry El Niño period it is
+> **exactly as good as knowing the time of year, and no better**. **Do not say "five times
+> better"** of the adopted model: you cannot form that ratio when the dry-phase number is
+> zero. [docs/26](26_phase3_refit.md) A.5 gives the wording to use instead — *"**the wet phase
+> is predictable, the dry phase is not**"* — and adds that this *"is the hydrology caveat
+> every Phase C sediment claim inside the El Niño window inherits."*
 
 ## Recession ratio
 
@@ -271,6 +327,13 @@ This is the field the sediment module will consume.
 
 **Why:** stating "Phase B is not closed" up front buys credibility for everything after it.
 And it explains the ordering — sediment depends on runoff, so water must be right first.
+
+> **⚠ UPDATED 2026-08-12 — the status row on this slide has moved.** Phase B is now **CLOSED**
+> ([docs/30](30_phase_c_plan.md) §1) and Phase C has **started** — the "blocked" row is
+> superseded (see the correction in Part 0). The *credibility* argument still works, but the
+> honest version of it has changed shape: what buys credibility now is saying that Phase B was
+> closed **by decision on a measured ceiling, not by passing its own criteria** — the adopted
+> configuration scores 3 of the 9 criteria set in advance ([docs/26](26_phase3_refit.md) A.4).
 
 ---
 
@@ -378,7 +441,15 @@ the results do not depend on our starting guess.
 
 ---
 
-## Slide 8 — Three calibration attempts
+## Slide 8 — ~~Three~~ **Four** calibration attempts
+
+> **⚠ CORRECTED 2026-08-12 — there are four.** [docs/24](24_presentation_outline.md) slide 8's
+> table was updated on 2026-08-10 to add attempt **4 — H2E**, the adopted configuration:
+> VAL KGE **0.356**, recession **0.98×**, PBIAS **+3.51 %**. Owner
+> [docs/26](26_phase3_refit.md) Addendum **A.4**, and its honest reading: *"H2E's gain over H2
+> is **in volume, not in skill**… VAL KGE moves +0.011 and r +0.008 — both inside the 0.051
+> seed spread docs/29 measured, so neither is a separation."* Everything below about attempts
+> 1–3 is unchanged and still correct.
 
 **Looking at:** a dual-axis bar chart and a summary table.
 
@@ -419,6 +490,24 @@ something new — a different climate period, or feeding a sediment module that 
 phase went from **worse** than a seasonal average (−0.026) to **better** (+0.026) — for the
 first time.
 
+> **⚠ CORRECTED 2026-08-12 — the sentence above is true of this comparison and ONLY of this
+> comparison.** It is attempt 1 → attempt 2. **It does not survive into the model the project
+> adopted.** Owner [docs/26](26_phase3_refit.md) Addendum **A.5**, quoted in full because this
+> is the most-quoted wrong sentence in the deck:
+>
+> > "The deck's slide-9 argument ('the dry phase turns from worse-than-climatology to better')
+> > was measured on attempt 1 → attempt 2 and remains true *of that comparison*; it is **not**
+> > true of the configuration the project adopted, and docs/24 must not be read as claiming it
+> > is."
+>
+> > "**The dry phase in the adopted configuration is at climatology, not above it: −0.0005.**"
+>
+> **What to say if asked:** the trade was real and we would make it again — but the dry-season
+> gain was later given back. Across attempts 2 → 3 → 4 it reads **+0.026 → +0.006 → −0.0005**.
+> In the adopted model the dry phase **matches** a seasonal average; it does not beat it.
+> [docs/24](24_presentation_outline.md) slide 9 carries this same correction (added
+> 2026-08-10) and its instruction is *"it must be spoken, not skipped"*.
+
 **Why:** it is the argument that we are optimising for a defensible model rather than a
 flattering number. It is also the most likely thing to be challenged, so know it cold.
 
@@ -442,7 +531,14 @@ same window. It also came out negative (−0.06), because NSE's benchmark is the
 So we report the difference from that fixed benchmark instead — fair across windows.
 
 **Reading it:** every period is positive except El Niño for attempt 1. La Niña **+0.126** vs
-El Niño **+0.026** — about **five times better wet than dry**.
+El Niño **+0.026** — ~~about **five times better wet than dry**~~ **for attempt 2**.
+
+> **⚠ CORRECTED 2026-08-12.** Those two numbers are **attempt 2 (H1)**. In the **adopted**
+> configuration they are **+0.106** (La Niña) and **−0.0005** (El Niño) —
+> [docs/26](26_phase3_refit.md) Addendum **A.5**. So the figure's rightmost group, not the one
+> the sentence describes, is the project's current position: the dry phase is **level with**
+> climatology, and the "five times" ratio cannot be formed at all. See the correction in
+> **Part 2** for the full table and the wording to use.
 
 **Why:** it shows we scrutinise our own metrics, and it is where the honest statement of the
 remaining gap comes from.
@@ -621,15 +717,34 @@ the most publishable thing in the work.
 
 **Each limit, explained:**
 
-- **Calibration not closed** — three attempts, none meeting every pre-set criterion.
+- ~~**Calibration not closed** — three attempts, none meeting every pre-set criterion.~~
+  → ⚠ **CORRECTED 2026-08-12: four attempts, and the calibration IS closed** — but *by
+  decision, not by passing*. [docs/30](30_phase_c_plan.md) §1: *"**Phase B closes on the
+  input-ceiling result, with H2E as the adopted configuration.**"* **The "none meeting every
+  criterion" half is still true and still has to be said**:
+  [docs/26](26_phase3_refit.md) A.4 — *"**H2E scores 3/9**… Adoption was on the docs/29 rules,
+  which H2E passed; **it was never a claim that the pre-registered adequacy criteria were
+  met**."*
 - **Conventional adequacy not reached** — the usual daily NSE threshold is >0.5; we are
   0.16–0.26. Slide 15 explains why, but it is still true and we say so.
-- **The ENSO asymmetry persists** — five times better wet than dry. We aimed to halve that
-  ratio and did not.
-- **Parameters at bounds** — a vegetation coefficient sits at 2.0, beyond any physically
+- ~~**The ENSO asymmetry persists** — five times better wet than dry. We aimed to halve that
+  ratio and did not.~~
+  → ⚠ **CORRECTED 2026-08-12: in the adopted model it is worse than "five times".** Wet
+  **+0.106**, dry **−0.0005** ([docs/26](26_phase3_refit.md) Addendum A.5). The dry phase
+  matches climatology rather than beating it, so no ratio exists. We aimed to halve the gap
+  and did not.
+- ~~**Parameters at bounds** — a vegetation coefficient sits at 2.0, beyond any physically
   sensible value. That is compensation, and we think we know for what: our evaporation formula
   throttles evaporation even in moist soil, so the model needs an unrealistic coefficient to
-  evaporate enough. A one-function fix, next on the list.
+  evaporate enough. A one-function fix, next on the list.~~
+  → ⚠ **CORRECTED 2026-08-12: the fix was made and the diagnosis was RIGHT.** Replacing the
+  evaporation formula with the FAO-56 threshold form moved the coefficient **off its bound**,
+  2.0 → **1.6625**, at no cost in the objective — [docs/29](29_seed_expansion.md) rule (b):
+  *"**SUCCESS, all three conditions**… the FAO-56 threshold form releases it at no cost"*, and
+  [docs/26](26_phase3_refit.md) A.2: *"confirmed off the rail that held H1 at 98.8 % and H2 at
+  93.3 %"*. **The limit itself still stands, with the corrected number:** 1.66 is still beyond
+  FAO-56's plausible ≤ 1.2 ([docs/29](29_seed_expansion.md) caveats), and **2 of 10 global /
+  3 of 18 dimensions** remain railed in the adopted fit.
 - **No per-catchment sediment yield** — our two implementations' drainage areas disagree by
   more than 2× on **36 %** of shared gauges, while their **averages** agree to 1 %. So neither
   network is trustworthy gauge by gauge. Yield is mass **per unit area**, so a 2× area error is
@@ -652,6 +767,41 @@ here comes with a measurement, not a hedge.
 **Looking at:** a five-step table, plus two panels showing the sediment components exist.
 
 **Why this order — each step is justified by a measurement:**
+
+> **⚠ SUPERSEDED 2026-08-12 — this is no longer a plan. Four of the five steps have been
+> executed.** The list is preserved as the delivery-date record; here is what happened, with
+> the owning document for each.
+>
+> 1. **Satellite rainfall merge — DONE, and REJECTED. Twice.** It really was the only measured
+>    lever, and it did not work. The correlation gate **passed** (merged r **0.447** against
+>    the gauge-only **0.429**); the volume gate **failed** — the merged field is **2,188.5
+>    mm/yr**, about **7.5 %** too wet, against a required band of **[2,016.0, 2,056.8]**.
+>    ([docs/18](18_hydrology_journal.md) §15: *"**DO NOT ADOPT.**"*) The fix we had diagnosed
+>    was then written down as a formal prediction (**H-CHIRPS**,
+>    [docs/33](33_c2b_preregistration.md) §1), run — and it changed **nothing**. The thing we
+>    thought was missing from the calculation was already **25.9 %** of it, so the re-run came
+>    back **bit-for-bit identical** to the run it was meant to repair.
+>    [docs/33](33_c2b_preregistration.md) §1: *"The registered intervention turned out to be a
+>    **no-op**… so the diagnosed cause in docs/18 §15.3 was **wrong**."*
+>    [docs/18](18_hydrology_journal.md) §15.5: *"**no route to a passing volume gate exists
+>    inside the merge code.**"*
+>    **⇒ The cause of the volume failure is now UNKNOWN.** One hypothesis survives — 139
+>    stations that still under-report dry days — but those days *"are not in the record at
+>    all"*, so it cannot be tested inside the merge, and it has not been tested anywhere else.
+>    **There is no merged rainfall product and none is pending.** *(In this project's
+>    vocabulary: there is no "v3" forcing. "v2", the adopted forcing, is the **repaired
+>    gauge** field — it is **gauge-only** and contains no satellite data. See
+>    `docs/00_INDEX.md` § "Forcing versions — v1 / v2 / v3, stated once".)*
+> 2. **Evaporation formula — DONE, and it WORKED.** [docs/29](29_seed_expansion.md) rule (b):
+>    *"**SUCCESS, all three conditions**"*. The stuck coefficient came off its bound
+>    (2.0 → 1.66). That configuration is the one the project adopted.
+> 3. **More search seeds — DONE, and they did NOT separate the two rainfall versions.**
+>    [docs/29](29_seed_expansion.md) rule (a): *"**NOT SEPARATED**… Six seeds per cell did not
+>    separate the forcings."* Gap **0.009** against a between-seed spread of **0.051**. The
+>    comparison is now settled as a negative rather than pending.
+> 4. **Catchment areas — STILL OPEN.** Unchanged. The yield embargo stands
+>    ([docs/23](23_gauge_geometry.md) §13.2).
+> 5. **Then sediment — STARTED.** [docs/30](30_phase_c_plan.md) §1.
 
 1. **Satellite rainfall merge** — the *only* intervention measured capable of moving
    correlation (slide 15), and therefore the dry season. The satellite supplies **spatial
@@ -678,6 +828,27 @@ quality, not on code.
 **Why this is the most important slide:** it is a genuine decision only the advisor can make,
 and it changes what work happens next.
 
+> **⚠ SUPERSEDED 2026-08-12 — THE QUESTION WAS ASKED AND THE ADVISOR DECLINED TO ANSWER IT.**
+> Do not put it in front of him again. Owner [docs/30](30_phase_c_plan.md), header, quoted:
+>
+> > "**The advisor was asked the Phase B scope question (docs/24 item 17) and declined to
+> > answer — told the team to decide.** This document records the decision and the plan that
+> > follows from it."
+>
+> **What the team decided**, [docs/30](30_phase_c_plan.md) §1: *"**Phase B closes on the
+> input-ceiling result, with H2E as the adopted configuration.**"* — i.e. the first branch
+> below. The grounds are all measured: parameter headroom exhausted (twelve configurations
+> moved El Niño r by less than 0.016), the ceiling belongs to the observing network, and the
+> seed expansion settled the last two calibration questions.
+>
+> **And the second branch's premise no longer holds either.** It says "if conventional
+> adequacy is expected, the merge *must* succeed". The merge was tried twice and **failed both
+> times** (see the correction at slide 17). So that branch would not have been available.
+>
+> **Phase B then closed a second time, on separate evidence** —
+> [docs/33](33_c2b_preregistration.md) §8, after a pre-registered re-examination of the two
+> quantities the sediment model actually consumes. H2E survived both closes.
+
 - **If the ceiling result is an acceptable close** — Phase B can finish on a quantified limit
   whether or not the satellite merge succeeds, and effort moves to sediment.
 - **If conventional adequacy is expected** — the merge *must* succeed. If it does not, the
@@ -701,9 +872,28 @@ input ceiling (15), the QC methodology (13), and the audit trail.
 
 1. **Both ENSO years are out-of-sample.** We calibrate only on neutral years, so the headline
    results are predictions, not fits. *(Slide 7)*
-2. **We traded 0.029 KGE for a correct groundwater recession** — and the dry season went from
+2. ~~**We traded 0.029 KGE for a correct groundwater recession** — and the dry season went from
    worse-than-climatology to better. A flattering number from wrong physics is not the better
-   model. *(Slide 9)*
+   model. *(Slide 9)*~~
+
+   → ⚠ **SUPERSEDED 2026-08-12. REMEMBER THIS INSTEAD:**
+   **We traded 0.029 KGE for a correct groundwater recession, and we would do it again — a
+   flattering number from wrong physics is not the better model. But the dry-season gain that
+   came with it did not last: in the model the project actually adopted, the dry El Niño phase
+   sits *at* a seasonal climatology, not above it — skill over climatology **−0.0005**, against
+   **+0.106** in the wet La Niña year.** *(Slide 9, and the correction in Part 2.)*
+
+   > **Why this was changed.** As written, the struck sentence was the most quotable wrong
+   > statement in the deck material, and it sat in the list a briefer is most likely to repeat
+   > verbatim. Owner: [docs/26](26_phase3_refit.md) Addendum **A.5**, quoted:
+   > *"The deck's slide-9 argument ('the dry phase turns from worse-than-climatology to
+   > better') was measured on attempt 1 → attempt 2 and remains true *of that comparison*; it
+   > is **not** true of the configuration the project adopted."* … *"**The dry phase in the
+   > adopted configuration is at climatology, not above it: −0.0005.**"* The trade itself —
+   > 0.029 KGE for a recession of 0.96× instead of 2.98× — is unaffected and stands.
+   >
+   > A.5 also states the consequence that must travel with it: this is *"the hydrology caveat
+   > every Phase C sediment claim inside the El Niño window inherits."*
 3. **Repairing the rainfall fixed volume and did not touch timing** — predicted in advance,
    confirmed at +0.003. They are two independent problems. *(Slide 11)*
 4. **The model sits just above its input's own skill** (0.476 vs 0.43), and daily rainfall

@@ -215,6 +215,16 @@ What *does* exist is a nested travel-length ladder, and it is long:
 
 > **REGISTERED NOISE FLOOR: σ_r = 0.465 ln units (a factor of 1.59) per station log-residual.**
 
+> **[WARN] AMENDMENT A-P4, 2026-08-12 — the phrase "per station log-residual" is RETIRED; the
+> number is not.** `σ_r = 0.465 ln` is **VALID** as what its own next paragraph derives — the
+> disagreement between two *observed-flux estimators*, `0.658/√2` — and it stays a registered
+> yardstick in that use and as a **firing threshold** (G1.1's `+0.658`, G8, G11). It is
+> **INVALID as the per-station model−observation residual sd**, which is what the SE of the
+> fitted level and every `k_min` below require: measured on the registered CAL window, CAL 8,
+> primary estimator (b), that sd is **1.9618 ln (×4.22)**. **Everything in §4.2 downstream of
+> this line that divides or multiplies by `0.465` is restated in §9.7 (A-P4).** No threshold in
+> §5 or §6 is changed, and **no materiality bar is created here or anywhere** (`docs/52`).
+
 It is measured, not chosen: the two independent observed-flux estimators of `docs/34` disagree
 by `sd[ln(a/b)] = 0.658` over the 32 station-windows where both are admissible, so a single
 estimator carries `0.658/√2 = 0.465`. The bootstrap CIs alone would have implied 0.10 (estimator
@@ -227,16 +237,37 @@ values above:
 
 | test form | n | k_min /km | equivalent survival contrast over the 348 km span | usable? |
 |---|---:|---:|---:|---|
-| slope over the **CAL 13 only** | 13 | 0.0104 | 3.06× across the CAL span alone | **NO — underpowered** |
-| **slope over all 18** | 18 | **0.00216** | **2.12×** | **YES — the registered primary** |
-| 22 nested pairs (stations shared ⇒ not independent) | 22 | 0.00119 | 1.51× | corroboration only |
+| slope over the **CAL 13 only** | 13 | ~~0.0104~~ → **0.00964** (§9.5) | ~~3.06× across the CAL span alone~~ → **2.83×** (span) / **2.90×** (max) | **NO — underpowered** |
+| **slope over all 18** | 18 | ~~**0.00216**~~ → **0.0066 – 0.0069** (§9.7) | ~~**2.12×**~~ → **≈ 9× – 11×, central ≈ 10× over ~342 km** | **YES — the registered primary** |
+| 22 nested pairs (stations shared ⇒ not independent) | 22 | 0.00119 | 1.51× | corroboration only — **σ_r-scaled and NOT correctable; no corrected value (§9.7, open item P2)** |
+
+> **[WARN] AMENDMENT A-P4, 2026-08-12 — every cell in the table above is proportional to
+> `σ_r = 0.465`, which §4.2's own opening line above records as retired *for this use*.** The
+> struck values are preserved so a reader can identify the superseded statement wherever it is
+> still in print; **they may not be quoted from this body.** Two separate corrections are stacked
+> in the CAL-13 row and must not be conflated: **0.0104 → 0.00964** is an *arithmetic* correction
+> at the **registered** σ_r (A-P1.1, §9.5, unchanged by A-P4), and the CAL-13 row has **no
+> σ-corrected value at all** because a CAL-13 residual set does not exist — only 8 of the 13 have
+> a single paired CAL-window day (A-P1, §9.2). The all-18 row's correction is the σ one:
+> `0.00686 /km` central, measured on the registered joint form, ⇒ `exp(0.00686 × 341.5)` =
+> **10.41×**. Full derivation, provenance and the complete list of numbers that move: **§9.7**.
 
 Scale reference **only** — `docs/37` residual 3 records that the 0.05 – 0.30 SDR band is
 **UNCITED in this repository**, and per the standing rule an uncited band may not be used to
 pass *or* fail a gate: a basin SDR of 0.15 over a 600 km path implies k = 0.0032 /km; SDR 0.30
-implies 0.0020 /km. These are printed so a reader can see that the 18-station test's 0.00216 /km
-sits *inside* the range that matters and the 13-station test's 0.0104 /km does not. **No
+implies 0.0020 /km. These are printed so a reader can see that ~~the 18-station test's 0.00216 /km
+sits *inside* the range that matters and the 13-station test's 0.0104 /km does not~~. **No
 threshold in §6 is derived from that band.**
+
+> **[WARN] AMENDMENT A-P4, 2026-08-12 — the struck comparison INVERTS at the measured residual
+> sd, and it decides nothing either way.** At the corrected all-18 `k_min` of
+> **0.0066 – 0.0069 /km** the 18-station test sits **ABOVE the whole 0.0020 – 0.0032 /km
+> reference**, where at the registered σ_r it sat inside it (`docs/48` §6.3). The CAL-13 figure is
+> **0.00964 /km** (§9.5), not 0.0104, and is outside the reference on either σ. **This changes no
+> verdict, because that band is UNCITED in this repository and, per the standing rule, may pass or
+> fail nothing** — the sentence's *conclusion* ("no threshold in §6 is derived from that band")
+> is unchanged and is re-affirmed. The inversion is recorded only so that no future reader
+> resurrects the struck clause as support for anything.
 
 > **Consequence, registered:** the deposition test **must** include the 5 evaluation stations.
 > They are scored, never fitted — which is exactly the posture `docs/31` §C4.1 already requires
@@ -347,7 +378,20 @@ r_i = c + k · Lw_i + ε_i          (OLS; r_i from §2, Lw_i from §4.1)
 |---|---|
 | the 95 % station-bootstrap interval for `k` lies **entirely above 0** | **FAIL — the fit is compensating for a missing transport sink** |
 | the fleet median of `D_pair` exceeds **+0.658** (one measured pair-σ, = √2 × 0.465) | **FAIL** — magnitude backstop, fires even if the slope interval is wide |
-| neither fires | **NOT A PASS. Report the bound**: `|k| < k_hi` (the interval's larger absolute end) ⇒ "no first-order channel sink stronger than a factor `exp(k_hi × 348.4)` over the observed 348 km span". At the registered σ_r that bound is ≈ **2.1×** at best. |
+| neither fires | **NOT A PASS. Report the bound**: `|k| < k_hi` (the interval's larger absolute end) ⇒ "no first-order channel sink stronger than a factor `exp(k_hi × 348.4)` over the observed 348 km span". ~~At the registered σ_r that bound is ≈ **2.1×** at best.~~ → **≈ 10× over ~342 km** (§9.7) |
+
+> **[WARN] AMENDMENT A-P4, 2026-08-12 — two corrections to the "neither fires" cell above; NO
+> THRESHOLD IN THIS GUARD IS CHANGED.** (1) The **power figure** is restated: the struck
+> "≈ 2.1× at best" was computed at `σ_r = 0.465` used as a residual sd; at the measured residual
+> sd it is **≈ 9× – 11×, central ≈ 10× over ~342 km** (`k_min` 0.0066 – 0.0069 /km, §9.7).
+> (2) The **comparative is inverted as printed.** `k_min` is a *detection floor*: a sink with
+> `|k| < k_min` is invisible, so the form that is true with the verb **detectable** is *"no
+> first-order channel sink **weaker** than X× … is detectable on this fit set"*. The registered
+> wording pairs *"stronger"* with *"detectable"*, which states the opposite of what the statistic
+> supports; with the verb *excluded* ("no sink **stronger** than X× is consistent with these
+> residuals") the original comparative is correct. **§9.7 settles the reporting form on the
+> `weaker`/`detectable` pairing** and records that the same inverted pairing appears in §9.4 and
+> in `docs/45` §2.3 / G1.2, whose correction is owed to their own owner.
 
 **ACTION on FAIL:** do **not** adopt the fit. Add an **explicit, named** transport sink
 (`SedParams.tau_delivery_days > 0`, or a first-order reach deposition coefficient) and refit.
@@ -595,13 +639,13 @@ What survives and still does useful work:
 | Registered | **2026-08-11**, before any C4 search machinery existed and before any α/β fit |
 | Registered by | the `alpha-guard` agent; process record `docs/agents/journal_alpha-guard.md` |
 | Guards | **G1–G9**, §6; every one with a threshold and a failure action; coverage table §7 |
-| Registered yardsticks | σ_r = **0.465 ln** (estimator disagreement, 32 station-windows); `b_obs` between-station IQR = **0.464**; pair-σ = **0.658 ln** |
+| Registered yardsticks | σ_r = **0.465 ln** (estimator disagreement, 32 station-windows); `b_obs` between-station IQR = **0.464**; pair-σ = **0.658 ln** — ⚠ **σ_r's parenthetical is the whole of what survives: amendment A-P4 (§9.7) retires its REUSE as the per-station model−observation residual sd (measured **1.9618 ln**), and leaves the number, its derivation, the `b_obs` IQR and the pair-σ untouched** |
 | Registered primary estimator | (b) rating flux on all days; (a) reported, non-deciding; **exception G2.2 runs on (a)** |
 | Registered station sets | CAL 13 (`docs/32` §R6 tributary set) for fitting; **all 18 for every residual-structure guard**, the 5 evaluation stations scored and never fitted — ⚠ **the fitting set is SUPERSEDED by amendment A-P1 (§9.2): it is the CAL 8.** The all-18 clause and the never-fit rule are **unchanged** and are re-affirmed by A-P2 (§9.3) |
 | Measured before registration | `Lw` per station (§4.1); power k_min (§4.2); land-class erosion shares (§4.4); unobserved fraction (§4.5); exponent spread (§4.3) — all from read-only reads of `topology.npz`, `_c1_geom.csv`, `urh_*.csv`, the C2 artifacts, and one scratchpad run of `src/mgb_sediment.py` at adopted defaults (248.696 Mt/yr, ledger `exact = True`) |
 | Not evaluable, and why | **above/below the Momposina** — all 18 usable SSC stations lie upstream of the Cauca–Magdalena confluence (`docs/34` §4.2); 801.1 km of channel and 63.9 % of gross erosion lie below the outlet-most station |
 | Sources of every number | `docs/32` §R6 (station classification), `docs/33` §7.3–§7.5 (peak ratios), `docs/34` §3.1/§4.2/§5.1 (observed contrast, nesting, anchors), `docs/35` §5–§6 + §9.2 (proxy, bias, conventions), `docs/37` §2–§5 (the re-run, the residuals, the blinded guard), `docs/23` §13.2 (the embargo) |
-| Amendments | ⚠ **THREE, all dated 2026-08-11 — A-P1, A-P2, A-P3, plus A-P1.1 (the power-table correction P1 requires). See §9.1–§9.6 below.** This cell read `none` until 2026-08-11 while C4 was already under way; that gap is the audit-trail defect `docs/47` §2.4 (D4) recorded, and §9.1 states plainly that the transcription is late |
+| Amendments | ⚠ **THREE, all dated 2026-08-11 — A-P1, A-P2, A-P3, plus A-P1.1 (the power-table correction P1 requires). See §9.1–§9.6 below. Plus A-P4, dated 2026-08-12 (§9.7): σ_r's reuse as a residual sd retired, the level band and the `k` power restated, `docs/47` B5's `docs/42` half enacted.** This cell read `none` until 2026-08-11 while C4 was already under way; that gap is the audit-trail defect `docs/47` §2.4 (D4) recorded, and §9.1 states plainly that the transcription is late |
 
 **Disclosure, per the fix protocol.** No frozen artifact was modified:
 `sim_calibrated_v2/{h2e_drivers.npz, parameters_H2E.csv, q_gauge_H2E.npz}` were opened
@@ -668,7 +712,10 @@ condition number **5,682** (basin-total form still **inf**, §3.1 unchanged); on
 
 > **NOT AMENDED by A-P1, and re-affirmed:** *"**all 18** for every residual-structure guard, the 5
 > evaluation stations scored and never fitted."* A-P1 changes **only** the set that is **fitted**.
-> **G1.2 still runs on all 18 and keeps `k_min` = 0.00216 /km.** Every threshold in §6 is untouched.
+> **G1.2 still runs on all 18 and keeps `k_min` = ~~0.00216~~ /km.** Every threshold in §6 is untouched.
+> ⚠ **A-P4 (§9.7), 2026-08-12:** the *set* is unchanged and re-affirmed a second time; the
+> **number** is not — at the measured residual sd it is **0.0066 – 0.0069 /km (≈ 10× over
+> ~342 km)**. A-P1's substantive claim (G1.2 runs on all 18) does not depend on it.
 
 ---
 
@@ -692,6 +739,12 @@ station in the network** (`docs/32` §R6) and is worth more as the single indepe
 own `k_min` stays **0.02092 /km** instead of **0.00303 /km** — a factor **6.9** in deposition
 detectability *on the fit set*. Both figures are recomputed and confirmed in §9.5.
 
+> ⚠ **A-P4 (§9.7), 2026-08-12: both `k_min` values move; the factor 6.9 SURVIVES, and that is the
+> load-bearing part of this amendment.** At each set's own measured CAL-window residuals the pair
+> becomes **0.0838 /km** (CAL 8) and **0.01210 /km** (CAL 8 + ARRANCAPLUMAS), whose ratio is
+> **6.926** — a **ratio of two σ-scaled numbers, in which σ cancels**. A-P2's cost statement is
+> therefore unchanged in substance. Do **not** "correct" the 6.9.
+
 ---
 
 ## 9.4 — AMENDMENT A-P3 · 2026-08-11 · deposition `k` is FIXED at 0, reported as a bound; **2 free + 1 fixed**
@@ -700,6 +753,12 @@ detectability *on the fit set*. Both figures are recomputed and confirmed in §9
 **Reason:** `k` is **not identifiable on the achievable fit set** (`k_min` 0.02092 /km over its own
 60.4 km ⇒ only a sink stronger than **3.54×** would be detectable). Reporting a fitted `k` would be
 reporting noise with a decimal point.
+
+> ⚠ **A-P4 (§9.7), 2026-08-12: this reason gets STRONGER, not weaker.** At the measured residual
+> sd the CAL-8 figure is **0.0838 /km ⇒ ≈ 173× over 61.5 km** (0.0883 ⇒ 164× on §4.1's printed
+> `Lw`), so the un-identifiability that justifies fixing `k` at 0 is understated here by ≈ 4×.
+> A-P3's decision is re-affirmed. Note also that this sentence pairs *"stronger"* with
+> *"detectable"*, the inverted comparative §9.7 settles.
 
 - **`k` = 0.0 /km, FIXED and not fitted** — `TransportParams.k_dep = 0.0`, `dep_mode = 'per_km'`,
   `tau_channel_days = 0.0`, `SedParams.tau_delivery_days = 0` (`docs/45` §2.3, against
@@ -801,11 +860,22 @@ this document.
 > **MANDATORY POINTER, and it is not an amendment.** Every `k_min` above is **proportional to
 > σ_r = 0.465**, and `docs/47` §2.2 (**D2**) measures the actual between-station residual sd on the
 > CAL 8 at **1.9618 ln (×4.22)**, giving a corrected all-18 `k_min` of **0.0066–0.0069 /km
-> (≈ 10× over 342 km)** and a corrected CAL-8 form of **0.0130 /km**. **σ_r is a registered
+> (≈ 10× over 342 km)** and a corrected CAL-8 form of ~~**0.0130 /km**~~. **σ_r is a registered
 > threshold and this pass does not touch it** — `docs/47` **B5** assigns that repair to a
 > `docs/45` §8 amendment, by its owner. The table above is therefore corrected **at the registered
 > σ_r**, and a reader must carry D2 alongside it. Re-basing the table on a threshold this pass has
 > no standing to change would have been the convenient move and is refused.
+
+> ⚠ **A-P4 (§9.7), 2026-08-12 — the struck `0.0130 /km` is WITHDRAWN, and this pointer's
+> all-18 figures are CONFIRMED.** `0.0130` was transcribed from `docs/47` §2.2 and is
+> **arithmetically impossible as labelled**: `k_min ∝ σ/√Σ(Lw−L̄)²`, so on a fixed station set a σ
+> **4.22× larger** cannot produce a `k_min` **smaller** than the registered 0.02092. `docs/48`
+> §4.3 traced it to the **10-station set that happens to have CAL-window observations, which
+> includes the EVAL station `21237020` ARRANCAPLUMAS** (measured 0.01230 /km; ARRANCAPLUMAS alone
+> supplies 87.6 % of that set's `Σ(Lw−L̄)²`), so a "CAL-8 form" containing it is mislabelled either
+> way. **The correct CAL-8 figure is 0.0838 /km (≈ 173× over 61.5 km).** The all-18
+> 0.0066–0.0069 /km (≈ 10× over 342 km) is independently reproduced (`docs/48` §4.2) and is what
+> A-P4 enacts. B5's `docs/42` half is discharged by §9.7; its `docs/45` half remains owed.
 
 ---
 
@@ -830,3 +900,250 @@ and §4.2's registered σ_r, in a scratchpad script that wrote nothing into the 
 | **F4** | **`docs/47` open item O7** (*"the B4 transcription must pick one and record why"*) is answered by §9.5. | O7 may be **CLOSED**: 0.00964 is correct, `docs/42` §4.2 was wrong, reason recorded. |
 | **F5** | **`docs/47` §2.4 D4** (this transcription unperformed) is discharged by §9.1–§9.5. | D4 may be **CLOSED**. `docs/47` B5 (the σ_r / Π-band repair) is **NOT** discharged and remains open. |
 | **F6** | **`docs/00_INDEX.md`** carries no row for this amendment log, and its status table still describes `docs/42` as unamended. | Add the pointer when the index is next synced. |
+
+---
+
+## 9.7 — AMENDMENT A-P4 · 2026-08-12 · **σ_r's REUSE as a per-station residual sd is RETIRED**; the level band and the `k` power restated
+
+**Written by the `amend-4243-piband` agent; process record
+`docs/agents/journal_amend-4243-piband.md`.** **Source:** `docs/47` §2.2 (**D2**), the finding;
+`docs/48_pi_band_revision.md`, the measurement and the blast radius. This amendment **enacts the
+`docs/42` half of `docs/47` §6.1 repair B5.** Its `docs/45` half — the band replacement, G12's
+decoupling and the corrected `k` wording in `docs/45` §2.3 — is a `docs/45` §8 amendment and
+remains owed to that document's owner. The `docs/43` half is enacted the same day in `docs/43` §7.
+
+**What this amendment does NOT do, stated before anything else, because the temptation is real:**
+it does **not** create, restate, rescale or imply a **materiality bar**. `docs/52` STRUCK
+`0.1644 ln` and replaced it with **no number**; the corrected SEs printed below (0.4775 / 0.6936)
+and the bootstrap half-widths (0.8500 / 1.2833) are **band widths for reporting an interval**, and
+**no session may read any of them as a threshold for deciding whether two numbers differ.** It
+also changes **no threshold in §5 or §6**, alters **no** registered station set, moves **no**
+engine default, and fits nothing.
+
+### 9.7.1 — The defect, stated in one paragraph
+
+§4.2 registers `σ_r = 0.465 ln` and derives it, correctly, as the disagreement between the **two
+independent observed-flux estimators** of `docs/34`: `sd[ln(a/b)] = 0.658` over 32 station-windows,
+so one estimator carries `0.658/√2 = 0.465`. **Neither estimator has seen the model.** The
+quantity the SE of a fitted level and every `k_min` actually require is the sd of
+`r_i = ln(flux_sim_i) − ln(flux_obs_i)` — §2's own residual — whose variance contains observation
+error **plus model error plus genuine between-station heterogeneity**. It is bounded **below** by
+the observation term and is never equal to it. Substituting one for the other is **not a
+conservative approximation**; it is an error in one known direction, and `docs/47` §2.6 item 3 has
+already measured the heterogeneity term separately (**I² 96 – 99.2 %, τ 2.03 – 3.40× per
+station**).
+
+### 9.7.2 — Which uses survive and which do not, **by name**
+
+| use of `0.465` / `0.658` in this document | status under A-P4 | why |
+|---|---|---|
+| **σ_r = 0.465 as the estimator-disagreement statistic** (§4.2 derivation; §9's yardstick cell) | **VALID — unchanged, still registered** | `0.658/√2` is correct for what it measures. It is the **reuse**, not the number, that is retired. |
+| **pair-σ = 0.658 ln**, and **G1.1's `median D_pair > +0.658` firing threshold** (§6 G1.1) | **VALID — unchanged** | a *firing* threshold: too tight makes the guard **more** trigger-happy, i.e. it errs safe (`docs/47` R4). |
+| **G8's `range across months > 0.465 ln`** (§6 G8) | **VALID — unchanged** | same; a firing threshold erring safe. |
+| **`b_obs` between-station IQR = 0.464** (§4.3) | **UNAFFECTED** | independently measured from `ssc_rating_fits.csv`; its near-equality with 0.465 is a coincidence of value, not a shared derivation. |
+| **σ_day = 0.809 ln** and everything built on it, incl. **SE(β) = 0.0199 / half-width 0.039** | **UNAFFECTED** | built on the rating residual, not on σ_r (`docs/47` §2.2, R4 — which **narrows** the original finding's word *"every"*). |
+| **`0.465/√n` as the SE of a fitted level** (`docs/43` §3.2; `docs/45` §2.2/§3.1/§5.3/§6.2/§7.1; `docs/37`:1158) | **RETIRED — INVALID** | wrong error term (§9.7.1). |
+| **`k_min = 1.96·σ_r/√Σ(Lw−L̄)²`** — every cell of §4.2's power table, §9.5's recomputation, §6 G1.2's "≈ 2.1× at best", §9.3's and §9.4's CAL-8 figures | **RETIRED as to the NUMBER; the FORMULA is unchanged and re-affirmed** | the formula is right and is what makes the correction exact and linear; only the σ substituted into it was wrong. |
+| **ratios between two σ_r-scaled `k_min` values** — §9.3's factor **6.9**, §9.5's **2.2×** and **9.7×** | **SURVIVE UNCHANGED** | σ cancels. Measured: 0.0838/0.01210 = **6.926**. **Do not "correct" these.** |
+| **`0.1644 ln` as a materiality bar** (`docs/46`, its bar sites) | **already STRUCK, not rescaled** (`docs/52`) | not this document's number and not re-derived here. A-P4 offers no replacement. |
+
+### 9.7.3 — The measurement, and its reproduction gates
+
+Carried from `docs/48` §2, which reproduced it from scratch behind two gates that both passed
+**before** any statistic was computed — basin gross hillslope erosion **299.5387088 Mt/yr** against
+`docs/37` A1.3.4's 299.5387, mass ledger `exact = True`; CAL-8 paired SSC + observed-Q day count
+**3,266** against `docs/45` §3.6 — and which reproduced §4.1's model up-areas at **all 18**
+stations, so the station→minibacia mapping is not in question.
+
+| quantity, registered CAL window 2012-01-01 … 2014-12-31, CAL 8 | registered | **measured** | factor |
+|---|---:|---:|---:|
+| per-station residual sd, primary estimator **(b)** | 0.465 ln | **1.9618 ln** | **×4.22** |
+| per-station residual sd, estimator (a) | 0.465 ln | **1.3506 ln** | ×2.90 |
+| SE of the fleet-mean level, est (b) | **0.1644 ln** | **0.6936 ln** | ×4.22 |
+| SE of the fleet-mean level, est (a) | 0.1644 ln | **0.4775 ln** | ×2.90 |
+| 95 % normal band on the level, est (b) | ±38 % (×0.724 – ×1.380) | **×0.257 – ×3.894** | log width ×4.22 |
+
+**Reproduced independently by this pass** (`python3.10`, scratchpad, nothing written into the
+repository): `0.465/√8` = **0.16440232662587229**; `1.9618/√8` = **0.6936010416658844**;
+`1.3506/√8` = **0.4775092093352755**; `1.9618/0.465` = **4.2189247311827955**;
+`exp(±1.96 × 0.1644)` = **0.7245 – 1.3802**; `exp(±1.96 × 0.6936)` = **0.2568 – 3.8941**. The
+mechanism is exact rather than approximate, which is why the correction is a multiplication:
+`1.96·σ_r/√Σ(Lw−L̄)²` on §4.1's own printed `Lw` column reproduces this document's registered
+`k_min` to the printed digits (all-18 **0.002157** vs 0.00216; CAL-8 **0.02092** vs 0.0209).
+
+**The scale of the underlying heterogeneity, printed because it is the reason the band is wide and
+not a defect that a fit can remove:** per-station `obs/sim` on the CAL window spans
+**0.0099 – 4.077**, a factor of **412** (`exp(6.0214)` = 412.16, reproduced this pass). **The band
+is invariant to the fit and the point is not** — fitting Π removes a constant from every `r_i`,
+which moves the mean toward 0 and leaves the sd, hence the SE, hence the band, untouched.
+
+### 9.7.4 — The `k` bound, restated at its corrected power
+
+> ## THE CORRECTED SENTENCE — registered reporting form
+>
+> ```
+> k_min = 0.0066 - 0.0069 /km      (all 18, G1.2's registered joint form, measured residual sd)
+> ```
+> > **"No first-order channel sink *weaker* than ≈ 10× over ~342 km is *detectable* on this fit
+> > set."**  *(equivalently: `|k| < 0.0069 /km` cannot be distinguished from zero)*
+>
+> **Registered: 0.00216 /km ⇒ 2.12× over 348.4 km. Corrected: ≈ 9× – 11×, central ≈ 10×.**
+
+**Provenance and the exact spread, so the interval is auditable.** `docs/48` §4.2 fits G1.2 in the
+**joint** form this document's own G1 note 3 requires (`Lw` + G3.1's class shares + G4.1's
+`ln LS̄`, one multiple regression) on all 18, on recomputed predictors: `+ Lw` alone
+**0.00666 /km**, `+ shG, shB` **0.00657**, **the registered joint form 0.00686**; and by §4.2's own
+univariate formula on **§4.1's printed `Lw` table** **0.00694** (joint-form sd) / **0.00658**
+(intercept-only sd). So the constructions span **0.00657 – 0.00694 /km**; `docs/47` §2.2 prints the
+interval as **0.0066 – 0.0069** and `docs/48` §4.2's corrected sentence as **0.0065 – 0.0069**.
+**Both are the same measurement rounded differently; this amendment registers `0.0066 – 0.0069`
+with `0.00686` as the central value and records the construction span above so the two printings
+cannot be mistaken for two results.** Survival contrasts reproduced this pass:
+`exp(0.00686 × 341.5)` = **10.409**, `exp(0.0066 × 342)` = 9.68, `exp(0.0069 × 342)` = **10.589**,
+`exp(0.00694 × 345.8)` = **11.022**, `exp(0.00658 × 345.8)` = **9.731**.
+
+**The comparative, settled.** `k_min` is a **detection floor**. With the verb *detectable* the true
+comparative is **weaker** (a sink with `|k| < k_min` leaves no visible trace); with the verb
+*excluded* it is *stronger* ("no sink stronger than X× is consistent with these residuals"). §6
+G1.2, §9.4 and `docs/45` §2.3 all pair **"stronger"** with **"detectable"**, which asserts the
+opposite of what the statistic supports. **A-P4 registers the `weaker` / `detectable` pairing as
+the reporting form for this document**; the identical repair in `docs/45` §2.3 and its G1.2 row is
+owed to `docs/45`'s owner (`docs/48` §4.2 flags the same defect).
+
+**What the corrected bound means for the SDR = 1.0 claim (A-P3, G5 option 2), stated so it is not
+over- or under-read.** The claim is unaffected **in form** and **weakened in evidence**: the guard
+that would betray a missing sink cannot see anything weaker than ≈ 10× over the basin's longest
+observed path, against ≈ 2.12× as registered. The coefficient moves **×3.18** (0.00216 → 0.00686)
+and the survival contrast the registered sentence actually prints moves **×4.90** (2.12 → 10.41).
+**The claim stands as a claim. It stands on less.**
+
+### 9.7.5 — EVERY PUBLISHED NUMBER THAT CHANGES
+
+Rows are grouped by disposition. **"ENACTED here"** means this amendment applies it, with the
+in-place strike-through or pointer listed in §9.7.7. **"Owed"** means the number lives in a file
+this pass does not own; the correction is named, not applied. **"No corrected value"** means the
+number is wrong and no replacement is offered — those rows are the honest core of this table.
+
+**(A) The level band and its derivatives**
+
+| # | document · section | old value (as published) | new value |
+|---|---|---|---|
+| 1 | `docs/43` §3.2, Π row (:191) | SE = `0.465/√8` = **0.1644 ln = ±38 % at 95 %** (0.724× – 1.380×) | SE **0.4775** (est a) / **0.6936** (est b); band = the **station bootstrap**, `Π̂ × [0.29, 3.73]` — **ENACTED 2026-08-12 in `docs/43` §7, amendment 1** |
+| 2 | `docs/43` §3.2, Π row (:191) | *"13 stations would have given **±28.8 %**"* | **NO CORRECTED VALUE.** The 13-station residual set does not exist — only 8 of the 13 have a paired CAL-window day at all (A-P1). Struck, not restated — **ENACTED in `docs/43` §7** |
+| 3 | `docs/43` §1.2, lens-3 row (:52) | *"a **±38 %** 95 % band"* | as row 1 — **ENACTED in `docs/43` §7** |
+| 4 | `docs/45` §2.2 (:124), §3.1 (:252), §5.3 (:494), §7.1 card (:575) | **0.1644 ln = ±38 %** | as row 1 — **OWED to `docs/45` §8** (its owner) |
+| 5 | `docs/45` §6.2 item 2 (:541) | *"**The level's band is ±38 %** … Every Π and every load is quoted **with that band**"* | **the mandatory sentence itself changes.** `docs/47` §2.2 notes this is the one site carrying **no hedge** — **OWED to `docs/45` §8** |
+| 6 | `docs/45` §4.2, **G12** (:445) | *"the registered 95 % level band of **±0.322 ln (±38 %)**"* | **DECIDE, DO NOT RESCALE.** Recommended (and adopted by `docs/43` §7 amendment 1 for its own purposes): keep **0.644 ln full width as a standalone registered fragility threshold**, decoupled from the level band, recording that it was originally derived from `σ_r/√8`. Rescaling it switches a **firing** guard off — **OWED to `docs/45` §8** |
+| 7 | `docs/37`:1158 (A2.4) | SE = `0.465/√8` = **0.1644 ln = ±38 %** | as row 1 — **OWED to `docs/37`'s owner** |
+| 8 | `docs/46` (its bar sites) | **0.1644 ln** as a materiality bar and Branch A/B discriminator | **already STRUCK, not rescaled** (`docs/52`). **No number replaces it.** Nothing owed here, and nothing may be reconstructed |
+
+**(B) Every `k_min` and every survival contrast** — all linear in σ_r
+
+| # | document · section | old value | new value |
+|---|---|---|---|
+| 9 | **`docs/42` §4.2 table and §9.5's corrected table** — all-18 G1.2 | **0.00216 /km ⇒ 2.12×** over 348.4 km | **0.0066 – 0.0069 /km (construction span 0.00657 – 0.00694; central 0.00686) ⇒ ≈ 9× – 11×, central ≈ 10× over ~342 km** — **ENACTED here** |
+| 10 | **`docs/42` §4.2 / §9.3 / §9.4 / §9.5** — CAL-8 form | **0.02092 /km ⇒ 3.54×** over 60.4 km | **0.0838 /km ⇒ ≈ 173×** over 61.5 km (**0.0883 ⇒ 164×** on §4.1's printed `Lw`, span 57.8 km) — **ENACTED here** |
+| 11 | **`docs/42` §9.5's MANDATORY POINTER** | *"a corrected CAL-8 form of **0.0130 /km**"* | **WITHDRAWN.** Arithmetically impossible as labelled; it is the **10-station** CAL-window set including the EVAL station ARRANCAPLUMAS (measured **0.01230 /km**). Correct CAL-8 value **0.0838 /km** — **ENACTED here** (struck in place) |
+| 12 | `docs/42` §4.2 / §9.5 — CAL-13 | ~~0.0104~~ → **0.00964 /km ⇒ 2.83× / 2.90×** (A-P1.1) | **NO σ-CORRECTED VALUE.** A-P1.1's 0.00964 stands **at the registered σ_r** and is *not* contradicted here; a CAL-13 residual set does not exist, so the row cannot be σ-corrected. It is already **SUPERSEDED by A-P1**. **Flag, do not recompute** — the strike-through F1 asked for is **ENACTED here** |
+| 13 | `docs/42` §4.2, §9.5 — 22 nested pairs | **0.00119 /km ⇒ 1.51×** | **NO CORRECTED VALUE.** The pair list is printed in no document and `Σ(ΔLw − ΔL̄)²` is not reconstructible from what is published. **Open item P2** — **flagged here** |
+| 14 | `docs/42` §9.3 / §9.5 — CAL 8 + ARRANCAPLUMAS | **0.00303 /km ⇒ 2.87× / 2.88×** | **0.01210 /km ⇒ 62.3×** over 341.5 km, on that 9-station set's own CAL-window residuals (sd 1.8361). **The factor 6.9 SURVIVES**: 0.0838/0.01210 = **6.926** — **ENACTED here** |
+| 15 | `docs/42` §6 G1.2, "neither fires" cell | *"At the registered σ_r that bound is ≈ **2.1×** at best"* | **≈ 10× over ~342 km**, and the comparative corrected to *weaker/detectable* — **ENACTED here** (power figure only; **the guard's thresholds are untouched**) |
+| 16 | `docs/43` §3.2, `k` row (:193) | **0.0209 ⇒ 3.54×**, **0.00303 ⇒ 2.87×**, **0.00216 ⇒ 2.12×** | rows 9, 10, 14 — **ENACTED 2026-08-12 in `docs/43` §7** |
+| 17 | `docs/45` §2.2 (:126), §2.3, §4.2 G1.2 (:429), and (:162), (:202), (:205) | the same `k_min` set and the *"no sink stronger than X× … detectable"* wording | rows 9, 10, 14 + the comparative — **OWED to `docs/45` §8** |
+| 18 | `docs/42` §4.2's scale-reference sentence | *"the 18-station test's 0.00216 /km sits **inside** the range that matters"* | **INVERTS**: at 0.0066 – 0.0069 /km it sits **above** the whole 0.0020 – 0.0032 /km reference. **The band is UNCITED and passes or fails nothing either way**; the sentence's conclusion is unchanged — **ENACTED here** |
+| 19 | `docs/37`:1155 — the **2.2×** and **9.7×** ratios; `docs/42` §9.3's **6.9** | unchanged | **THESE SURVIVE.** They are ratios of two σ-scaled `k_min` values; σ cancels. Recorded so they are not "corrected" by mistake |
+
+**(C) Numbers that are wrong with no replacement offered — the open-item rows**
+
+| # | document · section | number | disposition |
+|---|---|---|---|
+| 20 | `docs/43` §3.2 (:194); `docs/45` **G3.3** | minimum detectable class-C error **≈ ×4.2** (CAL 8) / **≈ ×2.9** (all 18) | **NO CORRECTED VALUE — `docs/47` open item O8, and it stays open.** Three passes have now produced three answers (×4.2/×2.9 registered; ×8.2/×3.2 `journal_refute-gate-logic`; ×5.58/×3.53 at the registered σ and ×251.6/×57.9 at the measured σ on `docs/48` §6.2's stated design matrix). **The only quotable statement is qualitative: they are σ_r-scaled and the registered figures are too optimistic by roughly the σ_r factor.** Do not invent a number — **flagged in `docs/43` §7** |
+| 21 | `docs/42` §4.1's `Lw` column and land-class erosion shares | IRRA 265.2, BANANERA 26.9, CAPITANEJO 60.4, CARRASPOSO 39.0, ARRANCAPLUMAS 348.4; BANANERA 11.9/12.5/75.6 %, CAPITANEJO 2.4/37.9/58.4 % | **DO NOT REPRODUCE** at the adopted `cp_revision` (`docs/48` §2.5: IRRA **289.14**, +9.0 %; BANANERA **24.19**; shares move because `docs/41`'s ×1.2043 `C` revision is not uniform across classes). Probable cause: §4.1 was measured at the **prior** `cp_revision` — §4.5 prints basin total **248.7 Mt/yr**. **Immaterial to every conclusion here** (`k_min` moves ≤ 2 % between the two tables, and §9.7.4 reports both). **A recomputation is OWED** — flag F8. **Not corrected here: this pass has not measured it.** |
+
+### 9.7.6 — What does NOT change, restated in one place
+
+σ_r = **0.465** as an estimator-disagreement statistic · the pair-σ **0.658** · the `b_obs` IQR
+**0.464** · σ_day **0.809** and SE(β) **0.0199** · **every threshold in §5 and §6** (G1–G9),
+including G1.1's `+0.658`, G8's and G11's `0.465 ln` · the β band **0.45 – 0.65** · G2.2's +25 % ·
+G7's +10 % · the registered primary estimator (b) and the G2.2 exception on (a) · §3's
+non-separability finding · the registered station sets as amended by A-P1/A-P2 · A-P3's `k` = 0 ·
+the `k_min` **formula** · §4.3 – §4.5 · §7 · §8 · G12's **0.644 ln** full width **as a standalone
+fragility threshold** · every ratio in row 19.
+
+> **CAUTION, carried from `docs/48` §5.4 and not a correction.** `docs/47` R4 is right that a
+> threshold set ~4× too tight makes G8 and G11 **more** likely to fire, which is the safe
+> direction for a guard. But the measured residual scale makes firing near-certain: at a
+> per-station residual sd of 1.35 – 1.96 ln, a between-month or between-region difference of
+> 0.465 ln is well inside ordinary sampling noise at n = 8. **A guard that fires by construction
+> is not a test either.** G8 and G11 are frozen thresholds, this amendment has no standing to
+> touch them and does not, and **no number is proposed**. It is recorded so that a G8 or G11 FAIL
+> is read for what it is.
+
+### 9.7.7 — In-place corrections applied to the body by this pass (§9.6 **F1**'s remedy, discharged)
+
+`docs/42` §9.6 flag **F1** recorded that §4.2's body still printed the retired numbers because
+that pass could write only in §9, and prescribed *"the `docs/37` A2.7 precedent: strike-through +
+pointer in place, nothing deleted"*. **Applied, at these sites, nothing deleted, every original
+string still readable inside its strike-through:**
+
+| site | what was applied |
+|---|---|
+| §4.2, the REGISTERED NOISE FLOOR blockquote | inline `[WARN] A-P4` block: the phrase *"per station log-residual"* retired, the number kept |
+| §4.2, the power table (CAL-13, all-18, 22-pair rows) | strike-through + corrected values in the cells; `[WARN] A-P4` block under the table separating the **arithmetic** correction (0.0104 → 0.00964, A-P1.1) from the **σ** correction (all-18) |
+| §4.2, the scale-reference paragraph | *"sits inside the range that matters … 0.0104 /km does not"* struck; `[WARN] A-P4` block recording the inversion **and** that the band is UNCITED and decides nothing |
+| §6 **G1.2**, "neither fires" cell | *"≈ 2.1× at best"* struck → ≈ 10×; `[WARN] A-P4` block below the table with the comparative correction. **No threshold cell touched** |
+| §9's registration table — *Registered yardsticks* | pointer appended to the σ_r cell (reuse retired, number kept) |
+| §9's registration table — *Amendments* | A-P4 added to the list |
+| §9.2's *"keeps `k_min` = 0.00216 /km"* re-affirmation | number struck + pointer; A-P1's substantive claim (all 18) untouched |
+| §9.3's factor-**6.9** paragraph | pointer: both endpoints move, **the ratio survives**, do not correct the 6.9 |
+| §9.4's *"only a sink stronger than 3.54× would be detectable"* | pointer: the reason for fixing `k` at 0 gets **stronger** (≈ 173×), plus the comparative flag |
+| §9.5's MANDATORY POINTER | **`0.0130 /km` struck** and withdrawn, with the trace to the 10-station ARRANCAPLUMAS set; the all-18 figures confirmed |
+
+### 9.7.8 — Flags and open items
+
+| # | flag / open item | disposition |
+|---|---|---|
+| **F1** (§9.6) | §4.2's body still printed 0.0104 / 3.06× | **DISCHARGED** by §9.7.7 |
+| **F7** *(new)* | **`docs/42`:15, :299 and :472 print the deposition-free α band `6.83 – 8.73`**, which `docs/47` §2.5 **C1** measures as a **prior-`cp_revision`** number: at the adopted C it is `11.8 × {144,184}/299.5387088405831` = **5.673 – 7.248** (reproduced by this pass), which is **disjoint** from the reading-B band 7.92 – 8.86 (gap **0.672** in α). **NOT corrected here** — it is not a σ_r number and belongs to a different repair; A-P4 will not smuggle an unrelated enactment into its own slot. | **OWED as a further `docs/42` amendment.** The parallel correction to `docs/43` §3.4 **is** enacted 2026-08-12 in `docs/43` §7 (amendment 5), with `docs/47` **O12** recorded as still open |
+| **F8** *(new)* | **§4.1's `Lw` table and land-class shares do not reproduce at the adopted `cp_revision`** (row 21; `docs/48` §2.5, its open item P3). G3.1's regressors are read off that table. | **OWED to this document's owner:** one recomputation at the adopted `cp_revision`. Immaterial to A-P4 (`k_min` moves ≤ 2 %; both tables reported) |
+| **F9** *(new)* | **`docs/45` §8 read *"Empty at registration"* when this pass read it.** B5's `docs/45` half (rows 4, 5, 6, 17), the corrected `k` wording, G12's decoupling and `docs/47` §5.5's pre-fit-profile disclosure are all owed there. A `docs/43` amendment written the same day **names** that amendment rather than pre-empting it. | **OWED to `docs/45`'s owner.** If the two disagree, `docs/45` §8 wins on its own §2–§6 and `docs/43` §7 records the conflict — see `docs/43` §7 amendment 1 |
+| **P1** (`docs/48`) | **Which estimator's band is binding** — §9 registers **(b)** as primary; `docs/45` §7.1 registers the objective on **(a)**. Their bootstrap bands differ by a factor of **1.51** in log width (2.5666 vs 1.7000 ln). | **OPEN.** A `docs/45` §8 decision. `docs/43` §7 adopts the **union** as a reporting convention and says so |
+| **P2** (`docs/48`) | The **22-pair `k_min` 0.00119 /km** cannot be corrected (row 13). | **OPEN** |
+| **O7** (`docs/47`) | the 0.0096-vs-0.0104 discrepancy | **CLOSED by §9.5** (0.00964). A-P4 does not reopen it and is written to be consistent with it |
+| **O8** (`docs/47`) | class-C detectability ×4.2 / ×2.9 (row 20) | **OPEN, and this amendment deliberately adds no fourth number** |
+| **O12** (`docs/47`) | whether C1's now-disjoint bands change the "doubly load-bearing" G5 conclusion | **OPEN.** See F7 and `docs/43` §7 amendment 5 |
+| **P5** (`docs/48`) | the band is **β-dependent** — CAL-8 est-(b) sd rises monotonically 1.875 → 2.100 across the registered β box | **OPEN, and it is why the replacement is registered as a PROCEDURE, not as a frozen pair of numbers.** C4 recomputes it on its own adopted fit's residuals |
+
+### 9.7.9 — Disclosure
+
+- **Files written by this pass:** `docs/42_c4_guards.md` (this §9.7 plus the §9.7.7 in-place
+  pointers), `docs/43_c3_c4_gate.md` (its new §7), and
+  `docs/agents/journal_amend-4243-piband.md`. **Nothing else.** `docs/35`, `docs/37`, `docs/45`,
+  `docs/46`, `docs/47`, `docs/48`, `docs/51`, `docs/52`, `docs/53` were **read and not edited**.
+- **No threshold in §5 or §6 was altered**; the only §6 edit is the strike-through of a **reported
+  power figure** in G1.2's "neither fires" cell plus a pointer block beside the table, both named
+  in §9.7.7. No registered station set, estimator, box or parameter count moved.
+- **No engine default was changed** — `ls2d_column`, `cp_revision`, `volume_convention`,
+  `k_unit_system` and every `SedParams`/H2E field untouched. **No frozen artifact was opened for
+  writing** (`sim_calibrated_v2/*` was not opened at all by this pass). **No calibration or fit was
+  launched, no simulation was run, no `KGE_ln` was evaluated against the `docs/45` α box, and no
+  α̂ was quoted, provisional or not.** No git command was run. Nothing is backdated.
+- **What this pass measured itself**, in a scratchpad script that wrote nothing into the
+  repository: the SE arithmetic, the band factors, the G12 half-width and LOO identity, the
+  survival contrasts at every published `k_min`, the 6.926 ratio, the CAL-13 contrasts at 0.00964,
+  and `docs/47` C1's α endpoints at the adopted C. Every one is printed with its input above or in
+  `docs/agents/journal_amend-4243-piband.md`. **Everything else is carried from `docs/47` or
+  `docs/48`, cited in place, and is not re-derived.**
+- **One thing this pass checked and it matters for anyone applying the replacement band:** the
+  bootstrap **band on the level multiplier is the RECIPROCAL of the bootstrap CI on the residual**.
+  `exp(−0.8279), exp(+0.8721)` = 0.4370, 2.3919 does **not** match `docs/48` §3.3's printed band
+  ×0.418 – ×2.289; `exp(−hi), exp(−lo)` = **0.41807, 2.28851** does, and est (b)
+  `exp(−1.2503), exp(+1.3163)` = **0.28642, 3.72960** matches ×0.286 – ×3.730. `docs/48`'s printed
+  bands are therefore **correct**, and the sign flip is **implicit** in them: `r_i = ln(sim/obs)`,
+  so a positive residual means the level must come **down**. Applying the CI without the flip
+  inverts the band. **Stated here because §9.7.5 row 1 hands that band to two other documents.**
+- **Uncited quantities are named and pass or fail nothing:** the 0.05 – 0.30 SDR band and its
+  implied `k ≈ 0.0020 – 0.0032 /km` (row 18) and the ENSO-neutrality of CAL 2012–14. **No
+  plausibility band was invented, and no materiality bar was created, restated or implied**
+  (`docs/52`).
+- **The `docs/23` §13.2 yield embargo is in force.** No t/km²/yr appears in this amendment.

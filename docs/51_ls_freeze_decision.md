@@ -16,7 +16,10 @@ No default moved, no variant adopted, no engine run, no fit, no git command. The
 > ## THE FOUR ANSWERS
 >
 > **1 — The corrected bracket.** `f_LS ∈ [0.25146, 0.43194]` **erosion-weighted**
-> (`[0.24468, 0.42148]` area-weighted proxy) ⇒ **our LS is 2.3151× – 3.9768× the source level**.
+> (~~`[0.24468, 0.42148]` area-weighted proxy~~ → **`[0.24468, 0.42136]`**, see **§9 amendment 1,
+> 2026-08-12**: the upper end's area-weighted proxy was quoted on the wrong area support; the
+> erosion-weighted bracket, which decides, does not move) ⇒ **our LS is 2.3151× – 3.9768× the
+> source level**.
 > This **supersedes ×0.333 – ×0.421 and "2.37× – 3.00×"** and it is *identical* to what
 > `docs/47` §4.3 already registered — today's work **confirms it, it does not move it**. Both
 > ends are corrected; neither is uncorrectable. **And the interval is not an uncertainty over
@@ -129,12 +132,13 @@ other conditions, including §3.3's full stratified report, are not all discharg
 ### 2.1 The replacement statement
 
 > **`f_LS` ∈ [0.25146, 0.43194] erosion-weighted ⇒ `1/f_LS` ∈ [2.3151, 3.9768].**
-> Area-weighted proxy: **[0.24468, 0.42148]**, measured **2.5 % low** (`docs/47` §3.1 R7).
+> Area-weighted proxy: ~~**[0.24468, 0.42148]**~~ → **[0.24468, 0.42136]** (**§9 amendment 1,
+> 2026-08-12**), measured **2.5 % low** (`docs/47` §3.1 R7).
 > This **replaces ×0.333 – ×0.421** and **"our LS is 2.37× – 3.00×"** everywhere they appear.
 
 | | published (`docs/37` §4 cand. 0, `docs/46` §1) | **corrected** | what moved it |
 |---|---|---|---|
-| upper end (`f` nearest 1) | ×0.421 | **×0.43194** ero · ×0.42148 area | proxy→exact only (`|ln|` 0.0248). **Defect A: 0.0036** |
+| upper end (`f` nearest 1) | ×0.421 | **×0.43194** ero · ~~×0.42148~~ **×0.42136** area (**§9 amd 1**) | proxy→exact only (`|ln|` 0.0248). **Defect A: 0.0036** |
 | lower end | ×0.333 | **×0.25146** ero · ×0.24468 area | Defect B's resolution (`|ln|` 0.307) |
 | gap `1/f` | 2.37× – 3.00× | **2.3151× – 3.9768×** | |
 | ln width | 0.2345 | **0.5410** — **2.31× wider** | |
@@ -160,8 +164,17 @@ p. 98 cap `a_in → 0`, so eq. 13 degenerates to `L = (D/(22,13·Xdir))^m` — t
 two statements composed, not a choice made here (`docs/47` §4.3's caveat, carried).
 
 **Cross-check I ran myself:** the two erosion/area pairs must be consistent with `docs/47` R7's
-separately measured proxy bias. `0.43194418/0.42147514 = 1.024839` (R7: 1.0251) and
+separately measured proxy bias. ~~`0.43194418/0.42147514 = 1.024839` (R7: 1.0251)~~ and
 `0.25146/0.24467901 = 1.027714` (R7: 1.0278). **Consistent to 4 s.f.**
+
+> **⚠ AMENDMENT 1, 2026-08-12 — the struck ratio is restated at §9.** The upper endpoint's
+> `f_area` was taken from the **engine-URH-area** support (`ls_defect_a.json`), not from the
+> per-cell basin support `docs/46` §3.3 defines. Corrected:
+> `0.43194417543884817 / 0.42136300143291305 = ` **1.025111777659529** against R7's 1.0251 —
+> the correction makes this cross-check **22× better**, |diff| 1.18e-05 instead of 2.61e-04.
+> The DG pair is unchanged (it was already on the right support). **Nothing else in §2.2 moves:
+> both engine loads, both `f_ero` values and the 15-significant-figure reproduction of the
+> published ×0.421 row all stand as written.**
 
 ### 2.3 What the interval **is**, and what it is not
 
@@ -174,7 +187,18 @@ is on p. 47 in print. Therefore:
   `docs/35` §9.3.1, `docs/37` §4 candidate 0 and `docs/43` §1.4 all quote it and it must stay
   reproducible;
 - **the span between them is the `L`-form lever**, exactly: `ln(0.43194/0.25146) = 0.5410` =
-  `−ln 0.5807`, the `L`-form ratio *inside* the source formulation.
+  ~~`−ln 0.5807`~~, the `L`-form ratio *inside* the source formulation.
+
+> **⚠ AMENDMENT 2, 2026-08-12 — the struck identity does not hold, and §9 amendment 2 records
+> why.** `−ln(0.580685) = 0.543546837831505` against `ln(0.43194/0.25146) = 0.5410027585442313`;
+> the gap is **0.0025440792872737372 ln**. `0.5410` pairs with
+> `exp(−0.5410027585442313) = ` **0.5821641894707599**, not with 0.580685. Both constituents are
+> separately true on **different area/erosion supports** — 0.5410 is the **erosion-weighted** span
+> and 0.580685 is the **area-weighted** `L`-form ratio inside the source formulation, whose own
+> span is `ln(0.42136300143291305/0.2446790094097074) = ` **0.5435475125003637**. The corrected
+> reading: *the erosion-weighted span 0.5410 = −ln 0.58216, and the area-weighted span 0.54355 =
+> −ln 0.580685.* **The bullet's conclusion — that the span IS the `L`-form lever, not an
+> uncertainty band — is unaffected.**
 
 **This is a statement about what the source says, not an adoption.** `docs/46` §4 owns the
 adoption and this document may not make it. But the freezing session must know that the object it
@@ -507,3 +531,230 @@ C4.3; 7–9 are cheap verifications that are **not** blockers and are labelled a
   and stops.
 - **The LS level remains UNVALIDATED** (`docs/42` G4.2). Nothing here validates it; §1 raises the
   *provenance* grade of four levers to CITED, and **cited is not validated** (`docs/37` A1.6).
+
+---
+
+## 9 — Amendment slot — **OPEN from 2026-08-12**
+
+*Created 2026-08-12 by the `defect-farea-amend` session (process record:
+`docs/agents/journal_defect-farea-amend.md`), because this document had no amendment slot and it
+is **append-only**: nothing above is deleted, renumbered or rewritten. Each amendment below strikes
+its superseded string at the body site with a pointer here, so the original sentence stays
+readable and the superseded number stays identifiable wherever else it is still in print.*
+
+### Amendment 1 — 2026-08-12 — **`f_area(V4)` was quoted on the wrong area support. Corrected to 0.42136300143291305.**
+
+**What was wrong.** §1's four-answers box, §2.1's replacement statement, §2.1's table row and
+§2.2's cross-check all print the upper endpoint's area-weighted proxy as **×0.42148 /
+0.42147514**. That number is **not** `f_area` as `docs/46` §3.3 defines it.
+
+**The registered definition, verbatim** (`docs/46` §3.3, frozen):
+
+> `f_area(V) = basin area-weighted mean of LS(V) / basin area-weighted mean of LS(V0)   [the PROXY]`
+
+and `docs/46` §1 fixes the support: the levels were *"Measured 2026-08-11 … on all **30,235,916**
+basin cells at 90 m, with a harness that reproduces our own `ls2d_hs` area-weighted mean
+**39.812** bitwise."* **"Basin area-weighted mean" is therefore the per-cell basin mean.**
+
+**The correct value, at full precision:**
+
+> ## `f_area(V4)` = **0.42136300143291305**
+> = 16.775413430326214 / 39.812260149274394, over the **30,235,916** basin DEM cells at 90 m,
+> basin area **256,702.3554292511 km²**. `1/f_area(V4)` = **2.3732506095678505**.
+
+**Every defensible weighting, recomputed 2026-08-12** (read-only; `urh_ls2d_variants.csv`
+sha256 `81d2376ac11978391612bfe39483113b321c327752392fba10e5d3e91471ddc0` read before use and
+re-hashed unchanged after, together with `urh_ls2d.csv`, `minibacia_ls2d.csv` and
+`sim_calibrated_v2/h2e_drivers.npz`):
+
+| support / weighting | `f_area(V4)` | rel. to the registered value |
+|---|---|---|
+| **per-cell basin, 30,235,916 cells** — `ls2d_variants_summary.json:variants.V4_buarque_2015.ratio_to_V0` | **0.42136300143291305** | — **REGISTERED** |
+| same, by an independent script — `ls2d_defect_b.json:decomposition.V4_over_V0` | 0.42136300143291344 | +9.2e-16 |
+| same, recomposed from the three elevation strata (`strata_area_km2` × the strata means) | 0.4213630014329133 | +6e-16 |
+| `urh_ls2d_variants.csv` weighted by its own `area_km2` (32,782 rows, 251,723.50713639997 km²) | 0.4213519856784954 | −2.61e-05 |
+| `urh_ls2d_variants.csv` weighted by `n_cells` | 0.42136472954221804 | +4.10e-06 |
+| `urh_ls2d_variants.csv` weighted by `area_frac` | 0.42161856467208547 | +6.07e-04 |
+| **engine `urh_fractions.csv` × `minibacias.csv` areas, 32,782 units, 257,096.93 km²** — `ls_defect_a.json:variants.V4_buarque_2015.f_area_urhfrac_areas` | **0.4214751420286394** | **+2.661377371648382e-04** — *the number this document printed* |
+| *(inadmissible, printed to exclude it)* unweighted mean of per-unit ratios | 1.412443933484921 | — |
+| *(inadmissible)* ratio of unweighted means | 0.4273873489571721 | — |
+
+**0.42147514 IS reconstructible — bitwise, and it is not an arithmetic error.** It is
+`scripts/c3/ls_erosion_weights.py`:166,
+`float(np.sum(a * j[c]) / np.sum(a * v0))` with `a = geom.cell_area_km2` from
+`src/mgb_sediment.load_geometry` — i.e. the **engine's own URH-fraction areas**, whose basin total
+is 257,096.93 km² against the DEM cell pass's 256,702.36 km². A 2026-08-12 re-run reproduced all
+eight of `ls_defect_a.json`'s `f_area_urhfrac_areas` values exactly (V4 = 0.4214751420286394,
+`match=True`). `load_geometry` itself warns that its two candidate area sources *"differ by more
+than 5 % on 12.9 % of cells … basin totals 257097 vs 251724 km²"*. So **0.42147514 is a legitimate
+quantity on a different support, correctly computed and correctly named in its own JSON key
+(`f_area_urhfrac_areas`) — it is simply not §3.3's `f_area`.** Candidates that FAILED to
+reconstruct it, printed so the search is auditable: 16.775413430326214/39.812 = 0.42136575480574234
+· 16.775/39.812 = 0.4213553702401286 · 16.7754/39.8123 = 0.42136224232209646 · f_ero/1.0251 =
+0.42136784258984317. (`f_ero(V4)/1.02484 = 0.4214747428270249` is close but circular — 1.02484 was
+itself computed *from* 0.42147514.)
+
+**Can the URH-aggregated file reproduce the per-cell basin mean at all? — Not the LEVEL; yes the
+RATIO, and here is why.** `ls2d_variants.py`:432 builds the URH table from `N[:, 1:]`, i.e. **URH
+slot 0 is dropped**. Excluded area = 256,702.3554292511 − 251,723.50713639997 =
+**4,978.848292851122 km² (1.9395 % of the basin)**, whose implied LS(V0) is
+**2.5297232536233145** against a basin 39.812 — near-zero-LS water / no-URH area. That is exactly
+`ls2d_variants_summary.json:urh_table_check`'s `vs_basin_ratio` 1.0185222501944782 (reproduced:
+1.0185222500348001). But the offset applies to **numerator and denominator alike** (V0 ×1.01852225,
+V4 ×1.01849562), so it **very nearly cancels in the ratio**: the URH-`area_km2` `f_area` is
+**0.9999738568541133** of the per-cell one. **The 1.01852 level offset does not propagate into
+`f_area`; it is a level artefact of the dropped slot, not a ratio artefact.**
+
+**The deciding independent check — `docs/47` §3.1 R7's separately measured proxy bias 1.0251:**
+
+| `f_area` used | `f_ero(V4)/f_area(V4)` | \|diff\| vs R7's 1.0251 |
+|---|---:|---:|
+| **per-cell basin 0.42136300143291305** | **1.025111777659529** | **1.1777659529199624e-05** |
+| engine 0.4214751420286394 *(what §2.2 printed)* | 1.0248390293193077 | 2.609706806921963e-04 |
+| urh-csv `area_km2` 0.4213519856784954 | 1.0251385780069278 | 3.857800692785851e-05 |
+
+**R7 confirms the per-cell value, 22× more closely than the engine one.** The **DG endpoint needs
+no correction** — its `f_area` 0.2446790094097074 (`ls2d_defect_b.json`, same 30,235,916-cell pass)
+is already the registered support, and `f_ero/f_area` = **1.0277338427624152** (1.0277138223121467
+with the rounded 0.25146) against R7's 1.0278. **So the bracket's two ends were printed on two
+different supports, and only the upper one was off.**
+
+**Two further internal votes for the per-cell value, both pre-existing:** `docs/49`:154 already
+prints *"`f_ero(V4)` 0.43194 vs `f_area(V4)` **0.42136**: `|ln| = 0.0248`"*, and `docs/50`:244,274
+already prints the corrected area-proxy bracket as **×0.244679 – ×0.421363** with ln width
+0.54355. `docs/48`:438 prints R7 as 1.0251 / 0.0248. Four documents and three artifacts agree; two
+sentences of this document and two cells of `docs/46` do not.
+
+**Restated here, superseding the struck strings above:**
+
+| quantity | superseded | **corrected, full precision** |
+|---|---|---|
+| `f_area(V4)` | ×0.42148 / 0.42147514 | **0.42136300143291305** |
+| area-weighted proxy bracket | [0.24468, 0.42148] | **[0.2446790094097074, 0.42136300143291305]** |
+| `1/f_area` at the upper end | (2.3726191660718383) | **2.3732506095678505** |
+| (R12) upper-endpoint proxy bias | ×1.024839 | **×1.025111777659529** — abs-ln **0.024801658019852884** |
+| (R12) DG proxy bias | ×1.027714 | **unchanged** — ×1.0277338427624152 exact / ×1.0277138223121467 with the rounded `f_ero`; abs-ln 0.027336745312405174 |
+
+**WHAT THIS DOES NOT MOVE — measured, not assumed.** `f_ero` is untouched
+(0.43194417543884817 and 0.2514648985839397), so the **registered bracket
+`f_LS ∈ [0.25146, 0.43194]` erosion-weighted, `1/f_LS ∈ [2.3151, 3.9768]`, and every α rescaling
+built on it (11.8·f = 2.967–5.097 · 35.4·f = 8.902–15.291 · 3.9·f · the `docs/45` box ·f) are all
+erosion-weighted and DO NOT MOVE.** Nor do: the engine loads 129.3840 / 75.3235 Mt/yr; the
+299.5387088405831 Mt/yr gate; `Δ_shape` = 0.1299456916752905 and **Branch B**; the four **CITED**
+grades and the ADOPT-SOURCE outcome (decided by source text — `docs/46` §2.0 ground **G-i**); the
+joint/product ×1.34762; and `docs/47`'s `C4.3-BLOCKED-UNTIL-LS-LANDS` verdict, whose three
+propositions are width-independent (§6.3). §3's and §4's Defect A / Defect B verdicts are
+unchanged: Defect A's 0.00362 / 0.00101 and Defect B's 0.307 and ×1.326 are computed from
+erosion-weighted or per-cell area quantities that this amendment does not touch.
+
+**The licence for saying so, stated so nothing is reconstructed** (`docs/46` §2.0 ground **G-iv** —
+the exact ratio at full precision with a stated licence, never compared to a threshold): the
+correction is **2.661377371648382e-04 relative, 2.661023287994224e-04 ln**, and what licenses "no
+verdict moves" is **not its size**. It is that (i) `f_area` is the **PROXY** and `docs/46` §3.3's
+registered precedence (ground **G-ii**) is that *"`f_ero` decides; `f_area` is reported beside it,
+always, and can never override it"*, and `f_ero` does not change; and (ii) every rule that reads a
+number here reads either `f_ero`, source text, or `Δ_shape`. **(R12) is itself labelled a reported
+diagnostic and not a gate** (`docs/46` §2.4, `docs/52` §6:371). **No materiality bar is invoked,
+constructed or implied — `docs/46` §2.0's striking is respected, and this amendment introduces no
+fourth uncited band.**
+
+**Reported as owed to other owners, NOT fixed here** (this session owns only this file, `docs/46`
+§10 and its own journal):
+
+1. **`docs/46` §1.0 (×0.42148, twice), §3.1's `V4` row `f_area` cell (0.421475), §6.2 (:1037's
+   ×0.42148), and §2.2:271 / §2.5:617's ×1.02484** — recorded in `docs/46` **§10, amendment 2,
+   2026-08-12**, which is the only place that frozen file may be written.
+2. **`docs/47` §4.3's area-weighted column, which prints 0.42135 for the same cell.** It is **not**
+   a rounding of the correct value: 0.42136300143291305 both rounds *and* truncates to 0.42136 at
+   five decimals. It reconstructs instead as the **`urh_ls2d_variants.csv` `area_km2` weighting**,
+   0.4213519856784954 → 0.42135 (also equal to `urh_table_check`'s V4/V0 level ratio,
+   0.42135198571912497). So it is a **third support**, not the registered one and not the engine
+   one. Consistent with this, the same table's DG cell prints **0.24466** where the registered
+   value is 0.2446790094097074 (→ 0.24468) — `docs/47`'s area column carries a support of its own
+   throughout. **Owed to `docs/47`'s owner**; it changes no `docs/47` verdict, all three of whose
+   propositions are erosion-side and width-independent.
+3. **`docs/52` §6:371's ×1.02484 (upper)** — same restatement as item 1. `docs/52` §5:78 and
+   §5:343's **|ln| register 0.0248 / 0.0273 is already correct** on the per-cell support (the
+   engine support would give 0.0245) and needs **no** change. Owed to `docs/52`'s owner.
+4. **The JSON artifacts need NO edit and were NOT touched.** `ls2d_variants_summary.json`,
+   `ls2d_defect_b.json` and `ls_defect_a.json` are each correct for what they compute, and
+   `ls_defect_a.json`'s key already self-documents its support (`f_area_urhfrac_areas`). **No
+   regeneration was run** — nothing that would rewrite a committed data product.
+5. **One code-level documentation defect, reported not fixed:**
+   `scripts/c3/ls_erosion_weights.py`:174 prints the GATE-2 table's column header as a bare
+   `f_area`, with no support tag, beside `f_ero`. That console line is the plausible channel by
+   which the engine-support number entered §2.2 of this document as *"`f_area(V4)`"*. The fix is
+   one word in a header string (e.g. `f_area_urhfrac`), or printing `docs/46` §3.3's per-cell value
+   alongside it. **Owed to `scripts/c3/`'s owner. No engine default, no `ls2d_column`, no
+   `cp_revision` and no H2E parameter was touched by this session.**
+
+### Amendment 2 — 2026-08-12 — **§2.3's `= −ln 0.5807` identity does not hold. It mixed the erosion and area supports.**
+
+§2.3's third bullet writes the `L`-form lever as
+
+> `ln(0.43194 / 0.25146) = 0.5410` = `−ln 0.5807`, the `L`-form ratio *inside* the source
+> formulation.
+
+**Re-verified 2026-08-12 and the identity is false as written:**
+
+| quantity | value |
+|---|---:|
+| `ln(0.43194 / 0.25146)` | **0.5410027585442313** |
+| `−ln(0.580685)` | **0.543546837831505** |
+| **gap** | **0.0025440792872737372 ln** (a factor 1.0025473) |
+| `exp(−0.5410027585442313)` | **0.5821641894707599** |
+| `0.43194 / 0.25146` | 1.7177284657599616 |
+
+**So 0.5410 pairs with 0.58216, not with 0.580685.** Both constituents are separately correct, and
+the reason is now pinned down exactly: **they live on different supports.**
+
+| span | value | its `L`-form ratio inside the source formulation | independent record |
+|---|---:|---:|---|
+| **erosion-weighted** `ln(f_ero(V4)/f_ero(V4_dg))` | **0.5410027585442313** (rounded inputs) · **0.540992944828321** (exact 0.43194417543884817 / 0.2514648985839397) | **0.5821641894707599** (rounded) · 0.5821699026927624 (exact) | `docs/agents/journal_ls-impact.md`:105 measured it separately: *"INSIDE the source formulation the DG/continuous ratio is 0.5807 area-wtd / **0.5822 erosion-wtd**"* |
+| **area-weighted** `ln(f_area(V4)/f_area(V4_dg))` | **0.5435475125003637** (0.42136300143291305 / 0.2446790094097074) | **0.580684608230046** | `ls2d_defect_b.json:decomposition.L_form_inside_source` = 0.5806846082300454, `ln_decomposition` = −0.5435475125003647; `docs/50`:275 prints the AREA row's ln width as **0.54355**, correctly |
+
+**The corrected statement, which is what §2.3's bullet should be read as saying:**
+
+> **the span between the POINT and the hybrid is the `L`-form lever, exactly, on each support:**
+> **erosion-weighted** `ln(0.43194/0.25146) = 0.5410027585442313 = −ln 0.5821641894707599`;
+> **area-weighted** `ln(0.42136300143291305/0.2446790094097074) = 0.5435475125003637 =
+> −ln 0.580684608230046`. **0.580685 is the AREA-weighted `L`-form ratio and belongs with 0.54355,
+> not with 0.5410.**
+
+**Does it move any verdict? No — and here is the licence, not a tolerance** (`docs/46` §2.0 ground
+**G-iv**). The gap is **0.0025440792872737372 ln** and *that number licenses nothing on its own*.
+What licenses "no verdict moves" is that **no rule in force reads either span**: `docs/46` §1.0
+registers the span as the *label* of the `L`-form lever, never as an input; §3.3's precedence
+(ground **G-ii**) forbids `f_area` overriding `f_ero`; §4.2's decision rule is decided by source
+text and grades (ground **G-i**); §6.1's discriminator reads `Δ_shape`, which is per-station and
+erosion-based and uses neither span. `docs/46` §2.0.1 row 2 and `docs/52` §5 row 2 already label
+the bracket **width** as BAR-DEPENDENT *and superseded* — superseded precisely by §2.3's own
+finding that the span is a lever and not an uncertainty. **That finding stands unchanged; only the
+arithmetic identity attached to it is corrected.** No bar is invoked and none is reconstructed.
+
+**The same false identity is printed in `docs/46` §1.0** (`ln(0.43194 / 0.25146) = 0.5410 =
+−ln 0.580685`). `docs/46` is frozen, so it is recorded in **`docs/46` §10, amendment 2,
+2026-08-12** — this session's other owned write — and not edited in the body.
+
+### 9.1 Disclosure for §9 (2026-08-12, `defect-farea-amend`)
+
+- **Measured this pass, read-only:** `f_area(V4)` under six weightings from
+  `data/processed/urh_ls2d_variants.csv` and from the two published per-cell means; the bitwise
+  reproduction of all eight `ls_defect_a.json:f_area_urhfrac_areas` values through
+  `sed.load_geometry`; the dropped-URH-slot-0 area and its implied LS; the three proxy-bias
+  candidates against `docs/47` R7; the (R12) `|ln|` values on both supports; and the whole
+  identity arithmetic of amendment 2.
+- **Did not do:** no engine default changed (`ls2d_column`, `urh_ls2d`, `cp_revision`,
+  `volume_convention`, `k_unit_system`, α, β, any H2E parameter — all untouched); no fit, no
+  calibration, no `KGE_ln` evaluation, no α̂ quoted; no regeneration of any committed data product;
+  no JSON hand-edited; no git command. `urh_ls2d.csv`, `minibacia_ls2d.csv`,
+  `urh_ls2d_variants.csv` and `sim_calibrated_v2/h2e_drivers.npz` were SHA-256'd before and after
+  and are **UNCHANGED**.
+- **Files written by this session:** this file (§1/§2.1/§2.2/§2.3 strike-throughs plus this §9),
+  `docs/46` §10 amendment 2 only, and `docs/agents/journal_defect-farea-amend.md`.
+- **No materiality bar, tolerance or plausibility band was introduced, rescaled or reconstructed.**
+  Every "does not move" above is licensed by a named ground (`docs/46` §2.0 G-i/G-ii/G-iv), never
+  by a threshold comparison.
+- **The `docs/23` §13.2 yield embargo is in force**; no t/km²/yr appears here.
+- **The LS level remains UNVALIDATED** (`docs/42` G4.2). This amendment corrects a proxy's
+  arithmetic; it validates nothing.

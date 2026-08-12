@@ -16,9 +16,42 @@ parameter. Phase C (sediment) is unblocked as a data problem and bounded as a sc
 problem ([doc 19 §3.9](19_sediment_qc_audit.md)); it must not start before the doc 19 §5.2
 decisions are taken.
 
+> **⚠ CORRECTED 2026-08-12 — three clauses of the paragraph above are superseded.** The
+> paragraph is left as written (it is the 2026-08-03 record); these are the owning docs.
+>
+> - ~~"The calibration is **not closed**"~~ → **Phase B is CLOSED.** Owner
+>   [docs/30](30_phase_c_plan.md) §1: *"**Phase B closes on the input-ceiling result, with
+>   H2E as the adopted configuration.**"* Closed **by decision, not by reaching a target** —
+>   the clause "no attempt meets every pre-registered criterion" is still true of H2E too
+>   ([docs/26](26_phase3_refit.md) A.4: *"Applying §5's nine criteria unchanged, **H2E scores
+>   3/9**… Adoption was on the docs/29 rules… it was never a claim that the pre-registered
+>   adequacy criteria were met."*). The binding-constraint clause is unchanged and still
+>   correct.
+> - ~~"through the Phase 3 refit"~~ → **a fourth attempt followed, H2E**, and it is the one
+>   adopted ([docs/26](26_phase3_refit.md) Addendum, [docs/29](29_seed_expansion.md) rule (b)).
+> - ~~"it must not start before the doc 19 §5.2 decisions are taken"~~ → **all five doc 19
+>   §5.2 items are resolved and Phase C started.** The ENSO pairing was decided
+>   ([docs/30](30_phase_c_plan.md) §1: *"**Decision: keep 2011 (La Niña) vs 2015–16 (El
+>   Niño).**"*); the QC step was scripted ([docs/32](32_ssc_qc_audit.md), `sediment_daily_qc.csv`,
+>   79 stations); the forcing window runs 2008–2018 ([docs/18](18_hydrology_journal.md) §14.2);
+>   the expected-performance bar is [docs/45](45_c4_preregistration.md). Stages C0–C3 have
+>   run. **Live status: `progress_map.html`.**
+> - **On "v2":** in this document "v2" always means the **zero-suppression repair +
+>   deterministic IDW**, and it is **still gauge-only** — it is *not* the CHIRPS merge. The
+>   canonical definition is `docs/00_INDEX.md` § *"Forcing versions — v1 / v2 / v3, stated
+>   once"*. **There is no v3.**
+
 ---
 
 ## 1 — The three calibration attempts
+
+> **⚠ CORRECTED 2026-08-12 — there are FOUR attempts.** The table below is the first three,
+> as written on 2026-08-03. Attempt **4 — H2E** (v2 + the new objective + FAO-56 threshold
+> ET) followed and is **the adopted configuration**: VAL KGE **0.356**, recession **0.98×**,
+> PBIAS **+3.51 %**, railed 2 of 10 global / 3 of 18 dimensions. Owner
+> [docs/26](26_phase3_refit.md) Addendum **A.4**, which also states the honest reading:
+> *"H2E's gain over H2 is **in volume, not in skill**… while VAL KGE moves +0.011 and r
+> +0.008 — both inside the 0.051 seed spread docs/29 measured, so neither is a separation."*
 
 | attempt | forcing | objective | VAL median KGE | recession ratio (VAL all) | params at a bound |
 |---|---|---|---|---|---|
@@ -28,8 +61,14 @@ decisions are taken.
 
 Sources: `data/processed/sim_calibrated_v2/recession_validation.csv` (2.98× is the
 "VAL all" row, 2.9757), `metrics_fleet.csv`, doc 26 §5. Note [docs/24](24_presentation_outline.md)
-slide 8 prints 3 railed for attempt 3; doc 26 §5 (F1) records 2 — an unresolved one-count
-discrepancy, flagged here rather than silently chosen.
+slide 8 prints 3 railed for attempt 3; doc 26 §5 (F1) records 2 — ~~an unresolved one-count
+discrepancy, flagged here rather than silently chosen.~~ → **RESOLVED 2026-08-10; not a
+discrepancy.** Owner [docs/26](26_phase3_refit.md) A.2: *"Railed: **2 of 10 global**…
+**3 of 18 dimensions** (adding `wm_mult@R2` at 97.1 %) — **both denominators stated, because
+reporting only one is what produced the docs/24-vs-docs/26 "3 vs 2" discrepancy**."* One
+18-dimensional search vector, two ways to count it. [docs/24](24_presentation_outline.md)
+slide 8 now prints both; [docs/31](31_phase_c_workplan.md) register #1 is marked
+**RESOLVED with evidence**. *(Annotated 2026-08-12.)*
 
 The reading, which is the deck's central argument (docs/24 slide 9): **attempt 1's higher
 KGE was bought with a physically wrong recession and inverted stores.** Adding the
@@ -78,8 +117,8 @@ Closed there and not repeated here: old items 1, 3, 6, 7, 10, 11, 13, 16, 18.
 
 | # | (old) | item | blocks |
 |---|---|---|---|
-| 1 | 20, 2 | **CHIRPS–gauge merge — the only remaining lever on the dry phase.** Quantile-map CHIRPS *to* the gauge distribution (volume stays gauge-controlled; v2 IDW is ~4 % *below* CHIRPS, so a naive merge would add water back). Pre-registered gate: nb11 LOOCV daily r must beat the gauge-only **0.429**, else record the negative result. Time-boxed to two sessions in doc 25 stage 3 | r, and therefore the ENSO contrast |
-| 2 | 5 | PET review against the 49 mm/yr basin ET deficit; candidate one-function change: replace `ET = ETp·W/Wm` with the FAO-56 threshold form, which is what a railed `kc_mult` ≈ 2.0 compensates for (doc 25 stage 2) | the +5.6 % outlet PBIAS floor; releasing `kc_mult` |
+| 1 | 20, 2 | ~~**CHIRPS–gauge merge — the only remaining lever on the dry phase.** Quantile-map CHIRPS *to* the gauge distribution (volume stays gauge-controlled; v2 IDW is ~4 % *below* CHIRPS, so a naive merge would add water back). Pre-registered gate: nb11 LOOCV daily r must beat the gauge-only **0.429**, else record the negative result. Time-boxed to two sessions in doc 25 stage 3~~ → **CLOSED-NEGATIVE 2026-08-10. Not pending work.** See note ⓐ below | ~~r, and therefore the ENSO contrast~~ → nothing; it is closed |
+| 2 | 5 | ~~PET review against the 49 mm/yr basin ET deficit; candidate one-function change: replace `ET = ETp·W/Wm` with the FAO-56 threshold form, which is what a railed `kc_mult` ≈ 2.0 compensates for (doc 25 stage 2)~~ → **DONE 2026-08-05, and it SUCCEEDED.** See note ⓑ below | ~~the +5.6 % outlet PBIAS floor; releasing `kc_mult`~~ → both released; a **residue** remains (note ⓑ) |
 | 3 | 4 | Local-inertial routing for the Mompós reach — **not to be implemented on current evidence** (celerity sweep moved El Niño r < 0.016). Carried as a named limitation: celerity 0.221 m/s is a floodplain-storage surrogate | honesty about the routing |
 | 4 | 8 | Provenance of the ~2,050 mm/yr basin rainfall reference (uncited on both sides) | using it as a validation target |
 | 5 | 9 | Advisor question: collaborator **drops** sparse gauges, we **repair** them; gauge density is the binding constraint on r, so neither remedy is obviously right | the merge design in nb11 |
@@ -91,16 +130,107 @@ Closed there and not repeated here: old items 1, 3, 6, 7, 10, 11, 13, 16, 18.
 | 11 | 21 | The day-of-year climatology benchmark is not reproducible from doc 22 §4.1's description (rebuilt version is harder by +0.05–0.12 KGE), so the pre-registered absolute targets (+0.12/+0.24) are not testable like-for-like; use the ratio form | comparing future runs to the registered target |
 | 12 | 22 | A constrained ordering **relocates** compensation rather than removing it (H2 railed `k_sup` above `k_bas`); any further ordering constraint must argue against this precedent | reading fitted parameters as physical |
 
+> **⚠ CORRECTIONS TO THE OPEN-ITEM TABLE, 2026-08-12.** The register above is the
+> 2026-08-03 state. Two of its twelve items have since been closed by measurement. The rows
+> are struck rather than deleted; here is what the owning documents actually say.
+>
+> **ⓐ Item 1 — the CHIRPS merge is CLOSED and NEGATIVE, and the "only remaining lever"
+> framing does not survive.** It was tried twice. First run
+> ([docs/18](18_hydrology_journal.md) §15): LOOCV gate **PASSED** (merged median daily
+> r **0.447** > 0.429) and the VOLUME gate **FAILED** (**2,188.5 mm/yr**, +7.5 %, against
+> the band **[2,016.0, 2,056.8]**) → *"**DO NOT ADOPT.**"* The diagnosed cause was then
+> registered as **H-CHIRPS** ([docs/33](33_c2b_preregistration.md) §1, frozen 2026-08-10),
+> executed, and **the diagnosis was wrong**. Owner of the read-out is
+> [docs/18](18_hydrology_journal.md) **§15.5** *(note: `docs/33` §1's own pointer says "see
+> §7", which mis-fires — §7 of `docs/33` is the H-PEAK read-out)*; quoted:
+>
+> > "**Correction to s15.3.** That section attributed the volume failure to maps 'fitted on
+> > reporting-day pairs', implying the inferred-dry days were absent. They were not: they
+> > were **25.9 %** of the fit input."
+>
+> > "**v2 remains the forcing**, the r-ceiling of doc 22 s4.7 is unmoved, and **no route to a
+> > passing volume gate exists inside the merge code.**"
+>
+> The re-run is **bit-identical** to the rejected one (`merge_loocv_report_v2.csv` vs
+> `merge_loocv_report.csv`, max |diff| **0.000e+00**) and the volume gate fails again at
+> **2,188.5 mm/yr, +7.47 %**. [docs/33](33_c2b_preregistration.md) §1: *"The registered
+> intervention turned out to be a **no-op**… so the diagnosed cause in docs/18 §15.3 was
+> **wrong**."*
+>
+> **What the cause is now: UNKNOWN.** Stated at the owning doc's own confidence and not
+> upgraded here — the tested half of the diagnosis is **refuted**; the surviving half (the
+> **139** stations that still report rain-selectively after the repair) **cannot be tested
+> inside the merge at all**, because those days *"are not in the record"*
+> ([docs/18](18_hydrology_journal.md) §15.5), and it has not been tested anywhere else.
+> Repairing them is upstream, unscoped work — **not this item**. The one thing positively
+> measured is *where* the surplus sits: the merged field is near-unbiased at the 287 LOOCV
+> gauges (**+2.00 %** merged vs **+1.73 %** gauge-only) and puts its entire surplus in the
+> ungauged terrain. **There is no v3 forcing and none was built** (`docs/00_INDEX.md`
+> § *"Forcing versions — v1 / v2 / v3, stated once"*); building one would need a new
+> pre-registration ([docs/30](30_phase_c_plan.md) §1). Live status agrees:
+> `progress_map.html` carries *"B1 CHIRPS refit — CLOSED"*.
+>
+> **ⓑ Item 2 — the FAO-56 change was made and it worked.** Owner
+> [docs/29](29_seed_expansion.md), rule (b): *"**H2E (FAO-56 threshold ET): SUCCESS, all
+> three conditions**… The pre-registered hypothesis (docs/22 §4.6) is **confirmed**: the
+> linear stress ET = kc·PET·(W/Wm) was why kc railed; the FAO-56 threshold form releases it
+> at no cost."* `kc_mult` **1.662 / 1.836** against ≥ 1.896 on every H1/H2 seed; outlet
+> PBIAS **+7.34 → +3.51 %** ([docs/26](26_phase3_refit.md) A.4). **The residue that carries
+> forward** — quoted so it is not lost with the item: *"kc came OFF THE RAIL but is **not
+> yet plausible**: 1.662/1.836 against the FAO-56 plausibility target of ≤ 1.2"* — and it is
+> tracked as [docs/31](31_phase_c_workplan.md)'s known-open register #2, not here.
+>
+> **Not corrected here** (they belong to other owners, and this pass measured nothing new
+> about them): items 3–12 stand as written. Item 9 (`PET_READY` counts filenames) is
+> *contested* — `docs/PROGRESS.md` marks it done, [docs/18](18_hydrology_journal.md) §14.3
+> says the hole *"still"* exists in nb11. Neither was verified by this pass; do not treat it
+> as closed.
+
 Also outstanding from doc 25 stage 5 (packaging): `pyproject.toml`, `Makefile`,
 `CITATION.cff`, `CONTRIBUTING.md`, and moving the notebook smoke assertions into `tests/`
 for CI. `requirements.txt` and `environment.yml` are now pinned (2026-08-03). Seeds:
 H1 vs H2 on the *objective* are not yet separable (gap +0.011 vs seed spread 0.019,
-doc 25 stage 1) — add seeds before claiming either cell "won" the search.
+doc 25 stage 1) — ~~add seeds before claiming either cell "won" the search.~~ → **the seeds
+were added (six per cell) and they still do not separate.** Owner
+[docs/29](29_seed_expansion.md) rule (a): *"**H1 vs H2 separability: NOT SEPARATED**… Six
+seeds per cell did not separate the forcings"* — gap **0.009** against a seed spread
+**0.051**. Neither cell "won"; the question is settled negative, not still open.
+*(Annotated 2026-08-12.)*
 
 Doc 19's two FLAWED items (the `calibration_safe` overclaim and the flatline-null
 arithmetic) were corrected 2026-08-03, in place and marked.
 
-## 5 — The advisor question (put this in front of him first)
+## 5 — The advisor question — ~~(put this in front of him first)~~ **ASKED, DECLINED, AND DECIDED BY THE TEAM (2026-08-10)**
+
+> **⚠ CORRECTED 2026-08-12 — DO NOT ASK THIS QUESTION AGAIN.** It was asked, and the answer
+> was that there would be no answer. Owner [docs/30](30_phase_c_plan.md), header, quoted:
+>
+> > "**The advisor was asked the Phase B scope question (docs/24 item 17) and declined to
+> > answer — told the team to decide.** This document records the decision and the plan that
+> > follows from it."
+>
+> **The decision that followed**, [docs/30](30_phase_c_plan.md) §1, quoted: *"**Phase B
+> closes on the input-ceiling result, with H2E as the adopted configuration.**"* That is the
+> "**Yes**" branch below, taken by the team rather than granted by the advisor — so the
+> branch's own consequence holds and is now fact: *the merge became an attempt, not a
+> requirement*, and it then failed (see note ⓐ above). Grounds recorded in
+> [docs/30](30_phase_c_plan.md) §1: parameter headroom exhausted (twelve configurations moved
+> El Niño r by < 0.016), the ceiling is a property of the **observing network**, and the
+> seed expansion settled the two remaining calibration questions.
+>
+> **Phase B then closed a *second* time, on different evidence** — [docs/33](33_c2b_preregistration.md)
+> §8, after C2b re-opened it under pre-registration: H-BFI held, **H-PEAK was refuted**, and
+> the registered `H2E-S` refit fixed the peaks but failed 2 of its 3 conditions. H2E survived
+> both closes.
+>
+> **What is still worth putting in front of the advisor** is therefore *not* this question.
+> The live open registers are §4 above (as corrected), [docs/31](31_phase_c_workplan.md)'s
+> known-open register, [docs/34](34_observed_enso_contrast.md) §7 and
+> [docs/36](36_peak_deficit_options.md) §7. **And the caveat that must travel with any Phase B
+> claim**: El Niño skill-over-climatology in the adopted configuration is **−0.0005** — the
+> dry phase sits *at* climatology, not above it ([docs/26](26_phase3_refit.md) Addendum A.5).
+
+*Original text, preserved — this is what was believed on 2026-08-03:*
 
 From [docs/24](24_presentation_outline.md) outline item 17, the deck's designated ending:
 
@@ -126,6 +256,18 @@ It changes what "done" means for Phase B (doc 25 §5).
 | [docs/28](28_presentation_explained.md) | plain-language explanation of every number in the deck | — |
 
 ## 7 — Paste-ready prompt for a fresh assistant session
+
+> **⚠ THIS PROMPT IS SUPERSEDED, 2026-08-12 — do not paste it as written.** It is preserved
+> because it is the 2026-08-03 record. Two of its lines would seed a fresh session with a
+> false belief:
+> - step 2's *"the standing advisor question"* → **there is none**; it was asked and declined
+>   (§5 above, owner [docs/30](30_phase_c_plan.md) §1).
+> - step 2's *"the three calibration attempts"* → **there are four**; the adopted one is
+>   **H2E** ([docs/26](26_phase3_refit.md) Addendum A.4).
+>
+> **The current entry point is [`docs/00_INDEX.md`](00_INDEX.md)** — read it first, then its
+> five-document reading order. It carries **RULE 0** (for any *fact*, the numbered doc that
+> owns the topic wins; for any *status*, `progress_map.html` wins), which this prompt predates.
 
 ```
 You are picking up the magdalena-mgb-sed repo (MGB-SED suspended-sediment modelling of the
@@ -153,7 +295,16 @@ State your plan against the open items in docs/21 s4 before writing code.
 ```
 
 
-## Addendum (2026-08-03, post-handoff): a calibration queue is RUNNING
+## Addendum (2026-08-03, post-handoff): a calibration queue ~~is RUNNING~~ **WAS running — it COMPLETED 2026-08-05 and was read out in [docs/29](29_seed_expansion.md)**
+
+> **⚠ CORRECTED 2026-08-12.** Everything below is in the present tense and is now history.
+> Owner [docs/29](29_seed_expansion.md), Results header, quoted: *"**Results (read out
+> 2026-08-10; queue completed 2026-08-05 02:26, 10/10 ok, 0 crashed)**"*. **Do not run
+> `watch_calib.py` on account of this section** — there is nothing to watch. The two decision
+> rules previewed below were applied and both were read out: rule (a) **NOT SEPARATED**
+> (gap 0.009 vs seed spread 0.051), rule (b) **SUCCESS, all three conditions** → H2E, which
+> [docs/30](30_phase_c_plan.md) §1 then adopted and stage C0 froze
+> ([docs/26](26_phase3_refit.md) Addendum).
 
 Written after the section above. A detached seed-expansion queue was launched and survives
 any session closing (runner PID 26784 at launch; irrelevant after reboot — use the checks
@@ -174,5 +325,17 @@ below, not the PID):
   < 1.85 on both seeds AND recession ≤ 1.5× AND mean F within 0.01 of H2.
 - **CHIRPS merge (docs/18 §15):** LOOCV gate PASSED (r 0.447 vs 0.429 — first measured
   lift on r in the project) but the volume gate FAILED (+7.5 %), so it was rejected under
-  the pre-registered rule. The identified fix: fit the quantile maps on the repaired
-  series including inferred-dry days, then re-run both gates.
+  the pre-registered rule. ~~The identified fix: fit the quantile maps on the repaired
+  series including inferred-dry days, then re-run both gates.~~
+  → ⚠ **THERE IS NO IDENTIFIED FIX. STRUCK 2026-08-12 — the diagnosis was WRONG and the
+  cause is now UNKNOWN.** See note ⓐ under §4 above for the full record. In short: that
+  exact intervention *was* registered ([docs/33](33_c2b_preregistration.md) §1, as
+  **H-CHIRPS**), executed, and turned out to be a **no-op** — the inferred-dry days were
+  already **25.9 %** of the fit input, so the re-run is **bit-identical** and the volume
+  gate fails again at **2,188.5 mm/yr (+7.47 %)**. Owner of the read-out is
+  [docs/18](18_hydrology_journal.md) **§15.5**, quoted: *"**Correction to s15.3.** That
+  section attributed the volume failure to maps 'fitted on reporting-day pairs', implying
+  the inferred-dry days were absent. **They were not**"* and *"**no route to a passing
+  volume gate exists inside the merge code.**"* The surviving hypothesis — the 139 residual
+  rain-selective stations — **cannot be tested inside the merge** and has not been tested
+  anywhere else. **No v3 forcing exists.**

@@ -34,6 +34,27 @@ def code(s):
     C.append(("code", s))
 
 
+# ============================================================ status banner
+md(r"""> ### STATUS - annotated 2026-08-12 by agent `nb-banner-1217`. Nothing below this banner was rewritten.
+>
+> **What this notebook decided.** Two things: **C0**, freezing the hydrology at the adopted
+> configuration **H2E**; and **C1**, the SSC quality gate - 79 stations classified, 28 mapped,
+> 18 usable-or-caveated, **7** in both ENSO windows.
+>
+> **Both decisions still stand - nothing here has been overturned.** `docs/32` §R6 owns the C1
+> outcome and carries the same split of the 28 mapped (**6 usable / 12 usable-with-caveat / 10
+> excluded**); `docs/26`'s 2026-08-10 Addendum owns the C0 freeze and its reproduction gate.
+> `docs/31` **C1.0** records the matching decision explicitly: Phase C proceeds **now** on the
+> 28-station mapped subset (24 calibration-safe), and the coordinate recovery for the 46
+> unmapped stations of §8.5 is **background task B5, non-gating** - nothing on the core path
+> waits for it.
+>
+> **Where things have moved since, downstream of this page.** C2 landed (`docs/34` owns the
+> observed contrast); **C3 is still OPEN**, re-issued as `docs/37` **Amendment A1**
+> (2026-08-11); and **C4.3 is BLOCKED until the LS level lands** (`docs/47`). None of §9's
+> permitted/forbidden list has been relaxed - in particular the t/km2/yr embargo of §8.4
+> (`docs/23` §13.2) is still in force.""")
+
 # ============================================================ title
 md(r"""# Notebook 15 - freezing the water model (C0), and the sediment-data quality gate (C1)
 

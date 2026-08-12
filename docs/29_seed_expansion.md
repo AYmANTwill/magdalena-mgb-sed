@@ -202,5 +202,59 @@ ET = kc·PET·(W/Wm) was why kc railed; the FAO-56 threshold form releases it at
 ### What follows
 
 H2E becomes the preferred configuration for any further Phase B work (fao56, theta_crit
-0.6). The dry-phase ceiling argument (docs/22 §4.7) is untouched by any of this — the
-CHIRPS-merge volume fix (docs/18 §15) remains the only identified path to moving r.
+0.6). The dry-phase ceiling argument (docs/22 §4.7) is untouched by any of this — ~~the
+CHIRPS-merge volume fix (docs/18 §15) remains the only identified path to moving r.~~
+→ **superseded; see the amendment below.**
+
+---
+
+## Amendment 1 — 2026-08-12: the CHIRPS-merge "volume fix" was executed, and there is no fix
+
+*Appended, not edited. §1–§5 are the frozen pre-registration and the Results block above is the
+read-out of 2026-08-10; nothing in either is altered. This amendment corrects one clause of
+§What follows — the last sentence — which has since been overtaken by its owner's read-out.*
+
+**The clause struck.** *"the CHIRPS-merge volume fix (docs/18 §15) remains the only identified path
+to moving r."* Read today, that sentence tells a reader a fix is in hand and merely unapplied. It
+is not.
+
+**The owning read-out is `docs/18` §15.5**, and the registration it discharges is `docs/33` §1
+(**H-CHIRPS**). ⚠ `docs/33` §1's own pointer says *"see §7"*, but §7 of `docs/33` is the **H-PEAK**
+read-out; `docs/33` is frozen, so its pointer stays as written. **Cite `docs/18` §15.5.**
+
+What they say, quoted rather than paraphrased:
+
+- `docs/33` §1 — *"H-CHIRPS is **REFUTED by its own volume gate** (2,188.5 mm/yr against the
+  required [2,016.0, 2,056.8]). The registered intervention turned out to be a **no-op**: the
+  quantile maps already included the inferred-dry days, so the diagnosed cause in docs/18 §15.3 was
+  **wrong**."*
+- `docs/18` §15.5 — *"The first thing the refit found is that this was already the code's
+  behaviour."* The inferred-dry days were **240,115 of 926,268 paired station-days, 25.9 %** of the
+  fit input, and the re-run reproduces the rejected run **bit-identically** (*"max |diff|
+  0.000e+00"* across all 291 scored rows).
+- `docs/18` §15.5, closing — *"**v2 remains the forcing**, the r-ceiling of doc 22 s4.7 is unmoved,
+  and **no route to a passing volume gate exists inside the merge code**."*
+
+**So: the gates were re-measured unchanged and the merge was rejected a second time** — LOOCV
+median daily r **0.447 > 0.429 PASSES**; volume **2,188.5 mm/yr, +7.47 % FAILS**; decision **DO NOT
+ADOPT**. The intervention was *"worth 41 % of the surplus, and it is not enough."*
+
+**What survives is one UNTESTED upstream hypothesis, not a fix.** `docs/18` §15.5: *"The half of
+s15.3 that survives is the other half — the days the repair never inferred, at the **139 stations
+that still report rain-selectively** after it (s9.3). Those cannot be put into a pool by any change
+to `merge_chirps_gauges.py`, because they are not in the record at all."* It is upstream of the
+merge, it cannot be tested inside it, and it has not been attempted. **No reader may conclude that
+a fix is waiting to be applied.**
+
+**And there is no v3.** No forcing file was written and no v3 calibration was ever launched. See
+`docs/00_INDEX.md` → **"Forcing versions — v1 / v2 / v3, stated once"**: v1 and v2 are **both
+gauge-only** — v2 is the zero-suppression repair + deterministic IDW, and it is the **adopted**
+forcing — while **v3 is the CHIRPS-merged forcing and it does not exist**. Building one would
+re-open the frozen hydrology and needs a **new pre-registration** (`docs/30` §1; `docs/33` §1 —
+*"A pass does not authorise adopting v3"* — and §5.1).
+
+**What is NOT amended.** The dry-phase ceiling argument itself (`docs/22` §4.7) is untouched, exactly
+as the sentence above says — `docs/18` §15.5 confirms it: *"the r-ceiling of doc 22 s4.7 is
+unmoved."* Rules (a) and (b), the H1/H2 non-separation, the H2E success and all three caveats stand
+as read out on 2026-08-10. **The +0.018 median LOOCV gain remains a measured but unbankable
+result** (`docs/18` §15.5).

@@ -24,6 +24,33 @@ def code(s):
     C.append(("code", s))
 
 
+# ============================================================ status banner
+md(r"""> ### STATUS - annotated 2026-08-12 by agent `nb-banner-1217`. Nothing below this banner was rewritten.
+>
+> **What this notebook decided.** The model-input bundle *contract* (dense npz + an introspected
+> manifest; nothing dropped, nothing repaired in place) and the two calibration-safe gauge sets.
+> The contract stands and is what Phase B ran on. **The bundle identity in the prose does not.**
+>
+> **What happened to it.** Section 6's heading and the Summary describe the **v1** bundle; this
+> notebook was re-executed on **v2** and its own output disagrees with its own prose - cell 2
+> prints `model_inputs_v2`, cell 18 prints `4018 days 2008-01-01 .. 2018-12-31`. Read
+> ~~`data/processed/model_inputs/`~~ -> **`data/processed/model_inputs_v2/`** and
+> ~~2009-01-01 .. 2017-12-31, 3,287 contiguous days (PET-bounded)~~ ->
+> **2008-01-01 .. 2018-12-31, 4,018 days**. Section 7 item 9 (*"the 2008 warm-up is available for
+> rainfall and not for PET ... the bundle exports 2009-2017 only"*) is **resolved** by that same
+> output. The Summary's **"Next (Phase B proper)"** is **done**: Phase B is **CLOSED on H2E**.
+>
+> **Where the current state lives.** `docs/26` and its 2026-08-10 Addendum are the parameter
+> record - **read `docs/26` §5.1 before quoting any fitted parameter**; `docs/29` is the
+> seed-expansion read-out; `docs/30` §1 records why Phase B closed (by decision, at a measured
+> input ceiling, not at a target).
+>
+> **What "v2" means here, since this page is where the version first bites.** **v1** = the
+> original gauge forcing. **v2** = the zero-suppression repair (`docs/18` §9-§12) plus the
+> deterministic IDW and the co-located-gauge merge (`docs/23` §11) - still **gauge-only**, and
+> the adopted forcing. A CHIRPS-merged forcing (**v3**) **does not exist**: `docs/18` §15 built
+> and validated one and did **not** adopt it, and any revival needs a new pre-registration.""")
+
 # ============================================================ title
 md(r"""# Notebook 12 - Model-ready input assembly
 

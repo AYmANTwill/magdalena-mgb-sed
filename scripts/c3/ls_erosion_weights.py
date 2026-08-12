@@ -167,14 +167,22 @@ def f_ero_table(wts: pd.DataFrame) -> dict:
         }
     print("=" * 92)
     print("GATE 2 — erosion-weighted factors vs docs/47 §4.3")
-    print(f"{'variant':<24}{'f_ero':>12}{'published':>12}{'f_area':>12}{'gate':>8}")
+    # The area column is NOT docs/46 §3.3's `f_area`, and the header says so.  It is computed on
+    # `geom.cell_area_km2` — load_geometry's ENGINE URH-fraction areas, basin total 257,096.93 km²
+    # — whereas §3.3's `f_area` is the per-cell basin mean over 30,235,916 DEM cells at 90 m
+    # (256,702.36 km²).  For V4 the two are 0.4214751420286394 (this column) vs
+    # 0.42136300143291305 (§3.3).  An untagged `f_area` header here is how the former propagated
+    # through the corpus as the latter; see docs/46 §10 amd 2 / docs/51 §9 amd 1 / docs/43 amd 8.
+    print("  area column support: ENGINE urh_fractions×minibacias areas (257,096.93 km²), NOT")
+    print("  docs/46 §3.3's per-cell basin f_area (30,235,916 cells, 256,702.36 km²).")
+    print(f"{'variant':<24}{'f_ero':>12}{'published':>12}{'f_area_urhfrac':>16}{'gate':>8}")
     all_ok = True
     for c in vcols:
         pub = PUBLISHED_F_ERO.get(c)
         g = "" if pub is None else ("PASS" if abs(out[c]["f_ero"] - pub) <= F_ERO_TOL else "FAIL")
         all_ok &= (g != "FAIL")
         print(f"{c:<24}{out[c]['f_ero']:>12.5f}{(pub if pub else float('nan')):>12.5f}"
-              f"{out[c]['f_area_urhfrac_areas']:>12.5f}{g:>8}")
+              f"{out[c]['f_area_urhfrac_areas']:>16.5f}{g:>8}")
     print("=" * 92 + "\n", flush=True)
     if not all_ok:
         raise SystemExit("GATE 2 FAILED — no number from this run may be used")

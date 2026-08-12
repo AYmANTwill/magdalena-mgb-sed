@@ -12,7 +12,9 @@
       "Bash(curl -s https://raw.githubusercontent.com/yben409/simulating-suspended-sediment-transport/main/outputs/calibration/stage1_best_station_metrics.csv)",
       "Bash(python watch_calib.py)",
       "Bash(xargs -I{} sh -c 'test -s {} && echo \"NONEMPTY ERR: {}\"')",
-      "Read(//c/dev/magdalena-mgb-sed/docs/**)"
+      "Read(//c/dev/magdalena-mgb-sed/docs/**)",
+      "Bash(cd c:/dev/magdalena-mgb-sed && ls -la --time-style=+%m-%d_%H:%M docs/agents/ | grep -iE \"panel|a3-enact|farea|amend-35|amend-42|amend-45|nbgen|lens|refute-t6|closure-54|delta-shape|bar-judge\" ; echo \"=== journal.jsonl ===\"; ls -la \"C:/Users/knade.MSI_TWILL/.claude/projects/c--dev-magdalena-mgb-sed/5b31ac56-2c65-4a16-ac08-d810606ee036/subagents/workflows/wf_2cc018e6-a22/\" 2>/dev/null | head -30)",
+      "Read(//c/Users/knade.MSI_TWILL/.claude/projects/c--dev-magdalena-mgb-sed/5b31ac56-2c65-4a16-ac08-d810606ee036/subagents/workflows/wf_2cc018e6-a22/**)"
     ]
   }
 }

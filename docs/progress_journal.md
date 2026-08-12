@@ -1,6 +1,13 @@
 # Progress journal
 
-> **STATUS — LIVE as a chronology, but it stops at 2026-08-03.** Everything after that date (Phase B's closure, and Phase C stages C0–C3) is recorded in [docs/30](30_phase_c_plan.md)–[docs/36](36_peak_deficit_options.md) and in the live tracker `progress_map.html`. Entry point: [docs/00_INDEX.md](00_INDEX.md).
+> **STATUS — LIVE as a chronology, but it stops at 2026-08-03.** Everything after that date (Phase B's closure, and Phase C stages C0–C3) is recorded in [docs/30](30_phase_c_plan.md)–~~[docs/36](36_peak_deficit_options.md)~~ **[docs/53](53_delta_shape_pretest.md)** and in the live tracker `progress_map.html`. Entry point: [docs/00_INDEX.md](00_INDEX.md).
+>
+> ⚠ **Range widened 2026-08-12.** The numbered docs now run to **53** (44 was never assigned), and
+> the stage list above stops one stage short: Phase C has since reached **C3 (OPEN —
+> [docs/37](37_c3_closure.md), four amendments)** and **C4**, where the entry verdict
+> [docs/47](47_c4_entry_verdict.md) records *"`C4.3-BLOCKED-UNTIL-LS-LANDS`. **C4.3 may not
+> start.**"* **The dated entries below are correct as history and are not edited** — a log records
+> what was understood on its date. Read them for *when* and *why*, never for current status.
 
 Dated log of understanding and realization. **Updated at each new step.** Newest entries on top.
 

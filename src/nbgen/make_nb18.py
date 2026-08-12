@@ -930,6 +930,12 @@ print(f'\ncross-check ratio dg96/primary at the URH level: '
       f'{LSSTAT[("ls2d_dg96","URH")]["awm"]/LSSTAT[("ls2d","URH")]["awm"]:.4f}')
 print('  the same ratio measured 0.790 at 90 m and 0.794 at 740 m in the build run '
       '(docs/agents/journal_c31-ls2d.md §S4)')
+print('  CAUTION (docs/50, docs/51 §4): this ratio is NOT the L-form lever. It factorises')
+print('  exactly as 0.790 = 0.852262 (L form) x 0.926925 (S swap) - the dg96 column uses')
+print('  McCool-87 S while the primary uses Moore & Burch - and it is measured on the UNCAPPED')
+print('  ls2d column, not the engine\'s ls2d_hs. The L-form ratio is FORMULATION-DEPENDENT:')
+print('  0.852262 uncapped / 0.769833 on ls2d_hs / 0.580685 inside the source formulation.')
+print('  Use it as a coding cross-check only; the LS bracket of section 3.6 does NOT rest on it.')
 print(f'\nadopted column: {GEO.ls2d_column!r}; engine LS factor = '
       f'{PAR.ls2d_factor} (aggregation {PAR.ls2d_aggregation!r} x resolution '
       f'{PAR.ls2d_resolution!r})')""")
@@ -982,7 +988,13 @@ At the minibacia level the same numbers are 104.90 to 39.81 and 47.13 to 30.60. 
 cross-check variants bracket the primary: a fixed $m=0.4$ gives 16.68 (URH), a factor 6.4 below
 the slope-dependent $m$, and the literal Desmet & Govers finite-difference $L$ gives 84.00, i.e.
 **0.789 of the primary** - matching the 0.790 measured at 90 m and 0.794 at 740 m in the build
-run. Almost the entire distribution lies to the right of the retired 2-10 band.""",
+run. **That 0.790 is a coding cross-check and NOT the $L$-form lever**: it factorises exactly as
+$0.852262\ (L\ \text{form}) \times 0.926925\ (S\ \text{swap})$, because the `dg96` column also
+swaps in McCool-87 $S$, and it is measured on the **uncapped** `ls2d` column rather than the
+engine's `ls2d_hs` (`docs/50`, `docs/51` §4). The $L$-form ratio is formulation-dependent -
+0.852262 uncapped, **0.769833** on `ls2d_hs`, **0.580685** inside the source formulation - so no
+scalar version of it transfers. Almost the entire distribution lies to the right of the retired
+2-10 band.""",
     means=r"""Three things. (1) The implementation is sound: the continuous form and the literal
 finite-difference form of the same published equation agree to about 21 % and that agreement is
 stable across a factor-of-8 change in resolution, which is the check that catches an
@@ -1216,138 +1228,341 @@ MUSLE's coefficient $\alpha = 11.8$ is not a free-floating constant: it is paire
 $LS$ formulation*. Because MUSLE is **linear in $LS$**, an $LS$ field at a different level than the
 one $\alpha$ was fitted with passes that ratio one-for-one into $\alpha$ - so a mismatch here
 silently invalidates every parameter guard in section 7.1. This project transposes the MGB-SED
-method of Buarque (2015), whose $LS$ differs from ours in **three** ways, all measured on the *same*
+method of Buarque (2015), whose $LS$ differs from ours in **four** ways, all measured on the *same*
 90 m grid, i.e. these are formulation differences and not the resolution question section 3.5
-settled:
+settled. **Two columns are given because two weightings exist and only one of them decides**: the
+*erosion-weighted* factor $f_{ero}$ is the exact engine re-run and **decides**; the
+*area-weighted* factor $f_{area}$ is a **proxy** reported beside it and can never override it
+(`docs/46` §3.3):
 
-| lever | ours | the source method | measured x on basin area-weighted $LS$ |
-|---|---|---|---|
-| slope-length limiter | upslope **area** $\le$ 1 km<sup>2</sup>, so unit length up to $10^6/92\approx$ **10,870 m** ($\approx$ 118 pixels) | slope length $\le$ **one DEM pixel** (his p. 94) | **0.351** - dominant |
-| $m$ | continuous McCool (1989), basin median 0.584 | his eq. 14: a step function **hard-capped at 0.5** | 0.502 |
-| $S$ | Moore & Burch (1986), $(\sin\theta/0.0896)^{1.3}$ | his eq. 18: Wischmeier & Smith (1978), $65.41\sin^2\theta+4.56\sin\theta+0.065$ | 1.714 |
-| **all three together** | area-wtd mean **39.812** | area-wtd mean **16.775** | **0.421** |
+| lever | ours | the source method | $f_{ero}$ (decides) | $f_{area}$ (proxy) |
+|---|---|---|---|---|
+| slope-length limiter | upslope **area** $\le$ 1 km<sup>2</sup>, so unit length up to $10^6/92\approx$ **10,870 m** ($\approx$ 118 pixels) | slope length $\le$ **one DEM pixel** (printed pp. 94 **and** 98) | **0.362435** - dominant | 0.3513 |
+| $m$ | continuous McCool (1989), basin median 0.584 | **his eq. 14, printed p. 47: a STEP FUNCTION** - $m=0.2$ ($S_f<1$ %), $0.3$ (1-3 %), $0.4$ (3-5 %), $0.5$ ($S_f\ge5$ %), with $S_f$ in slope **percent** | **0.522043** | 0.505092 |
+| $S$ | Moore & Burch (1986), $(\sin\theta/0.0896)^{1.3}$ | his eq. 18, p. 48: Wischmeier & Smith (1978), $65.41\sin^2\theta+4.56\sin\theta+0.065$ | **1.694054** | 1.7139 |
+| $L$ | continuous **point-rate** form $(m+1)(\lambda/22.13)^m$ | **his eq. 13, p. 47: the Desmet & Govers finite-difference $L$** with $X_{dir}^{\,m}$ | **0.580685** *inside the source formulation* | - |
+| **the first three together** (`V4`, a documented **HYBRID**: his three levers with **our** $L$) | area-wtd mean **39.812** | area-wtd mean **16.775** | **0.431944** | ~~0.421475~~ **0.42136300143291305** |
+| **all four together** (`V4_dg`, **the source formulation READ WHOLE**) | | | **0.25146** | **0.2446790094097074** |
 
-Using the literal Desmet-Govers finite-difference $L$ instead of our continuous form costs a
-further x0.790, giving the bracket **x0.333 - x0.421**. In other words **our $LS$ is 2.37x - 3.00x
-the level $\alpha=11.8$ belongs to**, measured over all 30,235,916 basin cells by a harness that
-reproduces our own 39.812 bitwise (`docs/agents/journal_decide-ls-resolution.md` §1a, §3b). Note
-the three levers **interact**: $0.502\times1.714\times0.351 = 0.302 \ne 0.421$, so none of them is
-"the" cause and they have to be decided as a set.
+> **A SUPPORT CORRECTION on the $f_{area}$ column, 2026-08-12.** Owning records: `docs/46` §10
+> **amendment 2** and `docs/51` §9 **amendment 1**; expressed exactly as here by `docs/43` §7
+> amendment 8. The `V4` proxy read ~~**0.421475**~~ and is **0.42136300143291305**. The struck
+> figure is **not an arithmetic error** - it is the same ratio on the **engine URH-fraction** area
+> support (32,782 units, 257,096.93 km<sup>2</sup>), whereas `docs/46` §3.3 defines $f_{area}$ on
+> the **per-cell basin** (30,235,916 DEM cells at 90 m, 256,702.36 km<sup>2</sup>):
+> $16.775413430326214 / 39.812260149274394$. The independent discriminator is `docs/47` §3.1's
+> separately measured proxy bias **R7 = 1.0251**, printed to four decimals so its true value lies
+> in $[1.02505, 1.02515]$: $0.43194417543884817/0.42136300143291305 = 1.025111777659529$ lies
+> **inside** it, while $0.43194417543884817/0.4214751420286394 = 1.0248390293193077$ lies
+> **outside**, and the corrected value is **22x closer**. **$f_{ero}$ is untouched**, so the
+> registered bracket, the $\alpha$ reference, the hard stop and every basin load below are
+> **unmoved**. The lower endpoint **0.2446790094097074 was already on the registered support** and
+> is *not* corrected. The channel by which the wrong support entered the corpus - an untagged
+> `f_area` console header in `scripts/c3/ls_erosion_weights.py` - has been relabelled
+> `f_area_urhfrac` at source.
+
+> **A LABEL CORRECTION, and it is unconditional** (`docs/46` §1.1 Defect A, §2.2, §3.1, §7.3 item 2;
+> measured in `docs/49`). Until 2026-08-12 the $m$ row of this table read *"his eq. 14: a step
+> function **hard-capped at 0.5**"* with a factor of **0.502**. That conflated two different
+> objects. **Buarque's eq. 14 IS the step function above** (printed p. 47, verbatim, *"onde $S_f$
+> [%] é a declividade do pixel"*, corroborated p. 48) and its factor is **x0.522043 erosion-weighted
+> / x0.505092 area-weighted**. The object actually measured as *"0.502"* was
+> $\min(m_{\text{continuous}},\,0.5)$ - a **cap**, **x0.517480 ero / x0.502472 area** - which is
+> **nobody's published formulation** and **may never be graded CITED**. The two differ by only
+> **x1.008878** erosion-weighted (x1.005212 area), because the terrain below the cap/step crossover
+> at $\tan\theta = 0.0893325$ carries **37.86 % of basin AREA but 2.14 % of basin EROSION**. So the
+> mislabel was **real as a label and immaterial as a level** - and, crucially, **the published joint
+> x0.421 row was ALREADY the step**, proved by its area-weighted counterpart reproducing the
+> published number to **15 significant figures** (16.775413430326214). The mislabel therefore
+> contaminated the **single-lever label only and never the joint**.
+
+**The levers do NOT multiply out, and the product is NEVER a candidate for the joint.** The exact
+erosion-weighted statement is a measured *ratio*: the registered one is
+$0.362435\times0.52204\times1.694054 = 0.3205244$ against the measured joint **0.431944**, i.e.
+**joint / product = x1.34762** (`docs/46` §1, `docs/52` §1.1). *(Carrying the `m` step to its sixth
+decimal, $0.362435\times0.522043\times1.694054 = 0.3205263$ and the ratio is **x1.347609** - the
+same measurement at a different printed precision, not a second number. Both round to x1.3476; the
+cell below prints both so they can never appear to disagree.)* The area-weighted proxies show the
+same thing, $0.3513\times0.505092\times1.7139 = 0.304112$ vs ~~0.421475~~ **0.42136300143291305**,
+~~**x1.38592**~~ $\rightarrow$ **x1.38555**. *(**Recomputed, not retyped**, 2026-08-12: this ratio is
+a **function of** the corrected proxy, so it had to move with it. The product is unchanged at
+$0.3513\times0.505092\times1.7139 = 0.30411239291243997$; the ratio is
+$0.42136300143291305 / 0.30411239291243997 = 1.3855502480434327 \rightarrow$ **x1.38555**, where the
+struck **x1.38592** was $0.421475 / 0.30411239291243997 = 1.3859185282243696$. `docs/46` §10
+amendment 2 / `docs/51` §9 amendment 1.)* Two
+consequences: none of the
+levers is "the" cause, and they must be decided **as a set**, never one at a time. *(This notebook
+used to print the product as though it were an alternative estimate of the joint. It is not an
+estimate of anything - it is the arithmetic that the interaction refutes.)*
+
+**THE REGISTERED BRACKET, and what it actually is.** `f_LS` $\in$ **[0.25146, 0.43194]**
+erosion-weighted $\Rightarrow$ **$1/f_{LS}$ = 2.3151x - 3.9768x**: our $LS$ is 2.3151x - 3.9768x the
+level $\alpha=11.8$ is paired with. Engine re-runs at the endpoints, not proxies: **129.3840 Mt/yr**
+(hybrid) and **75.3235 Mt/yr** (source read whole), against the adopted 299.5387.
+
+> **This bracket is NOT an uncertainty over admissible readings of the source, and that is the
+> structural correction** (`docs/46` §1.0, §2.5.1; `docs/50`; `docs/51` §2; enacted `docs/37` A3).
+> All four levers are **CITED** and each has a **single** admissible reading, so:
+>
+> * **the source formulation read whole is a POINT at $f_{LS}$ = x0.25146** ($f_{area}$
+>   0.2446790094097074) - `docs/46` §3.1's `V4_dg`, adopted as `ls_formulation =
+>   buarque_2015_dg` by `docs/37` **A3**;
+> * **x0.43194 is a documented HYBRID** - the source's three levers with **our** $L$ - retained only
+>   because it is what was published and it must stay reproducible;
+> * **the span between them is the $L$-form lever, exactly**: $\ln(0.43194/0.25146) = 0.5410$. It is
+>   a **lever, not an error bar**, and the published *interval* therefore collapses to a **point**.
+
+> **The published x0.790 does NOT isolate the $L$ form, and the superseded x0.333 endpoint rests on
+> it** (`docs/50`, `docs/51` §4). It **factorises exactly** as
+> **$0.790 = 0.852262\ (L\ \text{form}) \times 0.926925\ (S\ \text{swap})$** - two levers, not one -
+> and it was measured on the **wrong column**, the uncapped `ls2d` rather than the engine's
+> `ls2d_hs` (`src/mgb_sediment.py`, `ls2d_column="ls2d_hs"`). Worse, **the $L$-form ratio is
+> FORMULATION-DEPENDENT** - **0.852262** uncapped, **0.769833** on `ls2d_hs`, **0.580685** *inside
+> the source formulation* - and x0.790 composed it across formulations as a scalar. Repairing the
+> $S$ confound *completely* still gives $0.421363\times0.769833 = 0.324379$ against the measured
+> 0.244679: wrong by **x1.326**. A scalar $L$-form ratio is not a transferable object.
 
 **Two consequences, both unfavourable, both stated in full.**
 
-* **On the level.** Applying the bracket to the adopted basin total gives **99.8 - 126.1 Mt/yr**,
-  which is *below* both outlet anchors and back on the physically awkward side that section 5
-  claimed to have left behind. Stated caveat: 0.421 is a ratio of *area-weighted* per-cell means,
-  while the basin total weights $LS$ by each cell's $Q_{sur}\cdot q_{peak}\cdot K\cdot C$, so this
-  is a **proxy, not a re-run**. It is a defensible proxy - the swap has nearly the same effect on
-  Andean terrain above 1,000 m (x0.416) as basin-wide (x0.421), and erosion is concentrated there -
-  but the exact figure needs the pre-registered re-run.
-* **On the guards.** The like-for-like $\alpha$ reference for **our** $LS$ is therefore
-  $\approx$ **3.9 - 5.0, not 11.8**; the pre-registered expected band 5.9-23.6 becomes
-  $\approx$ 2.0-9.9 and the hard stop $\alpha>35.4$ becomes $\approx$ 11.8-14.9. So the adopted,
-  *unfitted* $\alpha = 11.8$ would itself sit at or above its own corrected hard stop at the 3.00x
-  end of the bracket. **This tightens the guard; it does not loosen it.**
+* **On the level.** At the adopted point the basin total falls to **75.3235 Mt/yr**, and at the
+  retained hybrid to **129.3840 Mt/yr** - both *below* both outlet anchors and back on the
+  physically awkward side that section 5 claimed to have left behind. Unlike the superseded
+  99.8-126.1 Mt/yr, **these are engine re-runs, not the area-weighted proxy**; the proxy is
+  measured **2.5 % low** ($f_{ero}/f_{area}$ = ~~1.0248~~ **1.0251** at the hybrid, **1.0277** at the
+  adopted point), i.e. it errs *in the model's favour*. *(The hybrid figure moves with the corrected
+  $f_{area}$, 2026-08-12: $0.431944/0.42136300143291305 = 1.0251$ - which now matches `docs/47` §3.1's
+  independently measured **R7 = 1.0251** exactly, where the struck 1.0248 did not. `docs/46` §10
+  amendment 2 lists this cell.)*
+* **On the guards.** The like-for-like $\alpha$ reference for **our** $LS$ is
+  $11.8\cdot f$ = **2.967 - 5.097, not 11.8**; the pre-registered expected band $5.9\!-\!23.6\cdot f$
+  becomes **1.484 - 10.194** and the hard stop $\alpha>35.4$ becomes **8.902 - 15.291**. At the
+  adopted point these collapse to the single numbers **2.9672** and **8.9017**. So the adopted,
+  *unfitted* $\alpha = 11.8$ sits **above** its own corrected hard stop at the adopted point.
+  **This tightens the guard; it does not loosen it.** *(Ceiling on all of it, carried and not
+  softened: this is **bookkeeping about the PAIRING of $\alpha$ with an $LS$**, not about $\alpha$.
+  It passes and fails nothing. And $\alpha=11.8$ (Williams 1975) predates every 2-D
+  contributing-area $LS$ by two decades - its like-for-likeness is **NOT SETTLED and no band is
+  offered for it**.)*
 
-**How this is being handled, and why that is the interesting part.** The comparison that would
-settle it is **pre-registered in advance** (`docs/35` §9.3) with the decision rule fixed *before*
-the run: fidelity to the transposed method wins by default, a deviation needs its own written
-citable justification, a deviation requires the $\alpha$ band to be rescaled by the measured level
-ratio, and ties break toward the **lower** $LS$ - because the source's own verdict on his Andean
-$LS$ (his p. 121) is that even the pixel-capped version tends to make erosion in steep terrain
-*overestimated*, and ours uses a looser limiter than his. The registered expected consequence -
-that the answer gets **worse** - is written down in advance for one reason: **an unattractive total
-is not evidence against the source formulation.**""")
+**How this was handled, and why that is the interesting part.** The comparison was
+**pre-registered in advance** (`docs/35` §9.3, then `docs/46`, frozen) with the decision rule fixed
+*before* the run: fidelity to the transposed method wins by default, a deviation needs its own
+written citable justification, a deviation requires the $\alpha$ band to be rescaled by the measured
+level ratio, and ties break toward the **lower** $LS$ - because the source's own verdict on his
+Andean $LS$ (his p. 121) is that even the pixel-capped version tends to make erosion in steep
+terrain *overestimated*, and ours uses a looser limiter than his. The registered expected
+consequence - that the answer gets **worse** - was written down in advance for one reason: **an
+unattractive total is not evidence against the source formulation.** It landed on 2026-08-12 as
+`docs/37` **A3**: outcome **ADOPT-SOURCE**, `ls_formulation = buarque_2015_dg`, formulation choice
+graded **CITED** on all four levers.
 
-code(r"""LS_OURS, LS_SOURCE = 39.812, 16.775          # docs/agents/journal_decide-ls-resolution.md §3b
-LEVERS = [('slope-length limiter\n(area<=1 km$^2$ vs 1 pixel)', 0.351),
-          ('$m$\n(continuous McCool vs capped 0.5)', 0.502),
-          ('$S$\n(Moore & Burch vs Wischmeier)', 1.714)]
-JOINT = LS_SOURCE / LS_OURS
-DG_EXTRA = 0.790
-print('LS FORMULATION LEVEL - the largest open term in stage C3, and it points DOWN')
+> **WHAT A3 DID NOT DO, so nothing here is over-read.** The decision is **DETERMINED and RECORDED,
+> NOT YET EXERCISABLE**. **No engine default has moved** - this notebook still runs on
+> `ls2d_column = 'ls2d_hs'`, i.e. `V0`, with $f_{LS}$ = 1.000, and every number below section 3.6 is
+> at that level. The **LS LEVEL remains UNVALIDATED** (`docs/42` G4.2) - *a cited formulation is not
+> a validated level, and a fitted one is not either*. **C3 stays OPEN** (clause 2 also needs the
+> *shape* decision: settling the level is necessary and not sufficient) and **C4.3 stays BLOCKED**
+> (`docs/47`). Switching the default is a separate, separately dated act that is **not draftable**
+> until a gated `V4_dg` column exists as a committed product.""")
+
+code(r"""# LS FORMULATION LEVEL.  Registered values, all cited in place - this cell RE-DERIVES nothing.
+#   f_ero  = exact engine re-run, DECIDES         (docs/46 section 3.3)
+#   f_area = area-weighted proxy, reported beside it and never able to override it
+# Sources: docs/47 section 4.3 (engine re-runs), docs/49 (eq.-14 step vs cap), docs/50 + docs/51
+# section 4 (the L form), docs/52 section 1.1 (non-multiplicativity), docs/37 A3 (the enactment).
+LS_OURS, LS_SOURCE = 39.812, 16.775          # area-wtd means, journal_decide-ls-resolution §3b
+LEVERS = [('slope-length limiter\n(area<=1 km$^2$ vs 1 pixel)',            0.362435, 0.3513),
+          ('$m$\n(continuous McCool vs eq.-14 STEP)',                      0.522043, 0.505092),
+          ('$S$\n(Moore & Burch vs Wischmeier eq. 18)',                    1.694054, 1.7139),
+          ('$L$\n(our point rate vs eq.-13 D&G,\nin-formulation)',          0.580685, float('nan'))]
+M_CAP_ERO, M_CAP_AREA = 0.517480, 0.502472   # min(m, 0.5): the CAP.  NOBODY'S published form.
+# f_area on docs/46 §3.3's PER-CELL BASIN support (30,235,916 cells, 256,702.36 km2), NOT the
+# engine URH-fraction one.  Corrected 2026-08-12 from 0.421475, which is the same ratio on the
+# engine support (257,096.93 km2) - a correct quantity, but not what §3.3 defines f_area to be.
+# Owning records: docs/46 §10 amd 2, docs/51 §9 amd 1.  f_ero is UNAFFECTED.
+F_HYB_ERO,  F_HYB_AREA = 0.431944, 0.42136300143291305  # V4 - his 3 levers + OUR L = HYBRID
+F_SRC_ERO,  F_SRC_AREA = 0.25146,  0.2446790094097074   # V4_dg - the source read WHOLE = a POINT
+ADOPTED_F, ADOPTED_NAME = F_SRC_ERO, 'buarque_2015_dg'  # docs/37 A3: ADOPT-SOURCE, grade CITED
+
+print('LS FORMULATION LEVEL - decided on source grounds by docs/37 A3, and it points DOWN')
 print(f'  our adopted area-weighted mean ls2d_hs, recomputed here from urh_ls2d.csv : '
       f'{LSSTAT[("ls2d_hs","minibacia")]["awm"]:.4f}')
 print(f'  the same number in the measurement harness (journal_decide-ls-resolution §3b): {LS_OURS}')
 print(f'    -> agreement to {abs(LSSTAT[("ls2d_hs","minibacia")]["awm"]-LS_OURS):.4f} '
       f'({100*abs(LSSTAT[("ls2d_hs","minibacia")]["awm"]-LS_OURS)/LS_OURS:.3f} %), so the quoted '
       f'bracket is anchored on a level this notebook reproduces')
-print(f'  source-faithful area-weighted mean                                        : {LS_SOURCE}')
-print(f'  joint factor                                                             : '
-      f'{JOINT:.4f}   (1/{1/JOINT:.3f})')
-print(f'  with the literal Desmet & Govers L, a further x{DG_EXTRA}               : '
-      f'{JOINT*DG_EXTRA:.4f}   (1/{1/(JOINT*DG_EXTRA):.3f})')
-print(f'  => our LS is {1/(JOINT):.2f}x - {1/(JOINT*DG_EXTRA):.2f}x the level alpha = 11.8 '
-      f'belongs to')
-print(f'\n  the three levers do NOT multiply to the joint factor:')
-print(f'    {LEVERS[0][1]} x {LEVERS[1][1]} x {LEVERS[2][1]} = '
-      f'{LEVERS[0][1]*LEVERS[1][1]*LEVERS[2][1]:.4f}  vs  joint {JOINT:.4f}  -> they INTERACT')
-print(f'\n  rescaled guard band for OUR LS: expected '
-      f'{5.9*JOINT*DG_EXTRA:.1f}-{23.6*JOINT:.1f}, hard stop '
-      f'{35.4*JOINT*DG_EXTRA:.1f}-{35.4*JOINT:.1f}  (registered values 5.9-23.6, stop 35.4)')
-print(f'  reference alpha for OUR LS: {11.8*JOINT*DG_EXTRA:.1f}-{11.8*JOINT:.1f}, not 11.8')""")
+print(f'  source-faithful area-weighted mean (his three levers, our L)              : {LS_SOURCE}')
 
-code(r"""fig, ax = plt.subplots(1, 2, figsize=(12.8, 3.5),
+print('\n  per-lever factors  (f_ero DECIDES; f_area is the proxy):')
+for nm, fe, fa in LEVERS:
+    fa_s = 'n/a  (L is not separable as an area-wtd column)' if fa != fa else f'{fa:.6f}'
+    plain = nm.replace(chr(10), ' ').replace('$', '').replace('^2', '2')
+    print(f'    {plain:56s} f_ero {fe:.6f}   f_area {fa_s}')
+print(f'    {"m as min(m,0.5) - the CAP, NOT eq. 14, nobody published it":56s} '
+      f'f_ero {M_CAP_ERO:.6f}   f_area {M_CAP_AREA:.6f}')
+print(f'      -> eq.-14 step / cap = x{LEVERS[1][1]/M_CAP_ERO:.6f} ero, '
+      f'x{LEVERS[1][2]/M_CAP_AREA:.6f} area: the mislabel was REAL as a label, IMMATERIAL as a '
+      f'level')
+print(f'      DISCLOSURE, so this notebook is not read as contradicting a frozen document:')
+print(f'      docs/46 §1.1 / §1.2 (R4) / §2.2 print this ratio as x1.008878 ero and x1.005212')
+print(f'      area.  Recomputed here from docs/46 §3.1\'s OWN registered pair '
+      f'({LEVERS[1][1]} / {M_CAP_ERO}) the ratio is x{LEVERS[1][1]/M_CAP_ERO:.6f}; back-solving,')
+print(f'      {M_CAP_ERO} x 1.008878 = {M_CAP_ERO*1.008878:.7f}, not {LEVERS[1][1]}.  So the')
+print(f'      erosion-weighted figure looks like a digit transposition (1.008818 -> 1.008878) in')
+print(f'      a document this notebook does not own; the area figure agrees to 6 s.f.  IMMATERIAL:')
+print(f'      both are ~0.9 %, and docs/46\'s verdict (REAL as a label, IMMATERIAL as a level) is')
+print(f'      unchanged either way.  REPORTED, not fixed - docs/46 is FROZEN and is not ours.')
+
+print(f'\n  joint, V4   (HYBRID: his 3 levers + our L)  : f_ero {F_HYB_ERO:.6f}  '
+      f'f_area {F_HYB_AREA:.6f}   (1/f = {1/F_HYB_ERO:.4f})')
+print(f'  joint, V4_dg (the source read WHOLE, ADOPTED): f_ero {F_SRC_ERO:.6f}  '
+      f'f_area {F_SRC_AREA:.6f}   (1/f = {1/F_SRC_ERO:.4f})')
+
+prod_ero = LEVERS[0][1] * LEVERS[1][1] * LEVERS[2][1]
+prod_area = LEVERS[0][2] * LEVERS[1][2] * LEVERS[2][2]
+print('\n  THE LEVERS DO NOT MULTIPLY OUT.  STANDING RULE: the product of single-lever factors')
+print('  is NEVER quoted as the joint factor, and is not a candidate for it.  The exact')
+print('  statement is a measured RATIO:')
+prod_reg = 0.362435 * 0.52204 * 1.694054      # docs/46 §1's 5-d.p. m step: the REGISTERED product
+print(f'    f_ero, REGISTERED (m step at 5 d.p., docs/46 §1 / docs/52 §1.1):')
+print(f'      0.362435 x 0.52204 x 1.694054 = {prod_reg:.7f}   joint {F_HYB_ERO:.6f}   '
+      f'->  joint / product = x{F_HYB_ERO/prod_reg:.5f}')
+print(f'    f_ero, same measurement with the m step at 6 d.p. (docs/46 §3.1):')
+print(f'      {LEVERS[0][1]} x {LEVERS[1][1]} x {LEVERS[2][1]} = {prod_ero:.7f}   '
+      f'joint {F_HYB_ERO:.6f}   ->  joint / product = x{F_HYB_ERO/prod_ero:.5f}')
+print(f'      (ONE number at two printed precisions, not two numbers - both round to x'
+      f'{F_HYB_ERO/prod_reg:.4f}.  Printed together so they can never appear to disagree.)')
+print(f'    f_area: {LEVERS[0][2]} x {LEVERS[1][2]} x {LEVERS[2][2]} = {prod_area:.6f}   '
+      f'joint {F_HYB_AREA:.6f}   ->  joint / product = x{F_HYB_AREA/prod_area:.5f}')
+print('    => none of the levers is "the" cause and they must be decided AS A SET.')
+
+print(f'\n  REGISTERED BRACKET: f_LS in [{F_SRC_ERO}, {F_HYB_ERO:.5f}] erosion-weighted')
+print(f'    => our LS is {1/F_HYB_ERO:.4f}x - {1/F_SRC_ERO:.4f}x the level alpha = 11.8 is '
+      f'PAIRED with')
+print(f'    the span IS the L-form lever, exactly: ln({F_HYB_ERO:.5f}/{F_SRC_ERO}) = '
+      f'{np.log(F_HYB_ERO/F_SRC_ERO):.4f}  - a LEVER, not an error bar')
+print(f'    and the L-form ratio is FORMULATION-DEPENDENT: 0.852262 uncapped / 0.769833 on '
+      f'ls2d_hs / {LEVERS[3][1]} inside the source formulation.')
+print(f'    the published x0.790 does NOT isolate it: 0.790 = 0.852262 (L) x 0.926925 (S swap) '
+      f'= {0.852262*0.926925:.6f}, measured on the WRONG column (ls2d, not ls2d_hs).')
+print(f'    basin gross erosion at the endpoints (ENGINE re-runs, NOT the area proxy): '
+      f'75.3235 - 129.3840 Mt/yr, vs 299.5387 at V0  (docs/47 section 4.3)')
+print(f'    proxy bias f_ero/f_area: x{F_HYB_ERO/F_HYB_AREA:.4f} at the hybrid, '
+      f'x{F_SRC_ERO/F_SRC_AREA:.4f} at the adopted point -> the proxy is ~2.5 % LOW')
+
+print(f'\n  RESCALED alpha reference for OUR LS - bookkeeping about the PAIRING of alpha with an')
+print(f'  LS, not about alpha.  It passes and fails NOTHING (docs/46 section 8.2 item 2):')
+print(f'    alpha reference 11.8*f : {11.8*F_SRC_ERO:.4f} - {11.8*F_HYB_ERO:.4f}   (not 11.8)')
+print(f'    expected band 5.9-23.6*f: {5.9*F_SRC_ERO:.4f} - {23.6*F_HYB_ERO:.4f}')
+print(f'    hard stop     35.4*f    : {35.4*F_SRC_ERO:.4f} - {35.4*F_HYB_ERO:.4f}')
+print(f'    at the ADOPTED POINT the interval collapses: reference {11.8*ADOPTED_F:.4f}, '
+      f'hard stop {35.4*ADOPTED_F:.4f}')
+print(f'    ceiling: alpha = 11.8 (Williams 1975) predates every 2-D contributing-area LS by two')
+print(f'    decades; its like-for-likeness is NOT SETTLED and NO BAND is offered for it.')
+
+print(f'\n  DECISION (docs/37 A3, 2026-08-12): ADOPT-SOURCE, ls_formulation = {ADOPTED_NAME!r},')
+print(f'    f_LS = {ADOPTED_F} erosion-weighted (proxy {F_SRC_AREA}), formulation CITED on all 4')
+print(f'    levers.  STATUS: DETERMINED and RECORDED, NOT YET EXERCISABLE.')
+print(f'    THIS NOTEBOOK STILL RUNS ON ls2d_column={GEO.ls2d_column!r} (V0), f_LS = 1.000.')
+print(f'    The LS LEVEL remains UNVALIDATED (docs/42 G4.2); C3 stays OPEN; C4.3 stays BLOCKED.')""")
+
+code(r"""fig, ax = plt.subplots(1, 2, figsize=(12.8, 3.9),
                        gridspec_kw={'width_ratios': [1.0, 1.15]})
-labs = [l for l, _ in LEVERS] + ['ALL THREE\n(joint, measured)']
-vals = [v for _, v in LEVERS] + [JOINT]
-cols = [CB['red'] if v < 1 else CB['green'] for v in vals[:-1]] + [CB['dark']]
+labs = ([l for l, _, _ in LEVERS]
+        + ['V4 joint: his 3 levers\n+ OUR $L$ (HYBRID)',
+           'V4_dg joint: all four\n(SOURCE READ WHOLE, ADOPTED)'])
+vals = [v for _, v, _ in LEVERS] + [F_HYB_ERO, F_SRC_ERO]
+cols = ([CB['red'] if v < 1 else CB['green'] for v in vals[:4]]
+        + [CB['grey'], CB['dark']])
 yy = np.arange(len(labs))[::-1]
-ax[0].barh(yy, vals, 0.6, color=cols)
+ax[0].barh(yy, vals, 0.62, color=cols)
 ax[0].axvline(1.0, color=CB['dark'], lw=1.0)
 for y_, v in zip(yy, vals):
-    ax[0].text(v + 0.03, y_, f'x{v:.3f}', va='center', fontsize=7.5)
-ax[0].set_yticks(yy); ax[0].set_yticklabels(labs, fontsize=7)
-ax[0].set_xlabel('factor on basin area-weighted $LS$ if the source choice is adopted')
-ax[0].set_xlim(0, 2.0)
-ax[0].set_title('Three levers, measured on the SAME 90 m grid\n'
-                'product of the three = 0.302, joint = 0.421 $\\Rightarrow$ they interact')
+    ax[0].text(v + 0.03, y_, f'x{v:.6f}', va='center', fontsize=7.0)
+# The product of the single levers is NOT a candidate for the joint - shown ONLY to mark that it
+# is refuted by measurement.  Standing rule: never quote a product of single levers as the joint.
+ax[0].plot([prod_reg], [yy[4]], 'x', ms=9, mew=2.0, color=CB['purple'], zorder=5,
+           label=f'product of the 3 single levers = {prod_reg:.4f}\n'
+                 f'NOT a candidate for the joint: joint/product = '
+                 f'x{F_HYB_ERO/prod_reg:.5f}')
+ax[0].set_yticks(yy); ax[0].set_yticklabels(labs, fontsize=6.6)
+ax[0].set_xlabel('$f_{ero}$ - EXACT erosion-weighted factor on basin gross erosion')
+ax[0].set_xlim(0, 2.05)
+ax[0].legend(fontsize=6.4, loc='lower right')
+ax[0].set_title('Four levers, measured on the SAME 90 m grid, erosion-weighted\n'
+                'they INTERACT - the product is not the joint', fontsize=9.2)
 
-names2 = ['ours\n(adopted)', 'source\nformulation', 'source + literal\nD&G $L$']
-lv = [LS_OURS, LS_SOURCE, LS_OURS*JOINT*DG_EXTRA]
-ax[1].bar(np.arange(3), lv, 0.55, color=[CB['blue'], CB['amber'], CB['red']])
+names2 = ['V0 ours\n(the engine input\nTODAY)', 'V4 hybrid\n(his 3 levers,\nour $L$)',
+          'V4_dg source read\nWHOLE (ADOPTED,\nnot exercised)']
+lv = [299.5387, 129.3840, 75.3235]
+ax[1].bar(np.arange(3), lv, 0.55, color=[CB['blue'], CB['grey'], CB['dark']])
 for i, v in enumerate(lv):
-    ax[1].text(i, v + 0.9, f'{v:.2f}', ha='center', fontsize=8)
-ax[1].annotate('', xy=(1, LS_SOURCE), xytext=(0, LS_OURS),
+    ax[1].text(i, v + 6.0, f'{v:.4f}', ha='center', fontsize=8)
+ax[1].annotate('', xy=(1, lv[1]), xytext=(0, lv[0]),
                arrowprops=dict(arrowstyle='->', lw=1.1, color=CB['dark']))
-ax[1].text(0.5, (LS_OURS+LS_SOURCE)/2 + 3.5, f'x{JOINT:.3f}\n(= 1/{1/JOINT:.2f})',
-           ha='center', fontsize=7.5, color=CB['dark'])
-ax[1].text(2.0, lv[2] + 4.0, f'x{JOINT*DG_EXTRA:.3f}\n(= 1/{1/(JOINT*DG_EXTRA):.2f})',
-           ha='center', fontsize=7.5, color=CB['red'])
-ax[1].set_xticks(np.arange(3)); ax[1].set_xticklabels(names2, fontsize=7.5)
-ax[1].set_ylabel('basin area-weighted mean $LS$')
-ax[1].set_title('Our $LS$ level vs the level $\\alpha=11.8$ is paired with\n'
-                'UNRESOLVED - and resolving it LOWERS the model')
+ax[1].text(0.52, (lv[0]+lv[1])/2 + 18, f'x{F_HYB_ERO:.5f}\n(= 1/{1/F_HYB_ERO:.4f})',
+           ha='center', fontsize=7.2, color=CB['dark'])
+ax[1].annotate('', xy=(2, lv[2]), xytext=(1, lv[1]),
+               arrowprops=dict(arrowstyle='->', lw=1.1, color=CB['purple']))
+ax[1].text(1.5, (lv[1]+lv[2])/2 + 14, f'x{F_SRC_ERO/F_HYB_ERO:.5f}\nthe $L$-form LEVER\n'
+           f'($\\ln$ span {np.log(F_HYB_ERO/F_SRC_ERO):.4f})',
+           ha='center', fontsize=6.8, color=CB['purple'])
+ax[1].set_xticks(np.arange(3)); ax[1].set_xticklabels(names2, fontsize=6.8)
+ax[1].set_ylabel('basin gross hillslope erosion (Mt/yr)')
+ax[1].set_ylim(0, 345)
+ax[1].set_title('The LS level: DECIDED on source grounds (docs/37 A3), NOT exercised\n'
+                'the decision LOWERS the model - and the level stays UNVALIDATED', fontsize=9.2)
 for a in ax:
     a.grid(alpha=0.25, axis='x' if a is ax[0] else 'y')
 plt.tight_layout(); plt.show()""")
 
 reading(
-    what=r"""**Left:** each of the three formulation levers, as the multiplicative factor it
-would apply to the basin area-weighted topographic factor if the source method's choice were
-adopted; red bars lower the model, green raise it, the dark bar is the measured joint effect of all
-three. The vertical line at 1.0 is "no change". **Right:** the resulting basin area-weighted mean
-$LS$ - ours as adopted, the source-faithful value, and the source-faithful value with the literal
-finite-difference length form - with the two bracket factors annotated on the arrows.""",
-    shows=r"""The dominant lever is the slope-length limiter at **x0.351**: we cap upslope
+    what=r"""**Left:** each of the **four** formulation levers as the *erosion-weighted*
+multiplicative factor $f_{ero}$ it applies to basin gross erosion if the source's choice is
+adopted - red bars lower the model, green raise it - then the two joint compositions: the grey
+`V4` **hybrid** (his three levers with our $L$) and the dark `V4_dg`, **the source formulation read
+whole**, which is the one `docs/37` A3 adopts. The vertical line at 1.0 is "no change". The purple
+cross marks the **product of the three single levers**, plotted **only** so that its refutation is
+visible: it is *not* a candidate for the joint. **Right:** the basin gross erosion each composition
+implies - all three are **engine re-runs, not the area-weighted proxy** - with the joint factor and
+the $L$-form lever annotated on the arrows.""",
+    shows=r"""The dominant lever is the slope-length limiter at **x0.362435**: we cap upslope
 *area* at 1 km<sup>2</sup>, which permits a unit slope length up to about 10,870 m or 118 pixels,
-whereas the source caps slope *length* at one pixel. The $m$ lever is x0.502 and the $S$ lever is
-the only upward one at x1.714. Their product is 0.302 but the measured joint factor is **0.421**,
-so they interact and cannot be decided one at a time. Our level is 39.812 - which this notebook
-independently reproduces from `urh_ls2d.csv` as 39.8123 - against a source-faithful 16.775,
-i.e. **our $LS$ is 2.37x to 3.00x too high for its own coefficient**. Rescaling the pre-registered
-guard band by that bracket turns the expected 5.9-23.6 into 2.0-9.9 and the hard stop 35.4 into
-11.8-14.9.""",
-    means=r"""**This is the single highest-value open item in the whole sediment phase, and it
-makes the answer worse.** Because MUSLE is linear in $LS$, the bracket applies directly to the
-level: the adopted total would fall to roughly 100-126 Mt/yr, below both published outlet loads.
-It also demolishes the reassurance that the unfitted $\alpha = 11.8$ sits comfortably inside its
-registered band: the like-for-like reference for *our* $LS$ is 3.9-5.0, so 11.8 sits at or above
-its own corrected hard stop at the pessimistic end. Two things this figure explicitly does **not**
-license. It does not license netting this factor against the upward corrections elsewhere in the
-notebook - a formulation error is to be resolved on source grounds, not cancelled by another
-factor. And it does not license re-opening the choice if the resulting total is unattractive; that
-outcome is pre-registered in advance precisely so it cannot be treated as evidence.""")
+whereas the source caps slope *length* at one pixel. The $m$ lever - **his eq. 14, a step function
+on slope percent, not a cap on our continuous $m$** - is **x0.522043**; the $S$ lever (his eq. 18,
+Wischmeier & Smith 1978) is the only upward one at **x1.694054**; and the $L$ lever (his eq. 13,
+Desmet & Govers finite difference) is **x0.580685** inside the source formulation. **The product of
+the first three is 0.3205244 and the measured joint is 0.431944 - joint / product = x1.34762** - so
+they interact and cannot be decided one at a time, and the product may never be quoted as the
+joint. Our level is 39.812, which this notebook independently reproduces from `urh_ls2d.csv` as
+39.8123. The registered bracket is $f_{LS}\in$ **[0.25146, 0.43194]** erosion-weighted, i.e. **our
+$LS$ is 2.3151x to 3.9768x the level $\alpha=11.8$ is paired with**, and the basin total falls from
+**299.5387** to **129.3840** (hybrid) and **75.3235 Mt/yr** (source read whole). Rescaling the
+pre-registered guard band by that bracket turns the expected 5.9-23.6 into **1.484-10.194** and the
+hard stop 35.4 into **8.902-15.291**; at the adopted point both collapse to single numbers,
+**2.9672** and **8.9017**.""",
+    means=r"""**This was the single highest-value open item in the whole sediment phase; it is now
+decided on source grounds, and the decision makes the answer worse.** Because MUSLE is linear in
+$LS$, the factor applies directly to the level. **Read the interval correctly: it is not
+uncertainty.** All four levers are **CITED** with a single admissible reading each, so the source
+formulation read whole is a **POINT at x0.25146**; x0.43194 is a documented **hybrid** kept only
+because it is what was published; and the span between them, $\ln(0.43194/0.25146) = 0.5410$, **is
+the $L$-form lever** and nothing else. The earlier bracket **x0.333-x0.421 / "2.37x-3.00x" is
+superseded**, and its lower endpoint was built on a x0.790 that does not isolate the $L$ form -
+it factorises as $0.852262\times0.926925$ and was measured on the uncapped `ls2d` column rather
+than the engine's `ls2d_hs`. It also demolishes the reassurance that the unfitted $\alpha = 11.8$
+sits comfortably inside its registered band: at the adopted point the like-for-like reference is
+**2.9672**, so 11.8 sits *above* its own corrected hard stop of 8.9017. **Four things this figure
+does NOT license.** It does not license netting this factor against the upward corrections
+elsewhere in the notebook - a formulation error is resolved on source grounds, not cancelled by
+another factor. It does not license re-opening the choice because a total is unattractive; that
+outcome was pre-registered precisely so it could not be treated as evidence. It does not license
+quoting the rescaled $\alpha$ numbers as a **test** - they are bookkeeping about the *pairing* of
+$\alpha$ with an $LS$, they pass and fail nothing, and $\alpha=11.8$'s like-for-likeness with any
+2-D contributing-area $LS$ is **NOT SETTLED with no band offered**. And it does not license reading
+A3's decision as a change to this notebook: **no engine default has moved**, every number after
+section 3.6 is still at `V0` with $f_{LS} = 1.000$, the **LS level remains UNVALIDATED**, C3 stays
+**OPEN** and C4.3 stays **BLOCKED**.""")
 
 # ============================================================ 4 q_peak
 md(r"""## 4 - $q_{peak}$: what a daily model does about an instantaneous peak
@@ -2440,7 +2655,10 @@ CLAUSES = [
     ('1  the factor chain is fully explained by evidence-based corrections', 'MET',
      '363.4245196 reproduced to the last stored digit (section 5.6)'),
     ('2  no decision left unresolved', 'NOT MET',
-     'the LS FORMULATION level (section 3.6): ours is 2.37x-3.00x the level alpha = 11.8 belongs to'),
+     'the LS FORMULATION level (section 3.6): ours is 2.3151x-3.9768x the level alpha = 11.8 is '
+     'PAIRED with. The formulation is now DECIDED on source grounds (docs/37 A3: ADOPT-SOURCE, '
+     'buarque_2015_dg, CITED) but RECORDED and NOT EXERCISED - no engine default moved, the LS '
+     'LEVEL stays UNVALIDATED, and clause 2 also needs the LS SHAPE decision'),
     ('3  the independent audit agreed with the decisions', 'NOT ESTABLISHED',
      'the three 2026-08-11 decisions (C revision, SDR retirement, guard set) are unaudited'),
     ("4  implied SDR is physically plausible (0.05-0.30)", 'RETIRED',
@@ -2534,7 +2752,8 @@ defect:** our
 basin mean is now 1.689x the measured sub-basin mean yield, up from 1.402x, and a *rise* is what
 should happen, since gross erosion must exceed yield. Finally, note the trap in the scoreboard:
 clauses 2 and 4' are **the same lever pointing opposite ways** - resolving the topographic
-formulation would lower the model by 2.4-3.0x while clause 4' asks for 1.03-2.27x more. Resolving
+formulation would lower the model by **2.3151x-3.9768x**, and by **3.9768x at the point actually
+adopted** (`docs/37` A3), while clause 4' asks for 1.03-2.27x more. Resolving
 it in the direction its own source argues for takes the model *further* from clause 4', and that
 must be reported rather than quietly averaged away.""")
 
@@ -2773,7 +2992,9 @@ Each of these was written down, acted on, and then measured. Listing them is the
 | "revising $C$ is worth 2-5x and covers the residual" | overstated by ~2x, in the flattering direction | the sourced revision measures **x1.2043**, because Bare moves *down* |
 | "the ENSO ratios are unchanged by the $C$ revision because every window rescales identically" | right in substance, **wrong in mechanism** - a row-wise revision is not a uniform multiplier | the primary ratio moves +0.03 % and the sensitivity ratio +1.13 %; per-day basin ratio spans 0.7258-1.4889 |
 | "the flood-peak bias is worst at the largest gauges" | **refuted** | $\rho(R_{AMS},\text{area}) = +0.088$, $p = 0.49$ - indistinguishable from zero |
-| "$\alpha = 11.8$ is now a like-for-like reference" (after the unit fix) | true in **units**, false in **level** | our $LS$ measured at 2.37x-3.00x the source formulation's level on the same 90 m grid |
+| "$\alpha = 11.8$ is now a like-for-like reference" (after the unit fix) | true in **units**, false in **level** | our $LS$ measured at **2.3151x-3.9768x** the source formulation's level on the same 90 m grid, and **3.9768x at the adopted point** |
+| "our $LS$ is 2.37x-3.00x the source level, and the x0.502 $m$ lever is his eq. 14" | **both wrong, and independently** | the bracket is **[0.25146, 0.43194]** erosion-weighted $\Rightarrow$ **2.3151x-3.9768x**, because the old lower endpoint's x0.790 does not isolate the $L$ form ($0.852262\times0.926925$, on the wrong column); and **eq. 14 is a step function on slope percent**, worth **x0.522043**, while the measured x0.502 was $\min(m,0.5)$, a **cap** nobody published |
+| "the three $LS$ levers multiply out, so $0.502\times1.714\times0.351\approx0.421$" | **false, and it was printed as if it were a check** | the exact erosion-weighted product is **0.3205244** against a joint of **0.431944**: **joint / product = x1.34762**. A product of single-lever factors is never the joint |
 | "SWAT's hectare form is the form $\alpha = 11.8$ is normally quoted with" | **false**, and it was in this engine's own docstring | SWAT's *code* (`ysed.f`) computes `surfq[mm] * peakr * 1000. * hru_km[km2]`, which is m<sup>3</sup>; HEC-HMS states the metric form with $Q$ in m<sup>3</sup> and no area term at all |
 | "Buarque's MUSLE area $A$ is the same km<sup>2</sup> area his eq. 7 uses" | **false**; the assertion was deleted from the engine docstring | this project's own source review, written 62 minutes *earlier*, says both texts label the MUSLE area in hectares |
 | a 740 m LS run is adequate | it is not: coarse grids impose an $LS$ floor | median $LS$ 7.508 at 740 m vs 12.774 at 90 m, same code, same constants |
@@ -2804,15 +3025,24 @@ those cells was explicitly rejected because it would hide a known input problem 
    are unfitted published constants, and the value is a registered **lower bound**.
 2. **Not** that the model level is right because it now exceeds the outlet load. That comparison
    uses the wrong denominator (section 6.3), and the replacement clause **fails** (section 6.4).
-3. **Not** that the topographic factor is settled. Its *level* is UNVALIDATED, measured at
-   2.37x-3.00x the level the coefficient belongs to, and resolving it makes the answer worse.
+3. **Not** that the topographic factor is settled. Its *level* is **UNVALIDATED** (`docs/42` G4.2),
+   measured at **2.3151x-3.9768x** the level the coefficient is *paired* with, and resolving it
+   makes the answer worse. The *formulation* is now decided on source grounds (`docs/37` A3:
+   ADOPT-SOURCE, `buarque_2015_dg`, **CITED** on all four levers) but that decision is **RECORDED
+   and NOT EXERCISED** - no engine default moved, every number in this notebook is still at `V0`
+   with $f_{LS}=1.000$ - and **a cited formulation is not a validated level.**
 4. **Not** that any load may be quoted without its conventions. After section 5 a load is **363x
    ambiguous** in unit convention and 1.2x (at the band endpoints 0.43x-7.62x) ambiguous in cover
    factor. `SedParams.convention_summary()` and the geometry's cover-factor provenance must travel in
    the same table as the number.
 5. **Not** that the upward corrections may be stacked. Applying a cover revision and a peak
-   correction on top of a topographic factor that is 2.4-3.0x too high for its own coefficient would
-   make the sum *look* like agreement with the anchor for entirely the wrong reason.
+   correction on top of a topographic factor that is **2.3151x-3.9768x** too high for its own
+   coefficient would make the sum *look* like agreement with the anchor for entirely the wrong
+   reason.
+6. **Not** that the $LS$ factors may be composed by multiplying single levers. They **interact**:
+   the exact erosion-weighted product of the three is 0.3205244 against a measured joint of
+   0.431944, i.e. **joint / product = x1.34762**. A product of single-lever factors is never the
+   joint factor, in this notebook or anywhere else in the project.
 6. **Not** that any figure in t km<sup>-2</sup> yr<sup>-1</sup> here is a sediment **yield**. Every
    one is model-internal specific erosion. Gauge-referenced yields remain embargoed.
 7. **Not** that the ENSO ratio in section 8 is a result. It is a first look at an uncalibrated
@@ -2978,8 +3208,10 @@ md(r"""## 9 - What this stage established, and what it did not
 
 1. **The level.** The replacement closure clause fails: the model is 1.03x-2.27x under-erosive
    against three published levels, and 2.03x-2.27x on the only leg with a like-for-like denominator.
-2. **The topographic formulation.** Ours is 2.37x-3.00x the level the coefficient belongs to.
-   Unresolved, and resolving it in the direction its own source argues for makes the level worse.
+2. **The topographic LEVEL.** Ours is **2.3151x-3.9768x** the level the coefficient is *paired*
+   with, and **3.9768x at the point now adopted**. The *formulation* is decided on source grounds
+   (`docs/37` A3, **CITED**) but **RECORDED, not EXERCISED**: no default moved, the **LEVEL is still
+   UNVALIDATED**, and resolving it in the direction its own source argues for makes the level worse.
 3. **Any individual factor.** Seven scalars form one identifiable product; none of them can be
    validated by any fit.
 4. **Comparability with a gauge.** There is no channel-deposition step, so the model's output is not

@@ -26,8 +26,19 @@ Cesar, Ciénaga Grande; several run to 2018), not the mainstem (Calamar, Puerto 
 discharge only). datos.gov.co has no IDEAM suspended-sediment measurement dataset (only "Muestreo Geoquímico Sedimentos",
 unrelated). No geoservice/WFS serves time series. The literature's Calamar sediment (1975–2010) therefore requires a
 **formal data request to IDEAM** (or the advisor's own data).
-**Status:** ESCALATED TO ADVISOR — memo drafted requesting mainstem sediment data + confirming years (2011 vs 2015–2016)
-and region. Decision (Path A vs B) depends on his answer.
+**Status:** ~~ESCALATED TO ADVISOR — memo drafted requesting mainstem sediment data + confirming years (2011 vs 2015–2016)
+and region. Decision (Path A vs B) depends on his answer.~~
+> ✅ **RESOLVED — no advisor action is pending. Stamped 2026-08-12.** The escalation was overtaken
+> twice. (1) A colleague retrieved IDEAM sediment as the variable **CM** ([docs/12](12_sediment_data_status.md)):
+> *"we now have observed daily sediment concentration in **both study years**, across several
+> sub-basins, at tributary stations."* (2) Stage C1 then measured the network end to end —
+> [docs/32](32_ssc_qc_audit.md) §R6: **79/79 stations classified, each with a deciding
+> measurement**; 28 mapped to minibacias; **6 usable + 12 usable-with-caveat = 18**. The mainstem
+> limitation is real but is now quantified rather than blocking: *"`21237020` ARRANCAPLUMAS
+> (Magdalena — **the only Magdalena-trunk SSC station in the entire network**) … This is the
+> quantitative form of 'Phase C is blocked on mainstem SSC'."* The path question was settled by
+> the team, not the advisor: [docs/30](30_phase_c_plan.md) §1 — *"The advisor was asked the Phase B
+> scope question … and **declined to answer** — told the team to decide."*
 
 ## Q2 — Confirm the study years
 
@@ -37,7 +48,13 @@ and region. Decision (Path A vs B) depends on his answer.
 **Update (2026-07-27):** ONI classification (see `07_enso_years.md`): 2010–2011 = **strong La Niña**;
 2015–2016 = **very strong El Niño**; **2017 = weak La Niña / neutral, NOT El Niño**. Recommend
 **La Niña 2011 vs El Niño 2015–2016** (drop 2017). Cleanest strong opposite-phase contrast in the recent record.
-**Status:** RECOMMENDATION READY — 2011 vs 2015–2016, to approve with the advisor.
+**Status:** ~~RECOMMENDATION READY — 2011 vs 2015–2016, to approve with the advisor.~~
+> ✅ **DECIDED — no advisor approval is pending. Stamped 2026-08-12.** The recommendation was
+> adopted by team decision, and re-decided explicitly under the Phase C plan:
+> [docs/30](30_phase_c_plan.md) §1 — *"**Decision: keep 2011 (La Niña) vs 2015–16 (El Niño).**"*
+> The ONI grounds are [docs/07](07_enso_years.md), which also settles the placeholder: *"**2017 is
+> NOT an El Niño year**; it was weak La Niña/neutral."* The observed contrast this pairing
+> produces is measured in [docs/34](34_observed_enso_contrast.md).
 
 ## Q3 — Whole basin or sub-basin?
 
@@ -50,7 +67,12 @@ build and validate the full MGB-SA workflow on a **substantial Andean pilot** fi
 to a mid-basin gauge (~Puerto Berrío / Barrancabermeja), ~80,000–110,000 km², at full 30 m (well under the limit) —
 then scale to the whole basin (coarser resolution or tiling). Exact pilot outlet to be fixed when the calibration
 gauge is chosen from IDEAM. **To confirm with the advisor.**
-**Status:** DECISION PROPOSED — pilot-first at 30 m; full-basin scaling method still to confirm.
+**Status:** ~~DECISION PROPOSED — pilot-first at 30 m; full-basin scaling method still to confirm.~~
+> ✅ **DECIDED AND BUILT — no confirmation is pending. Stamped 2026-08-12.** The pilot-first route
+> was not taken: the whole basin was built directly at **90 m**. The locked domain is
+> [docs/15](15_domain_correction.md) (east edge −72.9 → −72.3), and the delivered model is
+> **8,672 minibacias over 257,097 km²** — the figure Phase A closed on (CLAUDE.md "Phase status")
+> and that every downstream doc uses.
 
 ## Framing for the EMINES defense
 

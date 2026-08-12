@@ -1,6 +1,20 @@
 # PROGRESS — the whole project as one checklist tree
 
 > **STATUS — SUPERSEDED by `progress_map.html`** (repo root, open in a browser), which is the live tracker and is kept current. ⚠ The document index near the bottom of this file still carries the **pre-collision numbering** (33/34/35); the correct assignment is 33 = C2b pre-registration · 34 = C2 observed contrast · 35 = q_peak registration · 36 = peak-deficit adjudication. Entry point: [docs/00_INDEX.md](00_INDEX.md).
+>
+> ⚠ **WIDENED 2026-08-12 — the drift is not only in the numbering.** The warning above named the
+> document index; the **whole Phase C checklist tree below has also fallen behind**, and the "next
+> executable step is C0" line dates from 2026-08-10. Measured against the owning docs: **C0 is
+> complete** ([docs/26](26_phase3_refit.md) Addendum), **C1 is complete** ([docs/32](32_ssc_qc_audit.md)
+> R1–R7, 79/79 classified), **C2 is complete** ([docs/34](34_observed_enso_contrast.md)), **C2b ran**
+> ([docs/33](33_c2b_preregistration.md) — H-PEAK refuted, the H2E-S refit rejected), **C3 is built but
+> OPEN** ([docs/37](37_c3_closure.md), four amendments), and **C4.3 — the sediment calibration search
+> — is formally BLOCKED**: [docs/47](47_c4_entry_verdict.md), *"`C4.3-BLOCKED-UNTIL-LS-LANDS`.
+> **C4.3 may not start.**"* — a block upheld by `docs/46` §6.4, `docs/51` §4, `docs/53` and
+> `docs/37` A3.4. **The document index below also stops at 35; the numbered docs now run to 53.**
+> Per RULE 0 the tracker owns status, so the checklist is **not** restated here item by item — but
+> the *fact* claims and the two open registers have been corrected in place below. Read
+> `progress_map.html`.
 
 **What this is.** A single, maintained map of every phase, stage, subtask, document, and
 key artifact in `magdalena-mgb-sed`, with a status marker on each. It is the *index of
@@ -44,7 +58,11 @@ its nine findings (F1–F9) were just corrected in place. Yields (t/km²/yr) rem
 
 ## Phase C — sediment 🟡 ACTIVE (plan docs/30 + docs/31)
 
-### C0 — freeze & report H2E ⬜ **NEXT** *(→ Claude Code session)*
+> **Live status is the top banner + `progress_map.html`.** The per-subtask boxes below are the
+> ORIGINAL plan; the stage headers are kept current. As of 2026-08-12: **C0/C1/C2 ✅, C2b ✅ ran,
+> C3.1 enacted (C3 OPEN), C4.3 🔴 BLOCKED — sediment NOT calibrated.**
+
+### C0 — freeze & report H2E ✅ **COMPLETE** (docs/26 addendum; `h2e_drivers.npz` 521 MB)
 - [ ] ⬜ C0.1 extract adopted parameter set → `parameters_H2E.csv`
 - [ ] ⬜ C0.2 **reproduction gate** — recomputed F must match 0.25931 to ≤1e-8 *(blocks all downstream)*
 - [ ] ⬜ C0.3 full sim + per-period metrics → `q_gauge_H2E.npz`, `metrics_fleet.csv`
@@ -52,7 +70,7 @@ its nine findings (F1–F9) were just corrected in place. Yields (t/km²/yr) rem
 - [ ] ⬜ C0.5 precompute sediment drivers → `h2e_drivers.npz` (~250 MB, gitignored)
 - [ ] ⬜ C0.6 commit `results: adopt H2E …`
 
-### C1 — SSC-quality gate 🟡 *the real unblock* — **pre-registered 2026-08-10 (docs/32); execution → Claude Code**
+### C1 — SSC-quality gate ✅ **COMPLETE** — docs/32, 79/79 classified (6 usable + 12 caveat = 18 usable)
 - [x] 📌 **C1.0 network-size decision TAKEN** — Phase C runs now on the **28-station mapped subset (24 safe)**; the 46-unmapped coordinate fetch is moved to background **B5** (non-gating). C1 is no longer blocked (docs/31 C1.0, docs/30 §5.4)
 - [ ] ⬜ C1.1 coverage census → `sediment_coverage_census.csv` (pre-register the N threshold)
 - [ ] ⬜ C1.2 sampling-selectivity (transposed zero-suppression) — null = **calendar-regular** stations (F4)
@@ -62,14 +80,14 @@ its nine findings (F1–F9) were just corrected in place. Yields (t/km²/yr) rem
 - [ ] ⬜ C1.6 **classification** — 79/79 usable / caveat / excluded, each with its measurement → `sediment_inventory_qc.csv`, `docs/32`
 - [ ] ⬜ C1.7 commit
 
-### C2 — observed ENSO contrast (model-free) ⬜ — **1 session, publishable alone**
+### C2 — observed ENSO contrast (model-free) ✅ **COMPLETE** — docs/34 (La Niña 2.8–4.6× El Niño, 22/22 same sign) · C2b ✅ ran (docs/33: H-PEAK refuted, H2E-S refit rejected → peak deficit STRUCTURAL, sediment a lower bound)
 - [ ] ⬜ C2.1 pre-register windows + estimators (rates-only comparability rule) → `docs/33`
 - [ ] ⬜ C2.2 compute flux (t/day), monthly shape, bootstrap CIs → `observed_enso_contrast.csv`
 - [ ] ⬜ C2.3 consistency checks (estimator a vs b; downstream monotonicity)
 - [ ] ⬜ C2.4 literature anchor — reconcile vs docs/06 (~145–169 Mt/yr), fetch Restrepo figure
 - [ ] ⬜ C2.5 commit
 
-### C3 — MUSLE hillslope erosion ⬜ — **2–3 sessions**
+### C3 — MUSLE hillslope erosion 🟡 **BUILT & RUN — C3 OPEN** (docs/37 A1–A3) · C3.1 LS *formulation* ENACTED (A3: ADOPT-SOURCE `buarque_2015_dg`); basin erosion 299.5387 Mt/yr; C3.5 still 🔴 (musle.py absent)
 - [ ] ⬜ C3.1 LS2D factor from conditioned DEM → `minibacia_ls2d.csv`
 - [ ] ⬜ C3.2 C & P factors from 8 land classes → `urh_cp_factors.csv`
 - [ ] ⬜ C3.3 qpeak proxy — **pre-register** choice + state α<1 bias (slope from nb07 DEM, not shipped)
@@ -77,7 +95,7 @@ its nine findings (F1–F9) were just corrected in place. Yields (t/km²/yr) rem
 - [ ] 🔴 C3.5 cross-check vs impl-B `musle.py` — **file not in repo; acquire first** (F5)
 - [ ] ⬜ C3.6 first uncalibrated basin run — order-of-magnitude gate only
 
-### C4 — channel transport + sediment calibration ⬜ — **2–3 sessions**
+### C4 — channel transport + sediment calibration 🔴 **C4.3 BLOCKED — sediment NOT calibrated** (docs/47 `C4.3-BLOCKED-UNTIL-LS-LANDS`; four blockers in docs/47 §9.2, the LS *level* is the binding one)
 - [ ] ⬜ C4.1 transport + Momposina sink limitation stated in docstring
 - [ ] ⬜ C4.2 **pre-register** cells (α, β, settling); CAL 2012–14; ENSO out-of-sample → `docs/34`
 - [ ] ⬜ C4.3 search, report, verdict (calibrate upstream of Mompós only)
@@ -90,7 +108,7 @@ its nine findings (F1–F9) were just corrected in place. Yields (t/km²/yr) rem
 
 ## Background track 🟡 (bounded, never gating — docs/30 §5, docs/31)
 
-- [ ] 🟡 **B1 CHIRPS refit** — merge attempted & **rejected** (r 0.447✅ / volume +7.5%🔴); refit re-spec'd to fit maps on **selectivity-passing stations** (F3), ≤2 sessions then stop
+- [x] ✅ ~~🟡 **B1 CHIRPS refit** — merge attempted & **rejected** (r 0.447✅ / volume +7.5%🔴); refit re-spec'd to fit maps on **selectivity-passing stations** (F3), ≤2 sessions then stop~~ → **CLOSED-NEGATIVE 2026-08-12. This is not pending work.** The refit was registered as **H-CHIRPS** ([docs/33](33_c2b_preregistration.md) §1), executed, and was a **no-op**: docs/33 §1 — *"The registered intervention turned out to be a **no-op**: the quantile maps already included the inferred-dry days, so **the diagnosed cause in docs/18 §15.3 was wrong**."* The re-run is **bit-identical** and the volume gate fails again at **2,188.5 mm/yr (+7.47 %)**; [docs/18](18_hydrology_journal.md) §15.5: *"**no route to a passing volume gate exists inside the merge code.**"* **No fix is available, no v3 forcing exists, and the surviving hypothesis (the 139 residual rain-selective stations) is UNTESTED and lies upstream of the merge.** Matches `progress_map.html`, which already carries it as closed, and [docs/30](30_phase_c_plan.md) §5 item 1
 - [ ] ⬜ B2 k_int_frac floor probe (0.02→0.005, one seed) — 6–7/8 v2 seeds sit on it
 - [ ] ⬜ B3 external catchment areas (IDEAM catalogue / HydroSHEDS) — **unblocks yields only**
 - [ ] ⬜ B4 remote-sensing SSC cross-check (optional)
@@ -106,10 +124,45 @@ its nine findings (F1–F9) were just corrected in place. Yields (t/km²/yr) rem
 7. 🚫 catchment areas unreliable (→ B3, blocks yields) · 8. 🔴 `is_intake` regex · 9. ✅ `PET_READY` file-count gate ·
 10. 🔴 energy-floor stale denominator · 11. 🔴 climatology benchmark not reproducible (use ratio) · 12. 🔴 constrained ordering relocates compensation
 
+> ⚠ **Reconciled 2026-08-12 against the owning docs. Two entries move, in opposite directions.**
+> - **Item 1 — CHIRPS merge: ~~🟡~~ → ✅ CLOSED-NEGATIVE, not partial.** It is the same item as B1
+>   above; see that entry for the quoted read-out. [docs/18](18_hydrology_journal.md) §15.5: *"This
+>   closes the CHIRPS question as it currently stands."*
+> - **Item 9 — `PET_READY` file-count gate: ~~✅~~ → 🔴 NOT FIXED.** Measured on disk 2026-08-12:
+>   `src/nbgen/make_nb11.py:461` and `notebooks/11_rainfall_pet_forcing.ipynb:819` both still read
+>   `PET_READY = len(ext) >= 132`. That is still a **filename count**, which is exactly the hole
+>   [docs/18](18_hydrology_journal.md) §14.3 recorded: *"`era5land_ext_2008_M06.nc` was
+>   **internally corrupt** … at a perfectly normal 43.69 MB, so neither a name check nor a size
+>   check could see it. … **`PET_READY = len(ext) >= 132` in nb11 still has this hole** — it counts
+>   names."* Carried as docs/18 §8 item 17. This tracker was wrong; the doc was right. *(Notebook
+>   and `src/` are outside this pass's file scope, so only the register entry is corrected.)*
+> - **Items 2–8 and 10–12 re-checked and unchanged.** Item 2 (PET review) is ✅ on the ET-*function*
+>   half only — [docs/29](29_seed_expansion.md) rule (b) *"SUCCESS, all three conditions"* — with
+>   the residue carried as docs/31 register #2 below; the 49 mm/yr energy deficit itself is not
+>   retired. Item 5 (the collaborator drops sparse gauges where we repair them) is genuinely still
+>   open: the advisor declined the *Phase B scope* question ([docs/30](30_phase_c_plan.md) §1),
+>   which is a **different** question and does not close this one.
+
 ### docs/31 known-open register (Phase C)
 1. ✅ **RESOLVED** railed-count 3-vs-2 (review §3) · 2. 🔴 kc_mult 1.66/1.84 above FAO-56 ≤1.2 bar · 3. 🔴 k_int_frac floor (→ B2) ·
 4. 🟡 stale "Phase C blocked" prose in docs/12/19/21/24/25/28 · 5. 🔴 Restrepo anchor unverified (→ C2.4) ·
 6. 📌 ENSO window bracketed (C2.1) · 7. 📌 H2E adopted from n=2 seeds (as pre-registered)
+
+> ⚠ **Reconciled 2026-08-12 against the owning docs. One entry closes.**
+> - **Item 5 — Restrepo outlet-flux anchor: ~~🔴 unverified~~ → ✅ RESOLVED by C2.4.** The owning
+>   doc is [docs/34](34_observed_enso_contrast.md), which fetched both figures with citations:
+>   *"**Restrepo, J.D. & Kjerfve, B. (2000)** … **144 Mt/yr**"* and *"**Restrepo, J.D. & Escobar,
+>   H.A. (2018)** … **184 Mt/yr**, an upward revision covering 1980–2010."* The "~140–180 Mt/yr"
+>   placeholder is superseded by that named pair; docs/31's own copy of the register still reads
+>   unresolved and belongs to that document's owner.
+> - **Item 4 — stale "Phase C blocked" prose: still 🟡, and this pass moved two of the files.**
+>   `docs/16` and `docs/18` (which the docs/31 list does not name, but which are the two mandatory
+>   pre-reads) are back-annotated as of 2026-08-12. docs/12, 19, 21, 24, 25, 28 are unchanged here
+>   — other owners. Also tracked as [docs/00_INDEX.md](00_INDEX.md) §7 defect 5.
+> - **Items 1, 2, 3, 6, 7 re-checked and unchanged.**
+> - **Not in either register, and it should be: C4.3 is BLOCKED.** [docs/47](47_c4_entry_verdict.md)
+>   is the authority on whether the sediment calibration search may start, and the answer is **no**.
+>   Neither register above predates it — they predate `docs/47` entirely.
 
 ### Embargo
 - 🚫 **Yields t/km²/yr NOT reported** until areas externally resolved (B3) — docs/23. Flux (t/day) only.
@@ -159,4 +212,5 @@ its nine findings (F1–F9) were just corrected in place. Yields (t/km²/yr) rem
 - **2026-08-10** — 📌 ENSO pairing **kept 2011 vs 2015-16** (forcing bound to 2008–2018; alt pairing un-runnable) — recorded in docs/30 §1.
 - **2026-08-10** — 📌 Phase B closed on ceiling; **H2E adopted** (docs/30 §1).
 - **2026-08 (docs/29)** — seed expansion: H1≈H2 (not separable); **H2E succeeded** on every pre-registered condition.
-- **2026-08 (docs/18 §15)** — CHIRPS merge **rejected** (volume gate +7.5%); fix identified.
+- **2026-08 (docs/18 §15)** — CHIRPS merge **rejected** (volume gate +7.5%); ~~fix identified~~ → **STRUCK 2026-08-12: no fix was identified.** The candidate fix was registered as H-CHIRPS, run, and was a **no-op** — [docs/33](33_c2b_preregistration.md) §1: *"the diagnosed cause in docs/18 §15.3 was wrong."* [docs/18](18_hydrology_journal.md) §15.5: *"no route to a passing volume gate exists inside the merge code."* One **untested** upstream hypothesis survives (the 139 residual rain-selective stations); it cannot be tested inside the merge.
+- **2026-08-12** — ⚠ **Documentation-repair pass.** `docs/16` and `docs/18` (both mandatory pre-reads in CLAUDE.md) carried pre-Phase-B status framing and have been given dated STATUS banners and in-place back-annotations; `docs/18` §8 items 2, 5 and 20 were struck against §15/§15.5 of the same document; the two open registers below were reconciled against their owning docs. Process record: `docs/agents/journal_fix-prereads-registers.md`.

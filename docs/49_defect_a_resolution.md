@@ -2,9 +2,38 @@
 
 **Written 2026-08-11** by the `defect-a` agent (process record:
 `docs/agents/journal_defect-a.md`). This document does **one** job: settle **Defect A** of
-`docs/46_ls_preregistration_DRAFT.md` §1.1 — *the row published as ×0.502 and labelled "`m`
-hard-capped at 0.5 (his eq. 14)" is a **cap**, while eq. 14 is a **step function*** — with
-measurements, so that `docs/46` can be frozen or amended on evidence instead of inherited.
+~~`docs/46_ls_preregistration_DRAFT.md`~~ → **`docs/46_ls_preregistration.md`** §1.1 — *the row
+published as ×0.502 and labelled "`m` hard-capped at 0.5 (his eq. 14)" is a **cap**, while eq. 14
+is a **step function*** — with measurements, so that `docs/46` can be frozen or amended on
+evidence instead of inherited.
+
+> **[WARN] TWO DATED CORRECTIONS, 2026-08-12 — neither moves a number measured below.**
+>
+> 1. **The filename, and the status it implied.** `docs/46_ls_preregistration_DRAFT.md`
+>    **does not exist**. The live file is **`docs/46_ls_preregistration.md`**, headed
+>    *"# 46 — Resolving the LS **level**: pre-registration — **FROZEN (READ OUT)**"*, frozen
+>    **2026-08-11** with **§10** as its amendment slot. The forward-looking clause above —
+>    *"so that `docs/46` can be frozen or amended"* — **has since happened**: `docs/46` **is
+>    frozen**, and it may now be amended **only** through §10. Every `§`-reference in this
+>    document still resolves; only the path and the draft status were stale
+>    (`docs/00_INDEX.md` §7 defect 10).
+> 2. **The `0.1644` materiality bar this document measures against is STRUCK.** `docs/52`
+>    (2026-08-11) struck it at all fifteen of its sites and replaced it with **NO NUMBER**;
+>    `docs/46` §2.0 enacts that verbatim — *"there is no materiality bar … this document
+>    contains no statistical materiality threshold."* Wherever `0.1644` appears below, read it
+>    as **the bar that was in force when this was written**, not as a live threshold, and do not
+>    reconstruct a replacement from it.
+>    **What this does NOT change, per the owning documents:** `docs/52` §5 lists **Defect A**'s
+>    own statistics — **0.0036** (upper) and **0.0010** (lower) — under *"Explicitly NOT
+>    bar-dependent … immaterial at 0.1644 **and** at every construction up to 1.2833"*, so
+>    **§1–§5's verdict (REAL as a reading defect, IMMATERIAL as a level correction) stands on a
+>    threshold-free ground and is unaffected.**
+>    **What it DOES change is one label, and it is named here rather than buried:** `docs/52`
+>    §6 (site `:189`) **retires (R4) as a refutation clause** — H-M's field content is a **sign**
+>    prediction, the sign test is **(R5)**, and the step-vs-cap magnitude **×1.0088** becomes a
+>    *reported* quantity. So §2's *"(R4) FIRES"* reading is superseded as a **refutation**; the
+>    measurement it reports is not. The **reading** clause (eq. 14 step ≠ `min(m,0.5)` cap) is
+>    independent, **CITED**, and stands — which is this document's actual finding.
 
 **Scope, stated first.** It edits nothing frozen. `docs/35`, `docs/37`, `docs/42`, `docs/43`,
 `docs/45`, `docs/46` and `docs/47` were read and **not** edited; §6 records what is *owed* to
@@ -342,7 +371,7 @@ failure. It SHA-256s `urh_ls2d.csv`, `minibacia_ls2d.csv`, `h2e_drivers.npz` and
 
 | document | relation |
 |---|---|
-| `docs/46_ls_preregistration_DRAFT.md` | **§1.1 Defect A is this document's subject.** §2.2's (R4) **fires** and (R5) does not; the V4/V4′ swap in §3.1 must be fixed before freezing (§6 item 1) |
+| ~~`docs/46_ls_preregistration_DRAFT.md`~~ → **`docs/46_ls_preregistration.md`** *(filename corrected 2026-08-12; no `_DRAFT` file exists and `docs/46` is **FROZEN (READ OUT)**, §10 its amendment slot)* | **§1.1 Defect A is this document's subject.** ~~§2.2's (R4) **fires**~~ → **(R4) is RETIRED as a refutation clause** (`docs/52` §6 site :189, enacted in `docs/46` §2.0/§2.2); its ×1.0088 survives as a **reported** magnitude, and (R5) — the sign test — still does not fire. The V4/V4′ swap in §3.1 ~~must be fixed before freezing~~ → **was fixed before the freeze** (`docs/46` §3.1 *amendment (b), 2026-08-11* — *"V4 AND V4′ WERE SWAPPED IN THE DRAFT, AND THE TABLE BELOW IS THE CORRECTED ONE"*), so **§6 item 1 is DISCHARGED**. *(Separately, that V4 row's `f_area` cell prints **0.421475**, which its own **§10 amendment 2** (2026-08-12) restates to **0.42136300143291305** — the frozen body string stays as frozen by design.)* |
 | `docs/47_c4_entry_verdict.md` | §4.3's erosion-weighted bracket is reproduced here behind two gates; §3.1 R7's "proxy 2.51 % low" is reproduced (`|ln| = 0.0248`, inside the bar) |
 | `docs/37_c3_closure.md` | §4 candidate 0's ×0.502 label and line 206's proxy caveat — both addressed (§6 item 2, §3) |
 | `docs/35_qpeak_preregistration.md` §9.3 | the registered comparison this feeds; **not edited**, and the source formulation remains its registered default outcome |

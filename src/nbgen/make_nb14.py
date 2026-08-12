@@ -27,6 +27,39 @@ def code(s):
     C.append(("code", s))
 
 
+# ============================================================ status banner
+md(r"""> ### STATUS - annotated 2026-08-12 by agent `nb-banner-1217`. Nothing below this banner was rewritten.
+>
+> ### The parameters on this page are NOT the adopted ones.
+>
+> **What this notebook decided.** Two pre-registered forcing cells - **H1** (v1 forcing, new
+> objective) and **H2** (v2 forcing, new objective) - sharing engine, split, algorithm and two
+> seeds, with **H2 - H1** as the deliverable.
+>
+> **What happened to it.** H2 - H1 stands as a *finding* (the repair moved volume and left
+> correlation untouched; `docs/26`). **The H1-vs-H2 comparison itself did not survive**: the
+> seed expansion re-ran both cells at six seeds each and read them out as **NOT SEPARATED** -
+> gap **0.00915** against a maximum within-cell seed spread of **0.05082** (`docs/29` Rule (a)).
+> And both cells here rail parameters, which the rule written before the run calls a failure:
+> `docs/26` §5.1 - *"Anyone reading H2's numbers as a clean result is reading them wrong."*
+>
+> **What was adopted instead.** **H2E** = v2 forcing + this notebook's revised objective +
+> **FAO-56 threshold ET, theta_crit 0.6** - a cell that did not exist when this notebook ran.
+> It passed all three of its pre-registered conditions (`docs/29` Rule (b)), best seed
+> **20260901**, objective **F = 0.25931**, and stage C0 froze it into `parameters_H2E.csv`,
+> `q_gauge_H2E.npz` and `report_H2E.json` (`docs/26` Addendum, 2026-08-10).
+>
+> **The caveat that must travel with the adopted fit.** El Nino **skill over climatology is
+> -0.0005**: in the adopted configuration the dry phase sits **at** climatology, not above it
+> (`docs/26` Addendum A.5(b)).
+>
+> **Where the current state lives.** `docs/26` + its 2026-08-10 Addendum - the parameter record;
+> **read §5.1 before quoting any fitted parameter** · `docs/29` (the read-out) · `docs/30` §1
+> (why Phase B closed: by decision, at a measured input ceiling). Section 12.2's *"only
+> remaining untried lever"*, the CHIRPS-gauge merge, was subsequently **built, validated and NOT
+> adopted** (`docs/18` §15) and refuted again as **H-CHIRPS** on its **+7.5 %** volume gate
+> (`docs/33`), so the forcing is still **v2, gauge-only**; a merged **v3** does not exist.""")
+
 # ============================================================ title
 md(r"""# Notebook 14 - refit under a revised objective, on two pre-registered forcing cells
 

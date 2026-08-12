@@ -6,6 +6,15 @@ C = []
 def md(s): C.append(("markdown", s))
 def code(s): C.append(("code", s))
 
+md(r"""> # ⚠ STATUS 2026-08-12 — §5's CHIRPS decision WAS carried out, and the result was REJECTED. CHIRPS is **not** in the adopted forcing.
+>
+> **What this notebook decided (§5):** *"Gauges set the values; CHIRPS sets the spatial pattern between them"* — quantile-map CHIRPS onto the repaired gauge network and merge conditionally.
+> **What happened to that decision:** the merge was built exactly as prescribed (`src/merge_chirps_gauges.py`) and judged against two gates registered before the run. LOOCV **PASSED** (median daily r **0.447** > 0.429); the volume gate **FAILED** (**2,188.5 mm/yr** against the required **[2,016.0, 2,056.8]**, +7.5 %) — verdict **DO NOT ADOPT** (`docs/18` §15). Re-registered as **H-CHIRPS** (`docs/33` §1) and re-measured: the registered fix turned out to be a **no-op**, the re-run was bit-identical, the volume gate failed again. **H-CHIRPS is REFUTED by its own volume gate**, the cause diagnosed in `docs/18` §15.3 was **wrong** (corrected in §15.5), and **no route to a passing volume gate exists inside the merge code**.
+> **Where the current state lives:** the adopted forcing is **v2 — zero-suppression repair + deterministic IDW, GAUGE-ONLY** (`docs/16` §4.1, `docs/23` §11). A CHIRPS-merged forcing would be **v3**; **v3 does not exist** and would require a new pre-registration (`docs/30` §1, §5). See the **"Forcing versions — v1 / v2 / v3, stated once"** section of `docs/00_INDEX.md`.
+> **Also annotated below, in place:** §1's and §5's *"55 of 294 stations"* (this notebook's own executed output already prints **70**; the repair finished at **153**, `docs/18` §10.2), §3's ERA5 window, and §5's limitations 3 and 4.
+>
+> **Nothing below this banner has been rewritten.** The 2026-08-12 notes are additions; every original conclusion stands exactly as written, because the record of what was believed at the time is itself evidence.""")
+
 md(r"""# Notebook 10 - Rainfall dataset selection and preprocessing
 
 Which rainfall data should force MGB-SA? Three questions, in the order they have to be answered:
@@ -81,7 +90,11 @@ wet "bullseyes" in notebook 11's mean-annual rainfall map and inflated some annu
 0.0 mm and marked `Inferido_seco`. Nothing is invented outside the span, and healthy stations are
 untouched. The test that this is the right diagnosis: the repair has to move the totals into a
 plausible range - and it does, landing them on top of the healthy stations rather than anywhere
-arbitrary.""")
+arbitrary.
+
+> **⚠ SUPERSEDED COUNTS — note added 2026-08-12; the text above is unchanged.**
+> ~~55 of 294 stations~~ → **70**, which is what the executed cell below actually prints (*"flagged 70 / 294 stations (24 %)"*, 121,785 inferred dry days). The prose was written against the first 55-station pass and was never updated when the notebook was re-executed; the diagnostic figures in it (*"~8 %"* dry fraction, *"near 20 mm"* median, *"9,000-12,000 mm/yr"*) belong to that earlier pass too — the live output reads 0.11, 5.0 mm and 3,863 → 1,794 mm/yr.
+> **And 70 is not the end state either.** A second detector (`src/repair_precip_selectivity.py`, `docs/18` §10) took the repair to **153 stations and 240,158 inferred-dry station-days**, writing `precip_gauges_daily_qc_v2.csv`. That v2 file — not the `precip_gauges_daily_qc.csv` this notebook reads — is what notebook 11 and the adopted forcing use. Owning document: **`docs/18` §10.2**; the defect itself is **`docs/16` §4.1**.""")
 
 code(r"""flag = rep[rep.zero_suppressed]
 hea = rep[~rep.zero_suppressed]
@@ -202,7 +215,9 @@ cell is an area average over ~5 km. Some disagreement is scale mismatch, not err
 gauge each morning (IDEAM convention 07:00), so a gauge "day" runs 07:00->07:00 local while CHIRPS is
 built on a different clock. A storm at 22:00 lands on *different calendar days* in the two records,
 which depresses daily correlation without either being wrong. Shifting CHIRPS by +/-1 day and taking
-the best alignment separates a timing artefact from a genuine skill deficit.""")
+the best alignment separates a timing artefact from a genuine skill deficit.
+
+> **⚠ Note added 2026-08-12.** CHIRPS is still held for **2009-2017**, but ~~the full 2009-2017 window that ERA5-Land also covers~~ → **ERA5-Land now covers 2008-2018**, and the model period is **2008-2018** (CLAUDE.md; notebook 11 §7). 2009-2017 is therefore the CHIRPS window alone, and it is also the window every basin-areal rainfall figure must be quoted with (`docs/18` §9.5, trap 9). The lag verdict itself is unchanged and is the owning record in **`docs/16` §4.2**.""")
 
 code(r"""import xarray as xr
 files = sorted(glob.glob(str(clim/'chirps_basin_*.nc')))
@@ -388,6 +403,24 @@ Quantile mapping rather than simple scaling, for a reason that is now measured: 
 factor fixing the volume bias would leave the extreme tail and the wet-day frequency uncorrected, and
 those are the two properties that drive MUSLE erosion.
 
+> **⚠ THIS DECISION WAS CARRIED OUT AND THE RESULT WAS REJECTED — annotation added 2026-08-12. The decision above is unchanged and is quoted, not edited.**
+>
+> ~~Quantile-map CHIRPS onto the repaired gauge network ... then merge conditionally~~ → **built as `src/merge_chirps_gauges.py`, measured, and NOT ADOPTED.** It was built exactly as this section prescribes — quantile-mapped **to the gauge distribution** per (elevation band × hydrographic zone) stratum, lag-aligned by −1 day per §3, blended by distance-to-nearest-gauge — and then judged against two gates registered before the run:
+>
+> | gate | bar | result |
+> |---|---|---|
+> | LOOCV | median daily r > 0.429 | **0.447** — **PASSES** |
+> | volume | area-weighted basin mean, 2009-2017, within ±1 % of the gauge-only 2,036.4 mm/yr ⇒ **[2,016.0, 2,056.8]** | **2,188.5 mm/yr, +7.5 %** — **FAILS** |
+> | decision | both required | **DO NOT ADOPT** |
+>
+> Source: **`docs/18` §15**. The question was then re-opened once, as **H-CHIRPS** in the frozen pre-registration **`docs/33` §1**, on the hypothesis that refitting the quantile maps on the repaired series (inferred-dry days included) would fix the volume. Read out 2026-08-10: the intervention was **already the code's behaviour** — a **no-op** — the re-run reproduced the rejected run **bit-identically**, and the gate failed again at 2,188.5 mm/yr (+7.47 %). **H-CHIRPS is REFUTED by its own volume gate** (`docs/33` §1; read-out in `docs/18` §15.5). The cause diagnosed in `docs/18` §15.3 was **wrong** and is corrected there; **no route to a passing volume gate exists inside the merge code**.
+>
+> **Two measured results survive the rejection, and one of them contradicts the argument made above:**
+> 1. the blend genuinely helps at intermediate isolation — LOOCV r **0.426 → 0.449** in the 10-30 km band;
+> 2. ~~the corrected field carries the ungauged headwaters~~ → **refuted where it can be tested.** Beyond 30 km, pure mapped CHIRPS scored **0.300 against gauge-IDW's 0.343** — worse, not better. The gap-fill argument for CHIRPS fails at exactly the gauges that can test it (`docs/18` §15.2).
+>
+> **The adopted forcing is therefore gauge-only v2** (zero-suppression repair + deterministic IDW; `docs/16` §4.1, `docs/23` §11). A CHIRPS-merged forcing would be **v3**, **v3 does not exist**, and creating one needs a new pre-registration (`docs/30` §1) — this section does not grant it. See the **"Forcing versions — v1 / v2 / v3, stated once"** section of `docs/00_INDEX.md`.
+
 ### Stated limitations
 
 1. **The ungauged headwaters stay uncertain under any method.** A data-availability limit of this
@@ -398,7 +431,14 @@ those are the two properties that drive MUSLE erosion.
 3. **Gauge density is not constant in time** (~183 stations/day in 2011 vs ~153 in 2015-16), so the
    ENSO ratio should be recomputed on a fixed station set before it is quoted in the report.
 4. **The 5-20 % dry-fraction band was left untouched.** 65 stations sit between clearly healthy and
-   clearly suppressed; the 0.15 threshold is conservative and their sensitivity is untested.""")
+   clearly suppressed; the 0.15 threshold is conservative and their sensitivity is untested.
+
+> **⚠ STATUS OF THESE FOUR, as of 2026-08-12 — the list above is unchanged.**
+>
+> 1. **Still open, and it became the binding constraint.** The ungauged headwaters are not merely uncertain: the r-ceiling of ~0.57 on the dry phase is inherited from the rainfall field, not from any parameter (`docs/22` §4.7). The one measured lever — the CHIRPS merge — is the rejection annotated above.
+> 2. **Still open, unchanged.** `docs/16` §4.2 carries it forward verbatim: the offset does not affect gauge-only interpolation but must be resolved before calibrating hydrographs. It measurably does **not** matter for PET (mean bias −0.000 mm/day).
+> 3. ~~the ENSO ratio should be recomputed on a fixed station set before it is quoted~~ → **DONE, and it was not a confound.** On a strict fixed station set the ratio is **1.59× vs 1.57×** on all pairs — a 1 % difference (`docs/16` §4.5).
+> 4. ~~The 5-20 % dry-fraction band was left untouched~~ → **superseded.** A neighbour-based selectivity detector with a measured threshold (1.2885, ~1 % false-positive rate on healthy dense stations) took the repair from 70 flags to **153**, inserting **240,158** inferred-dry station-days; sparse-band selectivity fell 1.777 → 1.040 with the dense band held at 1.001, i.e. no over-repair (`docs/18` §10.2-§10.3). A separate CHIRPS-corroborated adjudication of the residual dry-fraction band is in `docs/17` §3.10. What remains open is the **139 residual rain-selective stations** whose un-inferred days are absent from the record altogether — `docs/18` §15.5 names that as the only remaining upstream route to a usable CHIRPS merge.""")
 
 
 def cell(kind, src):

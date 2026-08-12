@@ -32,8 +32,14 @@ Res.* 14, 100599 (Guaíba basin, Brazil).
 
 ### 3. Where we are, honestly
 - **Phase A — model inputs: complete.**
-- **Phase B — hydrology: calibrated, three attempts, not yet closed.** This is the talk.
-- **Phase C — sediment: blocked** on mainstem SSC data quality.
+- ~~**Phase B — hydrology: calibrated, three attempts, not yet closed.**~~ → **four attempts;
+  Phase B is CLOSED on H2E** (see the correction at slide 15). This is the talk.
+- ~~**Phase C — sediment: blocked** on mainstem SSC data quality.~~ → **Phase C is ACTIVE**;
+  the "blocked" framing is superseded ([docs/30](30_phase_c_plan.md) header: *"It supersedes
+  the 'Phase C blocked' line in older docs."*). Its precise form
+  ([docs/32](32_ssc_qc_audit.md) §R6): **79/79 stations classified, 18 usable**, and
+  *"`21237020` ARRANCAPLUMAS (Magdalena — **the only Magdalena-trunk SSC station in the entire
+  network**)"*. *(⚠ Corrected 2026-08-12.)*
 - Why in this order: **MUSLE is driven by runoff, not rainfall**, so the discharge model is
   the load-bearing component. Calibrating sediment on an uncalibrated hydrology would fit
   erosion parameters to water-balance error.
@@ -220,6 +226,32 @@ can exceed that. The ceiling is a property of the **observing network**, not of 
 ## E — Limits and next steps (3 slides, ~5 min)
 
 ### 15. What we cannot yet claim — say these before you are asked
+
+> **⚠ UPDATED 2026-08-12 — three of these limits have moved; the rest stand.** Slide 8 of
+> this document was updated on 2026-08-10 and this slide was not, which makes it read as
+> current when it is not.
+> - ~~"The calibration is not closed. **Three** attempts"~~ → **Four attempts, and Phase B is
+>   CLOSED** — by decision, not by reaching a target ([docs/30](30_phase_c_plan.md) §1:
+>   *"**Phase B closes on the input-ceiling result, with H2E as the adopted
+>   configuration.**"*). **The "none meets every criterion" clause survives and must still be
+>   said**: [docs/26](26_phase3_refit.md) A.4 — *"Applying §5's nine criteria unchanged,
+>   **H2E scores 3/9**… Adoption was on the docs/29 rules, which H2E passed; it was never a
+>   claim that the pre-registered adequacy criteria were met."*
+> - ~~"Skill over climatology is **+0.126** in La Niña against **+0.026** in El Niño"~~ →
+>   those are **attempt 2 (H1)** numbers. In the **adopted** configuration they are
+>   **+0.106** and **−0.0005** ([docs/26](26_phase3_refit.md) Addendum A.5). The asymmetry
+>   did not merely persist — **the dry phase now sits *at* climatology, not above it.** See
+>   the correction box at slide 9.
+> - ~~"the crop coefficient **pinned at 2.0**"~~ → **`kc_mult` is off its rail: 1.6625**
+>   ([docs/26](26_phase3_refit.md) A.2, *"confirmed off the rail that held H1 at 98.8 % and
+>   H2 at 93.3 %"*). This bullet's own prediction — that the ET stress function was the cause
+>   — **was tested and confirmed** ([docs/29](29_seed_expansion.md) rule (b)). But it is
+>   **still not plausible** (1.662 against the FAO-56 target of ≤ 1.2) and **2 of 10 global /
+>   3 of 18 dimensions remain railed** in the adopted fit, so the limit itself stands — with
+>   the corrected number, not 2.0.
+> - The Moriasi bullet and the catchment-area / yield-embargo bullet are unchanged and still
+>   correct.
+
 - **The calibration is not closed.** Three attempts, each measuring something different; none
   meets every criterion we set in advance.
 - **Conventional adequacy is not reached.** Moriasi et al. (2007) put satisfactory *daily* NSE
@@ -238,6 +270,42 @@ can exceed that. The ceiling is a property of the **observing network**, not of 
   trustworthy per gauge, and a 2.5× area error is a 2.5× yield error.
 
 ### 16. Next steps, in the order the measurements dictate
+
+> **⚠ ALL FIVE ITEMS HAVE OUTCOMES. Recorded 2026-08-12; the list below is the state on the
+> delivery date and is preserved as such.** Slides 8 and 9 of this document were
+> back-annotated on 2026-08-10 and slides 15–17 were not, which made the un-updated slides
+> look current. Outcomes, each against its owning doc:
+>
+> 1. **CHIRPS merge — DONE, and NEGATIVE. Rejected twice.** ~~"the only lever measured
+>    capable of moving r"~~ → it *is* the only measured lever, and **it does not work**.
+>    First run ([docs/18](18_hydrology_journal.md) §15): LOOCV **passed** (r 0.447 > 0.429),
+>    volume **failed** (2,188.5 mm/yr, +7.5 %, band [2,016.0, 2,056.8]) → *"DO NOT ADOPT"*.
+>    The diagnosed fix was then registered as **H-CHIRPS**
+>    ([docs/33](33_c2b_preregistration.md) §1), executed, and was a **no-op** — the
+>    inferred-dry days were already **25.9 %** of the fit input, the re-run is
+>    **bit-identical**, and the gate fails again at **+7.47 %**.
+>    [docs/18](18_hydrology_journal.md) §15.5: *"**no route to a passing volume gate exists
+>    inside the merge code.**"* [docs/33](33_c2b_preregistration.md) §1: *"the diagnosed
+>    cause in docs/18 §15.3 was **wrong**."* **The cause is now UNKNOWN**; the surviving
+>    hypothesis (139 residual rain-selective stations) cannot be tested inside the merge.
+>    **No v3 forcing exists.**
+> 2. **ET stress function — DONE, and it SUCCEEDED.** [docs/29](29_seed_expansion.md) rule
+>    (b): *"**H2E (FAO-56 threshold ET): SUCCESS, all three conditions**… the FAO-56
+>    threshold form releases it at no cost."* `kc_mult` **1.90 → 1.662**. H2E is the
+>    **adopted** configuration ([docs/30](30_phase_c_plan.md) §1).
+> 3. **More seeds — DONE, and they did NOT separate.** [docs/29](29_seed_expansion.md) rule
+>    (a): *"**H1 vs H2 separability: NOT SEPARATED**… Six seeds per cell did not separate the
+>    forcings"* — gap **0.009** against seed spread **0.051**.
+> 4. **Catchment areas — still OPEN.** Unchanged; tracked as
+>    [docs/31](31_phase_c_workplan.md) background task B3. The yield embargo stands
+>    ([docs/23](23_gauge_geometry.md) §13.2).
+> 5. **Phase C — STARTED; the "blocked" framing is superseded.**
+>    [docs/30](30_phase_c_plan.md) header: *"It supersedes the 'Phase C blocked' line in
+>    older docs."* Its precise quantitative form ([docs/32](32_ssc_qc_audit.md) §R6):
+>    **79/79 stations classified**, 28 mapped, **18 usable**, and *"`21237020` ARRANCAPLUMAS
+>    (Magdalena — **the only Magdalena-trunk SSC station in the entire network**)"* —
+>    *"This is the quantitative form of 'Phase C is blocked on mainstem SSC'."*
+
 1. **Merge satellite rainfall (CHIRPS) with the repaired gauges** — the only lever measured
    capable of moving r, and therefore the dry phase. Volume stays gauge-controlled; the
    satellite supplies spatial structure and fills the ungauged 17 % (nearest gauge median
@@ -252,6 +320,23 @@ can exceed that. The ceiling is a property of the **observing network**, not of 
 5. **Phase C sediment**, once mainstem SSC quality is settled.
 
 ### 17. The question we need your guidance on
+
+> **⚠ OUTCOME, recorded 2026-08-12 — ASKED AND DECLINED. This slide is now history, not a
+> live question.** [docs/30](30_phase_c_plan.md) cites *this slide by name* as the question
+> it answers; the citation was one-way and the outcome had never travelled back here. Owner
+> [docs/30](30_phase_c_plan.md), header, quoted:
+>
+> > "**The advisor was asked the Phase B scope question (docs/24 item 17) and declined to
+> > answer — told the team to decide.** This document records the decision and the plan that
+> > follows from it."
+>
+> **The team then took the "yes" branch below**, [docs/30](30_phase_c_plan.md) §1: *"**Phase
+> B closes on the input-ceiling result, with H2E as the adopted configuration.**"* The
+> "if it does not, the merge must succeed" branch was therefore never entered — **and it is
+> as well, because the merge did not succeed**: rejected twice, the second time *with* the
+> diagnosed fix applied, which proved to be a no-op ([docs/18](18_hydrology_journal.md)
+> §15.5 — see the correction at slide 16 item 1).
+
 **Is the input-ceiling result (slide 13) an acceptable closing statement for the hydrological
 phase?**
 
@@ -287,8 +372,15 @@ This changes what "done" means for Phase B, so it is the most useful thing we ca
 - **Lead with slide 7 (the Klemeš split).** "Both ENSO phases are out-of-sample" is what makes
   every later number credible. Without it the deck is just curve-fitting.
 - **Slide 9 is the argument.** Do not present the KGE drop as a setback. Present it as a
-  deliberate trade: a recession that is right, and a dry phase that beats climatology for the
-  first time.
+  deliberate trade: a recession that is right, and ~~a dry phase that beats climatology for the
+  first time.~~
+  → ⚠ **CORRECTED 2026-08-12 — do not say "beats climatology" of the adopted model.** Slide 9
+  already carries this correction (2026-08-10) but this speaking note did not, and a presenter
+  reading the notes would say the superseded sentence aloud. The trade is real and stays; the
+  dry-phase claim is true only of **attempt 1 → attempt 2**. Owner
+  [docs/26](26_phase3_refit.md) Addendum A.5: *"**The dry phase in the adopted configuration
+  is at climatology, not above it: −0.0005.**"* **Say instead:** "a recession that is right,
+  and a dry phase that stops being *worse* than climatology" — and then give slide 9's caveat.
 - **Show slide 8 and slide 13 close together.** Otherwise the first question is "why is KGE
   only 0.4?", and the answer is a measured ceiling rather than an excuse.
 - **Use "we" for both implementations.** They are two arms of one project, and their agreement
@@ -296,7 +388,10 @@ This changes what "done" means for Phase B, so it is the most useful thing we ca
 - **Have the refuted-hypotheses register ready.** If the advisor proposes a cause for the dry
   phase, there is a good chance we have already measured and eliminated it — three standing
   hypotheses were refuted, one of them backwards. That is the strongest impression available.
-- **End on slide 17, not slide 18.** Asking the scope question is more valuable than a summary.
+- ~~**End on slide 17, not slide 18.** Asking the scope question is more valuable than a summary.~~
+  → ⚠ **SUPERSEDED 2026-08-12 — the scope question was asked and the advisor declined to
+  answer it** ([docs/30](30_phase_c_plan.md) header). Re-asking it wastes the meeting. See the
+  outcome box at slide 17 for what is live instead.
 
 ## Figures to pull
 

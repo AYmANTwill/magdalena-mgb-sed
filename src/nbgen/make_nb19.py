@@ -433,8 +433,9 @@ auditable: every factor is derived or identified from a source, and every prior 
 reachable by name. What the chain does **not** establish is that the level is *right* - only that
 the model is now on the possible side of the outlet load. Whether the level is defensible was
 supposed to be settled by a delivery-ratio test, and section 1.3 shows that test was not a test.
-**Note the direction of travel:** every step here made the number bigger, and section 6.4's
-unresolved $LS$ question points the other way by 2.37x-3.00x.""")
+**Note the direction of travel:** every step here made the number bigger, and section 6.4's $LS$
+question points the other way by **2.3151x-3.9768x** - and by **3.9768x** at the point `docs/37`
+A3 actually adopts.""")
 
 # ============================================================ 1.2 the two quantities
 md(r"""## 1.2 - Gross erosion is not sediment yield, and this literature conflates them
@@ -1524,37 +1525,78 @@ Three intervals, all measured, all in the same units of $\alpha$:
 
 | | interval | what it is |
 |---|---|---|
-| a fit that **silently omits channel deposition** lands at | **6.83 - 8.73** | `docs/35` section 9.2 |
+| a fit that **silently omits channel deposition** lands at | ~~6.83 - 8.73~~ $\rightarrow$ **5.6727 - 7.2485** | `docs/35` section 9.2, **corrected to the adopted $C$** by `docs/43` section 7 amendment 5 |
 | the $\alpha$ reproducing the flattering **reading-B** level | **7.92 - 8.86** | `docs/37` A1.9.4 (11.8 / 1.4897 and 11.8 / 1.3323) |
 | the guard's **"expected"** band | **5.9 - 23.6** | `docs/35` section 6.1 |
 
-**The first two overlap, and both sit comfortably inside the third.** So a fit that "works" under
-the reading that flatters the project is nearly indistinguishable from one that has simply
-deleted channel deposition - and the guard says `ok` to both. The cell below runs the repository's
-own guard to show it.""")
+> **A `cp_revision` CORRECTION, 2026-08-12, and it inverts this section's sharpest sentence.**
+> Owning enactment: **`docs/43` section 7 amendment 5** (source `docs/47` section 2.5 **C1**).
+> ~~6.83 - 8.73~~ is $11.8\times\{144,184\}/248.730$ - the **prior** `cp_revision`'s basin total.
+> The reading-B band 7.92 - 8.86 is **already at the adopted $C$**, so the two were being compared
+> across two different basin totals. Recomputed at the adopted $C$ (**299.5387088405831 Mt/yr**),
+> $11.8\times\{144,184\}/299.5387088405831 =$ **5.6727 - 7.2485**, and the gap to 7.92 is
+> **0.6715 in $\alpha$**: ~~"these overlap"~~ $\rightarrow$ **the two bands are DISJOINT**. The
+> house rule this violated: **never quote a load without its convention AND its `cp_revision`.**
+>
+> **What survives, and it must not be over-read in either direction.** The section's load-bearing
+> claim is about the *guard*, not about $\alpha$, and it survives intact: the guard still returns
+> `ok` across **nearly all of both** bands and therefore still cannot **reject** a deposition-free
+> fit. What does *not* survive is the stronger "nearly indistinguishable" reading - corrected, the
+> two cases **are** separable in $\alpha$, which points the other way. **Whether that changes the
+> "doubly load-bearing" conclusion about G5 is `docs/47` open item O12 and is NOT decided here.**
+> One measured detail the correction adds, and the cell below prints it: at the anchor-144 end the
+> adopted-$C$ band dips to 5.6727, just **below** the guard's expected-band low of 5.9, so the
+> guard emits `watch` there - a partial, accidental catch at one endpoint, not a rejection.
 
-code(r"""DEPFREE = (6.83, 8.73)      # docs/35 section 9.2 - a deposition-free fit lands here
+**Both bands sit inside the third.** So a fit that "works" under the reading that flatters the
+project draws the same `ok` from the guard as one that has simply deleted channel deposition. The
+cell below runs the repository's own guard to show it, at **both** `cp_revision`s.""")
+
+code(r"""# docs/35 section 9.2's 6.83-8.73 is 11.8 x {144,184} / 248.730 - the PRIOR cp_revision's basin
+# total.  CORRECTED to the adopted C by docs/43 section 7 amendment 5.  RECOMPUTED here from this
+# notebook's own ADOPT and anchors, never retyped: a load may not be quoted without its convention
+# AND its cp_revision.  READINGB is already at the adopted C, which is why the comparison moved.
+DEPFREE_PRIOR = (6.83, 8.73)   # docs/35 section 9.2, at the PRIOR cp_revision (248.730 Mt/yr)
+DEPFREE = (sed.WILLIAMS_ALPHA * ANCHOR_LO / ADOPT, sed.WILLIAMS_ALPHA * ANCHOR_HI / ADOPT)
 READINGB = (7.92, 8.86)     # docs/37 A1.9.4 - alpha reproducing Tan's converted (yield) level
 
-probe = [('deposition-free fit, low end', DEPFREE[0], 0.56),
-         ('deposition-free fit, high end', DEPFREE[1], 0.56),
+print(f'a deposition-free fit lands at alpha = 11.8 x {{{ANCHOR_LO:.0f},{ANCHOR_HI:.0f}}} / total:')
+print(f'   at the PRIOR cp_revision ({PRIOR_C:.4f} Mt/yr) : '
+      f'{sed.WILLIAMS_ALPHA*ANCHOR_LO/PRIOR_C:.4f} - {sed.WILLIAMS_ALPHA*ANCHOR_HI/PRIOR_C:.4f}'
+      f'   <- docs/35 section 9.2 rounds this to {DEPFREE_PRIOR[0]}-{DEPFREE_PRIOR[1]}')
+print(f'   at the ADOPTED C        ({ADOPT:.4f} Mt/yr) : {DEPFREE[0]:.4f} - {DEPFREE[1]:.4f}'
+      f'   <- THE LIVE BAND (docs/43 section 7 amd 5)')
+print(f'   reading-B band, already at the adopted C     : {READINGB[0]:.4f} - {READINGB[1]:.4f}')
+print(f'   GAP = {READINGB[0]-DEPFREE[1]:.4f} in alpha  ->  THE TWO BANDS ARE DISJOINT.  The')
+print(f'   "these overlap" reading was an artefact of comparing two cp_revisions.  What SURVIVES:')
+print(f'   the guard still returns ok across nearly all of both, so it still cannot REJECT either.')
+print(f'   Whether the disjointness changes the "doubly load-bearing" conclusion about G5 is')
+print(f'   docs/47 open item O12 and is NOT decided here.\n')
+
+probe = [('deposition-free fit, PRIOR C, low end', DEPFREE_PRIOR[0], 0.56),
+         ('deposition-free fit, PRIOR C, high end', DEPFREE_PRIOR[1], 0.56),
+         ('deposition-free fit, ADOPTED C, low end', DEPFREE[0], 0.56),
+         ('deposition-free fit, ADOPTED C, high end', DEPFREE[1], 0.56),
          ('reading-B level, low end', READINGB[0], 0.56),
          ('reading-B level, high end', READINGB[1], 0.56),
          ('Williams, unfitted', sed.WILLIAMS_ALPHA, sed.WILLIAMS_BETA),
          ('the source corpus median', A_STATS['median'], B_STATS['median']),
          ('the source corpus p95 beta', A_STATS['median'], B_STATS['p95'])]
-print(f'{"probe":34s} {"alpha":>7s} {"beta":>6s}   verdict')
+print(f'{"probe":42s} {"alpha":>7s} {"beta":>6s}   verdict')
 for nm, a, b in probe:
     v = qpk.check_musle_parameters(a, b)
-    print(f'{nm:34s} {a:7.3f} {b:6.3f}   {v["status"]}'
-          + ('   <- ' + v['reasons'][0][:74] if v['reasons'] else ''))
+    print(f'{nm:42s} {a:7.3f} {b:6.3f}   {v["status"]}'
+          + ('   <- ' + v['reasons'][0][:66] if v['reasons'] else ''))
 
 fig, ax = plt.subplots(figsize=(11.4, 2.8))
 ax.axvspan(*GUARD_EXPECTED, color=CB['green'], alpha=0.22,
            label='docs/35 "expected" 5.9-23.6 - the guard returns ok anywhere in here')
 ax.axvspan(*GUARD_STOP, color=CB['amber'], alpha=0.10, zorder=0)
+ax.plot(DEPFREE_PRIOR, [1.18, 1.18], lw=7, color=CB['grey'], solid_capstyle='butt', alpha=0.85,
+        label=f'SUPERSEDED, prior cp_revision: {DEPFREE_PRIOR[0]}-{DEPFREE_PRIOR[1]}')
 ax.plot(DEPFREE, [1.0, 1.0], lw=11, color=CB['red'], solid_capstyle='butt',
-        label=f'a fit that SILENTLY OMITS channel deposition: {DEPFREE[0]}-{DEPFREE[1]}')
+        label=f'a fit that SILENTLY OMITS channel deposition, at the ADOPTED C: '
+              f'{DEPFREE[0]:.2f}-{DEPFREE[1]:.2f}')
 ax.plot(READINGB, [0.72, 0.72], lw=11, color=CB['purple'], solid_capstyle='butt',
         label=f'the $\\alpha$ reproducing the flattering reading-B level: '
               f'{READINGB[0]}-{READINGB[1]}')
@@ -1563,8 +1605,10 @@ ax.text(sed.WILLIAMS_ALPHA + 0.25, 1.32, 'Williams 11.8', fontsize=7.4, color=CB
 ax.axvline(GUARD_STOP[0], color=CB['red'], lw=1.2, ls='--')
 ax.axvline(GUARD_STOP[1], color=CB['red'], lw=1.2, ls='--')
 ax.text(GUARD_STOP[1] - 0.3, 0.42, 'hard stop 35.4', fontsize=7.0, ha='right', color=CB['red'])
-ax.annotate('THESE OVERLAP', xy=(8.3, 0.86), xytext=(14.5, 0.55), fontsize=8.2, color=CB['red'],
-            arrowprops=dict(arrowstyle='->', lw=1.2, color=CB['red']))
+ax.annotate(f'DISJOINT at the adopted $C$\n(gap {READINGB[0]-DEPFREE[1]:.2f} in $\\alpha$) - but the '
+            f'guard\nsays ok inside BOTH, so it still cannot reject',
+            xy=(0.5*(DEPFREE[1]+READINGB[0]), 0.86), xytext=(14.5, 0.50), fontsize=7.6,
+            color=CB['red'], arrowprops=dict(arrowstyle='->', lw=1.2, color=CB['red']))
 ax.set_xlim(2, 38); ax.set_ylim(0.3, 1.5); ax.set_yticks([])
 ax.set_xlabel('$\\alpha$ (dimensionless)')
 ax.set_title('The $\\alpha$-magnitude guard is blind to the single error C4 is most likely to make',
@@ -1574,12 +1618,22 @@ plt.tight_layout(); plt.show()""")
 
 reading(
     what=r"""The $\alpha$ axis with the guard's "expected" band shaded green and its hard stops
-dashed; the red bar is where a fit that silently omits channel deposition lands, the purple bar is
+dashed; the red bar is where a fit that silently omits channel deposition lands **at the adopted
+$C$**, the grey bar above it is the superseded prior-`cp_revision` band, the purple bar is
 the $\alpha$ that reproduces the level implied by the flattering reading of section 1.4, and the
 dark line is Williams' 11.8. The cell above runs the repository's own unmodified guard on each.""",
-    shows=r"""**6.83-8.73 and 7.92-8.86 overlap**, and both lie inside 5.9-23.6, so
-`check_musle_parameters` returns `ok` for every one of them. The guard cannot separate "a
-physically sensible fit" from "a fit that deleted the channel". It does fire correctly on
+    shows=r"""~~**6.83-8.73 and 7.92-8.86 overlap**~~ $\rightarrow$ **at the adopted $C$ the
+deposition-free band is 5.6727-7.2485 and it is DISJOINT from 7.92-8.86, by 0.6715 in $\alpha$**
+(`docs/43` section 7 amendment 5; the struck overlap compared the prior `cp_revision`'s 248.730
+against a reading-B band already at 299.5387). **The conclusion this figure exists to support is
+unchanged**, because it was never about the overlap: both bands still lie inside 5.9-23.6, so
+`check_musle_parameters` returns `ok` throughout reading B and across all of the deposition-free
+band except its very lowest end, where 5.6727 dips below the expected-band low of 5.9 and draws a
+`watch`. **A `watch` is not a rejection**, so the guard still cannot separate "a physically
+sensible fit" from "a fit that deleted the channel". What is *withdrawn* is the stronger claim that
+the two are *nearly indistinguishable in $\alpha$* - corrected, they are separable in $\alpha$, and
+whether that changes the "doubly load-bearing" conclusion about G5 is `docs/47` open item **O12**,
+not decided here. The guard does fire correctly on
 $\beta$: at the source corpus' own p95 $\beta$ of 0.939 it returns STOP - which is the same clause
 that rejects 42.7 % of the published fits.""",
     means=r"""**A parameter *value* cannot be a validity criterion for a parameter the method
@@ -1635,7 +1689,8 @@ cm = np.linspace(0.5, 6.0, 200)
 ax[0].plot(cm, sed.WILLIAMS_ALPHA * C_MULT_ADOPTED / cm, color=CB['blue'], lw=2)
 ax[0].axhspan(*GUARD_EXPECTED, color=CB['green'], alpha=0.20,
               label='docs/35 "expected" $\\alpha$ 5.9-23.6')
-ax[0].axhspan(*DEPFREE, color=CB['red'], alpha=0.28, label='deposition-free fit 6.83-8.73')
+ax[0].axhspan(*DEPFREE, color=CB['red'], alpha=0.28,
+              label=f'deposition-free fit, adopted $C$: {DEPFREE[0]:.2f}-{DEPFREE[1]:.2f}')
 for _, r in fam.iterrows():
     ax[0].plot([r.C_mult], [r.alpha_needed], 'o', color=CB['dark'], ms=7)
     ax[0].text(r.C_mult, r.alpha_needed + 0.9, f'$C_m$={r.C_mult:.2f}\n$\\alpha$='
@@ -2090,7 +2145,7 @@ all measured, and each is why C3 stays open:
 | component of the residual | classification | evidence | who resolves it |
 |---|---|---|---|
 | the multiplicative **LEVEL** ($\Pi$) | **CALIBRATION TARGET.** Not a defect. Status **UNVALIDATED and unfittable-apart** | Fagundes App. IV; condition number `inf` | **C4**, as a fitted $\Pi$ with its equifinal family |
-| the $LS$ **slope-dependent SHAPE** | **STILL A DEFECT**, direction known | ours is 2.37-3.00x high in level *and* formulation-different in shape, over all 30,235,916 cells | a written source-grounds decision (C3.1), **not** a fit |
+| the $LS$ **slope-dependent SHAPE** | **STILL A DEFECT**, direction known | ours is **2.3151-3.9768x** high in level *and* formulation-different in shape, over all 30,235,916 cells. The *level* question is now decided on source grounds (`docs/37` A3, **CITED**, `f_LS` = **0.25146**) but **RECORDED, not EXERCISED**; the *shape* question is untouched by that | a written source-grounds decision (C3.1), **not** a fit |
 | **station-to-station heterogeneity** | **STILL A DEFECT**, unresolvable at this fleet size | $I^2$ 96-99.2 %, $\tau$ 2.03-3.40x, 18/24 CIs excluding 1 | not C4 - needs n ~ 19 both-window stations |
 | **period-dependent peak deficit** | **STILL A DEFECT**, direction known, magnitude registered (x1.096) | $R_{AMS}$ 0.808 vs 0.686 | not resolvable - propagate as a caveat |
 | **which quantity the sum is** | **UNRESOLVED LABEL** - neither a defect nor a target | SWAT Ch. 4:1 (section 1.4) | a written, cited answer; nobody has written it |
@@ -2382,84 +2437,231 @@ measurement arm has nothing to measure.""")
 
 md(r"""## 6.4 - $\alpha$, $C$ and $LS$ cannot be separated, and the $LS$ level is known to be wrong
 
-**Status: confounding is STRUCTURAL (section 3.4); the $LS$ problem is a known, unresolved
-defect pointing the wrong way.**
+**Status: confounding is STRUCTURAL (section 3.4); the $LS$ *formulation* is now DECIDED on source
+grounds and the decision points the wrong way; the $LS$ *level* remains UNVALIDATED.**
 
-Our topographic factor differs from the source method's in **three** ways, all measured on the
+Our topographic factor differs from the source method's in **four** ways, all measured on the
 same 90 m grid over all 30,235,916 basin cells - so these are *formulation* differences, not a
-resolution artefact:""")
+resolution artefact. **Two weightings are reported and only one decides**: $f_{ero}$ is the exact
+erosion-weighted engine re-run and **decides**; $f_{area}$ is the area-weighted **proxy**, reported
+beside it, measured **2.5 % low**, and never able to override it (`docs/46` §3.3).
 
-code(r"""LSLEV = pd.DataFrame({
-    'lever': ['slope-length limiter', 'exponent m', 'slope function S', 'ALL THREE TOGETHER',
-              'and with the literal Desmet-Govers L'],
+> **THREE CORRECTIONS LAND HERE, all unconditional, all from landed measurement rather than from
+> the survival of a hypothesis** (`docs/46` §1.0, §1.1, §2.5.1, §3.1, §7.3 items 2-3; `docs/49`,
+> `docs/50`, `docs/51` §2 and §4; `docs/52` §1.1; enacted by `docs/37` **A3**).
+>
+> 1. **The $m$ row's label was wrong.** It read *"step function hard-capped at 0.5"* with a factor
+>    of **0.502**, conflating two different objects. **Buarque's eq. 14 (printed p. 47) IS a step
+>    function** - $m = 0.2$ / $0.3$ / $0.4$ / $0.5$ on $S_f <1$ % / 1-3 % / 3-5 % / $\ge5$ %, with
+>    $S_f$ in slope **percent**, *"onde $S_f$ [%] é a declividade do pixel"* - and its factor is
+>    **x0.522043 ero / x0.505092 area**. The object measured as *"0.502"* was
+>    $\min(m_{\text{continuous}}, 0.5)$, a **cap** worth **x0.517480 ero / x0.502472 area**, which is
+>    **nobody's published formulation** and **may never be graded CITED**. They differ by only
+>    **x1.008878** ero, so the mislabel was **real as a label and immaterial as a level** - and the
+>    published joint **x0.421 row was already the step**, so the mislabel never touched the joint.
+> 2. **The bracket x0.333 - x0.421 / "2.37x-3.00x" is SUPERSEDED.** The registered measurement is
+>    $f_{LS}\in$ **[0.25146, 0.43194]** erosion-weighted $\Rightarrow$ **$1/f_{LS}$ =
+>    2.3151x - 3.9768x**. And it is **not an uncertainty over readings of the source**: all four
+>    levers are **CITED** with a single admissible reading each, so **the source formulation read
+>    whole is a POINT at x0.25146**, **x0.43194 is a documented HYBRID** (his three levers with
+>    **our** $L$), and the span between them, $\ln(0.43194/0.25146) = 0.5410$, **is the $L$-form
+>    lever exactly** - a lever, not an error bar. The old lower endpoint's **x0.790 does NOT isolate
+>    the $L$ form**: it factorises as $0.852262\ (L) \times 0.926925\ (S\ \text{swap})$ and was
+>    measured on the **uncapped `ls2d` column**, not the engine's `ls2d_hs`. The $L$-form ratio is
+>    **formulation-dependent** - 0.852262 uncapped / **0.769833** on `ls2d_hs` / **0.580685** inside
+>    the source formulation - and x0.790 composed it across formulations as a scalar.
+> 3. **The product of the single levers is NEVER the joint.** This cell used to print
+>    $0.502\times1.714\times0.351 = 0.302 \ne 0.421$ as though the product were a rival estimate.
+>    The exact statement is a measured **ratio**: $0.362435\times0.52204\times1.694054 =
+>    0.3205244$ against a joint of **0.431944**, i.e. **joint / product = x1.34762** (`docs/46` §1,
+>    `docs/52` §1.1). *(Carrying the `m` step to its sixth decimal, 0.522043, gives a product of
+>    0.3205263 and a ratio of x1.347609 - the same measurement at a different printed precision,
+>    not a second number. The cell below prints both so they can never appear to disagree.)*
+>
+> **A FOURTH, LATER CORRECTION - the $f_{area}$ support, 2026-08-12.** Owning records: `docs/46`
+> §10 **amendment 2** and `docs/51` §9 **amendment 1**; expressed as here by `docs/43` §7
+> amendment 8. The `V4` proxy read ~~**0.421475**~~ and is **0.42136300143291305**. The struck
+> figure is **not an arithmetic error** - it is the same ratio on the **engine URH-fraction** area
+> support (257,096.93 km<sup>2</sup>), while `docs/46` §3.3 defines $f_{area}$ on the **per-cell
+> basin** (30,235,916 DEM cells at 90 m, 256,702.36 km<sup>2</sup>). `docs/47` §3.1's independently
+> measured proxy bias **R7 = 1.0251** discriminates: $0.43194418/0.42136300 = 1.025112$ falls
+> inside R7's four-decimal interval $[1.02505, 1.02515]$, $0.43194418/0.42147514 = 1.024839$ falls
+> outside it, and the corrected value is **22x closer**. **$f_{ero}$ is untouched**, so the
+> registered bracket, the $\alpha$ reference, the hard stop and the endpoint loads are **unmoved**;
+> the lower endpoint 0.2446790094097074 was already on the registered support.""")
+
+code(r"""# Registered values, cited in place - this cell RE-DERIVES nothing.
+#   f_ero DECIDES (exact engine re-run); f_area is the proxy (docs/46 section 3.3).
+# docs/47 section 4.3, docs/49 (eq.-14 step vs cap), docs/50 + docs/51 section 4 (the L form),
+# docs/52 section 1.1 (non-multiplicativity), docs/37 A3 (the enactment).
+F_LIM_E,  F_LIM_A  = 0.362435, 0.3513      # V1   slope length <= 1 DEM pixel
+F_STEP_E, F_STEP_A = 0.522043, 0.505092    # V2b  eq. 14, the STEP function, Sf in slope PERCENT
+F_CAP_E,  F_CAP_A  = 0.517480, 0.502472    # V2a  min(m, 0.5): a CAP.  NOBODY'S published form.
+F_S_E,    F_S_A    = 1.694054, 1.7139      # V3   eq. 18, Wischmeier & Smith (1978)
+# F_HYB_A is on docs/46 section 3.3's PER-CELL BASIN support (30,235,916 cells, 256,702.36 km2).
+# Corrected 2026-08-12 from 0.421475 = the same ratio on the ENGINE URH-fraction support
+# (257,096.93 km2): a correct quantity, but not what section 3.3 defines f_area to be.
+# Owning records: docs/46 section 10 amd 2, docs/51 section 9 amd 1.  f_ero is UNAFFECTED.
+F_HYB_E,  F_HYB_A  = 0.431944, 0.42136300143291305   # V4  his 3 levers + OUR L -> HYBRID
+F_SRC_E,  F_SRC_A  = 0.25146,  0.2446790094097074   # V4_dg  source read WHOLE -> a POINT, ADOPTED
+L_IN_FORM = 0.580685                       # the L-form lever INSIDE the source formulation
+LSLEV = pd.DataFrame({
+    'lever': ['slope-length limiter', 'exponent m  (eq. 14 STEP)', 'slope function S',
+              'length form L', 'V4  = his 3 levers + OUR L  (HYBRID)',
+              'V4_dg = ALL FOUR  (SOURCE READ WHOLE, ADOPTED)'],
     'ours': ['upslope area <= 1 km2 (unit length up to ~10,870 m)',
              'continuous McCool (1989), basin median 0.584',
-             'Moore & Burch (1986)', 'area-weighted mean LS = 39.812', ''],
-    'the source method': ['slope length <= ONE DEM pixel',
-                          'step function hard-capped at 0.5',
-                          'Wischmeier & Smith (1978)', 'area-weighted mean LS = 16.775', ''],
-    'factor on basin LS': [0.351, 0.502, 1.714, 0.421, 0.333]})
+             'Moore & Burch (1986)', 'continuous POINT-RATE (m+1)(lambda/22.13)^m',
+             'area-weighted mean LS = 39.812', ''],
+    'the source method': ['slope length <= ONE DEM pixel  (pp. 94 and 98)',
+                          'eq. 14 p. 47 STEP: 0.2/0.3/0.4/0.5 on Sf <1/1-3/3-5/>=5 PERCENT',
+                          'eq. 18 p. 48: Wischmeier & Smith (1978)',
+                          'eq. 13 p. 47: Desmet & Govers finite difference, Xdir^m',
+                          'area-weighted mean LS = 16.775', ''],
+    'f_ero  (DECIDES)': [F_LIM_E, F_STEP_E, F_S_E, L_IN_FORM, F_HYB_E, F_SRC_E],
+    'f_area (proxy)': [F_LIM_A, F_STEP_A, F_S_A, float('nan'), F_HYB_A, F_SRC_A]})
 print(LSLEV.to_string(index=False))
-print(f'\nthe three levers DO NOT multiply out: 0.502 x 1.714 x 0.351 = '
-      f'{0.502*1.714*0.351:.3f}  !=  the joint 0.421')
+print(f'\nthe m lever as min(m,0.5) - the CAP, which is NOT eq. 14 and which nobody published:')
+print(f'   f_ero {F_CAP_E}, f_area {F_CAP_A}   ->  eq.-14 step / cap = x{F_STEP_E/F_CAP_E:.6f} ero,'
+      f' x{F_STEP_A/F_CAP_A:.6f} area')
+print(f'   the mislabel was REAL as a label and IMMATERIAL as a level, and the published joint')
+print(f'   x0.421 row was ALREADY the step - so it never touched the joint (docs/46 section 3.1).')
+print(f'   DISCLOSURE, so this notebook is not read as contradicting a frozen document: docs/46')
+print(f'   section 1.1 / 1.2 (R4) / 2.2 print this ratio as x1.008878 ero and x1.005212 area.')
+print(f'   Recomputed from docs/46 section 3.1\'s OWN registered pair ({F_STEP_E} / {F_CAP_E}) it')
+print(f'   is x{F_STEP_E/F_CAP_E:.6f}; back-solving, {F_CAP_E} x 1.008878 = '
+      f'{F_CAP_E*1.008878:.7f}, not {F_STEP_E}.')
+print(f'   So the erosion-weighted figure looks like a digit transposition (1.008818 -> 1.008878)')
+print(f'   in a document this notebook does not own; the area figure agrees to 6 s.f.')
+print(f'   IMMATERIAL - both are ~0.9 %, and docs/46\'s verdict is unchanged either way.')
+print(f'   REPORTED, not fixed: docs/46 is FROZEN and is not ours to edit.')
+
+prod_e = F_LIM_E * F_STEP_E * F_S_E
+prod_a = F_LIM_A * F_STEP_A * F_S_A
+print(f'\nTHE LEVERS DO NOT MULTIPLY OUT.  STANDING RULE: a product of single-lever factors is')
+print(f'NEVER quoted as the joint factor and is not a candidate for it.  The exact statement is a')
+print(f'measured RATIO:')
+prod_reg = 0.362435 * 0.52204 * 1.694054   # docs/46 §1's 5-d.p. m step: the REGISTERED product
+print(f'   f_ero, REGISTERED (m step at 5 d.p., docs/46 §1 / docs/52 §1.1):')
+print(f'     0.362435 x 0.52204 x 1.694054 = {prod_reg:.7f}   joint {F_HYB_E}'
+      f'   ->  joint / product = x{F_HYB_E/prod_reg:.5f}')
+print(f'   f_ero, the SAME measurement with the m step at 6 d.p. (docs/46 section 3.1):')
+print(f'     {F_LIM_E} x {F_STEP_E} x {F_S_E} = {prod_e:.7f}   joint {F_HYB_E}'
+      f'   ->  joint / product = x{F_HYB_E/prod_e:.5f}')
+print(f'     (ONE number at two printed precisions, not two numbers - both round to '
+      f'x{F_HYB_E/prod_reg:.4f}.  Printed together so they can never appear to disagree.)')
+print(f'   f_area: {F_LIM_A} x {F_STEP_A} x {F_S_A} = {prod_a:.6f}   joint {F_HYB_A}'
+      f'   ->  joint / product = x{F_HYB_A/prod_a:.5f}')
 print(f'   -> they INTERACT, and act per cell AS A FUNCTION OF SLOPE. Only the joint LEVEL joins '
       f'Pi; the residual SHAPE does not.')
-print(f'\nour LS is therefore {1/0.421:.2f}x - {1/0.333:.2f}x the level alpha = 11.8 belongs to')
-print(f'applying that bracket to the adopted basin total: {ADOPT*0.333:.1f} - {ADOPT*0.421:.1f} '
-      f'Mt/yr, i.e. BELOW both outlet anchors ({ANCHOR_LO}-{ANCHOR_HI}) and back on the '
-      f'physically awkward side')
-print(f'\nthis is a PROXY, not a re-run: 0.421 is a ratio of area-weighted per-cell means, while '
-      f'the basin total weights LS by each cell\'s Qsur*q_peak*K*C. The exact figure needs the '
-      f'pre-registered C3.1 re-run, which has NOT been done.')
 
-fig, ax = plt.subplots(1, 2, figsize=(12.4, 3.7))
-lv = LSLEV.iloc[:4]
-ax[0].bar(range(4), lv['factor on basin LS'], 0.55,
-          color=[CB['blue'], CB['blue'], CB['red'], CB['dark']])
+print(f'\nREGISTERED BRACKET: f_LS in [{F_SRC_E}, {F_HYB_E}] erosion-weighted')
+print(f'   -> our LS is {1/F_HYB_E:.4f}x - {1/F_SRC_E:.4f}x the level alpha = 11.8 is PAIRED with')
+print(f'   the span IS the L-form lever, exactly: ln({F_HYB_E}/{F_SRC_E}) = '
+      f'{np.log(F_HYB_E/F_SRC_E):.4f}  - a LEVER, not an error bar.')
+print(f'   the source formulation READ WHOLE is a POINT at x{F_SRC_E} (all four levers CITED);')
+print(f'   x{F_HYB_E} is a documented HYBRID (his three levers with OUR L).')
+print(f'   the published x0.790 does NOT isolate the L form: 0.790 = 0.852262 (L) x 0.926925 (S)')
+print(f'   = {0.852262*0.926925:.6f}, measured on the UNCAPPED ls2d column, not ls2d_hs. The')
+print(f'   L-form ratio is FORMULATION-DEPENDENT: 0.852262 uncapped / 0.769833 on ls2d_hs /')
+print(f'   {L_IN_FORM} inside the source formulation - so no scalar version of it transfers.')
+
+E_HYB, E_SRC = 129.3840, 75.3235           # docs/47 section 4.3 ENGINE re-runs, NOT the proxy
+print(f'\nbasin gross erosion at the endpoints - ENGINE re-runs, not the area proxy:')
+print(f'   V0 (today) {ADOPT:.4f}   ->  V4 hybrid {E_HYB}  ->  V4_dg adopted {E_SRC} Mt/yr,')
+print(f'   i.e. BELOW both outlet anchors ({ANCHOR_LO}-{ANCHOR_HI}) and back on the physically')
+print(f'   awkward side.  proxy bias f_ero/f_area = x{F_HYB_E/F_HYB_A:.4f} (hybrid) / '
+      f'x{F_SRC_E/F_SRC_A:.4f} (adopted): the proxy is ~2.5 % LOW, i.e. in the model\'s favour.')
+
+print(f'\nDECISION (docs/37 A3, 2026-08-12): the pre-registered C3.1 comparison HAS now been made.')
+print(f'   outcome ADOPT-SOURCE; ls_formulation = \'buarque_2015_dg\'; f_LS = {F_SRC_E} ero')
+print(f'   (proxy {F_SRC_A}); formulation graded CITED on all four levers.')
+print(f'   STATUS: DETERMINED and RECORDED, NOT YET EXERCISABLE.  No engine default moved - this')
+print(f'   notebook still runs at V0 with f_LS = 1.000.  The LS LEVEL remains UNVALIDATED')
+print(f'   (docs/42 G4.2): a CITED formulation is not a validated level, and a fitted one is not')
+print(f'   either.  C3 stays OPEN (clause 2 also needs the SHAPE decision) and C4.3 stays BLOCKED.')
+
+fig, ax = plt.subplots(1, 2, figsize=(12.4, 4.0))
+bar_lab = ['limiter', 'm (eq.-14 STEP)', 'S (W&S 78)', 'L (in-formulation)',
+           'V4 HYBRID', 'V4_dg ADOPTED']
+bar_val = [F_LIM_E, F_STEP_E, F_S_E, L_IN_FORM, F_HYB_E, F_SRC_E]
+ax[0].bar(range(6), bar_val, 0.55,
+          color=[CB['blue'], CB['blue'], CB['red'], CB['blue'], CB['grey'], CB['dark']])
 ax[0].axhline(1.0, color=CB['dark'], lw=1.2, ls='--')
-for i, v in enumerate(lv['factor on basin LS']):
-    ax[0].text(i, v + 0.05, f'x{v:.3f}', ha='center', fontsize=8)
-ax[0].plot([0, 1, 2], [0.351, 0.351 * 0.502, 0.351 * 0.502 * 1.714], 'o:', color=CB['grey'],
-           ms=5, label=f'naive product of the three = {0.502*1.714*0.351:.3f}')
-ax[0].set_xticks(range(4)); ax[0].set_xticklabels(lv.lever, fontsize=7.0, rotation=14, ha='right')
-ax[0].set_ylabel('factor on basin area-weighted $LS$'); ax[0].set_ylim(0, 2.0)
-ax[0].set_title('Three levers that do not multiply out - so they INTERACT', fontsize=9.3)
-ax[0].legend(fontsize=7.0); ax[0].grid(alpha=0.25, axis='y')
+for i, v in enumerate(bar_val):
+    ax[0].text(i, v + 0.05, f'x{v:.6f}', ha='center', fontsize=6.6)
+# Plotted ONLY to mark that it is refuted: the product of the single levers is NOT a candidate
+# for the joint.  Standing rule - never quote a product of single levers as the joint factor.
+ax[0].plot([4], [prod_reg], 'x', ms=10, mew=2.0, color=CB['purple'], zorder=5,
+           label=f'product of the 3 single levers = {prod_reg:.4f}\nNOT a candidate for the joint:'
+                 f'  joint / product = x{F_HYB_E/prod_reg:.5f}')
+ax[0].set_xticks(range(6)); ax[0].set_xticklabels(bar_lab, fontsize=6.8, rotation=16, ha='right')
+ax[0].set_ylabel('$f_{ero}$ - exact erosion-weighted factor'); ax[0].set_ylim(0, 2.0)
+ax[0].set_title('Four levers that do not multiply out - so they INTERACT', fontsize=9.3)
+ax[0].legend(fontsize=6.6); ax[0].grid(alpha=0.25, axis='y')
 
-ax[1].bar([0], [ADOPT], 0.45, color=CB['green'], label='adopted, at OUR $LS$')
-ax[1].bar([1], [ADOPT * 0.421 - ADOPT * 0.333], 0.45, bottom=[ADOPT * 0.333], color=CB['red'],
-          label='at the source method\'s $LS$ level (x0.333-x0.421)')
+ax[1].bar([0], [ADOPT], 0.45, color=CB['green'], label='V0: adopted, at OUR $LS$ (TODAY)')
+ax[1].bar([1], [E_HYB], 0.45, color=CB['grey'],
+          label=f'V4 HYBRID: his 3 levers + our $L$ (x{F_HYB_E})')
+ax[1].bar([2], [E_SRC], 0.45, color=CB['dark'],
+          label=f'V4_dg: source read WHOLE (x{F_SRC_E}) - ADOPTED, not exercised')
 ax[1].axhspan(ANCHOR_LO, ANCHOR_HI, color=CB['amber'], alpha=0.25, zorder=0,
               label='outlet load 144-184 Mt/yr')
-ax[1].text(0, ADOPT + 12, f'{ADOPT:.1f}', ha='center', fontsize=8)
-ax[1].text(1, ADOPT * 0.421 + 12, f'{ADOPT*0.333:.1f}-{ADOPT*0.421:.1f}', ha='center', fontsize=8)
-ax[1].set_xticks([0, 1]); ax[1].set_xticklabels(['our $LS$', 'source-method $LS$'], fontsize=8.5)
-ax[1].set_ylabel('basin gross hillslope erosion (Mt/yr)'); ax[1].set_ylim(0, 360)
-ax[1].set_title('The unresolved $LS$ decision points the WRONG way', fontsize=9.3)
-ax[1].legend(fontsize=7.0); ax[1].grid(alpha=0.25, axis='y')
+for i, v in enumerate([ADOPT, E_HYB, E_SRC]):
+    ax[1].text(i, v + 10, f'{v:.4f}', ha='center', fontsize=7.6)
+ax[1].annotate('', xy=(2, E_SRC), xytext=(1, E_HYB),
+               arrowprops=dict(arrowstyle='->', lw=1.1, color=CB['purple']))
+ax[1].text(1.5, (E_HYB + E_SRC)/2 + 22, f'the $L$-form LEVER\nx{F_SRC_E/F_HYB_E:.5f}  '
+           f'($\\ln$ {np.log(F_HYB_E/F_SRC_E):.4f})', ha='center', fontsize=6.6, color=CB['purple'])
+ax[1].set_xticks([0, 1, 2])
+ax[1].set_xticklabels(['our $LS$ (V0)', 'hybrid (V4)', 'source whole\n(V4_dg)'], fontsize=7.6)
+ax[1].set_ylabel('basin gross hillslope erosion (Mt/yr)'); ax[1].set_ylim(0, 375)
+ax[1].set_title('The $LS$ decision: DECIDED on source grounds, NOT exercised\n'
+                'it points the WRONG way, and the LEVEL is still UNVALIDATED', fontsize=9.3)
+ax[1].legend(fontsize=6.4); ax[1].grid(alpha=0.25, axis='y')
 plt.tight_layout(); plt.show()""")
 
 reading(
-    what=r"""**Left:** the three ways our topographic factor differs from the source method's,
-each as a multiplicative factor on the basin area-weighted $LS$, with the joint effect and the
-naive product of the three shown separately. **Right:** the adopted basin total against what it
-becomes at the source method's $LS$ level, with the outlet anchor band.""",
-    shows=r"""The three levers are x0.351, x0.502 and x1.714, but their joint effect is **x0.421,
-not the x0.302 their product would give** - so they interact, and none of them is "the" cause.
-Our $LS$ is **2.37x-3.00x** the level Williams' $\alpha$ = 11.8 belongs to. Applying that bracket
-takes the basin total to **99.8-126.1 Mt/yr - below both outlet anchors**, back on the physically
-awkward side that section 1.1 appeared to leave behind.""",
+    what=r"""**Left:** the **four** ways our topographic factor differs from the source method's,
+each as the *erosion-weighted* factor $f_{ero}$ it applies to basin gross erosion, followed by the
+two joint compositions - the grey `V4` **hybrid** (his three levers with our $L$) and the dark
+`V4_dg`, **the source formulation read whole**, which is the one adopted. The purple cross marks
+the **product of the three single levers**, plotted **only** so its refutation is visible: it is
+not a candidate for the joint. **Right:** basin gross erosion under all three compositions - all
+**engine re-runs, not the area-weighted proxy** - against the outlet anchor band, with the
+$L$-form lever annotated.""",
+    shows=r"""The four levers are **x0.362435** (limiter), **x0.522043** ($m$ = his eq. 14, a
+**step function on slope percent**, not a cap on our continuous $m$), **x1.694054** ($S$ = his
+eq. 18, Wischmeier & Smith 1978) and **x0.580685** ($L$ = his eq. 13, Desmet & Govers finite
+difference, measured *inside* the source formulation). **The product of the first three is
+0.3205244 and the measured joint is 0.431944 - joint / product = x1.34762** - so they interact,
+none of them is "the" cause, and the product is never the joint. The registered bracket is
+$f_{LS}\in$ **[0.25146, 0.43194]** erosion-weighted, i.e. our $LS$ is **2.3151x-3.9768x** the level
+Williams' $\alpha$ = 11.8 is *paired* with, and the basin total falls from **299.5387** to
+**129.3840** (hybrid) and **75.3235 Mt/yr** at the adopted point - **below both outlet anchors**,
+back on the physically awkward side that section 1.1 appeared to leave behind.""",
     means=r"""**The $LS$ residual is level *plus slope-dependent shape*, and only the level joins
 $\Pi$.** That is why this is a defect and not a calibration target: a scalar can absorb the level
 part, and *no* scalar can absorb the shape part - the C4 guard that tests for it can **detect** it
 and can never fix it. **What it forbids:** a scalar $LS$ multiplier, which would hide a
-slope-dependent error inside $\Pi$ rather than correcting it. **How it is being handled, and this
-is the interesting part:** the comparison that settles it is **pre-registered in advance** with the
-decision rule fixed *before* the run - fidelity to the transposed method wins by default,
-deviations need their own written citable justification, and ties break toward the **lower** $LS$.
-The registered expected consequence, that the total gets **worse**, is written down in advance for
-one reason: **an unattractive total is not evidence against the source formulation.** The
-comparison has **not been made**, and clause 2 of C3's closure fails on that.""")
+slope-dependent error inside $\Pi$ rather than correcting it. **Read the interval correctly - it is
+not uncertainty.** All four levers are **CITED** with a single admissible reading each, so the
+source formulation read whole is a **POINT at x0.25146**; **x0.43194 is a documented hybrid** kept
+only because it is what was published and must stay reproducible; and the span between them,
+$\ln(0.43194/0.25146) = 0.5410$, **is the $L$-form lever** and nothing else. **How it was handled,
+and this is the interesting part:** the comparison was **pre-registered in advance** (`docs/35`
+§9.3, then `docs/46`, frozen) with the decision rule fixed *before* the run - fidelity to the
+transposed method wins by default, deviations need their own written citable justification, and ties
+break toward the **lower** $LS$ - and the registered expected consequence, that the total gets
+**worse**, was written down in advance for one reason: **an unattractive total is not evidence
+against the source formulation.** **The comparison has now been made** (`docs/37` **A3**,
+2026-08-12): outcome **ADOPT-SOURCE**, `ls_formulation = buarque_2015_dg`, graded **CITED** on all
+four levers - and the total does get worse, exactly as registered. **Clause 2 of C3's closure still
+fails**, for three separate reasons: the decision is **RECORDED and NOT EXERCISED** (no engine
+default moved, so every number in this notebook is still at `V0` with $f_{LS} = 1.000$), the **LS
+LEVEL remains UNVALIDATED** (`docs/42` G4.2 - a cited formulation is not a validated level, and a
+fitted one is not either), and clause 2 also requires the **LS *shape*** decision, which A3 does not
+touch. **C4.3 remains BLOCKED** (`docs/47`).""")
 
 md(r"""## 6.5 - One trunk station, and a single station's residual exceeds the whole model above it
 
@@ -2764,10 +2966,16 @@ code(r"""checks = [
     ('the beta-band primary envelope reproduces 1.83x - 2.39x',
      (abs(env_P[0] - 1.83) < 0.01) and (abs(env_P[1] - 2.39) < 0.01)),
     ('the peak correction reproduces x1.096', abs(PEAK_CORR - 1.096) < 5e-4),
-    ('the deposition-free and reading-B alpha intervals OVERLAP',
-     DEPFREE[1] > READINGB[0]),
-    ('the guard returns ok on a deposition-free fit (i.e. it is blind)',
-     qpk.check_musle_parameters(7.5, 0.56)['status'] == 'ok'),
+    # CORRECTED 2026-08-12 (docs/43 section 7 amd 5).  This assertion used to read "the
+    # deposition-free and reading-B alpha intervals OVERLAP", DEPFREE[1] > READINGB[0] - true
+    # only because DEPFREE was at the PRIOR cp_revision while READINGB was at the adopted C.
+    # Both halves are asserted below so the superseded fact stays checkable, not just readable.
+    ('the alpha intervals OVERLAPPED at the prior cp_revision but are DISJOINT at the adopted C',
+     (DEPFREE_PRIOR[1] > READINGB[0]) and (DEPFREE[1] < READINGB[0])),
+    ('the disjoint gap at the adopted C is 0.6715 in alpha (docs/43 section 7 amd 5)',
+     abs((READINGB[0] - DEPFREE[1]) - 0.6715) < 5e-4),
+    ('the guard returns ok INSIDE the deposition-free band (i.e. it is blind)',
+     qpk.check_musle_parameters(0.5 * (DEPFREE[0] + DEPFREE[1]), 0.56)['status'] == 'ok'),
     ('Pi is constant across the equifinal family',
      float(fam.Pi.max() - fam.Pi.min()) < 1e-6),
     ('every random-effects CI on exp(D) contains 1',

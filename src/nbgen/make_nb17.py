@@ -30,6 +30,32 @@ def code(s):
     C.append(("code", s))
 
 
+# ============================================================ status banner
+md(r"""> ### STATUS - annotated 2026-08-12 by agent `nb-banner-1217`. Nothing below this banner was rewritten.
+>
+> **What this notebook decided.** The three stage-C2b verdicts: **H-BFI not refuted** (0.01625
+> against a gate of 0.02845, with the weak-power caveat that travels with it), **H-PEAK
+> REFUTED** (fleet-median `R_AMS` 0.820, outside [0.85, 1.15]), and the registered **H2E-S**
+> peak refit **REJECTED** on 2 of its 3 pre-registered conditions - it fixed the peaks and was
+> rejected anyway.
+>
+> **All three still stand.** `docs/33` §6.2, §7.1 and §8 own these verdicts and carry the same
+> numbers. `docs/36` then adjudicated the structural peak deficit across three research lenses
+> and **recommended not pursuing a fix**, so §7's *"no further refit"* is now the project's
+> position and not just this page's. The adopted configuration **H2E** remains the Phase C
+> driver set.
+>
+> **One reading note.** `R_POT` **0.5672** here is a **fleet median of per-gauge ratios** over
+> 63 gauges (range 0.155-1.141) - the same statistic and the same range `docs/36` prints as
+> 0.567. The pooled figure, **0.5747**, is a different aggregation (1,285 simulated events over
+> 2,236 observed) and `docs/36` carries that one too. They are not in conflict; quote the
+> aggregation with the number.
+>
+> **Where things have moved since, downstream of this page.** §5.10 and §7.5 hand forward to C3
+> and C4. **C3 is still OPEN**, re-issued as `docs/37` **Amendment A1** (2026-08-11), and
+> **C4.3 is BLOCKED until the LS level lands** (`docs/47`); when it unblocks, C4 is held to
+> `docs/42`'s guards G1-G9.""")
+
 # ============================================================ title
 md(r"""# Notebook 17 - stage C2b: validating the two quantities the sediment model consumes
 

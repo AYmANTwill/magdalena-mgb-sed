@@ -2,8 +2,31 @@
 
 **Written 2026-08-11** by the `defect-b` agent (process record:
 `docs/agents/journal_defect-b.md`). This document **resolves Defect B of
-`docs/46_ls_preregistration_DRAFT.md` §1.1 with numbers**, so that `docs/46` can be frozen with
-that defect settled rather than inherited (`docs/46` §9.1 item 1).
+~~`docs/46_ls_preregistration_DRAFT.md`~~ → `docs/46_ls_preregistration.md` §1.1 with numbers**,
+so that `docs/46` can be frozen with that defect settled rather than inherited
+(`docs/46` §9.1 item 1).
+
+> **[WARN] TWO DATED CORRECTIONS, 2026-08-12 — neither moves a number measured below.**
+>
+> 1. **The filename, and the status it implied.** `docs/46_ls_preregistration_DRAFT.md`
+>    **does not exist**. The live file is **`docs/46_ls_preregistration.md`**, headed
+>    *"# 46 — Resolving the LS **level**: pre-registration — **FROZEN (READ OUT)**"*, frozen
+>    **2026-08-11** with **§10** as its amendment slot. The clause *"so that `docs/46` can be
+>    frozen"* **has been discharged** — it **is** frozen, and `docs/46` §9.1 item 1 records
+>    Defects A and B as resolved at the freeze. Every `§`-reference below still resolves; only
+>    the path and the draft status were stale (`docs/00_INDEX.md` §7 defect 10).
+> 2. **The `0.1644` materiality bar used below is STRUCK.** `docs/52` (2026-08-11) struck it at
+>    all fifteen of its sites and replaced it with **NO NUMBER**; `docs/46` §2.0 enacts that
+>    verbatim — *"there is no materiality bar."* Read every `0.1644` below as **the bar in force
+>    when this was written**, and reconstruct no replacement from it.
+>    **What survives, and it is this document's whole finding:** `docs/52` §6 (site `:265`)
+>    re-grounds **H-L** on *"the code reading and the exact factorisation, both threshold-free:
+>    0.790 = 0.852262 (`L` form) × 0.926925 (`S` swap), measured on the wrong column"* and
+>    states that *"the 0.0258 basin-scale agreement is **reported and is not the test**"*. So
+>    **§2–§6's measurements and the corrected lower endpoint ×0.244679 area / ×0.25146
+>    erosion-weighted stand on a threshold-free ground**; only §3's, §5's and §6.2's
+>    *"inside/above the 0.1644 bar"* phrasings are superseded as **tests**. They remain correct
+>    as **reported magnitudes**.
 
 **It decides nothing and adopts nothing.** No engine default moved; `ls2d_column` is still
 `ls2d_hs`; the committed LS products were SHA-256'd before and after and are unchanged; no

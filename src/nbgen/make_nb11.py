@@ -7,6 +7,15 @@ C = []
 def md(s): C.append(("markdown", s))
 def code(s): C.append(("code", s))
 
+md(r"""> # ⚠ STATUS 2026-08-12 — "adding CHIRPS in v2" never happened. **v2 is GAUGE-ONLY**, and v2 is the adopted forcing.
+>
+> **What this notebook built:** the per-minibacia daily rainfall + PET forcing, gauge-only, plus (§6) the leave-one-out baseline — median daily r **0.429** — that a CHIRPS merge was supposed to have to beat.
+> **What v2 actually became:** the **zero-suppression repair** (`docs/16` §4.1, `docs/18` §10; `src/repair_precip_zero_suppression.py` → `src/repair_precip_selectivity.py`) **plus deterministic IDW** (`docs/23` §11; `src/idw_forcing.py`, lexsort on (distance, gauge code)) — **still gauge-only, no CHIRPS**. This notebook's two forward references to CHIRPS "in v2" (the cell below, and the closing **Next:**) are **STALE**: they name something v2 is not. Both are annotated in place.
+> **What happened to the CHIRPS merge:** built and measured against two pre-registered gates — LOOCV **PASSED** (0.447 > 0.429), volume **FAILED** (2,188.5 mm/yr vs the required [2,016.0, 2,056.8], +7.5 %) ⇒ **DO NOT ADOPT** (`docs/18` §15). Re-registered as **H-CHIRPS** (`docs/33` §1) and **REFUTED by its own volume gate**: the registered fix was a **no-op**, the re-run bit-identical, and the diagnosed cause **wrong** (`docs/18` §15.5). A CHIRPS-merged forcing would be **v3**; **v3 does not exist** and needs a new pre-registration (`docs/30` §1). See the **"Forcing versions — v1 / v2 / v3, stated once"** section of `docs/00_INDEX.md`.
+> **Note the version this notebook now runs:** the code sets `VERSION = 'v2'` and reads `precip_gauges_daily_qc_v2.csv`, so the prose below calling this *"the v1 baseline"* describes the notebook as first written, not the run whose outputs you are reading.
+>
+> **Nothing below this banner has been rewritten.** The 2026-08-12 notes are additions; every original statement stands as written, because the record of what was believed at the time is itself evidence.""")
+
 md(r"""# Notebook 11 - Per-minibacia daily forcing: rainfall + PET
 
 MGB-SA runs a **daily water balance for every minibacia**. This notebook turns the collected
@@ -29,7 +38,14 @@ than an assumed one.
 
 **The limitation carried explicitly throughout:** 17 % of basin area lies more than 30 km from any
 gauge, concentrated in the high headwaters that generate most of the sediment. Section 5 flags every
-minibacia so this stays visible instead of disappearing into a CSV.""")
+minibacia so this stays visible instead of disappearing into a CSV.
+
+> **⚠ STALE — annotation added 2026-08-12; the text above is unchanged.**
+>
+> - ~~so that adding CHIRPS in v2 becomes a measured improvement~~ → **v2 contains no CHIRPS.** v2 = zero-suppression repair (`docs/16` §4.1, `docs/18` §10) + deterministic IDW (`docs/23` §11), **gauge-only**, and it is the adopted forcing. The CHIRPS merge was built and measured *separately* and **NOT ADOPTED** (`docs/18` §15); as **H-CHIRPS** in `docs/33` §1 it is **REFUTED by its own volume gate**. A CHIRPS-merged forcing would be **v3** and **v3 does not exist**.
+> - ~~This is the v1 baseline~~ → **this notebook now runs v2** (`VERSION = 'v2'`, `precip_gauges_daily_qc_v2.csv`) and writes `forcing_minibacia_*_v2.csv`. v1 is kept on disk only so notebook 14's H2 − H1 attribution can re-run the same objective on the old forcing (`docs/26`).
+> - ~~the automatic network under-catches ~31 %~~ → **~19 %.** The 31 % figure was measured against the *pre-repair* gauge totals, which were inflated; notebook 10's own executed output now prints *"automatic under-catches ~19 %"*. Owning record: **`docs/16` §4.4**. The *"63 % of the basin >30 km from a gauge"* half of the sentence is current and correct.
+> - **§6's baseline did its job.** Median daily r **0.429** is the bar the merge had to clear, and the merge **cleared it at 0.447** — it was rejected on **volume**, not on skill (`docs/18` §15.1).""")
 
 code(r"""import glob, pathlib, sys
 import numpy as np, pandas as pd, rasterio
@@ -339,7 +355,9 @@ trusted.
 
 The same leave-one-out prediction doubles as the **spatial-consistency check** deferred from section 1
 - a station-day whose observation is wildly inconsistent with every neighbour is a candidate error
-that survived the 0-400 mm screen.""")
+that survived the 0-400 mm screen.
+
+> **⚠ Note added 2026-08-12; the text above is unchanged.** ~~the baseline skill a CHIRPS-merged v2 must beat~~ → **v2 is gauge-only and contains no CHIRPS** (see the banner); the merged field, had it been adopted, would have been **v3**, and v3 does not exist. The baseline this section produces — **287 gauges, median daily r 0.429** — was nevertheless used exactly as intended: it is the LOOCV gate in `docs/18` §15.1 and in `docs/33` §1 H-CHIRPS, reproduced by the merge run to an assert tolerance of 6e-4. The merge **beat it (0.447)** and was still **NOT ADOPTED**, because the volume gate failed (`docs/18` §15).""")
 
 code(r"""Dg = km(gauges.lat.values[:, None], gauges.lon.values[:, None],
         gauges.lat.values[None, :], gauges.lon.values[None, :])
@@ -637,7 +655,17 @@ a measured cross-validation baseline, Penman-Monteith PET, and a first water-bal
    `fallback_days`.
 
 **Next:** v2 forcing - quantile-map CHIRPS onto these gauges, merge conditionally, and re-run
-section 6's LOOCV to test whether it actually beats the baseline measured here.""")
+section 6's LOOCV to test whether it actually beats the baseline measured here.
+
+> **⚠ STALE — annotation added 2026-08-12. The list and the "Next:" line above are unchanged; this note is appended, not substituted.**
+>
+> **On "Next:".** ~~**Next:** v2 forcing - quantile-map CHIRPS onto these gauges, merge conditionally~~ → **that is not what v2 became.** **v2 = zero-suppression repair (`docs/16` §4.1, `docs/18` §10) + deterministic IDW (`docs/23` §11), gauge-only**, and it is the adopted forcing; CLAUDE.md's pipeline runs `repair_precip_zero_suppression.py` and nothing CHIRPS-merged. The quantile-map merge *was* built anyway (`src/merge_chirps_gauges.py`) and judged against two pre-registered gates: LOOCV **0.447 > 0.429 PASSED**; volume **2,188.5 mm/yr vs [2,016.0, 2,056.8] FAILED (+7.5 %)** ⇒ **DO NOT ADOPT** (`docs/18` §15.1). Re-registered as **H-CHIRPS** (`docs/33` §1) and re-measured 2026-08-10: the registered refit was a **no-op** (the inferred-dry days were already 25.9 % of the fit pools), the re-run was **bit-identical**, and the gate failed again — **H-CHIRPS is REFUTED by its own volume gate**, and the cause diagnosed in `docs/18` §15.3 was **wrong** (corrected in §15.5). A CHIRPS-merged forcing would be **v3**; **v3 does not exist** and would require a new pre-registration (`docs/30` §1). See the **"Forcing versions — v1 / v2 / v3, stated once"** section of `docs/00_INDEX.md`.
+>
+> **On limitation 1.** ~~That is the specific, measured case for adding CHIRPS to those minibacias~~ → **tested, and it did not hold.** In the LOOCV band beyond 30 km, pure mapped CHIRPS scored **r 0.300 against gauge-IDW's 0.343** — worse where the case was strongest. The merge's measured gain lives in the **10-30 km blend band (0.426 → 0.449)**, not in the ungauged headwaters (`docs/18` §15.2). The ungauged 17 % remains open, and it is where the rejected merge put its whole +7.5 % volume surplus (`docs/18` §15.5).
+>
+> **On limitation 3, superseded numbers.** ~~(0.14 -> 0.29)~~ → **0.163 → 0.306** on the repaired gauges (notebook 10 §3's executed lag table; `docs/16` §4.2 records 0.160 → 0.304). The conclusion is unchanged and the limitation is **still open**: `docs/16` §4.2 carries it forward verbatim for calibration, while measuring that it does **not** matter for PET (mean bias −0.000 mm/day).
+>
+> **Limitation 2 is confirmed closed** — the model period is **2008-2018** (CLAUDE.md). **Limitations 4 and 5 stand as written**; the fallback count is now a deterministic quantity because the interpolator is order-invariant (`docs/23` §11.1).""")
 
 
 def cell(kind, src):

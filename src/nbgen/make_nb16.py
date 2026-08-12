@@ -30,6 +30,27 @@ def code(s):
     C.append(("code", s))
 
 
+# ============================================================ status banner
+md(r"""> ### STATUS - annotated 2026-08-12 by agent `nb-banner-1217`. Nothing below this banner was rewritten.
+>
+> **What this notebook decided.** The **model-free** observed ENSO sediment contrast - the
+> target stage C5 must reproduce - on two registered window pairs and two registered estimators.
+>
+> **It still stands.** `docs/34` owns this result and agrees: the direction is **unanimous**
+> across every station-ratio, both estimators and both window definitions, and the magnitude is
+> window-dependent and must be quoted as a range (**~3-9x**), never as one number.
+>
+> **One live disagreement, deliberately left visible.** Section 9.5 of this notebook *corrects*
+> `docs/34`'s prose counts: the number of available ratios is **24**, not the "22 of 22" the doc
+> prints. That correction is a finding of this page and has **not** yet been carried into
+> `docs/34` by an amendment. Under the project's precedence rule the owning doc still holds the
+> published figure, so the two are reported side by side rather than smoothed. **No result
+> moves**: direction, range, every station ratio and every interval reproduce.
+>
+> **Where things have moved since, downstream of this page.** §10 hands forward to C5, and that
+> hand-off has **not** been consumed: **C3 is still OPEN** (`docs/37` **Amendment A1**,
+> 2026-08-11) and **C4.3 is BLOCKED until the LS level lands** (`docs/47`).""")
+
 # ============================================================ title
 md(r"""# Notebook 16 - the observed ENSO sediment contrast (stage C2)
 

@@ -1,5 +1,17 @@
 # 18 — Hydrology journal: water balance, calibration, and the dry-phase diagnosis
 
+> **STATUS — 2026-08-12. LIVE as the Phase B record; §1's "Current state" is attempt-1 vintage.**
+> **What this document is for:** §5 the verdict, **§6 checked-and-refuted**, **§7 the traps**, §8
+> the open-items register, §9–§12 the forcing follow-up, §14 the v2 rebuild, **§15 the CHIRPS
+> merge and §15.5 its closing read-out.** None of that is retracted.
+> **What has changed since §1 was written:** three further calibration attempts ran — H1, H2 and
+> **H2E** — and Phase B **CLOSED on H2E** ([docs/30](30_phase_c_plan.md) §1). §1's skill,
+> parameter-bound and store-ordering rows are **attempt 1 (Config B)** and are superseded by
+> [docs/26](26_phase3_refit.md) Addendum A.2/A.4/A.5; see the note under that table. Phase C is
+> **ACTIVE**, not blocked. §8 has been back-annotated where items closed.
+> **Where current status lives:** `progress_map.html` (RULE 0: for status the tracker wins), then
+> [docs/00_INDEX.md](00_INDEX.md).
+
 The Phase B record. What was built (`src/mgb_hydrology.py`, notebooks 13–14), what the calibration
 actually achieved, and — the reason this document exists — **why the El Niño 2015–16 half of the
 ENSO contrast fails, measured rather than argued**.
@@ -32,7 +44,39 @@ failures turn out to be a *separate, local* problem rather than the basin-wide s
 | Recession realism | ❗ **Newly found defect.** Simulated low-flow recession 48.6 d against 14 d observed, in *every* period |
 | Parameter bounds | ❗ `kc_mult` railed at its 2.00 ceiling, `k_int` at 117.4/120, `lai_mult` 4.40/5.0 |
 | Store ordering | ❗ `k_int` (117.4 d) **slower than** `k_bas` (68.6 d) — physically inverted |
-| Phase C (sediment) | Still blocked — on mainstem SSC data and on the doc 19 `calibration_safe` gate |
+| ~~Phase C (sediment)~~ | ~~Still blocked — on mainstem SSC data and on the doc 19 `calibration_safe` gate~~ |
+
+> ⚠ **CORRECTED 2026-08-12. This table is attempt 1 (Config B, v1 forcing, old objective).** Kept
+> because it is what was true when the diagnosis in §4–§6 was run; it is not the adopted
+> configuration. The owning record for every superseded row is
+> [docs/26](26_phase3_refit.md) Addendum (read §5.1 before quoting any fitted parameter).
+>
+> | row above (attempt 1) | adopted configuration **H2E** (attempt 4) | owner |
+> |---|---|---|
+> | Validation skill median KGE **+0.450** | VAL-all KGE **0.356**, NSE 0.130, r 0.591, α 0.905, β 1.035, PBIAS **+3.51 %** | A.4 |
+> | La Niña **+0.399** · El Niño **+0.193** | La Niña **0.344** · El Niño **0.200**; **skill over climatology +0.106 / −0.0005** | A.5 |
+> | Recession realism 48.6 d vs 14 d observed | fleet-median recession ratio **1.082**; *"Every period passes ≤ 1.5× on both"* | A.3 · [docs/29](29_seed_expansion.md) rule (b) |
+> | `kc_mult` railed at 2.00 | `kc_mult` **1.6625** — *"confirmed off the rail that held H1 at 98.8 % and H2 at 93.3 %"*; railed **2 of 10 global / 3 of 18 dimensions** | A.2 |
+> | Store ordering `k_int` slower than `k_bas` | `k_int < k_bas` now holds by construction (`k_sup` 19.20 d, `k_int` 0.87 d, `k_bas` 42.97 d) — but A.2: *"**a constrained ordering relocates compensation, it does not remove it**"*, surface response now 22× slower than interflow | A.2 |
+>
+> **The caveat that must travel with H2E:** *"**The dry phase in the adopted configuration is at
+> climatology, not above it: −0.0005.**"* (A.5). Every Phase C sediment claim inside the El Niño
+> window inherits it.
+>
+> **Phase C is ACTIVE, not blocked**, and both of the struck row's grounds are discharged:
+> - *mainstem SSC data* — [docs/30](30_phase_c_plan.md) header: *"It supersedes the 'Phase C
+>   blocked' line in older docs."* Its measured form is [docs/32](32_ssc_qc_audit.md) §R6:
+>   **79/79 stations classified**, 28 mapped, **18 usable or usable-with-caveat**, and *"`21237020`
+>   ARRANCAPLUMAS (Magdalena — the only Magdalena-trunk SSC station in the entire network)"* —
+>   *"This is the quantitative form of 'Phase C is blocked on mainstem SSC'."*
+> - *the doc 19 `calibration_safe` gate* — **built and executed** as stage C1:
+>   [docs/32](32_ssc_qc_audit.md) is that explicit SSC-quality gate, pre-registered §0–§6 and read
+>   out R1–R7.
+>
+> Phase C has since advanced to C3 (OPEN — [docs/37](37_c3_closure.md), four amendments) with
+> **C4.3, the sediment calibration search, formally BLOCKED** ([docs/47](47_c4_entry_verdict.md):
+> *"`C4.3-BLOCKED-UNTIL-LS-LANDS`. **C4.3 may not start.**"*). For live status read
+> `progress_map.html`.
 
 Nothing in `data/processed/` was modified by the diagnostic work in §4–§6: every experiment
 rebuilt parameters in memory from `sim_calibrated/minibacia_params.npz` and discarded the result.
@@ -164,6 +208,13 @@ Ranked by measured payoff:
 4. **Fix the rainfall field.** This is the only lever measured to be capable of moving r, and it
    was already the top item on nb14's carried-forward list. The CHIRPS–gauge merge plus the four
    SNHT segment exclusions from doc 17, then re-run notebook 11 → 12 → 13 → 14.
+   > **READ-OUT 2026-08-12 — attempted, and it did not work.** The rebuild ran (nb11 → nb12 → v2,
+   > §14) and the merge was built and **rejected twice by its volume gate** (§15, §15.5;
+   > [docs/33](33_c2b_preregistration.md) §1). No `notebook 13 → 14` run on a merged field was ever
+   > launched and **no v3 forcing exists**. §15.5, verbatim: *"**no route to a passing volume gate
+   > exists inside the merge code.**"* The surviving route — repairing the 139 residual
+   > rain-selective stations, upstream of the merge — is **untested**. The ranking above still
+   > stands as a ranking; item 4 is simply no longer available.
 5. **Raise the `kc_mult` ceiling only together with a PET review.** It is railed at 2.00, meaning
    the search wanted more ET than allowed; but [doc 22 §4.5](22_dry_phase_diagnosis.md) shows more ET alone makes El Niño *worse*
    (0.193 → 0.177 at kc × 1.20). The energy deficit is an input problem, not a bound problem.
@@ -284,10 +335,10 @@ Recorded because each looked right before it was measured.
 | # | item | blocks |
 |---|---|---|
 | 1 | ~~Re-fit with a recession-signature objective term, `k_int < k_bas` constraint, and a `k_bas` lower bound below 15 d~~ **DONE ([doc 26](26_phase3_refit.md))** — recession ratio 3.86× → **1.27×** and it holds on the held-out years; El Niño α 0.793 → **0.911**; stores no longer inverted. Cost ≈0.03 of validation median KGE, which is the designed trade. **But the search relocated the compensation**: H2 rails `k_sup` at 99.8 % and `k_int_frac` at its floor, giving k_sup 19.8 d > k_bas 13.7 d. Constraining one ordering moved the inversion, it did not remove it | closed; see item 21 |
-| 2 | CHIRPS–gauge merged rainfall (nb11 → 12 → 13 → 14) | **r, and therefore the dry phase** |
+| 2 | ~~CHIRPS–gauge merged rainfall (nb11 → 12 → 13 → 14)~~ **DONE, and NEGATIVE — CLOSED (§15, §15.5).** The merge was built (`src/merge_chirps_gauges.py`), its LOOCV gate **passed** (r 0.447 > 0.429) and its **volume gate FAILED** (2,188.5 mm/yr, +7.47 % against [2,016.0, 2,056.8]) — twice. No forcing file was written; nb13/nb14 were never re-run on a merged field. See item 20 for the full read-out | closed |
 | 3 | ~~Extend the model period to 2008–2018~~ **DONE (§14)** — nb11 and nb12 executed; P and PET both span 2008-01-01..2018-12-31 (4,018 days). Required rebuilding one internally corrupt ERA5 mosaic. Spin-up now comes from *inside* the period: use 2008, score 2009–2018 | closed |
 | 4 | Local-inertial routing for the Mompós / La Mojana reach. **Not to be implemented on current evidence** — celerity was swept 0.22 → 2.0 m/s and El Niño r moved < 0.016 ([doc 22 §4.6](22_dry_phase_diagnosis.md)). Carry it as a named limitation: celerity 0.221 m/s is a floodplain-storage surrogate for the Mompós reach, not a physical velocity | honesty about what the routing represents |
-| 5 | PET review against the 49 mm/yr basin ET deficit | the +5.6 % outlet PBIAS floor and the 18 infeasible gauges |
+| 5 | ~~PET review against the 49 mm/yr basin ET deficit~~ **PARTLY DONE — the ET-*function* half succeeded and was adopted; the energy-deficit half is not retired.** The candidate one-function change (replace `ET = kc·PET·(W/Wm)` with the FAO-56 threshold form) was pre-registered and run: [docs/29](29_seed_expansion.md) rule (b) — *"**SUCCESS, all three conditions** … the linear stress ET = kc·PET·(W/Wm) was why kc railed; the FAO-56 threshold form releases it at no cost"* — and H2E was adopted on it. **Residue, still open:** `kc_mult` 1.662/1.836 is off its rail but *"still above the FAO-56 plausibility bar of ≤1.2 — the ET form was a real cause, not the whole story"* ([docs/31](31_phase_c_workplan.md) known-open register #2). The **49 mm/yr deficit itself is unchanged**: §14.2 re-measures basin PET at **1,251.6 mm/yr**, *"the figure §3's energy floor has used since it was written"* | partly closed — residue is docs/31 register #2 |
 | 6 | ~~`build_discharge_gauges.py:149-152` and `build_precip_gauges.py:62` rely on pandas date inference~~ **DONE** — both now detect per file/part via `src/dhime_dates.py`. All 98 precip files and 45 discharge parts proved ISO year-first; outputs content-identical, so nothing was silently transposed in these corpora. Recorded so the null result is not read as the fix being unnecessary | closed |
 | 7 | ~~Finish the zero-suppression repair~~ **DONE (§10)** — selectivity detector with a threshold from the measured null; 153 stations repaired, 240,158 inferred-dry days; sparse-band selectivity 1.777 → **1.040**, dense band unmoved at 1.001; areal mean 2,174.3 → **2,035.6** mm/yr (−6.4 %); over-drying test passed. Energy floor 18 → **14**, target was ≤5 | partly closed — see item 10 |
 | 10 | ~~Triage the 14 surviving energy-floor gauges~~ **DONE ([doc 23 §12](23_gauge_geometry.md))** — rule declared before the numbers: **2 EXCLUDE** (need P cut >25 %), **2 KEEP** (a selective gauge carries half their catchment weight — our defect, so it stays visible), **10 DOWN-WEIGHT**. 8 of 14 have no rating curve at all | closed; feeds the Phase 3 objective |
@@ -303,7 +354,15 @@ Recorded because each looked right before it was measured.
 | 17 | **`PET_READY = len(ext) >= 132` in nb11 counts filenames, not readable files** (§14.3). `era5land_ext_2008_M06.nc` was internally corrupt at normal size and passed both a name count and a size check. Replace with an open-and-read-a-timestep check | trusting any file-count gate |
 | 18 | ~~Re-run nb13 → nb14 on `model_inputs_v2/`~~ **DONE ([doc 26](26_phase3_refit.md))** — 4,000 model runs, four concurrent searches. **H2 − H1 on 59 common gauges and the matched 2009–2017 window: β −0.044, PBIAS −4.44 pts, r +0.0033.** The repair fixed volume and left correlation exactly where it was, so **volume and correlation are independent problems** and no further work on rainfall totals will move the ENSO contrast. H3 dropped — the merge was never implemented. 3/9 criteria for both cells against 0/9 for Config B; the primary criterion fails in both its absolute and its ratio form | closed; item 20 is now the only lever |
 | 19 | **The Phase 3 energy-floor criterion has a stale denominator.** It reads “≤ 5 of 61”; the calibration set is now **63** (§14.2), and [doc 23 §13.2](23_gauge_geometry.md) shows area — the rc denominator — is unreliable per gauge in both implementations. Restate on the subset whose areas agree, or drop it from the physical column | a criterion that measures delineation as much as forcing |
-| 20 | **CHIRPS merge not attempted** — and after [doc 26](26_phase3_refit.md) it is the **only remaining lever on the dry phase** (§14). Quantile-map CHIRPS *to* the gauge distribution so volume stays gauge-controlled; gate on LOOCV beating 0.429. 41,180 fallback cells remain, nearest gauge median 16.3 km / max 71.5 km | the r ceiling of [doc 22 §4.7](22_dry_phase_diagnosis.md) |
+| 20 | ~~**CHIRPS merge not attempted** — and after [doc 26](26_phase3_refit.md) it is the **only remaining lever on the dry phase** (§14). Quantile-map CHIRPS *to* the gauge distribution so volume stays gauge-controlled; gate on LOOCV beating 0.429. 41,180 fallback cells remain, nearest gauge median 16.3 km / max 71.5 km~~ **DONE, and NEGATIVE — CLOSED-NEGATIVE (§15) / CLOSED (§15.5), corrected 2026-08-12.** It *was* attempted, exactly as specified: `src/merge_chirps_gauges.py` quantile-maps CHIRPS to the gauge distribution per (elevation band × hydrographic zone), and the 41,180 k=6-silent fallback cells were taken by mapped CHIRPS. **§15: "built, validated, and NOT adopted."** LOOCV gate **PASSED** (median daily r **0.447** > 0.429); **VOLUME gate FAILED** (**2,188.5 mm/yr**, **+7.47 %** against the registered band **[2,016.0, 2,056.8]**). The registered repair (H-CHIRPS, [doc 33](33_c2b_preregistration.md) §1) was then executed and was a **no-op** — doc 33 §1: *"The registered intervention turned out to be a **no-op**: the quantile maps already included the inferred-dry days, so **the diagnosed cause in docs/18 §15.3 was wrong**."* §15.5 measures the re-run as **bit-identical** (max \|diff\| 0.000e+00 on every scored column, 291 rows), the inferred-dry days as **25.9 %** of the fit input, and concludes: *"**no route to a passing volume gate exists inside the merge code**."* **What survives is one UNTESTED upstream hypothesis** — the **139** stations still reporting rain-selectively after the repair (§9.3), whose missing days are *"not in the record at all"* and therefore cannot be put into a pool by any change to the merge code. **No fix is available and none is pending; no v3 forcing exists.** *(doc 33 §1's read-out pointer says "see §7"; §7 of doc 33 is the H-PEAK read-out — the CHIRPS read-out is §15.5 here. doc 33 is frozen, so the pointer stands.)* | closed-negative; the r ceiling of [doc 22 §4.7](22_dry_phase_diagnosis.md) stands unmoved |
+
+> ⚠ **Register note, 2026-08-12.** Item 18's closing phrase *"item 20 is now the only lever"* is
+> superseded by item 20's own read-out above: that lever was pulled and it failed its volume gate.
+> §15.5: *"This closes the CHIRPS question as it currently stands."* **v2 remains the forcing.**
+> This register and §15 disagreed for two sessions — §8 said "not attempted" while §15 of the same
+> document recorded the rejection. Corrected here, in the register, because §8 is what a reader
+> consults for "what is still open".
+
 ---
 
 ## 9 — The forcing surplus: independent replication, and the repair audited
@@ -880,6 +939,13 @@ records only, or by repairing the remaining rain-selective stations first. A v3 
 never launched (it would need an nb12 rebuild and a new pre-registered cell; recorded as
 follow-up in the run journal). A negative result under a pre-registered rule is a finding: the
 gate did precisely the job it was registered to do.
+
+> ⚠ **Note added 2026-08-12: of the two routes named above, the first was measured and is a
+> no-op.** *"Conditioning the quantile maps on inferred-complete records only"* was registered as
+> H-CHIRPS ([doc 33](33_c2b_preregistration.md) §1), run, and found to be **already the code's
+> behaviour** — §15.5 below. The second, *"repairing the remaining rain-selective stations
+> first"*, is **untested** and lies upstream of the merge. Read §15.5 before quoting this
+> paragraph.
 
 ### 15.5 C2b.3 - the refit was re-run, both gates re-measured, and the question is closed
 

@@ -24,6 +24,32 @@ def code(s):
     C.append(("code", s))
 
 
+# ============================================================ status banner
+md(r"""> ### STATUS - annotated 2026-08-12 by agent `nb-banner-1217`. Nothing below this banner was rewritten.
+>
+> **What this notebook decided.** The uncalibrated baseline: a DATA/PRIOR parameter set fixed
+> *before* any comparison with a gauge, and - in the Summary - the order in which calibration
+> should attack the errors.
+>
+> **What happened to it.** Three calibration attempts followed (`docs/21` §1) and **Phase B
+> closed on H2E** (`docs/26` Addendum, 2026-08-10). **No parameter on this page is an adopted
+> parameter**; they are the priors, and `notebooks/15` §2 plots them as exactly that ("the
+> simulation at the prior parameters"). The Summary's item 4 - *"do not expect calibration to
+> move r much"* - **held**: `docs/22` §4.7 measures El Nino daily r inside **0.556-0.572**
+> across twelve parameter configurations, and that ceiling is now attributed to the rainfall
+> field rather than to any parameter.
+>
+> **One in-page correction.** Section 7's heading says ~~`data/processed/sim_baseline/`~~; the
+> executed run wrote **`sim_baseline_v2/`** (cell 46's own comment: *"sim_baseline_v2, NOT
+> sim_baseline"*) and deliberately left the v1 directory untouched for notebook 14's H1 cell.
+> "v2" here is the gauge-only zero-suppression + deterministic-IDW forcing (`docs/18` §9-§12,
+> `docs/23` §11), not a CHIRPS merge - that product was later built and **not** adopted
+> (`docs/18` §15).
+>
+> **Where the current state lives.** `docs/26` + its 2026-08-10 Addendum (**§5.1 before quoting
+> any fitted parameter**) · `docs/29` (seed-expansion read-out) · `docs/30` §1 (why Phase B
+> closed).""")
+
 # ============================================================ title
 md(r"""# Notebook 13 - the uncalibrated baseline run
 

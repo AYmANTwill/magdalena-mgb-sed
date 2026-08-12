@@ -3,7 +3,12 @@
 **Written 2026-08-11** by the `bar-judge` agent (process record:
 `docs/agents/journal_bar-judge.md`). This document does **one** job: it decides item **(e)** of
 `docs/51` §5.6 — the single non-mechanical item blocking the freeze of
-`docs/46_ls_preregistration_DRAFT.md`. It decides it **on principle and before `Δ_shape` is
+~~`docs/46_ls_preregistration_DRAFT.md`~~ → **`docs/46_ls_preregistration.md`** *(filename
+corrected 2026-08-12; that path never existed after the freeze. The live file is
+`docs/46_ls_preregistration.md` — **"46 — Resolving the LS level: pre-registration —
+FROZEN (READ OUT)"**, frozen 2026-08-11, §10 its amendment slot. **It is not a draft**, and this
+document must not be read as amending one. The section numbers cited below are intact.)*.
+It decides it **on principle and before `Δ_shape` is
 computed**, so the threshold cannot be reverse-engineered from its verdict.
 
 **Scope.** It **recommends**; it does not enact. `docs/46` was **not edited** (only the agent
@@ -367,8 +372,33 @@ discriminator, or a printed ratio.**
 | **:163** | **(R1)** H-LIM reading | **Source text.** A second admissible reading refutes the reading clause **irrespective of the factor it produces**; both factors are reported; the outcome is **ADOPT-BAND** (§4.2), which carries both. *A reading disagreement is never "inside the bar".* |
 | **:166** | **(R2)** limiter proxy | **§3.3, already registered:** *"`f_ero` decides; `f_area` is reported beside it, always, and can never override it."* R2 becomes a **reported diagnostic** — print `f_ero`, `f_area` and their exact ratio (**×1.0326**); the proxy may not be quoted anywhere the exact value exists. |
 | **:189** | **(R4)** H-M field clause | **Retired as a refutation clause.** H-M's field content is a **sign** prediction, and the sign test is **(R5)** — exact and threshold-free. The magnitude is **reported**: `f(V2b)/f(V2a)` = **×1.0088**. The **reading** clause (eq. 14 step ≠ `min(m,0.5)` cap) is independent, is **CITED**, and stands. **⚠ This changes a label already written:** `docs/51` §3 records *"(R4) FIRES ⇒ H-M's field clause REFUTED"*; under this disposition the field clause is **confirmed on its sign** and its magnitude is ×1.0088 — while the ×0.502 relabelling that (R4) was standing in for is owed **anyway**, under `docs/51` §5.6(b), because the label is wrong regardless of size. |
-| **:216 / :220** | **(R7)/(R8)** *"`S` acts as a scalar"* | **Exact discriminator + report.** A lever is a pure level lever **iff its per-cell factor is constant**; any nonzero dispersion is shape content. Report (i) the per-cell `S_WS78/S_MB86` range over the basin's slope range (§3.4: ≈ **0.975 – 3.81**, non-monotone) and (ii) the quantity that actually enters the fit — the **per-station erosion-weighted factor dispersion**, `sd(ln)`, beside `docs/47` §4.4's measured 0.0769 (all 18) / 0.0868 (CAL 13) for the joint. Restate as measurements — *"the `S` ratio field spans ≈ ×3.9 over the basin's slope range; `S` is not a scalar"* — not as threshold tests. |
-| **:240 / :249** | **(R10)** joint cell, **(R12)** joint proxy | **§3** for (R10) — citation, plus the printed ×1.34762 and the standing instruction. **§3.3** for (R12), as for (R2): reported diagnostic, exact ratios **×1.02484** (upper) / **×1.02771** (DG), against `docs/47` R7's separately measured proxy bias 1.0251 / 1.0278. |
+| **:216 / :220** | **(R7)/(R8)** *"`S` acts as a scalar"* | **Exact discriminator + report.** A lever is a pure level lever **iff its per-cell factor is constant**; any nonzero dispersion is shape content. Report (i) the per-cell `S_WS78/S_MB86` range over the basin's slope range (§3.4: ≈ **0.975 – 3.81**, non-monotone) and (ii) the quantity that actually enters the fit — the **per-station erosion-weighted factor dispersion**, `sd(ln)`, beside `docs/47` §4.4's measured 0.0769 (all 18) / 0.0868 (CAL 13) for the joint. *(**Set label, clarified 2026-08-12, no number moves:** "CAL 13" is `docs/47` §4.4's own station-set label for its dispersion measurement and is quoted verbatim here. It is **not** the fit set — `docs/45` §3.4 and §7.1 register **CAL 8** as what C4 fits, "the C1-usable tributary set (13)" being a different set from which 5 have no paired SSC + observed-Q CAL day at all; **all 18** remains the deciding form for every structure guard. So read *"the quantity that actually enters the fit"* against **CAL 8**, with the two dispersions carried as reported diagnostics.)* Restate as measurements — *"the `S` ratio field spans ≈ ×3.9 over the basin's slope range; `S` is not a scalar"* — not as threshold tests. |
+| **:240 / :249** | **(R10)** joint cell, **(R12)** joint proxy | **§3** for (R10) — citation, plus the printed ×1.34762 and the standing instruction. **§3.3** for (R12), as for (R2): reported diagnostic, exact ratios ~~**×1.02484**~~ → **×1.025111777659529** (upper, **restated 2026-08-12 — see the note below**) / **×1.02771** (DG, **unchanged**), against `docs/47` R7's separately measured proxy bias 1.0251 / 1.0278. |
+
+> **RESTATEMENT, 2026-08-12 — (R12)'s upper ratio only. It is a printed diagnostic, and NOTHING
+> MOVES.** The **owning records** are `docs/46` **§10 amendment 2** and `docs/51` **§9 amendment 1**
+> (both 2026-08-12): `f_area(V4)` on §3.3's registered support — the per-cell basin pass over
+> **30,235,916** cells, 256,702.3554292511 km² — is **0.42136300143291305**, not the
+> **0.4214751420286394** the ratio ×1.02484 was built from. The latter is *not* an arithmetic error:
+> it is a correct quantity on the **engine's `urh_fractions` × `minibacias` area support**
+> (257,096.93 km²), just not what `docs/46` §3.3 defines `f_area` to be. Recomputed here, not
+> transcribed:
+>
+> ```
+> 0.43194417543884817 / 0.42136300143291305 = 1.025111777659529   |d| vs R7's 1.0251 = 1.1777659529199624e-05
+> 0.43194417543884817 / 0.4214751420286394  = 1.0248390293193077  |d| vs R7's 1.0251 = 2.609706806921963e-04
+> 0.2514648985839397  / 0.2446790094097074  = 1.0277338427624152  |d| vs R7's 1.0278 = 6.615723758485181e-05
+> ```
+>
+> **The DG end ×1.02771 is unaffected and is left exactly as written.** `f_ero` is untouched
+> (0.43194417543884817 / 0.2514648985839397), so **this restatement changes a printed diagnostic and
+> nothing else** — no gate, no bracket, no α reference, no hard stop and no load moves. `docs/46`
+> §3.3 ground **G-ii** is the licence, not a tolerance: *"`f_ero` decides; `f_area` is reported
+> beside it, always, and can never override it."* **§5's `|ln|` register at :78 and :343 —
+> (R12) 0.0248 / 0.0273 — is ALREADY CORRECT on the registered support and is deliberately NOT
+> touched** (measured: 0.024801658019852884 → 0.0248; the engine support would give 0.0245, so the
+> register is itself a third internal vote for the corrected value). **No materiality bar is
+> invoked, reconstructed or implied by this note** — §1's striking stands.
 | **:265** | **H-L** | **The code reading and the exact factorisation**, both threshold-free: 0.790 = **0.852262** (`L` form) × **0.926925** (`S` swap), measured on the wrong column (`ls2d`, not `ls2d_hs`). H-L is refuted **iff 0.790 is shown to isolate the `L` form** — it is not. The 0.0258 basin-scale agreement is **reported and is not the test**. **And the mandatory re-derivation is re-hung unconditionally** (this discharges `docs/51` §5.6(c)'s logic fix): *the published bracket and every statement derived from it are re-derived because they are superseded by a measurement (`docs/51` §2.1) — not because a hypothesis survived.* |
 | **:421** | **ADOPT-BAND** trigger | **Two admissible readings ⇒ ADOPT-BAND, period**, whatever the gap; both factors carried through C4, C5 and every load table. Carrying a band is never the unsafe direction; collapsing one is, and §4.2 already forbids collapsing for convenience. *(Currently not triggered on any lever: all four are CITED with a single admissible reading — `docs/51` §1.2.)* |
 | **:490-491, :506, :538** | `Δ_shape` branch, Branch A precondition, **B1** | **§4** — the exact discriminator `Δ_shape = 0`, with `Δ_shape` still mandatory, blinded until computed, and reported at full precision. |
@@ -488,6 +518,6 @@ edit, and it is owed to `docs/51`'s owner as a note, not enacted here.
 | `docs/51_ls_freeze_decision.md` | **the assignment** — §5.6 item (e), the one non-mechanical item. §5.5 is the finding this decision answers. `docs/51` §3's (R4) label is affected (§8d); `docs/51` §5.4's "accept §6 unchanged" is amended in the restrictive direction only (§4). |
 | `docs/48_pi_band_revision.md` | **the measurement that falsified the derivation.** §5.3's P4 (*"what `docs/46`'s materiality bar should be"*) is **closed by this document**: the answer is *no bar*, per-site grounds. §3.3's Π reporting band, §5.4's firing thresholds and G12's 0.644 are **untouched**. |
 | `docs/47_c4_entry_verdict.md` | D2 is the origin; §4.3's bracket, §4.4's absorption factor and dispersion, §5.3's post-hoc argument are consumed as evidence. **The BLOCKED verdict is untouched and is not bar-dependent.** |
-| `docs/46_ls_preregistration_DRAFT.md` | the document amended. Fifteen sites (§1.3, §6). **Not edited by this pass.** |
+| ~~`docs/46_ls_preregistration_DRAFT.md`~~ → **`docs/46_ls_preregistration.md`** *(filename corrected 2026-08-12 — no such `_DRAFT` file exists; the live file is **FROZEN (READ OUT)**, not a draft)* | the document amended. Fifteen sites (§1.3, §6). **Not edited by this pass.** **Status 2026-08-12:** this decision has since been **enacted by `docs/46`'s owner** — §2.0 *"How difference is adjudicated in this document — **there is no materiality bar**"* carries the STRUCK-NOT-RESCALED box verbatim, and §6.1 now registers the **exact** `Δ_shape = 0` discriminator in place of a threshold. `docs/46` §1–§9 are frozen; §10 is its amendment slot. |
 | `docs/40_sdr_evidence.md` | the standing rule — *an uncited band cannot pass or fail a gate*. A threshold whose stated derivation is falsified is in that category the moment the falsification is on the record; **striking it is the direction that rule points.** |
 | `docs/49`, `docs/50` | Defect A / Defect B resolutions; their reproduction gates are the model for what a **numeric tolerance** legitimately is (§6, last paragraph). |

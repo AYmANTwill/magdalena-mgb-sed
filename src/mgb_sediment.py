@@ -209,10 +209,58 @@ UNITS - AND THE CONVENTION LADDER, STATED NOT HIDDEN
     watershed whose true SDR is 0.6957.  Per this project's standing rule an uncited
     plausibility band may not be used to pass OR fail a gate, so it is retired in BOTH
     directions.  Do not reinstate it.
-  * **C3 is not open for that reason.**  It is open on docs/37 A1.1 clauses 2 (the LS
-    FORMULATION level is UNRESOLVED - our LS sits 2.37x-3.00x above the level ``alpha`` = 11.8
-    is paired with), 3 (the three 2026-08-11 decisions are unaudited) and 4'' (NOT ESTABLISHED,
-    docs/37 A1.9).
+  * **C3 is not open for that reason.**  It is open on docs/37 A1.1 clauses 2 (the LS level -
+    our LS sits 2.3151x-3.9768x above the level ``alpha`` = 11.8 is PAIRED with, and 3.9768x
+    above the point now adopted; see below), 3 (the three 2026-08-11 decisions are unaudited)
+    and 4'' (NOT ESTABLISHED, docs/37 A1.9).
+
+    **THE LS FORMULATION IS NO LONGER "UNRESOLVED" - AND THE LEVEL IS STILL UNVALIDATED**
+    (docs/37 **A3**, 2026-08-12, the C3.1 enactment under frozen docs/46).  Corrected here
+    2026-08-12; this docstring previously read "the LS FORMULATION level is UNRESOLVED - our LS
+    sits 2.37x-3.00x above ...", and BOTH halves of that were wrong:
+
+    - the factor is **2.3151x - 3.9768x**, from the registered bracket ``f_LS`` in
+      [0.25146, 0.43194] EROSION-weighted (area-weighted proxy
+      **[0.2446790094097074, 0.42136300143291305]**, measured 2.5% low).  *Corrected
+      2026-08-12: this docstring read the proxy as [0.24468, 0.42148]; 0.42148 is a correctly
+      computed quantity on the ENGINE URH-fraction area support (257,096.93 km2), not
+      docs/46 §3.3's per-cell basin one (30,235,916 cells, 256,702.36 km2), so it is not
+      what §3.3 defines f_area to be.  Owning records docs/46 §10 amendment 2 and docs/51 §9
+      amendment 1; expressed exactly as here by docs/43 §7 amendment 8.  ``f_ero`` is
+      UNAFFECTED, so no bracket, alpha reference, hard stop or basin load moves.*
+      The superseded "2.37x-3.00x" came from a x0.333 endpoint built on a x0.790
+      that does NOT isolate the L form - it factorises as 0.852262 (L form) x 0.926925 (S swap)
+      and was measured on the uncapped ``ls2d`` column, not on this module's ``ls2d_hs``
+      (docs/50; docs/51 §2, §4).  The L-form ratio is FORMULATION-DEPENDENT (0.852262 uncapped
+      / 0.769833 on ``ls2d_hs`` / 0.580685 inside the source formulation) and may not be
+      composed across formulations as a scalar;
+    - and the bracket is **not an uncertainty over readings of the source**.  All four levers
+      are **CITED** with a single admissible reading each, so the source formulation read whole
+      is a **POINT at f_LS = 0.25146** (``ls_formulation = 'buarque_2015_dg'``, docs/46 §3.1's
+      ``V4_dg``), x0.43194 is a documented **HYBRID** (the source's three levers with OUR L),
+      and the span between them, ln(0.43194/0.25146) = 0.5410, is the **L-form lever exactly** -
+      a lever, not an error bar.  docs/46 §4.2's outcome exercised is **ADOPT-SOURCE**.
+
+    **NOTHING IN THIS MODULE CHANGES BECAUSE OF A3, AND THAT IS DELIBERATE.**  A3's status is
+    **DETERMINED and RECORDED, NOT YET EXERCISABLE**: it does not propose the engine-default
+    switch, ``ls2d_column`` stays ``"ls2d_hs"`` and ``urh_ls2d`` stays ``"urh_ls2d.csv"``, and
+    the switch is a separate, separately dated act that is not draftable until a gated
+    ``V4_dg`` column exists as a committed product.  Enactment is a written amendment, not a
+    code edit.  The LS **LEVEL** remains **UNVALIDATED** (docs/42 G4.2): a CITED formulation is
+    not a validated level, and a fitted one is not either.  Clause 2 therefore stays NOT MET -
+    also because it needs the LS **SHAPE** decision, which A3 does not touch - and C4.3 stays
+    BLOCKED (docs/47).
+
+    One related label correction, unconditional (docs/46 §1.1 Defect A, §2.2, §7.3 item 2;
+    measured in docs/49): Buarque's **eq. 14 is a STEP FUNCTION** - m = 0.2 / 0.3 / 0.4 / 0.5
+    on slope < 1% / 1-3% / 3-5% / >= 5%, with Sf in slope PERCENT - worth x0.522043
+    erosion-weighted (x0.505092 area).  ``min(m_continuous, 0.5)`` is a **CAP**, x0.517480 ero
+    (x0.502472 area); it is NOBODY'S published formulation and may never be graded CITED.  And
+    per this project's standing rule, a product of single-lever factors is NEVER quoted as the
+    joint factor: 0.362435 x 0.52204 x 1.694054 = 0.3205244 against a measured joint of
+    0.431944, i.e. **joint / product = x1.34762** (docs/46 §1, docs/52 §1.1; carrying the m step
+    to 0.522043 gives 0.3205263 and x1.347609 - the same measurement at a different printed
+    precision, not a second number).
   * **And the "gross erosion" label itself is unresolved.**  SWAT's theoretical documentation
     for this exact equation (v2009, Section 4 Ch. 1, p. 252; quoted verbatim in docs/40 §0 and
     docs/37 A1.9.1) defines its output as "the sediment yield on a given day", whose runoff
@@ -224,7 +272,16 @@ UNITS - AND THE CONVENTION LADDER, STATED NOT HIDDEN
 
   **This module does not resolve that residual, and does not let ``alpha`` resolve it either**
   (docs/35 §6 RULE 0; docs/42 G5, which fires on any fit lacking a NAMED transport sink -
-  note the yield-reading ``alpha`` of 7.92-8.86 overlaps G5's deposition-free 6.83-8.73).
+  note the yield-reading ``alpha`` of 7.92-8.86 sits just ABOVE G5's deposition-free band).
+  *Corrected 2026-08-12 per docs/43 §7 amendment 5: this line read "overlaps G5's
+  deposition-free 6.83-8.73".  6.83-8.73 is ``11.8 x {144, 184} / 248.730`` - the PRIOR
+  ``cp_revision``'s basin total.  At the ADOPTED C (299.5387088405831 Mt/yr) the same
+  arithmetic gives* **5.6727 - 7.2485**, *and the reading-B band 7.92-8.86 is already at the
+  adopted C, so the two are* **DISJOINT** *with a gap of 0.6715 in alpha.  Never quote a load
+  without its convention AND its* ``cp_revision``.  *What survives, on other grounds: G5's
+  caution is retained because its NAMED-sink claim, not a numeric band, carries the weight
+  (docs/43 §7 amendments 4 and 5).  Whether the disjointness changes docs/43 §3.4's "doubly
+  load-bearing" conclusion is docs/47 open item O12 and is NOT decided here.*
   Switching a convention or a ``cp_revision`` default is an AMENDMENT with a date and a reason
   (done: docs/35 §9.2, docs/37 A1.3), never a quiet code change.
 

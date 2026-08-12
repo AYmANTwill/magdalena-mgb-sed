@@ -8,7 +8,7 @@ C3 is **OPEN**, not closed. Precisely:
 | closure condition | status |
 |---|---|
 | the factor chain is fully explained by evidence-based corrections | **MET** — 0.684 → 248.73 Mt/yr is exactly `1000^0.56 × (1/0.1317) = 363.4245196`, measured to the last stored digit |
-| no decision left unresolved | **NOT MET** (amended 2026-08-11) — the four *convention* questions below are resolved from source derivations, but a fifth question was measured and left explicitly UNRESOLVED: the **LS formulation level**. Our LS sits **2.37× – 3.00×** above the LS that α = 11.8 is paired with in the MGB-SED lineage, measured on our own 90 m grid. See §4 candidate **0**. |
+| no decision left unresolved | **NOT MET** (amended 2026-08-11) — the four *convention* questions below are resolved from source derivations, but a fifth question was measured and left explicitly UNRESOLVED: the **LS formulation level**. Our LS sits ~~**2.37× – 3.00×**~~ above the LS that α = 11.8 is paired with in the MGB-SED lineage, measured on our own 90 m grid. See §4 candidate **0**. → **A3.3.1 (2026-08-12): the bracket is superseded by measurement. Read `1/f_LS` = 2.3151× – 3.9768×, from `f_LS` ∈ [0.25146, 0.43194] erosion-weighted (`docs/47` §4.3, registered `docs/46` §1.0); and per A3.1 the source formulation read whole is a POINT at `f_ero` = 0.25146 ⇒ 3.9767756303×. The clause stays NOT MET — A3 records the decision, it does not exercise it (A3.1.6).** |
 | the independent audit agreed with the decisions | **MET** — agreement on all three decisions; the audit's fourth finding was verified here from this repository's own source text, not taken on trust |
 | ~~**the implied sediment delivery ratio is physically plausible (0.05 – 0.30)**~~ **RETIRED — see `docs/40`** | ~~**NOT MET — implied SDR is 0.579 – 0.740**, and under §4 candidate 0 it becomes 1.37 – 2.22, i.e. impossible~~ → **the ratio 248.730 Mt/yr ↔ 144–184 Mt/yr is not a sediment delivery ratio** (all-source numerator, hillslope-only denominator) and cannot be tested against a published SDR band in either direction. The band was uncited, its supporting relations use an all-source denominator and were fitted 993× below this scale, and no Magdalena SDR exists in the literature. **A retired gate is neither a pass nor a fail.** The clause that replaced it — 4′ — was itself **re-opened as 4″, NOT ESTABLISHED**: see **A1.1** and **A1.9**, not this row. *(Struck in place 2026-08-11 per `docs/40` §8.2 as amended by its §0; applied by **A2.7**. Original text preserved above.)* |
 
@@ -101,12 +101,25 @@ first time (gross 248.7 > outlet 144–184, where all three pre-amendment conven
 > **CONDITIONAL — read with §4 candidate 0 (added 2026-08-11).** "Physically possible side" holds
 > **only if** our LS is at the level that α = 11.8 belongs to. That equivalence was asserted, not
 > demonstrated, when this sentence was written — and it has since been *measured*, on our own
-> 90 m grid, as violated by **2.37× – 3.00×** (`docs/agents/journal_decide-ls-resolution.md` §3b).
-> Applying the measured bracket takes 248.730 → **104.8 Mt/yr** (×0.421) or **82.8 Mt/yr**
+> 90 m grid, as violated by ~~**2.37× – 3.00×**~~ (`docs/agents/journal_decide-ls-resolution.md` §3b).
+> ~~Applying the measured bracket takes 248.730 → **104.8 Mt/yr** (×0.421) or **82.8 Mt/yr**
 > (×0.333), i.e. **below both anchors**, implied SDR **1.37 – 2.22** — back on the impossible
-> side. So the sign of gate (b) is *not* yet secured; it is secured only at our LS level, and our
+> side.~~ So the sign of gate (b) is *not* yet secured; it is secured only at our LS level, and our
 > LS level is the one thing in the chain that is known to be off and not yet corrected. Treat the
 > "possible side" claim as provisional until C3.1 (`docs/35` §9.3) settles the formulation.
+>
+> > **⚠ AMENDMENT A3.3.1, 2026-08-12 — the two struck numbers above are superseded by
+> > measurement, and the base is superseded too.** The bracket is `1/f_LS` = **2.3151× – 3.9768×**
+> > (`f_LS` ∈ [0.25146, 0.43194] erosion-weighted, `docs/47` §4.3, registered `docs/46` §1.0), and
+> > per **A3.1** the source formulation read whole is a **POINT** at `f_ero` = **0.25146** ⇒
+> > **3.9767756303×**. The 248.730 Mt/yr base is itself superseded by A1.3's **299.5387088405831
+> > Mt/yr**, so the correct engine figures are **129.3840 Mt/yr** (the documented hybrid `V4`,
+> > ×0.43194) and **75.3235 Mt/yr** (the adopted `V4_dg`, ×0.25146) — engine re-runs, not
+> > proxies. The struck ADR arithmetic is *not* re-derived here: the SDR band is retired
+> > (`docs/40`, A1.2) and `docs/46` §4.3 forbids the anchors and the distance between them as
+> > evidence in the LS decision. C3.1 **has now settled the formulation on source grounds**
+> > (A3.1); it has **not** switched the engine default (A3.5.1), so the provisionality of this
+> > paragraph's "possible side" claim stands unchanged.
 
 ---
 
@@ -174,7 +187,8 @@ so the simulated contrast is overstated by ~+10 %, and the whole level is a **lo
 0.05 – 0.30 SDR band is taken~~ — **STRUCK 2026-08-11 (A2.7): this sizing is derived entirely from
 the retired band. The residual's current form is A1.9's — magnitude bracketed, DIRECTION UNKNOWN,
 2.27× too low … 1.49× too high** — and **candidate 0 below makes that residual larger, not smaller,
-by a further 2.37× – 3.00×**. Five candidates, with what would settle each. None of them may be
+by a further ~~2.37× – 3.00×~~** → **A3.3.1 (2026-08-12): read 2.3151× – 3.9768×, and at the
+adopted POINT 3.9767756303×.** Five candidates, with what would settle each. None of them may be
 absorbed into α (`docs/35` §6 RULE 0). **Amended by A2:** candidates 0 and 2 decompose into a
 *level* part, which A2 reclassifies as C4's calibration target, and a *shape* part, which it does
 not — read A2.1–A2.2 before treating any candidate as a single quantity.
@@ -188,32 +202,86 @@ not — read A2.1–A2.2 before treating any candidate as a single quantity.
    | lever | ours | Buarque (2015), the method this project transposes | measured × on basin area-wtd LS |
    |---|---|---|---|
    | slope-length limiter | upslope **area** ≤ 1 km² ⇒ unit contributing length up to 1e6/92 ≈ **10,870 m** ≈ 118 pixels | p. 94: "seu valor máximo foi limitado ao **tamanho do pixel do MDE**" — slope length ≤ **one pixel** | **0.351** (dominant) |
-   | `m` | continuous McCool (1989), basin median **0.584** | his eq. 14, step function **hard-capped at 0.5** | 0.502 |
+   | `m` | continuous McCool (1989), basin median **0.584** | ~~his eq. 14, step function **hard-capped at 0.5**~~ → **A3.3.2**: **two different objects, both named below** | ~~0.502~~ → **A3.3.2** |
    | `S` | Moore & Burch (1986) `(sinθ/0.0896)^1.3` | his eq. 18, Wischmeier & Smith (1978) `65.41 sin²θ + 4.56 sinθ + 0.065` | 1.714 |
-   | **all three together (source-method LS)** | area-wtd mean **39.812** | area-wtd mean **16.775** | **0.421** |
+   | **all three together (source-method LS)** | area-wtd mean **39.812** | area-wtd mean **16.775** | ~~**0.421**~~ → **A3.3.1**: `f_ero` **0.431944** · `f_area` ~~**0.421475**~~ → **0.42136300143291305** (**A3.3.4**, 2026-08-12; owning records `docs/46` §10 amd 2 / `docs/51` §9 amd 1) (`V4`, the documented **hybrid**) |
 
-   The three levers interact (0.502 × 1.714 × 0.351 = 0.302 ≠ the joint 0.421), so no single one is
+   The three levers interact (0.502 × 1.714 × 0.351 = 0.302 ≠ the joint 0.421 — → **A3.3.2**: the
+   ×0.502 here is the **CAP**, `min(m, 0.5)`, not eq. 14; and → **A3.3.1**: exactly, on the
+   erosion-weighted basis and with the eq.-14 **step**, 0.362435 × 0.522043 × 1.694054 =
+   0.3205262902296241 ≠ the joint 0.431944, measured **joint / product = ×1.347608646050708**; with
+   the **cap** instead, 0.362435 × 0.517480 × 1.694054 = 0.3177246791318452), so no single one is
    "the" cause. Using the literal Desmet–Govers finite-difference `L` in place of our continuous
-   form lowers the source row a further ×0.790, giving the bracket **×0.333 – ×0.421**, i.e. our LS
-   is **2.37× – 3.00×** the level α = 11.8 is paired with. Source and measurement:
+   form lowers the source row a further ~~×0.790~~, giving the bracket ~~**×0.333 – ×0.421**~~, i.e. our LS
+   is ~~**2.37× – 3.00×**~~ the level α = 11.8 is paired with. Source and measurement:
    `docs/agents/journal_decide-ls-resolution.md` §1a and §3b (all 30,235,916 basin cells; the
    harness reproduces our own 39.812 bitwise).
 
+   > **⚠ AMENDMENT A3.3.1 + A3.3.2, 2026-08-12 — this candidate is now DECIDED, and four of its
+   > numbers are superseded. Nothing above is deleted.**
+   >
+   > 1. **The `m` row's label was wrong.** The object measured as ×0.502 is `min(m_continuous, 0.5)`
+   >    — **a cap**, which is **nobody's published formulation and may NEVER be graded CITED**
+   >    (`docs/46` §2.2). **Buarque eq. 14 is a STEP function**, printed p. 47 verbatim: `m` = 0.2
+   >    (`Sf` < 1 %) / 0.3 (1 ≤ `Sf` < 3) / 0.4 (3 ≤ `Sf` < 5) / 0.5 (`Sf` ≥ 5), *"onde `Sf` [%] é a
+   >    declividade do pixel"* — `Sf` is slope **PERCENT** (corroborated p. 48). Both objects,
+   >    kept named and distinct, with both factors printed: **eq. 14 step (`V2b`) = ×0.505092
+   >    area-weighted / ×0.522043 erosion-weighted**; **the cap (`V2a`) = ×0.502472 area-weighted /
+   >    ×0.517480 erosion-weighted** (`docs/49`). ×0.502 is the **CAP**, not eq. 14. See **A3.3.2**.
+   > 2. **The joint and the bracket are superseded by exact erosion-weighted engine re-runs**
+   >    (`docs/47` §4.3, registered `docs/46` §1.0, §3.1): `f_LS` ∈ **[0.25146, 0.43194]**
+   >    erosion-weighted ⇒ `1/f_LS` ∈ **[2.3151×, 3.9768×]**. ×0.333 is **REFUTED** (`docs/47`
+   >    §3.1 R6: it is 0.421 × 0.790, and 0.790 is two levers measured on the wrong column).
+   > 3. **The interval is not an uncertainty band.** With eq. 13 read verbatim on p. 47 there is
+   >    **no admissible reading of Buarque in which `L` is our point-rate form** (`docs/46`
+   >    §2.5.2), so **the source formulation read whole is a POINT** — `V4_dg`, `f_ero` =
+   >    **0.25146**, `f_area` = **0.2446790094097074** — and ×0.43194 is a **documented HYBRID**
+   >    (the source's three levers with *our* `L`), retained only for reproducibility. The
+   >    0.5410027585442313 ln span between them **is the `L`-form lever** (×1.7177284657599616).
+   > 4. **`docs/46` §4.2's outcome is now exercised as ADOPT-SOURCE at `ls_formulation =
+   >    buarque_2015_dg`** — see **A3.1**. The RESOLVER named below has therefore been executed on
+   >    source grounds; what remains owed before the engine default may move is **A3.1.6**'s three
+   >    deliverables. **STANDING INSTRUCTION** (`docs/46` §2.4): never quote a product of
+   >    single-lever factors as the joint factor — measured **joint / product = ×1.34762**.
+
    **Two consequences, both unfavourable, both stated in full:**
-   - **On the level.** MUSLE is linear in LS, so 248.730 × 0.421 = **104.8 Mt/yr** and × 0.333 =
-     **82.8 Mt/yr** — *below* both anchors, implied SDR **1.374 – 2.222**, i.e. back on the
-     physically impossible side that §2 claims was left behind. **Caveat on that arithmetic:**
+   - **On the level.** MUSLE is linear in LS, so ~~248.730 × 0.421 = **104.8 Mt/yr** and × 0.333 =
+     **82.8 Mt/yr**~~ → **A3.3.1 (2026-08-12): superseded on BOTH the base and the factors. At the
+     adopted C level 299.5387088405831 Mt/yr the exact engine re-runs are 299.5387088405831 ×
+     0.43194 = **129.3840 Mt/yr** (the hybrid `V4`) and × 0.2514648985839397 =
+     **75.32347104056149 Mt/yr** (the adopted `V4_dg`) — `docs/47` §4.3. The implied-SDR
+     arithmetic is NOT re-derived: the band is retired (A1.2, `docs/40`) and the anchors may not be
+     used as evidence in the LS decision (`docs/46` §4.3).** ~~— *below* both anchors, implied SDR
+     **1.374 – 2.222**, i.e. back on the
+     physically impossible side that §2 claims was left behind.~~ **Caveat on that arithmetic:**
      0.421 is a ratio of **area-weighted** per-cell LS means, whereas the basin total weights LS by
      each cell's `Qsur·q_peak·K·C`, so 104.8 is a **proxy, not a re-run**. It is a defensible proxy
      because the swap has nearly the same effect on the erosive terrain as on the whole basin
      (Andean >1000 m: 27.109/65.199 = 0.416 vs basin 0.421) and erosion is concentrated there
-     (§3 gate (a)). The exact figure requires the C3.1 re-run.
+     (§3 gate (a)). The exact figure requires the C3.1 re-run. → **A3.3.1: the C3.1 re-run has
+     landed, so the proxy caveat is discharged as MEASURED — and the proxy errs in the model's
+     favour, not against it: `f_ero`/`f_area` = 0.25146 / 0.2446790094097074 =
+     **1.0277138223121463**, i.e. the proxy is 2.51 % low (`docs/47` §3.1 R7, independently
+     1.0278). `f_ero` decides and `f_area` is reported beside it and can never override it
+     (`docs/46` §3.3).**
    - **On the α guard.** Because MUSLE is linear in LS, a fit on our LS returns an α that is
-     1/2.37 – 1/3.00 of what the same observations would return on the source's LS. The like-for-like
-     α reference for **our** LS is therefore **≈ 3.9 – 5.0, not 11.8**; the `docs/35` §6.1 expected
-     band 5.9 – 23.6 becomes ≈ **2.0 – 9.9** and the hard stop α > 35.4 becomes ≈ **11.8 – 14.9**.
-     The **adopted, unfitted α = 11.8 then sits at or above its own corrected hard stop** at the
-     3.00× end of the bracket. This tightens the guard; it does not loosen it.
+     ~~1/2.37 – 1/3.00~~ of what the same observations would return on the source's LS. The like-for-like
+     α reference for **our** LS is therefore ~~**≈ 3.9 – 5.0, not 11.8**~~; the `docs/35` §6.1 expected
+     band 5.9 – 23.6 becomes ~~≈ **2.0 – 9.9**~~ and the hard stop α > 35.4 becomes ~~≈ **11.8 – 14.9**~~.
+     ~~The **adopted, unfitted α = 11.8 then sits at or above its own corrected hard stop** at the
+     3.00× end of the bracket.~~ This tightens the guard; it does not loosen it.
+     > **⚠ AMENDMENT A3.3.1 + A3.2, 2026-08-12 — all four struck α numbers are superseded. The
+     > registered rescaling is `1/f_LS` = 2.3151× – 3.9768×, and at the ADOPTED POINT
+     > `f_LS` = 0.25146 it collapses to single numbers: α reference `11.8·f` = **2.9672280000000004**;
+     > `docs/35` §6.1 expected band `5.9–23.6 · f` = **1.4836140000000002 – 5.934456000000001**;
+     > hard stop `35.4·f` = **8.901684**; lower hard stop `3.9·f` = **0.9806940000000001**;
+     > `1/f` = **3.976775630318937**. Full arithmetic, the area-proxy column and the coordinate the
+     > column lives in: **A3.2**. The old *"α = 11.8 sits at or above its own corrected hard stop"*
+     > sentence does not survive as written — at the adopted point the rescaled hard stop is 8.9017
+     > and 11.8 is **above** it, which is a sharper statement, but it is a statement about the
+     > PAIRING of α with an LS and not about α (`docs/46` §8.2 item 2), and α = 11.8's
+     > like-for-likeness with any 2-D contributing-area LS is **NOT SETTLED, with no band offered**
+     > (`docs/47` §4.2 item 6). That ceiling bounds every number in this bullet.**
 
    **RESOLVER:** the pre-registered C3.1 LS-formulation comparison — choose the limiter, the `m`
    cap and the `S` function **on source grounds, in writing, before any basin total is looked at**
@@ -222,7 +290,8 @@ not — read A2.1–A2.2 before treating any candidate as a single quantity.
    íngremes, como nos Andes, seja **superestimado**", and ours uses a looser limiter than his.
 
    **DO NOT** stack the upward candidates below (1: C revision ×2–5; 2: `f_peak` ×2.1) on top of an
-   LS that is 2.4 – 3.0× too high for its own α, and then read the sum as agreement with the
+   LS that is ~~2.4 – 3.0×~~ → **A3.3.1 (2026-08-12): 2.3151 – 3.9768×, and 3.9767756303× at the
+   adopted POINT** too high for its own α, and then read the sum as agreement with the
    anchor. Candidate 0 must be settled *first*, or every upward correction is being applied to an
    inflated base.
 
@@ -262,7 +331,8 @@ not — read A2.1–A2.2 before treating any candidate as a single quantity.
    P = 1.0 and FG = 1.0 are both upper bounds on erosion (P ≤ 1, FG ≤ 1), so any real value
    *lowers* the model and widens the residual. Driving MUSLE with released rather than generated
    runoff costs a further 1.125×. **The largest wrong-way term is candidate 0 above
-   (×0.333 – ×0.421 = 2.37 – 3.00× of residual), not the 1.125× recorded here** — when this list
+   (~~×0.333 – ×0.421 = 2.37 – 3.00× of residual~~ → **A3.3.1: `f_LS` ∈ [0.25146, 0.43194] ero
+   = 2.3151 – 3.9768×, and 3.9767756303× at the adopted POINT**), not the 1.125× recorded here** — when this list
    was first written it stopped at 1.125× and that understated the wrong-way side by more than a
    factor of two.
 
@@ -280,8 +350,17 @@ not — read A2.1–A2.2 before treating any candidate as a single quantity.
    α in the low teens or below, obtained without a routing/deposition step, silently encodes
    SDR = 1.0 and must be treated as a failure regardless of what the guard says.
    **"Like-for-like" here means like-for-like in *units* only** — per §4 candidate 0 the guard is
-   not yet level-equivalent, and at the corrected band (expected ≈ 2.0 – 9.9) an SDR = 1.0 fit at
-   α = 6.83 – 8.73 still lands inside it. The trap is unchanged in kind and the numbers to quote
+   not yet level-equivalent, and at the corrected band (expected ~~≈ 2.0 – 9.9~~ → **A3.2: at the
+   adopted POINT the rescaled expected band is 1.4836140000000002 – 5.934456000000001**) an
+   SDR = 1.0 fit at α = 6.83 – 8.73 ~~still lands inside it~~ → **A3.3.1: as arithmetic, 6.83 – 8.73
+   lies ABOVE the rescaled band's upper edge 5.9345 and BELOW the rescaled hard stop 8.9017 — i.e.
+   in `docs/35` §6.1's "watch" register rather than "expected". That is NOT re-stated here as a
+   finding, for a reason `docs/47` §2.5 C1 records: 6.83 – 8.73 is `11.8 × {144,184} / 248.730`,
+   i.e. at the PRIOR `C`; at the adopted `C` the deposition-free band is 5.67 – 7.25, and C1's
+   correction to `docs/43` §3.4 is owed to that file. What survives unqualified is the trap itself:
+   the α band is not a sufficient guard, `docs/42` G5 is, and the numbers to quote the trap with are
+   now A3.2's. None of them passes or fails anything here.**
+   The trap is unchanged in kind and the numbers to quote
    it with depend on C3.1.
 2. **Do not treat 248.7 Mt/yr as calibrated.** α and β are unfitted Williams values and the
    number is a lower bound (`docs/35` §5.3).
@@ -341,7 +420,7 @@ evaluated and is failed**, and on a **decision that was already unresolved** bef
 | # | closure condition | status |
 |---|---|---|
 | 1 | the factor chain is fully explained by evidence-based corrections | **MET**, unchanged — 0.684 → 248.73 Mt/yr is exactly `1000^0.56 × (1/0.1317) = 363.4245196`. The C revision of A1.3 is a **separate, named input change** (×1.2043), not a further unexplained factor. |
-| 2 | no decision left unresolved | **NOT MET**, unchanged and unchanged in cause — the **LS formulation level** (§4 candidate 0) is still explicitly UNRESOLVED. Our LS sits **2.37×–3.00×** above the level α = 11.8 is paired with. **This clause alone forbids closure today, independently of everything else in this amendment.** |
+| 2 | no decision left unresolved | **NOT MET**, unchanged and unchanged in cause — the **LS formulation level** (§4 candidate 0) is still explicitly UNRESOLVED. Our LS sits ~~**2.37×–3.00×**~~ above the level α = 11.8 is paired with. **This clause alone forbids closure today, independently of everything else in this amendment.** → **A3.3.1 + A3.5.2 (2026-08-12): read 2.3151× – 3.9768×, and 3.9767756303× at the adopted POINT. The FORMULATION decision is now taken (A3.1, ADOPT-SOURCE at `buarque_2015_dg`) — but clause 2 is still NOT MET: ADOPT-SOURCE is recorded and not yet *exercised* (A3.1.6), the engine default has not moved (A3.5.1), and `docs/46` §8.2 item 6 holds that clause 2 needs the *shape* decision — settling LS is NECESSARY AND NOT SUFFICIENT.** |
 | 3 | the independent audit agreed with the decisions | **MET for the decisions it saw** (the three convention decisions of §1) — **NOT ESTABLISHED for the three decisions taken on 2026-08-11**: the C-revision default change (docs/41), the SDR retirement (docs/40) and the guard registration (docs/42). None has been independently audited. Recorded as an open item, not counted as a met condition. |
 | 4 | ~~the implied sediment delivery ratio is physically plausible (0.05 – 0.30)~~ **RETIRED — see `docs/40`** | **the ratio 248.730 Mt/yr ↔ 144–184 Mt/yr is not a sediment delivery ratio** (all-source numerator, hillslope-only denominator) and cannot be tested against a published SDR band in either direction. The band was uncited, its supporting relations use an all-source denominator and were fitted 993× below this scale, and no Magdalena SDR exists in the literature. **A retired gate is neither a pass nor a fail.** (A1.2) |
 | 4′ | ~~**the basin-mean gross HILLSLOPE erosion rate is consistent with published erosion and yield levels for humid tropical Andean and comparably mountainous large basins**~~ **RE-OPENED — see A1.9**, superseded by clause 4″ | ~~NOT MET — the model is under-erosive by 1.03 – 2.27× at the adopted C~~ → **NOT ESTABLISHED (A1.9).** The clause's decisive leg compares our MUSLE sum (which SWAT's own Ch. 4:1 defines as a sediment **yield**) against a **RUSLE gross erosion**, i.e. the same quantity error the retired SDR gate died of. Converted like-for-like the sign **inverts** (1.33 – 1.49× *high*); Leg B was already conceded not to be evidence (2.8 %); Leg C's max form is arithmetically invalid at basin scale. **Residual direction UNKNOWN: 2.27× low … 1.49× high.** Still not met — a clause that cannot be evaluated is not a pass. |
@@ -597,9 +676,16 @@ ranged, supports **×1.2043**, because the largest single revision in the table 
 what candidate 1 hoped for.
 
 **And candidate 0 still points the other way, harder than the C revision points this way.** At the
-adopted C, applying the measured LS bracket (×0.333 – ×0.421, §4 candidate 0) gives
-**99.8 – 126.1 Mt/yr** — still *below* both outlet anchors, ADR **1.14 – 1.84**, and Leg A worsens
-to **4.8 – 6.8×**. The C revision does **not** rescue the LS question, and the two must not be
+adopted C, applying the measured LS bracket (~~×0.333 – ×0.421~~, §4 candidate 0) gives
+~~**99.8 – 126.1 Mt/yr**~~ — still *below* both outlet anchors, ~~ADR **1.14 – 1.84**~~, and Leg A worsens
+to ~~**4.8 – 6.8×**~~.
+→ **A3.3.1 (2026-08-12): the factors and therefore the loads are superseded by exact
+erosion-weighted engine re-runs — `f_LS` ∈ [0.25146, 0.43194] gives **75.3235 – 129.3840 Mt/yr**
+(`docs/47` §4.3), and at the adopted POINT it is the single figure **75.32347104056149 Mt/yr**. The
+ADR and Leg-A numbers are NOT re-derived: A1.9 withdrew the residual's direction and `docs/46` §4.3
+forbids the anchors as evidence in the LS decision. The sentence that survives is the one this
+paragraph is actually for — the C revision does not rescue the LS question, and the two must not be
+netted against each other.** The C revision does **not** rescue the LS question, and the two must not be
 netted against each other: candidate 0 is a formulation error to be resolved on source grounds, not
 a factor to be cancelled by another factor.
 
@@ -609,15 +695,26 @@ a factor to be cancelled by another factor.
 
 §4's five candidates, restated with their status after `docs/40`–`docs/42`. The unexplained residual
 is now **1.03 – 2.27×** on the **erosion side** (not 1.93 – 14.8× of an SDR), and candidate 0 still
-makes it larger by a further 2.37 – 3.00×. None may be absorbed into α (`docs/35` §6 RULE 0).
+makes it larger by a further ~~2.37 – 3.00×~~ → **A3.3.1: 2.3151 – 3.9768×, 3.9767756303× at the
+adopted POINT**. None may be absorbed into α (`docs/35` §6 RULE 0).
 
-0. **The LS *formulation* level — STILL OPEN, still the largest term, still pointing the wrong way.**
-   Unchanged by everything in this amendment: ×0.333 – ×0.421 on the level, and the like-for-like α
-   reference for *our* LS is ≈ 3.9 – 5.0 rather than 11.8. **RESOLVER: unchanged** — the
+0. **The LS *formulation* level — ~~STILL OPEN~~, still the largest term, still pointing the wrong way.**
+   Unchanged by everything in this amendment: ~~×0.333 – ×0.421~~ on the level, and the like-for-like α
+   reference for *our* LS is ~~≈ 3.9 – 5.0~~ rather than 11.8. **RESOLVER: unchanged** — the
    pre-registered C3.1 LS-formulation comparison (`docs/35` §9.3), decided on source grounds, in
    writing, before any basin total is looked at. **This is now the single highest-value open item in
    Phase C**, a position `docs/40` §8.3 assigned to the C factor before the C factor was measured and
    found to be worth only ×1.20.
+   > **⚠ AMENDMENT A3, 2026-08-12 — THE RESOLVER HAS BEEN EXECUTED.** The `docs/35` §9.3
+   > comparison, run under the frozen pre-registration `docs/46`, returns **ADOPT-SOURCE**:
+   > `ls_formulation = buarque_2015_dg`, the source formulation **read whole**, `f_ero` =
+   > **0.25146** (second independent reproduction 0.2514648985839397) / `f_area` =
+   > **0.2446790094097074**, ⇒ `1/f_LS` = **3.976775630318937**. Grade: the FORMULATION CHOICE is
+   > **CITED** on all four levers; the LS **LEVEL** stays **UNVALIDATED** (`docs/42` G4.2). The
+   > like-for-like α reference at the adopted point is **2.9672280000000004** (A3.2). **The item is
+   > DECIDED but NOT CLOSED**: three named deliverables stand between the decision and the engine
+   > default (A3.1.6), the default has not moved (A3.5.1), and clause 2 of A1.1 is still NOT MET
+   > (A3.5.2). Full record: **A3.1**.
 1. **The cover factor `C` — CLOSED as a residual** (`docs/41`). All 8 rows are cited, conditioned and
    ranged; P stays 1.0 on AH-537 definitional grounds plus a quantified check that adopted
    conservation practice covers ~0.02–0.24 % of Colombian pasture. Two things this does **not** do:
@@ -658,7 +755,9 @@ LS/erosion resolution that raises the gross-erosion rate, **on evidence**, into 
 Leg A's 609 – 681 Mt/yr, or a documented argument — with citations — that a large tropical Andean
 basin's hillslope sheet-and-rill rate legitimately sits ~2× below Tan et al.'s. Clause 3 needs an
 audit. **Note that clauses 2 and 4′ are the same lever pointing in opposite directions**: the LS
-correction lowers the model by 2.4 – 3.0× while clause 4′ asks for 1.03 – 2.27× more. Resolving
+correction lowers the model by ~~2.4 – 3.0×~~ → **A3.3.1 (2026-08-12): 2.3151 – 3.9768×, and
+3.9767756303× at the adopted POINT — so the opposition is *wider*, not narrower** while clause 4′
+asks for 1.03 – 2.27× more. Resolving
 candidate 0 in the direction its own source argues for would take the model *further* from clause 4′,
 and that must be reported rather than quietly averaged away.
 
@@ -911,7 +1010,8 @@ answered, no level comparison may be reported with a direction.**
    interval in the same table as α) is the only thing that can tell them apart. **G5 is not softened
    by A1.9; it is exactly what A1.9 predicts C4 will need.**
 3. **The unexplained-residual arithmetic in A1.5 loses its sign, not its terms.** Candidate 0 (the LS
-   formulation, ×0.333 – ×0.421) still points down and is still the largest single term; candidate 2
+   formulation, ~~×0.333 – ×0.421~~ → **A3.3.1: [0.25146, 0.43194] erosion-weighted, and a POINT at
+   0.25146 as adopted by A3.1**) still points down and is still the largest single term; candidate 2
    (the peak deficit, 1.4 – 4.8×) still points up; P = 1.0 and FG = 1.0 are still one-sided upper
    bounds. What may no longer be said is that they are collectively required to close a 1.03 – 2.27×
    shortfall.
@@ -1079,7 +1179,7 @@ components of the residual survive the reclassification, each measured, each wit
 | residual component | classification | measurement | owner |
 |---|---|---|---|
 | the multiplicative **level** (Π) | **CALIBRATION TARGET** — status **UNVALIDATED and unfittable-apart** | A2.1 | **C4**, as a fitted Π reported with its equifinal family |
-| the **LS slope-dependent shape** | **STILL A DEFECT**, direction known | §4 candidate 0: the three levers (limiter ×0.351, `m` cap ×0.502, `S` ×1.714) act per cell as a function of slope and do **not** multiply out (0.502 × 1.714 × 0.351 = 0.302 ≠ the joint 0.421). Only the joint *level* joins Π | **C3.1** — a written source-grounds decision (`docs/35` §9.3). `docs/42` **G4.1** can detect the shape, never fix it |
+| the **LS slope-dependent shape** | **STILL A DEFECT**, direction known | §4 candidate 0: the three levers (limiter ×0.351, `m` cap ×0.502, `S` ×1.714) act per cell as a function of slope and do **not** multiply out (0.502 × 1.714 × 0.351 = 0.302 ≠ the joint 0.421). Only the joint *level* joins Π. → **A3.3.1 (2026-08-12): the exact erosion-weighted factors are limiter 0.362435 · `m` CAP 0.517480 · `m` eq.-14 STEP 0.522043 · `S` 1.694054, joint (`V4`) 0.431944, and the source read whole (`V4_dg`) 0.25146; measured joint / product = ×1.34762 — never quote a product of single-lever factors as the joint factor (`docs/46` §2.4). There are FOUR levers, not three: the `L` form is the fourth and is worth the whole 0.5410027585442313 ln span (`docs/46` §4.2 item 5 as amended).** | **C3.1** — a written source-grounds decision (`docs/35` §9.3). → **A3.1 (2026-08-12): that decision is TAKEN — ADOPT-SOURCE at `buarque_2015_dg`. The SHAPE defect is not thereby repaired: the adopted field is not in the engine (A3.5.1), `docs/46` §2.3's H-S field clause (R7)/(R8) items 2–3 have never been read out, and G4.1 is measured 3.1× underpowered to see the shape at all (`docs/47` §4.4).** `docs/42` **G4.1** can detect the shape, never fix it |
 | **station-to-station heterogeneity** of the residual | **STILL A DEFECT**, unresolvable at this fleet size | I² **96.0 – 99.2 %**, Cochran Q p ≤ 3.2e-16, τ **2.03× – 3.40×** per station, station `expD` 0.203 – 4.550, **18 of 24** station-cells with CIs excluding 1 | not resolvable by C4; needs n ≈ 19 stations for ±50 %, n ≈ 94 for ±20 % |
 | **period-dependent peak deficit** | **STILL A DEFECT**, direction known, magnitude registered | `R_AMS` 0.808 (LN) vs 0.686 (EN) ⇒ **×1.096** (`docs/35` §5.4) | not resolvable — propagate as a caveat (`docs/43` §5.2) |
 | **which quantity the MUSLE sum is** | **UNRESOLVED LABEL** — neither defect nor target | A1.9.1 (SWAT Ch. 4:1 calls this equation's output a sediment **yield**) | a written, cited answer — A1.9.3 resolver (1) |
@@ -1236,3 +1336,1047 @@ was believed survives intact; the retired claim can no longer be quoted as live.
 
 **§3, §5, §6, A1 and A1.9 are untouched.** The document's headline verdict line is untouched: it says
 **OPEN** and that is still correct.
+
+---
+
+# AMENDMENT A3 (2026-08-12, after A2.7) — **THE C3.1 ENACTMENT.** The LS *formulation* is DECIDED on source grounds: **ADOPT-SOURCE**, `ls_formulation = buarque_2015_dg`. **No engine default moves here. C3 stays OPEN. C4.3 stays BLOCKED.**
+
+Written by the `a3-enactment` agent (`docs/agents/journal_a3-enactment.md`) under the frozen
+pre-registration **`docs/46_ls_preregistration.md`**, whose §4.2 decision rule is in force and
+whose §7.3 item 5, §9's registration card and §9.1 item 3 all name **this amendment** — *"`docs/37`
+§A3, dated, written by the C3.1 owner"* — as the single act that enacts the decision. This is
+therefore **`docs/47` §6.1's B1 unblocking event**, and **not** the freeze of `docs/46`, **not**
+`docs/51`, `docs/52` or `docs/53`, and **not** any read-only panel verdict.
+
+**Nothing above this line is rewritten**, with the one exception that is itself part of this
+amendment: **A3.3** applies the corrections `docs/46` §2.5.1 and §7.3 items 2–3 make *unconditional*
+to §1, §2, §4, §5, A1.1, A1.4, A1.5 and A2.2 **in place**, in **A2.7's own pattern — strike-through
+with a dated pointer, nothing deleted**. Every superseded sentence remains readable.
+
+> **THE HEADLINE VERDICT DOES NOT MOVE. C3 was OPEN and stays OPEN.** What moves is that clause 2's
+> *formulation* question — open since 2026-08-11 and named in A1.5 as *"the single highest-value open
+> item in Phase C"* — now has a written, source-grounded answer. Clause 2 is still **NOT MET**,
+> because the answer is **recorded** and not yet **exercised**, because the engine default has not
+> moved, and because `docs/46` §8.2 item 6 holds that clause 2 also needs the *shape* decision:
+> **settling LS is necessary and not sufficient.**
+
+> **`docs/42` G9 disclosure, required in the same paragraph as any basin-scale statement:** at the
+> adopted `C`, **66.53 % of the model's gross erosion — 199.29 of 299.54 Mt/yr — is upstream of no
+> usable SSC station**; only **33.47 %** is; and **801.1 km of channel, including the whole
+> Depresión Momposina, lies below the outlet-most SSC station** (`21237020` ARRANCAPLUMAS).
+
+> **`docs/42` G4.2, required beside every `f_LS` in this amendment:** the LS **LEVEL** is
+> **UNVALIDATED**, and adopting a *cited* formulation does not change that. See A3.1.4.
+
+**An ordering record, cited because it belongs in the file and not only in a journal.**
+`docs/agents/journal_c31-enactment.md` (2026-08-11) records that a **still earlier session took this
+same task, reached this same decision, and did not write §A3**; a second attempt on 2026-08-12 was
+interrupted mid-edit and left §1, §2, §4, §5 and A1 pointing at A3 subsections that did not exist.
+This amendment is the one that lands. The decision has therefore now been reached **three times
+independently** before being written — which is a fact about persistence, **not** a third
+reproduction of any measurement, and it is recorded so that no reader mistakes it for one.
+
+---
+
+## A3.1 `ls_formulation` — the decision, and the `docs/46` §4.2 row it exercises
+
+> ### THE DECISION
+>
+> | field | value |
+> |---|---|
+> | `ls_formulation` | **`buarque_2015_dg`** — `docs/46` §3.1's **`V4_dg`**: `V1` limiter at one DEM pixel + `V2b` eq.-14 **step** `m` + `V3` eq.-18 W&S-78 `S` + eq. 13's Desmet–Govers **finite-difference `L`** with `Xdir^m`. *"The source formulation read whole."* |
+> | `f_LS`, **erosion-weighted — this is the one that decides** (`docs/46` §3.3) | **0.25146**; second independent erosion-weighted reproduction, by a different aggregation route, **0.2514648985839397** (`docs/46` §10 amendment 1 item 2, `docs/53` §2 gate G6) |
+> | `f_LS`, area-weighted **PROXY** — reported beside it and **never** able to override it | **0.2446790094097074** (three independent reproductions; `docs/50`, and the `docs/46` §10 route 0.24467900940970733) |
+> | `1/f_LS` | **3.976775630318937** (on the exact value, **3.9766981619750683**) |
+> | `ln f_LS` | **−1.3804713478171018** |
+> | measured proxy bias `f_ero`/`f_area` | **1.0277138223121463** — the proxy is **2.51 % low**, i.e. *in the model's favour* (`docs/47` §3.1 R7, independently 1.0278) |
+> | basin gross hillslope erosion at the adopted point | **75.32347104056149 Mt/yr** of `V0`'s 299.5387088405831 (`docs/47` §4.3 engine re-run; absolute flux only — `docs/23` §13.2 embargo) |
+> | `docs/46` §4.2 outcome row exercised | **ADOPT-SOURCE** |
+> | grade of the **FORMULATION CHOICE** | **CITED** on all four levers |
+> | grade of the **LS LEVEL** | **UNVALIDATED**, unchanged and unchangeable by this amendment |
+> | status | **DETERMINED and RECORDED — not yet EXERCISABLE.** A3 does **not** propose the engine-default switch (A3.1.6, A3.5.1) |
+
+**The sentence `docs/46` §4.4 item 1 requires, in the true form it gives, and not in the form the
+original guarantee asked for:**
+
+> **"This decision is recorded before any default was switched, and after the basin totals under
+> every variant were already published in `docs/47` §4.3, `docs/49`, `docs/50` and `docs/51`."**
+
+The original guarantee — *"recorded before any basin total under it was computed"* — is
+**permanently unavailable to any session** and **is not claimed here**: 299.5387 (`V0`), 129.3840
+(`V4`) and 75.3235 (`V4_dg`) Mt/yr were all on the record before this amendment opened. `docs/46`
+§4.4 item 3 further warns that the collapse to a **binary** — the source read whole *versus* the
+hybrid, worth **×1.7177284657599616** — makes the choice **easier** to make post-hoc, not harder.
+That is exactly why the justification below is **a source reading with a grade, checkable against
+four printed pages**, and cites no total.
+
+### A3.1.1 The rule applied row by row — three of the four rows fail their own conditions
+
+`docs/46` §4.2's outcome table is a **conjunction per row**. Taken in order, and each condition
+checked against the artifact rather than a summary:
+
+| row | its condition | verdict |
+|---|---|---|
+| **ADOPT-BAND** | *"≥ 1 lever CITED but ambiguous — i.e. **two admissible readings survive on the source text** … the existence of a second admissible reading, period, whatever the gap"* | **CONDITION ABSENT.** Every lever has a **single** admissible reading: the limiter on **two** independent sentences (printed pp. 94 and 98), `m` on eq. 14 p. 47 with *"onde `Sf` [%] é a declividade do pixel"* (corroborated p. 48's degrees-conversion note, which would be meaningless if `Sf` were already degrees), `S` on eq. 18 p. 48 attributed to Wischmeier & Smith 1978 (and a **third**, independent attribution on p. 47), `L` on eq. 13 p. 47 with `Xdir_k^m` in the denominator and the orthogonal/diagonal convention printed. §4.2's own first note says so: *"ADOPT-BAND is not currently triggered on any lever."* |
+| **NEGATIVE — UNRESOLVED** | *"≥ 1 lever with no citable ground either way, **or** (R6) fires, **or** the source text cannot be obtained/verified"* | **ALL THREE DISJUNCTS FALSE.** No lever lacks citable ground (above). **(R6) does not fire** — `Sf` is slope **percent**, single admissible reading (`docs/46` §2.2 amendment (d), §9.1 item 2); the pre-committed NEGATIVE branch for the `m` lever **did not fire**. The source text is on disk at `data/raw/refs/buarque2015.pdf`, **9,646,521 bytes**, sha256 `3047624f641b335900eb3bc2191308b03a22148bd30aeb7227031bf42e1c0037` — **MATCHING** `docs/38` §9.1's provenance card, LUME handle 10183/129875. §7.1's four triggers all fail. **A negative result is publishable in this project; a fabricated one is not.** |
+| **RETAIN-OURS, discrepancy declared** | *— no §4.2 row grants it* | **INADMISSIBLE AS AN OUTCOME.** The licence it wants — keep `V0` *"because it is incumbent, not because it won"*, carrying the bracket — is precisely **NEGATIVE's** licence column, and NEGATIVE's condition is unmet. Its only other route is an item-2 deviation, and A3.1.2 finds none. `docs/46` §7.3 independently forbids *"treating the incumbent `V0` as **validated** because it survived by default"*. **"Ours keeps running for now" is a fact about the engine default (A3.5.1), not a §4.2 outcome.** |
+| **ADOPT-SOURCE** | all four levers CITED (**met**, §4.2 item 5 as amended (d)); H-M's (R6) not triggered (**met**); the §3.3 exact re-run completed **and reported, including the stratified report** (**HALF met** — A3.1.6); §4.3's forbidden evidence untouched (**met**, A3.1.5) | **EXERCISED**, by **item 1 and by elimination**, and **not by preference**. Three of its four conjuncts are discharged; the fourth is discharged only in its *re-run* half, which is what makes the outcome **determined but not yet exercisable** (A3.1.6). |
+
+**Which point, and why the hybrid is not a candidate.** `docs/46` §2.5.2 is frozen and in force:
+with eq. 13 printed on p. 47 there is *"no admissible reading of Buarque in which `L` is our
+point-rate form"*. So **×0.43194 is not a reading of the source at all** — it is the source's three
+levers with **our** `L`, a **documented HYBRID** retained only because `docs/35` §9.3.1, this
+document's §4 candidate 0 and `docs/43` §1.4 quote it and it must stay reproducible.
+**Reproducibility is not candidacy.** §2.4's adoption rule is that *"the formulation is adopted
+whole or not adopted"*, and `buarque_2015_dg` is the whole four-lever formulation with no lever
+picked. `[0.25146, 0.43194]` is therefore **a POINT beside a documented hybrid** and **may not be
+presented as an ADOPT-BAND band** (§4.2 note 2).
+
+**§4.2 item 4 — *"ties break toward the lower LS level … a tie may not be broken by the basin
+total"* — is satisfied vacuously and its ground is verified first-hand.** There is no tie on the
+source text. But the ground is stronger than `docs/46` states: the source's own verdict appears on
+**p. 98 as well as p. 121** — of his *already-capped* `L`, *"o valor máximo é grande e … pode fazer
+com que as estimativas da erosão laminar do solo em áreas íngremes, como nos Andes, seja
+**superestimado** (EPA, 2004)"*, with p. 121 adding *"erosão em massa … o que é incompatível com o
+uso da MUSLE"*. **The source's author says his capped LS over-estimates Andean sheet erosion, and
+our limiter is looser than his** — upslope area ≤ 1 km², i.e. unit contributing length to ≈ 10,870 m,
+against his one pixel. Every direction the source itself points is **down**. A fidelity nuance that
+also favours item 1: transposing the *method* (*"`L` ≤ one DEM pixel"*) at our 90 m gives a **302 ft**
+cap, **inside** AH-703's tabulated range, whereas his literal 500 m = 1,640 ft would be outside it.
+
+**And item 4 is not a licence to hunt the lowest published LS.** The independent RUSLE-handbook path
+at ×0.206 (`docs/47` §4.1 finding 6) is **a different method**, not a reading of the source, and is
+published area-weighted only. It is cited here **only** as the convergence result it is: two paths
+sharing no formulation choice but the `L` form land within 19 % of each other and both sit ~4–5×
+below production.
+
+### A3.1.2 Item 2 — the deviation burden is the whole question, and **no candidate clears it**
+
+`docs/46` §4.2 item 2 admits a deviation from the source *"only with its own written source
+justification, naming a citable reason why the source's choice is wrong **for this basin**, dated,
+**written before the resulting basin total is computed**"*, and rules out *"our terrain is steeper"*
+*"unless a citation says the source's choice fails on steep terrain"*. Two things must be true of any
+such candidate, and the second is now unsatisfiable in principle:
+
+1. it must argue **against the source's choice and for ours**, in *our* direction; and
+2. it must have been **written before the total** — which `docs/46` §4.4 records as permanently
+   impossible now, since 129.3840 and 75.3235 Mt/yr are published. **The deviation route is
+   therefore closed to every future session as well as to this one.** The default route needs no
+   such justification; that asymmetry is item 1's, and it is registered, not invented here.
+
+The only CITED/DERIVED material that could serve is `docs/47` §4.1's six findings. Walked in full:
+
+| `docs/47` §4.1 finding | grade | direction |
+|---|---|---|
+| 1. *"A cap on slope length is REQUIRED"* (AH-703 p. 104) | CITED | **against ours** — 59.5 % of cells already exceed 400 ft and our `A_unit` reaches **35.6×** AH-703's outer tabulated bound |
+| 2. *"Our specific cap value 1 km² is a citation defect"* — Montgomery & Dietrich measure channel-head source areas **2,700–12,000 m²** against our 1e6 (**150×** at Andean slopes, **24×** at the basin median), and *wetter* regions have **smaller** source areas while our basin is wetter than their wettest site | CITED, **contradicted** | **against ours** — `docs/47` §4.2 item 2 states flatly that *"×1.000 is not defensible"* |
+| 3. *"The W&S-1978 `S` function was withdrawn by its own authors for steep slopes"* (Renard et al. 1991 p. 32; 2011 ch. 8 p. 142) | **CITED** | **the only item-2-shaped candidate on the record** — see below |
+| 4. *"Our `m` is McCool-89 / AH-703 exactly, and AH-703 publishes `m` up to 0.71"* | CITED | **fails item 2** — see below |
+| 5. *"The `L` form our production column uses is a point rate, not a cell average"* | DERIVED | **against ours** — the cell-average (D&G) form is the coherent one and our point form **over-states**; predicted head-cell ratio 0.58 against a measured **0.5807** |
+| 6. The convergence result (Buarque path ×0.245 vs the independent RUSLE-handbook path ×0.206, within 19 %) | DERIVED + CITED | **against ours** |
+
+**Finding 3 has exactly the shape item 2's worked example demands, and it still does not license
+RETAIN-OURS**, for three separate reasons, each sufficient: it argues against **the source's** `S`,
+not **for ours** — and ours (Moore & Burch, `n` = 1.3) is *equally* unvalidated above tan θ 0.50,
+where 35.5 % of the basin's `S` signal sits (Schmidt et al. 2019; `docs/47` §4.2 item 1, O2); its
+direction is **down**, because `V3` is the ×1.694054 **amplifier**, so it would put `f_LS` **below**
+0.25146; and the variant it implies is **not registered in `docs/46` §3.1 and has no measured
+`f_ero`**, so adopting it today would be adopting an **unmeasured** formulation. The standing
+instruction forbids assembling it as a product of single-lever factors — **joint / product =
+×1.347608646050708**; the levers do not multiply out.
+
+**Finding 4 is the strongest-looking pro-ours row and it fails item 2 on the row's own citation.**
+It cites **our** formula; it does not say the source's eq. 14 is wrong for this basin. It is
+undercut twice: AH-703 pp. 105–106 makes `m` a **land-condition** parameter, and its rangeland /
+low rill:interrill column returns **×0.5082** on this basin — essentially the source's own
+**×0.5051** — so *the same citation read for THIS basin returns the SOURCE's level*; and the
+"moderate" column we use is **our own unstated user choice** (`docs/47` §4.2 item 3, O4).
+
+**Five of six findings point against ours; the sixth is a symmetric citation that item 2 does not
+admit. There is no admissible item-2 justification on the record for keeping ours, so item 1's
+default stands unrebutted.**
+
+> **A NAMED RISK ON THE ADOPTED VALUE, recorded because it is real and because it is the kind of
+> thing this project has reversed itself on before.** `docs/47` §4.2 item 5 — verified on disk at
+> `docs/47`:369–371 — records that the shipping MGB-SED plugin (`github.com/LabHig-Ufes/MGB-SED` →
+> `bin/formPRESED.exe`, 2025-09-10) contains a **run-time user choice of `S` factor**, the literal
+> strings *"(0) standard method / (1) slope scaling method"*, plus a source→target DEM resolution
+> rescaling our implementation does not have — so `docs/47` concludes that *"in the tool this
+> project transposes, `S` is a user choice, **not a fixed part of the method**"*. If that were
+> admitted as a **second admissible reading of the transposed method**, the `S` lever would trigger
+> **ADOPT-BAND** and a band would be owed where this amendment records a point.
+>
+> **Why it does not change this outcome, and what it does change.** `docs/46` §1.2's read-out that
+> **(R1) does not fire** is **frozen and in force**, and a session that believes a frozen rule is
+> wrong *"journals the objection and follows the rule anyway"* (§10) — which is what is happening
+> here. On the merits: the source of record is unambiguous **three times over** on printed pages 47
+> and 48; the plugin is a **2025 artifact of a successor tool**, not the transposed source whose
+> provenance card `docs/38` §9.1 carries; and H-S's own refutation clauses are (R7)/(R8) (field) and
+> (R9) (a reading test on *our* side), none of which admits the code as a reading of Buarque.
+> **But every branch of the objection points DOWN**: whether `S` stays at W&S (`f_LS` = 0.25146) or
+> is treated as selectable (`f_LS` **lower still**), and whether the row is ADOPT-SOURCE or
+> ADOPT-BAND, **nothing in it licenses RETAIN-OURS or NEGATIVE**, because neither requires nor
+> produces a citable reason the source's choice is wrong for this basin **in the direction of ours**.
+> So it is a live risk to the adopted **number** and to the **shape of the record** — it may mean a
+> band is owed where a point is recorded — and **no risk at all to the elimination of `V0`**. A
+> future session may raise it **only with the new variant measured first**, and never as a reason to
+> keep the incumbent.
+
+### A3.1.3 The supremacy objection — `docs/35` §9.3.2 item 1 names **three** levers, not four — adjudicated, and a `docs/35` §9 amendment is **OWED**
+
+This is the strongest objection to the adopted **value** on the whole record, and it must not be
+glided past. `docs/46` §0 says without qualification that it *"does not supersede `docs/35` §9.3 …
+this document is **subordinate** to it: where the two disagree, **`docs/35` wins** and this file is
+the bug."* Read on disk at `docs/35`:710–715, §9.3.2 item 1 defines the registered default outcome as
+
+> *"the **source formulation is the registered default outcome** of C3.1: slope length limited to one
+> DEM pixel, `m` stepped and capped at 0.5 (his eq. 14), `S` = Wischmeier & Smith 1978 (his eq.
+> 18)."*
+
+**Three levers. `L` is not named.** Read literally, frozen `docs/35`'s registered default is
+therefore **`V4` = the hybrid**, `f_ero` **0.43194**, α reference 11.8 × 0.43194 = **5.096892** and
+hard stop 35.4 × 0.43194 = **15.290676** — **not** the point this amendment adopts. And `docs/46`
+§2.4's relabelling of `V4` as *"a documented hybrid, not the source formulation"*, with `V4_dg`
+installed as *"the source formulation read whole"*, is precisely the species of disagreement §0
+hands to `docs/35`. **Two of the three panellists raised this; the third missed it entirely.**
+
+**Adjudicated as follows, on four grounds read on disk, and the adjudication is recorded as an
+interpretation rather than a rewriting:**
+
+1. **Item 1's own stated rationale is LEVEL fidelity, and the literal reading defeats it.** The
+   clause's reason, in its own words, is that *"because MUSLE is **linear** in LS, an LS level that
+   differs from the source's passes one-for-one into α and silently invalidates the §6.1 guard."*
+   Keeping our point-rate `L` leaves exactly that discrepancy against the printed source —
+   **×1.7177284657599616**, ln **0.5410027585442313** — so the literal enumeration defeats the
+   clause's own purpose.
+2. **The enumeration is an inventory of levers *then measured*, not a definition of the method.**
+   `docs/35` §9.3.1, in the same frozen amendment at :700–702, **already records the `L` lever
+   separately** — *"with the literal Desmet–Govers finite-difference `L` instead of our continuous
+   form, a further ×0.790"* — so §9.3.2 item 1 cannot be read as an exhaustive definition that
+   excludes a lever its own preceding subsection prices.
+3. **The enumeration is already known defective on its face.** *"`m` **stepped and capped at 0.5**
+   (his eq. 14)"* conflates **two different objects** — eq. 14's step function and `min(m, 0.5)` —
+   and `docs/46` §7.3 item 2 records that this very label is **WRONG** and owed correction in five
+   places, `docs/35` §9.3.1 among them. A sentence that mis-describes one lever cannot outrank the
+   printed page it purports to summarise (A3.3.2).
+4. **If a reader genuinely cannot tell which composition item 1 names, that is a TIE** — and §4.2
+   item 4, *"ties break toward the lower LS level … a tie may not be broken by the basin total"*,
+   returns `V4_dg` at 0.25146 anyway, on the source's own pp. 98/121 verdict and never on a total.
+
+> **THE HONEST LIMIT OF THIS ADJUDICATION, and the branch it leaves open.** Grounds 1–4 are all
+> arguments about what a frozen clause **meant**; §0's supremacy rule is about what it **says**.
+> **A `docs/35` §9 amendment is therefore OWED** — dated, by `docs/35`'s own owner, and neither by
+> `docs/46` nor by this amendment — recording that §9.3.2 item 1's three-lever enumeration is
+> superseded by eq. 13's reading. **If `docs/35`'s owner declines it**, then `docs/35` wins on its
+> literal text, this amendment's ADOPT-SOURCE at `V4_dg` is the bug, and the surviving outcome is
+> **NEGATIVE — UNRESOLVED on a *documentary* rather than an evidentiary ground**, with `V0` retained
+> **as incumbent and never as validated**, the bracket carried, and C4.3 still blocked. That branch
+> is written here so that no downstream session can present A3.1's ADOPT-SOURCE as unconditional.
+>
+> **A second, related exposure, recorded rather than argued away.** `docs/46` §4.2 item 5's fourth
+> lever came in by **amendment (d), dated 2026-08-11 — the same day as the freeze and after the
+> ×0.25146 total was on the record** (`docs/47` §4.3). A hostile auditor can say the `L` lever was
+> added to the CITED requirement by a session that already knew what adopting it costs, in the
+> direction of the number now adopted. The answers available are that amendment (d) moves in the
+> **restrictive** direction (requiring *more* to be CITED, not less) and that its stated ground is a
+> printed page, not a total. Neither answer removes the exposure, and `docs/46` §4.4's own warning —
+> that a binary is *easier* to make post-hoc — applies to this amendment with full force.
+
+### A3.1.4 The grade — **four distinct propositions, four different grades**
+
+Conflating these is the error `docs/46` §8.2 item 1 and §9.2 exist to prevent, and A1.6 item 3
+already supplies half of it. Each is stated with the exact proposition it attaches to.
+
+| # | proposition | grade |
+|---|---|---|
+| **(A)** | *"The adopted formulation is what Buarque (2015) prints, on all four levers"* | **CITED** — verbatim, page-numbered, single admissible reading, `Sf` units verified: limiter printed **pp. 94 + 98**, `m` eq. 14 printed **p. 47**, `S` eq. 18 printed **p. 48**, `L` eq. 13 printed **p. 47**. Excluded from this grade **by name**: `min(m, 0.5)`, which *"may NEVER be graded CITED — it is nobody's published formulation"* (`docs/46` §2.2). |
+| **(B)** | *"`f_LS(buarque_2015_dg)` = 0.25146 erosion-weighted / 0.2446790094097074 area-weighted **on OUR terrain, OUR engine, at adopted defaults**"* | **DERIVED** on §4.1's own definition — *reproduced by arithmetic from a published definition, twice, independently.* Two erosion-weighted measurements and three area-weighted, each behind reproduction gates including the basin-erosion gate at **299.5387088405831 Mt/yr**. |
+| **(C)** | *"The LS **LEVEL** is correct / validated / confirmed"* | **UNVALIDATED, AT ANY GRADE, AND UNCHANGED BY THIS ADOPTION.** `docs/42` **G4.2** stands. ***Cited is not validated*** (A1.6 item 3) and ***fitted is not validated either*** (`docs/43` §3.3 item 1). `docs/46` §9.2: *"Raising four levers to CITED raises their **provenance** grade and nothing else."* The mechanism is §8.1's: the design matrix has condition number **∞**, only **Π = α · f_vol · f_K · f_LS · C_mult · P · FG** is identifiable, so **no** calibration on **any** objective can separate the LS level — which is also why §4.3 rules a fit out as **zero** evidence, not weak evidence. |
+| **(D)** | *"α = 11.8 (Williams 1975) is like-for-like with this 2-D contributing-area LS"* | **UNRESOLVED / NOT SETTLED, and no band is offered** (`docs/46` §1.0 residue 3, §9.2; `docs/47` §4.2 item 6, O4). Williams 1975 predates every 2-D contributing-area LS by two decades. **This bounds every number in A3.2 from above.** |
+
+**`docs/46` §1.0 residue 1 stands unremoved and is not repaired by adoption:** both rows are the
+source's **FORMULATION on OUR terrain data** — 90 m COP90 against his 500 m, Horn 3×3 slope against
+his eq. 15 centred differences, our D8 routing, our URH mask. **Neither number is "his LS", and
+adopting the formulation does not make it so.**
+
+What (A) + (B) buy is exactly `docs/46` §8.3's one conclusion: *which formulation the engine uses,
+on written source grounds, with a grade — and therefore what the decomposition of Π is, and what α̂
+has to be multiplied by to be quoted against a published α.* **Bookkeeping and provenance.**
+
+### A3.1.5 What `docs/46` §4.3 forbids, and what was refused
+
+Each of the following was available and **was not used as evidence** for this decision:
+
+- **the basin total, the outlet anchors (144–184 Mt/yr), and the distance between them.** The
+  75.32347104056149 Mt/yr figure appears in A3.1 and A3.3.1 **only as the reproduction of an already
+  published engine re-run** (`docs/47` §4.3), and it entered no step of the reasoning. The fact that
+  the adopted point lands **furthest** from the anchors is **not** counted as evidence in either
+  direction — `docs/35` §9.3.5's *"an unattractive total is not evidence against the source
+  formulation"* binds **symmetrically**;
+- **the retired "mountainous LS 2–10" band**, and its coincidence with the source formulation's
+  7.262 median, which `docs/35` §9.3.5 already forbids as evidence and which is a *fingerprint*;
+- **the retired SDR band 0.05–0.30** and every implied-SDR arithmetic built on it. This is why A3.3.1
+  declines to re-derive §2's and A1.4's struck ADR numbers rather than correcting them;
+- **any α band.** A3.2's numbers were computed **after** the choice was fixed, as §4.2 item 3's
+  reporting obligation, and **passed and failed nothing**. `docs/47` §3.2 independently falsifies
+  `docs/35` §6.1's band as a sufficient guard: **185 of 426** published pairs STOP, and 97.7 % land
+  inside 5.9–23.6 *because the source's own search prior contains it*;
+- **any C4 fit, at any stage.** No fit was run, no `KGE_ln` was evaluated against `docs/45` §2.1's
+  box, and **no α̂ — provisional or otherwise — was produced or quoted**;
+- **`check_musle_parameters`'s verdict.**
+
+**No new band was introduced anywhere in this amendment, and no materiality bar was reconstructed
+from anything.** `docs/52`'s striking of `docs/46`'s 0.1644 ln bar is respected: nothing here
+compares a difference to a threshold. **An uncited band cannot pass a gate any more than it can fail
+one** — three have been retired on that rule and this amendment does not add a fourth.
+
+### A3.1.6 **Reachable ≠ exercised** — the three deliverables between this decision and the engine
+
+`docs/46` §4.2's third note is explicit, and this amendment is bound by it:
+
+> *"**Reachable ≠ exercised.** No outcome in this table has been taken. §3.3's **full stratified
+> report** is not discharged — elevation strata exist for every variant, **slope terciles do not**,
+> and the per-station erosion-weighted `LS̄` exists only as ratios (`docs/47` §4.4) — and it is
+> required before ADOPT-SOURCE is **exercised**, though not before this freeze."*
+
+ADOPT-SOURCE's third conjunct is *"the §3.3 exact re-run completed **AND REPORTED, INCLUDING THE
+STRATIFIED REPORT**"*. **The re-run half is discharged** — twice reproduced erosion-weighted, three
+times area-weighted. **The reporting half is not.** Three named deliverables stand between this
+decision and any engine-default proposal:
+
+1. **§3.3's missing stratified report.** Measured this run: **slope terciles do not exist** for any
+   variant — a grep across `docs/`, `scripts/` and `src/` returns **only documents saying they are
+   owed** (`docs/46`, `docs/49`, `docs/50`, `docs/51` and agent journals), and **no artifact**. The
+   **elevation** strata *do* exist for `V4_dg` (`f_area` 0.3720729826 lowland < 200 m ·
+   0.2491459900 mid 200–1000 m · 0.2408698821 Andean > 1000 m — **no stratum reverses**, which is a
+   §3.3 *reporting* fact and **not** a ground for the choice). And the **per-station erosion-weighted
+   `LS̄` exists only as RATIOS** (`docs/47` §4.4), not as the **levels** `docs/42` G4.1 reads.
+2. **`docs/46` §2.3's H-S field clause, (R7)/(R8) items 2 and 3** — the per-station erosion-weighted
+   factor dispersion reported beside `docs/47` §4.4's 0.0769 / 0.0868, and the stratified `S`
+   factors printed beside the basin **1.714** with the spread shown. This is **the one hypothesis in
+   `docs/46` §2 that was never read out** (§1.2, §9's card, §10's closing note). Item 1 of the clause
+   is DERIVED from the two published formulas alone — the `S` ratio field spans ≈ 0.975–3.81 and is
+   **non-monotone**, so `S` is not a scalar — but items 2 and 3 do not exist on our slope field.
+3. **A committed, gated `V4_dg` column — the adopted formulation is not engine-readable anywhere.**
+   Measured on disk this run: `data/processed/urh_ls2d_variants.csv`'s header is
+   `mini,urh,n_cells,area_km2,area_frac,V0_ours_2026_08,V1_lim_pixel,V2a_m_cap05,V2b_m_step_eq14,V3_s_ws78,V4_buarque_2015,V4p_buarque_2015_cap,V5_L_dg96_fd`
+   — **there is no `V4_dg` column**; `docs/53` §8 built it in a **scratchpad** only, the loss mode
+   `docs/00` §6 names. And `data/processed/urh_ls2d.csv` carries only `ls2d`, `ls2d_hs`,
+   `ls2d_mb86`, `ls2d_dg96` — the last being **Defect B's confounded column**, not `V4_dg` — and
+   **may not be overwritten** (`docs/46` §3.1's registered hard requirement, §5's immovables).
+   So `docs/46` §3.1's requirement that *"every variant is reachable **by name**"* currently
+   **fails for exactly the variant ADOPT-SOURCE adopts**, the §3.3 re-run cannot be *reported* in
+   the registered form, and **no default can be switched by name**. Materialising the column in a
+   **new** committed product is also what would give the lower endpoint a **third** erosion-weighted
+   reproduction (`docs/51` §7 item 7).
+
+> **Therefore, stated so it cannot be over-read: the §4.2 outcome is DETERMINED and RECORDED, and it
+> is NOT YET EXERCISABLE. This amendment does NOT propose the engine-default switch** — which is
+> consistent with what ADOPT-SOURCE licenses in its own words, *"**proposing** the adopted variant as
+> the engine default in a **separate**, dated amendment"*. **A3 records; it proposes nothing and
+> flips nothing** (A3.5.1).
+>
+> **A governance gap, named rather than papered over.** Strictly, **no §4.2 row's condition set is
+> fully satisfied today**, so a purist can say the rule returns nothing and that
+> *"ADOPT-SOURCE, determined but not exercisable"* is a **fifth outcome** the table does not
+> contain. The answer this amendment gives is that §4.2's own third note draws exactly the
+> reachable/exercised distinction relied on here and puts the stratified report on the **exercise**
+> step; that the only other candidate row, NEGATIVE, fails **affirmatively** on its own evidentiary
+> condition; and that §7.3 forbids treating `V0` as validated by default. **A reader who thinks an
+> unexercisable outcome is no outcome is not being unreasonable, and `docs/46` does not close this
+> gap.** Recorded as an open item (A3.7).
+
+---
+
+## A3.2 The α band **RESCALED** at the adopted `f_LS` (`docs/46` §4.2 item 3)
+
+**The source of the un-rescaled numbers, read directly from `docs/35` §6.1 rather than from a
+summary:** reference **α = 11.8** (Williams 1975); *"expected"* band **5.9 – 23.6** (0.5× – 2×
+Williams); *"watch"* **23.6 – 35.4**; **HARD STOP α > 35.4** (3×); **HARD STOP α < 3.9** (⅓ ×
+Williams, i.e. 11.8/3 = 3.9333 — and this **3.9 is not itself a rescaled LS number**, a check worth
+making because 3.9 coincides numerically with the superseded 11.8 × 0.333).
+
+**Arithmetic, computed with `python3.10` this run at full precision, on the published factors. The
+erosion-weighted column decides (`docs/46` §3.3); the area-weighted proxy is printed beside it and
+can never override it.**
+
+| quantity | `f_ero` = **0.25146** (registered) | on the exact reproduction **0.2514648985839397** | area proxy **0.2446790094097074** |
+|---|---|---|---|
+| lower hard stop `3.9 · f` | **0.9806940000000001** | 0.9807131044773649 | 0.9542481366978589 |
+| expected band, low edge `5.9 · f` | **1.4836140000000002** | 1.4836429016452444 | 1.443606155517274 |
+| **α reference `11.8 · f`** | **2.9672280000000004** | 2.9672858032904887 | 2.887212311034548 |
+| expected band, high edge `23.6 · f` | **5.934456000000001** | 5.9345716065809775 | 5.774424622069096 |
+| **upper hard stop `35.4 · f`** | **8.901684** | 8.901857409871466 | 8.661636933103642 |
+| `docs/45` §2.1 box floor `2.0 · f` | **0.50292** | 0.5029297971678794 | 0.4893580188194148 |
+| `docs/45` §2.1 box ceiling `30.0 · f` | **7.543800000000001** | 7.543946957518192 | 7.3403702822912225 |
+| `1/f` | **3.976775630318937** | 3.9766981619750683 | 4.08698728351287 |
+| `ln f` | **−1.3804713478171018** | | |
+
+These reproduce `docs/46` §1.0's lower-end column **exactly** (α reference 2.967; band 1.484 … 5.935;
+hard stop 8.902). Two further checks: `docs/45`'s 5 %-of-box rail band **3.40 · f = 0.8549640000000001**;
+and the area-basis rescaler `docs/46` §4.2 item 3 literally names,
+`mean(LS_ours)/mean(LS_source)` = 39.812 / 9.741 = **4.087054717174828**, agrees with `1/f_area` =
+4.08698728351287 to 5 s.f. — but **`f_ero` decides**, so the operative rescaler is **3.976775630318937**.
+
+**WHAT THE COLLAPSE DOES.** The published *interval* collapses to a **point**: the α reference was
+registered as **2.967 – 5.097** (11.8 × [0.25146, 0.43194]) and the hard stop as **8.902 – 15.291**;
+at the adopted point they are the single numbers **2.9672280000000004** and **8.901684**. **The ln
+width 0.5410027585442313 does not disappear as uncertainty — it is re-labelled as what it is, the
+`L`-form lever** between the source read whole and the retained hybrid (`docs/46` §1.0, §2.5.2). For
+contrast, the hybrid's column, retained only for reproducibility: 11.8 × 0.43194 = **5.096892**,
+35.4 × 0.43194 = **15.290676**, `1/f` = **2.315136361531694**.
+
+**DIRECTION, STATED SO IT CANNOT BE MIS-READ** (`docs/47` §6.2 item 1: no α̂ is compared to 3.9, 35.4
+or a box edge without `f_LS` and its grade in the same table):
+
+- **Today**, the engine column is `ls2d_column = 'ls2d_hs'` and `f_LS` = 1.000 as `docs/45`'s
+  parameter card fixes it. **Any α fitted on TODAY's LS field must be read against 2.9672 /
+  1.4836 – 5.9345 / 8.9017**, not against 11.8 / 5.9 – 23.6 / 35.4. Equivalently, any α̂ obtained at
+  the `V0` level must be **multiplied by 3.976775630318937** to be quotable against a published α.
+- **Once the default is switched** (a separate act — A3.5.1), the engine's LS *is* the source's, the
+  factor between the engine LS and the LS the published α was paired with becomes **1.000 by
+  construction**, and the published numbers apply **un-rescaled**.
+- **Both statements are the same arithmetic in two coordinates.** What may never happen is quoting
+  an α without naming **which LS column it was fitted on**.
+
+> **AN ADJUDICATION ON WHETHER ITEM 3 EVEN ATTACHES, because the panel split on it.** Read narrowly,
+> §4.2 item 3's antecedent is *"a deviation adopted under (2)"*, and ADOPT-SOURCE is **item 1's
+> default, not a deviation** — so on that reading the engine's LS after adoption sits *at* the level
+> α = 11.8 was paired with and `docs/35` §6.1's numbers would stand unrescaled. **The narrow reading
+> is textually right about item 3's antecedent and is overridden anyway**, by two frozen sites that
+> name the obligation unconditionally for this outcome: §4.2's **ADOPT-SOURCE licence cell** (*"α
+> band rescaled per item 3"*) and §7.3 item 5's content list for **this amendment**. The obligation
+> attaches, and both coordinates are printed above. **The narrow reading may not be used as
+> reassurance** in any case, for two measured reasons: proposition (D) — α = 11.8's like-for-likeness
+> with any 2-D contributing-area LS is **NOT SETTLED, no band offered** — and `docs/47` §3.2's
+> falsification of the band as a sufficient guard.
+
+> **THE CEILING ON ALL OF IT, carried and not softened.** Every number in this subsection is
+> **BOOKKEEPING**. Per `docs/46` §8.2 item 2, a rescaled α reference is *"a statement about the
+> **pairing** of α with an LS, not about α"*. **None of it passes or fails anything.** §4.3 forbids
+> using any α band as evidence in the LS decision and this amendment used none. And
+> `docs/46` §1.0 residue 3 / `docs/47` §4.2 item 6 bound it all from above: **α = 11.8 predates
+> every 2-D contributing-area LS by two decades and its like-for-likeness is NOT SETTLED, with no
+> band offered.**
+
+**A precision note, recorded so a later reader does not read a defect into it.** The registered
+hybrid load **129.3840 Mt/yr** divided by the basin total 299.5387088405831 gives
+**0.43194417342854735**, so *"0.43194"* is the 5 s.f. rounding of the engine's `f_ero(V4)` and
+299.5387088405831 × 0.43194 = 129.38274989660147. The two are consistent to the precision each is
+printed at; **129.3840 is the engine re-run and 0.43194 is its rounded factor**, and neither is
+superseded by the other.
+
+---
+
+## A3.3 Corrections to **this document's own text**, applied in place
+
+`docs/46` §2.5.1 and §7.3 items **2 and 3** make these **unconditional** — the ground is *"a landed
+measurement, **not** the survival of a hypothesis"* — and §9.1 item 3 names this document by name,
+because it *"carries the closure conjunction whose clause 2 the adoption discharges, and whose §1
+table and §4 candidate 0 still print '2.37× – 3.00×' — one amendment does both jobs."*
+
+**Method: A2.7's, unchanged. Strike-through with a dated pointer. NOTHING IS DELETED.** Every
+original sentence remains readable, marked `~~struck~~`, with the replacement beside it and a
+pointer to the subsection that carries the reasoning. The record of what was believed survives
+intact; the superseded number can no longer be quoted as live.
+
+### A3.3.1 The bracket — *"2.37× – 3.00×"* and *"×0.333 – ×0.421"* are SUPERSEDED BY MEASUREMENT
+
+**What replaces them, registered at `docs/46` §1.0 from `docs/47` §4.3's engine re-runs:**
+
+| superseded | registered |
+|---|---|
+| lower end ×0.333 | **×0.25146** ero · ×0.2446790094097074 area — and ×0.333 is **REFUTED**, not merely superseded (`docs/47` §3.1 R6: it is 0.421 × 0.790, and ×0.790 is **two levers measured on the wrong column**) |
+| upper end ×0.421 | **×0.43194** ero · ~~×0.421475~~ → **×0.42136300143291305** area (**A3.3.4**, 2026-08-12 — `0.421475` was the *engine URH-fraction* area support, not §3.3's) (`V4`, the documented **hybrid**) |
+| `1/f_LS` = 2.37× – 3.00× | **2.3151× – 3.9768×**, and at the adopted POINT the single figure **3.976775630318937×** |
+| ln width 0.2345 | **0.5410027585442313** — 2.31× wider, and it is the **`L`-form lever**, not an uncertainty |
+| the isolated `L`-form factor ×0.790 | **×0.76983** on the `ls2d_hs` basis; the published ×0.790 was **two levers**, not one (`docs/50`, `docs/46` §1.1) |
+
+**Applied, twelve places in this document.** Nine were applied in the pass of 2026-08-12 that this
+amendment completes; **three further live sites were found by grep in this pass and are corrected
+here**, and they are named separately because a reader auditing whether the enactment travelled
+needs to know the list was not complete on the first attempt:
+
+1. **§1's closure table, row 2** — the *"2.37× – 3.00×"* struck, with the registered bracket, the
+   adopted point, and the note that **the clause stays NOT MET**.
+2. **§2's gate-(b) CONDITIONAL blockquote** — the bracket struck **and its base too**: the 248.730
+   Mt/yr base is itself superseded by A1.3's **299.5387088405831 Mt/yr**, so the correct engine
+   figures are **129.3840 Mt/yr** (`V4`) and **75.3235 Mt/yr** (`V4_dg`), **engine re-runs, not
+   proxies**. The struck ADR arithmetic is **not** re-derived — the SDR band is retired (`docs/40`,
+   A1.2) and `docs/46` §4.3 forbids the anchors as evidence in the LS decision.
+3. **§4's opening sizing** — *"a further 2.37× – 3.00×"* struck.
+4. **§4 candidate 0's lever table** — the joint row's ×0.421 struck; the `m` row's factor and label
+   struck (A3.3.2).
+5. **§4 candidate 0's *"two consequences"* bullets** — the level bullet's 104.8 / 82.8 Mt/yr struck
+   on **both** the base and the factors; the **proxy caveat discharged as MEASURED**, and it errs
+   **in the model's favour**: `f_ero`/`f_area` = **1.0277138223121463**, 2.51 % low. The α bullet's
+   four numbers struck and pointed at A3.2.
+6. **§4 candidate 0's RESOLVER paragraph** — recorded as **EXECUTED**, with what remains owed
+   (A3.1.6).
+7. **§4 residual 3, the wrong-way-terms paragraph** — the bracket struck.
+8. **§5's α-band trap, item 1** — the corrected expected band substituted, with the reason the
+   *"6.83 – 8.73 lands inside it"* claim is **not** re-stated as a finding: `docs/47` §2.5 C1 records
+   that 6.83 – 8.73 is `11.8 × {144,184} / 248.730`, i.e. at the **prior** `C`; at the adopted `C`
+   the deposition-free band is 5.67 – 7.25, and C1's correction is owed to `docs/43` §3.4. **The
+   trap itself survives unqualified**: the α band is not a sufficient guard, `docs/42` **G5** is.
+9. **A1.1's revised conjunction, clause 2** — the bracket struck; clause 2 restated as **still NOT
+   MET** for the three reasons of A3.5.2.
+10. **A1.4's *"candidate 0 still points the other way"* paragraph** — the 99.8 – 126.1 Mt/yr range
+    superseded by the exact re-runs; the ADR and Leg-A numbers **not** re-derived (A1.9 withdrew the
+    direction; §4.3 forbids the anchors).
+11. **A1.5's candidate-0 restatement** — marked **DECIDED but NOT CLOSED**, with the ADOPT-SOURCE
+    record and the three deliverables.
+12. **A2.2's LS-shape row** — the exact erosion-weighted factors substituted (limiter 0.362435 ·
+    `m` **cap** 0.517480 · `m` **eq.-14 step** 0.522043 · `S` 1.694054, joint `V4` 0.431944, source
+    read whole `V4_dg` 0.25146), with **joint / product = ×1.347608646050708** and the note that
+    **there are FOUR levers, not three**.
+
+> **THREE LIVE SITES THE EARLIER PASS MISSED, found by grep in this pass and corrected here.** They
+> are listed openly because *"treat the list as a starting point, not as complete"* is the only safe
+> way to do this kind of correction, and because the miss is itself evidence for that rule:
+>
+> - **§4 candidate 0's *"DO NOT stack"* paragraph** — *"an LS that is ~~2.4 – 3.0×~~ too high for its
+>   own α"*, the **rounded** form of the same superseded bracket, still live. Corrected.
+> - **A1.5's *"What would close C3"* paragraph** — *"the LS correction lowers the model by
+>   ~~2.4 – 3.0×~~ while clause 4′ asks for 1.03 – 2.27× more"*, still live. Corrected — and the
+>   correction **widens** the opposition between clauses 2 and 4′ rather than narrowing it.
+> - **§4 candidate 0's interaction identity** — *"(0.502 × 1.714 × 0.351 = 0.302 ≠ the joint
+>   0.421)"*, a live use of ×0.502 with no label pointer. Corrected with pointers to A3.3.1/A3.3.2
+>   and with the exact erosion-weighted arithmetic printed: **0.362435 × 0.522043 × 1.694054 =
+>   0.3205262902296241 ≠ the joint 0.431944** (with the **cap** instead, 0.362435 × 0.517480 ×
+>   1.694054 = **0.3177246791318452**). **The claim the sentence makes — that the levers interact
+>   and no single one is "the" cause — is unchanged and correct.**
+>
+> **STANDING INSTRUCTION, obeyed throughout** (`docs/46` §2.4): **never quote a product of
+> single-lever factors as the joint factor.** Measured **joint / product = ×1.347608646050708**.
+
+### A3.3.2 The `m` row's label — *"his eq. 14, step function hard-capped at 0.5"* is **WRONG**, and there are **two objects**
+
+`docs/46` §7.3 item 2 makes this correction **unconditional** — *"the label is wrong regardless of
+the size of the difference"* — and names §4 candidate 0 of this document as one of its five sites.
+**Corrected here, with both objects kept named and distinct and both factors printed:**
+
+| object | what it is | factor, area-weighted | factor, **erosion-weighted** | may it be graded CITED? |
+|---|---|---|---|---|
+| **Buarque eq. 14** — `V2b`, `m_step_eq14` | a **STEP function**, printed p. 47 verbatim: `m` = **0.2** (`Sf` < 1 %) / **0.3** (1 ≤ `Sf` < 3) / **0.4** (3 ≤ `Sf` < 5) / **0.5** (`Sf` ≥ 5), *"onde `Sf` [%] é a declividade do pixel"* — `Sf` is slope **PERCENT**, corroborated p. 48's *"sendo θ o valor de `Sf` em graus"* | **×0.505092** | **×0.522043** | **YES — CITED.** It is the adopted lever. |
+| **the cap** — `V2a`, `m_cap05` | `min(m_continuous, 0.5)` | **×0.502472** | **×0.517480** | **NEVER.** *"It is nobody's published formulation"* (`docs/46` §2.2). |
+
+**So the ×0.502 that this document printed for years is the CAP, not eq. 14** — and the difference
+between the two objects is **Defect A**, measured **×1.005212 area-weighted / ×1.008878
+erosion-weighted** and therefore **IMMATERIAL in magnitude** (`docs/49`, `docs/46` §1.1). **The
+label correction does not depend on that**: `min(m, 0.5)` is a cap on a continuous McCool-89 `m` and
+eq. 14 is a four-branch step on slope percent; they are different objects, one is citable and one is
+not, and conflating them is what let `min(m, 0.5)` be described as *"his eq. 14"* in five documents.
+**H-M's (R6) does not fire**: `Sf` has a single admissible reading, so the pre-committed NEGATIVE
+branch for the `m` lever **did not fire** (`docs/46` §9.1 item 2).
+
+### A3.3.3 The other four mislabel sites belong to other owners and were **NOT touched**
+
+`docs/46` §7.3 item 2's five sites are `docs/35` §9.3.1, **`docs/37` §4 candidate 0** (corrected in
+A3.3.2), `docs/43` §1.4, `src/nbgen/make_nb18.py` and `src/nbgen/make_nb19.py`; item 3's list adds
+`docs/45` §2.1 and this document's §1 table. **Only this document was edited.** The remaining four
+mislabel sites and the `docs/45` §2.1 re-derivation are **owed and are being enacted in parallel by
+other agents in this same run** — see A3.7. They are recorded here as **owed, dated, and never as
+silent edits**, which is the form `docs/46` §7.3 requires.
+
+### A3.3.4 `f_area(V4)` — this document printed **0.421475**, which is a *different area support*. Corrected to **0.42136300143291305**
+
+**Owning records:** `docs/46` **§10 amendment 2** (2026-08-12) and `docs/51` **§9 amendment 1**
+(2026-08-12). This subsection **imports no number from a document that does not own it** — the two
+values below were **independently recomputed** by the `defect-45-residual` session
+(`docs/agents/journal_defect-45-residual.md`) from `data/processed/urh_ls2d_variants.csv`,
+`urh_fractions.csv`, `minibacias.csv` and the three LS JSON artifacts, read-only, all SHA-256'd
+unchanged after. **`f_ero` is untouched, so nothing this document decides moves** (`docs/46` §3.3
+ground **G-ii**: *"`f_ero` decides; `f_area` is reported beside it, always, and can never override
+it"*).
+
+**Sites corrected in place:** §4 candidate 0's lever table, joint row (:207); A3.3.1's replacement
+table, upper-end row (:1790). **Nothing is deleted** — both originals stay readable inside
+`~~…~~`.
+
+**Why 0.42136300143291305 and not 0.421475 — the definition selects the support.** `docs/46` §3.3
+(frozen) defines the proxy as *"basin **area-weighted mean** of LS(V) / basin area-weighted mean of
+LS(V0)"*, and `docs/46` §1 fixes what "basin" means there: *"on all **30,235,916** basin cells at
+90 m, with a harness that reproduces our own `ls2d_hs` area-weighted mean **39.812** bitwise."* That
+is the **per-cell DEM pass**, 256,702.3554292511 km². Hence
+`f_area(V4)` = 16.775413430326214 / 39.812260149274394 = **0.42136300143291305**;
+`1/f_area(V4)` = **2.3732506095678505**.
+
+**Every plausible support, recomputed here, with `docs/47` §3.1 **R7**'s independently measured
+proxy bias 1.0251 as the discriminator** (`f_ero(V4)` = **0.43194417543884817**, unchanged):
+
+| support / weighting | `f_area(V4)` | `f_ero/f_area` | \|d\| vs R7 1.0251 | inside R7's own 4-d.p. rounding interval [1.02505, 1.02515]? |
+|---|---:|---:|---:|---|
+| **per-cell basin, 30,235,916 cells — §3.3's quantity** | **0.42136300143291305** | **1.025111777659529** | **1.178e-05** | **YES** |
+| same, `ls2d_defect_b.json:decomposition.V4_over_V0` (independent script) | 0.42136300143291344 | 1.0251117777 | 1.178e-05 | YES |
+| same, recomposed from the three elevation strata | 0.4213630014329133 | 1.0251117777 | 1.178e-05 | YES |
+| `urh_ls2d_variants.csv` weighted by `n_cells` | 0.42136472954221804 | 1.0251075735 | 7.573e-06 | YES |
+| `urh_ls2d_variants.csv` weighted by `area_km2` | 0.4213519856784954 | 1.0251385780 | 3.858e-05 | YES |
+| `urh_ls2d_variants.csv` weighted by `area_frac` | 0.42161856467208547 | 1.0244904082 | 6.096e-04 | **NO** |
+| **engine `urh_fractions.csv`×`minibacias.csv` areas, 32,782 units, 257,096.93 km²** — *what this document printed* | **0.4214751420286394** | **1.0248390293193077** | **2.610e-04** | **NO** |
+
+**The arithmetic, printed rather than asserted** (`docs/46` §2.0 ground **G-iv** — the exact ratio at
+full precision with a stated licence, never compared to a threshold):
+`0.43194417543884817 / 0.42136300143291305` = **1.025111777659529**, |d| = **1.1777659529199624e-05**;
+`0.43194417543884817 / 0.4214751420286394` = **1.0248390293193077**, |d| = **2.609706806921963e-04**.
+**The corrected value is 22.158110450144004× closer to R7**, and the value this document printed is
+the only *area* support that R7's own rounding interval **excludes**. The gap between the two is
+**2.661377371648382e-04** relative / **2.661023287994224e-04 ln**.
+
+**What R7 can and cannot decide, stated rather than glossed.** Printed to four decimals, R7 cannot
+separate the three reconstructions of the per-cell support from the two URH-table area weightings —
+all five agree with it to ≤ 3.9e-05 — but it **rejects the engine support outright**, at 5.2× the
+half-width of its own rounding. *(It also rejects `area_frac`, which is not an area weight at all:
+that column sums to 8,672, weighting every minibacia equally regardless of size. It is listed only
+so the search is auditable.)* **So the definition selects, and R7 confirms:** `docs/46` §3.3 plus
+§1's cell-pass disclosure pick 0.42136300143291305 out of the near-neighbours, and R7 independently
+rules out the number this document had been printing.
+
+**What 0.421475 actually is — and it is not an arithmetic error.** It is the engine's own
+URH-fraction area support (`ls_defect_a.json:variants.V4_buarque_2015.f_area_urhfrac_areas`),
+**rebuilt independently here from `urh_fractions.csv` × `minibacias.csv` and reproduced to all 16
+digits, with the same 257,096.93 km² basin total** — against the DEM cell pass's 256,702.36 km².
+`load_geometry` itself warns that its two candidate area sources *"differ by more than 5 % on 12.9 %
+of cells."* So **0.421475 is a correctly computed quantity on a different support, correctly named
+in its own JSON key — it is simply not §3.3's `f_area`**, and no artifact needs editing.
+
+**Not corrected, because they are already right** — stated so nothing is over-corrected:
+- the **DG / lower endpoint** `f_area(V4_dg)` = **0.2446790094097074** and A3.3.1's `×0.2446790094097074 area`
+  are already on the registered support. Control, recomputed here:
+  `0.2514648985839397 / 0.2446790094097074` = **1.0277338427624152** against R7's DG figure 1.0278,
+  |d| = **6.615723758485181e-05**. **Only the upper end was on the wrong support.**
+- **every erosion-weighted number in this document**, including A3.2's whole α rescaling table,
+  A3.3.1's `1/f_LS` = 2.3151× – 3.9768×, 3.976775630318937× at the adopted POINT, the ln width
+  0.5410027585442313, the loads 129.3840 / 75.32347104056149 Mt/yr, the 299.5387088405831 Mt/yr
+  gate, joint/product ×1.347608646050708, and A3.8's reproduction block — `f_ero` does not move.
+- the proxy-bias figure **1.0277138223121463** at :264, :1392, :1812 and A3.8:2244 is the **DG**
+  endpoint (`0.25146 / 0.2446790094097074`) and is on the registered support already.
+- the rounded **×0.421** strings elsewhere in this document are the historic published proxy, already
+  struck or pointered by A3.3.1; **0.42136300143291305 rounds to 0.421 at three significant figures**,
+  so they are not additionally wrong and are left exactly as they stand.
+
+**Reproduce:**
+
+```
+python3.10 -c "
+import json
+s=json.load(open('data/processed/ls2d_variants_summary.json'))
+a=json.load(open('data/processed/ls_defect_a.json'))
+v0=s['variants']['V0_ours_2026_08']['area_wtd_mean']; v4=s['variants']['V4_buarque_2015']['area_wtd_mean']
+fe=a['variants']['V4_buarque_2015']['f_ero']; fu=a['variants']['V4_buarque_2015']['f_area_urhfrac_areas']
+print(repr(v4/v0), repr(v0/v4)); print(repr(fe/(v4/v0)), repr(fe/fu))
+print(repr(abs(fe/(v4/v0)-1.0251)), repr(abs(fe/fu-1.0251)))
+"
+0.42136300143291305  2.3732506095678505
+1.025111777659529    1.0248390293193077
+1.1777659529199624e-05   2.609706806921963e-04
+```
+
+**Disclosure for A3.3.4.** No engine default was changed; no data product was regenerated or
+hand-edited; no fit, calibration or simulation was run; no α̂ is quoted; no materiality bar is
+invoked, rescaled or reconstructed (`docs/46` §2.0's striking stands); no git command was run. The
+`docs/23` §13.2 yield embargo is in force — no t/km²/yr appears here. `urh_ls2d_variants.csv`
+(sha256 `81d2376a…1ddc0`), `urh_ls2d.csv`, `minibacia_ls2d.csv`, `urh_fractions.csv`,
+`minibacias.csv` and the three LS JSONs were hashed before and after and are **UNCHANGED**.
+
+**Residual owed elsewhere and NOT fixed here** (this session owns only `docs/37`, `docs/43` and its
+own journal): `docs/47` §4.3's area column prints **0.42135** for this cell — a **third** support
+(the `urh_ls2d_variants.csv` `area_km2` weighting, 0.4213519856784954), owed to `docs/47`'s owner;
+`docs/52` §6:371's **×1.02484**, owed to `docs/52`'s owner; `docs/35` §9's :850 and :1021 **×1.02484**,
+owed to `docs/35`'s amendment slot; `src/mgb_sediment.py`:223's docstring bracket `[0.24468, 0.42148]`;
+`src/nbgen/make_nb18.py`:1244,1269,1353 / `make_nb19.py`:2435's **0.421475** and the notebooks they
+generate; and `scripts/c3/ls_erosion_weights.py`:174's untagged `f_area` column header, which is the
+channel by which the engine-support number entered the corpus. Full register:
+`docs/agents/journal_defect-45-residual.md`.
+
+---
+
+## A3.4 Is C4.3 thereby UNBLOCKED? **NO** — and this amendment is the act that makes the block *dischargeable*, not the act that discharges it
+
+**`docs/47`'s `C4.3-BLOCKED-UNTIL-LS-LANDS` holds.** Four independent grounds, none of which a
+*decision* can discharge, and the honest answer keeps it blocked.
+
+### (1) B1 is landed by **this amendment** — and B1 alone was never sufficient
+
+`docs/47` §6.1 **B1** is *"Land C3.1 — the LS-formulation decision, under `docs/46` frozen, with
+`ls_formulation`, its evidence grade, and the negative-result branch live"*, and §6.2 is explicitly
+*"the contract C4.3 starts under, **once B1–B4 land**"*. **B1 lands here, in the reduced form A3.1.6
+permits**: `ls_formulation`, its grade, the §4.2 outcome, the rescaled α column and the negative
+branch are all live and written. **What B1 does not carry is the default-switch proposal**, because
+ADOPT-SOURCE is not yet exercisable. **B3 and B4 are DISCHARGED**, verified on disk in this pass and
+not taken on trust:
+
+- **B3** — `src/mgb_transport.py`:**908** reads `if not (m <= max_resid)`, the NaN-safe form, with
+  the IEEE-754 comment at :902–907; the NaN regression test is at `tests/test_transport.py`:274,
+  `assert math.isnan(res.ledger["max_node_residual_t"])`. The all-NaN run can no longer publish a
+  false PASS.
+- **B4** — `docs/42` §9's amendment log exists from :616, carrying **A-P1** (§9.2, the fitting set is
+  the **CAL 8**), **A-P2** (§9.3, `21237020` ARRANCAPLUMAS is evaluation-only), **A-P3** (§9.4,
+  deposition `k` FIXED at 0), and **A-P1.1** (§9.5, the power table corrected and the
+  0.0096-vs-0.0104 discrepancy resolved); the §9 card cell at :604 now reads *"THREE, all dated
+  2026-08-11 — A-P1, A-P2, A-P3, plus A-P1.1"*. Neither is re-litigated here.
+
+### (2) **B2, B5 and the §5.5 disclosure have NOT landed**, and none of them is C4.3's to discharge
+
+**Measured on disk in this pass:** `docs/45` §8 at :610–612 still reads ***"Empty at registration"***,
+and `docs/35` §9 carries **§9.1, §9.2 and §9.3 only** — there is no α-box re-registration anywhere.
+
+- **B2** requires the C4.3 gate *"re-express[ed] in Π, or the α box re-register[ed] against the
+  adopted `f_LS` … **Whichever C3.1 returns**"*, and notes that a `docs/35` §9 amendment *"may only
+  be **proposed** by the session that hits the stop"* — so it is **owed to the document owners, not
+  to C4.3**. **Adopting a point does not repair it**: `docs/45` §2.1's box **[2.0, 30.0]** and
+  `docs/35` §6.1's **3.9 / 35.4** are still denominated at `f_LS` = 1, and a **point** moves them
+  just as surely as an interval does (A3.2). That is `docs/47` §5.1's P1 and it is untouched.
+- **B5** (replace the ±38 % Π band — measured ~4× too narrow in log units, with **G12 already
+  firing**, 0.860 ln against ±0.322 ln — and restate the `k` bound as **~10× over 342 km**, not
+  2.12×) is owed **before any C4 number is PRINTED**.
+- **The `docs/47` §5.5 disclosure** — that `docs/45`'s registered objective was already profiled
+  before any fit — is owed as a dated `docs/45` §8 amendment **before C4.3 RUNS**.
+
+**Parallel agents are enacting B2, B5 and the §5.5 disclosure in the same run as this amendment.
+Their landing is stated here as a CONDITION and is NOT claimed as a fact.** A later reader must
+check `docs/45` §8 and `docs/35` §9 themselves; if this amendment and those land in the same commit,
+the condition is satisfied by them and not by this sentence.
+
+### (3) **BRANCH B IS MANDATORY** — and what that means for C4.3's *entry* is substantive, not a formality
+
+`docs/46` §6.3 fires **three times over**, and its §6.1 discriminator is **exact, not a threshold**:
+
+- **B1 fires on `Δ_shape` = 0.1299456916752905 > 0.** §6.1: *"any `Δ_shape` > 0 … Branch B is
+  **MANDATORY**."* The null control for the uniform case Branch A exists for is
+  **2.2204460492503136e-16**, so the measured value is ≈ **5.9e14 ×** one machine epsilon and
+  ≈ **1.3e7 ×** `report_h2e.py`'s named 1e-8 reproduction tolerance; every one of the **thirty**
+  measured readings of the definition lies in **[0.0159907, 0.1638779]**, all > 0, so **the branch
+  is reading-invariant** (`docs/53`, `docs/46` §10 amendment 1).
+- **B2 fires independently**, because ADOPT is unreachable under §6.2 **A3** while the α̂ thresholds
+  are LS-conditional. This is why `docs/47` reached Branch B on its own grounds and why the branch
+  is **over-determined**.
+- **B5 fires** because the freezing of `docs/46` was scheduled, and its read-out states that B5
+  *"continues to hold until"* this enactment amendment exists.
+
+**What "Branch B mandatory" actually implies, worked out rather than glided past:**
+
+1. **It CLOSES Branch A; it does not merely make a provisional C4.3 stricter.** §6.2's six
+   conditions are available *"**only** if `Δ_shape` = 0"*. So **A1**'s PROVISIONAL labelling, **A2**'s
+   run card at `ls_formulation = ours_2026_08`, **A3**'s ADOPT-PENDING ceiling, **A4**'s two α̂ stops
+   (7.54 upper / 2.10 lower), **A5**'s named noise floor and **A6**'s no-rescaling rule are all
+   Branch-A machinery and are **unavailable**. **There is no legal PROVISIONAL C4.3 at all** — the
+   six conditions are **moot rather than satisfiable**.
+2. **No rescaling substitutes for a re-run.** §6.1 mandates the sentence, and it is written here in
+   the required form: ***"the fit is recoverable by rescaling `α̂` if and only if `Δ_shape` = 0
+   exactly; the measured value is 0.1299456916752905, and the re-run is owed."*** Every existing
+   profile of the registered objective — `docs/47` §5.2's rescaled optima and §5.5's whole-box,
+   nine-β profile — is a **LEVEL-only** rescaling of the α axis and is **not** the answer at the
+   adopted LS.
+3. **The residual vector itself changes, so the search must run on the ADOPTED LS FIELD.** Measured
+   (`docs/53` §2, verified on disk this pass at :134, :141, :143): **no CAL station is invariant**;
+   the argmax is **`24037390` CAPITANEJO at |ln| = 0.1299456917** and the smallest of the eight is
+   **`26127010` EL ALAMBRADO AUT at 0.0179854753**; the CAL 8's own `f_s` spread is **×1.250023**.
+   So **every guard statistic must be re-derived on the new residuals** — G4.1's ln `LS̄`
+   coefficient, the per-station residual sd, `k_min`, G12's LOO range and the Π band — and under
+   **A5 as amended** the C4.3 session must **NAME its noise-floor construction**, because *"a
+   minimum detectable coefficient computed against 0.465 is void"*.
+4. **`docs/47` O5 is not merely open but known to be non-trivially open**, and it becomes runnable
+   **only after C3.1 lands, never before**: re-profiling `F_report` on a corrected LS **field**
+   (not axis) is the owed measurement, and the per-station redistribution the rescaling could not
+   model is **real and measured** (±1.287× per-station, `docs/47` §4.4, §6.2 O5).
+5. **`Δ_shape` says nothing about whether any gate passes** (`docs/53` §6 item 2) and **must not be
+   read as detectability** — the LS shape signal remains measured **3.1× below G4.1's power**
+   (`docs/47` §4.4). It is a *sequencing* discriminator, not a finding about shape.
+
+**Branch B is a sequencing mandate, not a permanent veto.** Once the enactment is *exercised* there
+is nothing left to wait for, and the post-enactment C4.3 is a **first run** rather than a **re-run** —
+which is the economy `docs/46` §6.4 measured and offered as information, explicitly **not** as a gate.
+
+### (4) A physical block: **the adopted variant is not a committed product**
+
+`urh_ls2d_variants.csv` has **no `V4_dg` column** and `urh_ls2d.csv` may not be overwritten
+(A3.1.6 item 3). **C4.3 cannot consume a variant that no committed product carries**, and no default
+can be switched by name.
+
+### The contract C4.3 would start under — stated CONDITIONALLY, in order
+
+**Prerequisites, in sequence:** (i) §3.3's missing **stratified report** — slope terciles for every
+variant, and the per-station erosion-weighted `LS̄` as **levels**, not ratios — plus `docs/46` §2.3's
+H-S field clause **(R7)/(R8) items 2–3**; (ii) a durable, **gated `V4_dg` column** in a **new**
+committed product, `urh_ls2d.csv` and `minibacia_ls2d.csv` left untouched; (iii) the `docs/35` §9
+amendment A3.1.3 records as owed; (iv) **B2**, **B5** and the **§5.5 disclosure** as dated `docs/45`
+§8 amendments (B5 before any C4 number is *printed*; §5.5 before C4.3 *runs*); (v) the separate,
+dated **default-switch** act (A3.5.1).
+
+**Then C4.3 enters under `docs/47` §6.2's six items, with item 2 in its POINT branch** — *"unless
+C3.1 collapses it to a point, in which case the adopted point and its grade travel instead"* — so
+what travels with **every** α̂ is `f_LS` = **0.25146** erosion-weighted (area proxy
+**0.2446790094097074**), `1/f_LS` = **3.976775630318937**, **formulation CITED / factor DERIVED /
+LEVEL UNVALIDATED**, and **not** the `[0.25146, 0.43194]` bracket. Item 1: the gate read in Π, or in
+α against a **named, dated `f_LS` in the same table**. Item 3: the corrected Π band, beside *"the
+level is set by 8 stations whose residuals span a factor of 412"*. Item 4: the corrected `k` bound
+with the asserted `SDR = 1.0` claim in `docs/45` §2.3's words. Item 5: all of `docs/45` §2–§6
+imported unchanged, including G9's **66.53 %** disclosure, G6's five reporting elements, G10's
+mandatory *"the calibration determined a level and essentially nothing else"* statement, the five
+not-claims of §5, and the **`docs/23` §13.2 embargo**. Item 6: the §5.5 disclosure in
+`report_C4.json` and in the C4 document. **And the search runs on the ADOPTED LS FIELD — never on a
+rescaling of a surface already seen.**
+
+> **The remaining blockers, listed plainly so nothing is inferred from silence:** §3.3's stratified
+> report (slope terciles absent; per-station `LS̄` only as ratios) · H-S's (R7)/(R8) items 2–3 · the
+> missing committed `V4_dg` column · the `docs/35` §9 amendment of A3.1.3 · **B2** · **B5** · the
+> **§5.5** disclosure · and Branch B's own consequence, that the fit must be a **first run on the
+> adopted field** with every guard statistic re-derived.
+
+---
+
+## A3.5 What this enactment does **NOT** do
+
+### A3.5.1 **No engine default moves here.** The owner, and the trigger, named
+
+**OWNER: the C3.1 owner** — in `docs/46` §4.2's ADOPT-SOURCE licence column, *"whoever owns
+`scripts/c3/ls2d.py` and `docs/37`"*. `docs/46` §9's registration card pins it and grounds it:
+*"Enactment owner — `docs/37` §A3, dated, written by the C3.1 owner (`docs/51` §5.3; `docs/37` A2.2
+assigns the LS-shape decision to C3.1 by name, and `scripts/c3/ls2d.py` + `data/processed/urh_ls2d.csv`
+were delivered under C3.1 by commit `5eaabf5`)."* **Not** `docs/45`'s owner, **not** `docs/46`'s,
+**not** C4 — `docs/42` **G4.2** keeps `ls2d_*` out of C4's hands and `docs/46` §5 lists the committed
+LS products and `ls2d.py`'s defaults as immovable — and **not** any read-only panel.
+
+**TRIGGER: two separately dated acts, and the distinction is the whole point.**
+
+| act | what it is | status |
+|---|---|---|
+| **ACT 1 — the enactment** | **THIS AMENDMENT.** A **WRITTEN** amendment carrying `ls_formulation` and its grade, the §4.2 outcome, the α band rescaled per item 3, every prior variant reachable by name, §1's table and §4 candidate 0 corrected off *"2.37× – 3.00×"*, and §4.4 item 1's true ordering sentence. **What ADOPT-SOURCE licenses is only *"proposing* the adopted variant as the engine default in a **separate**, dated amendment"** — **so act 1 proposes; it flips nothing.** | **DONE, 2026-08-12** — and, because A3.1.6's three deliverables are outstanding, **this act does not even make the proposal**. It records the outcome. |
+| **ACT 2 — the default switch** | `ls2d_column` moved from `"ls2d_hs"` to the adopted `V4_dg` column, **and** `urh_ls2d` re-pointed at the **new** committed product — a **TWO-PARAMETER** change, as its own dated act by the same owner. `docs/46` §5's committed-LS-products row is explicit: *"the default switches only through §4.2's separate dated amendment."* | **NOT DONE, and it MAY NOT PRECEDE ACT 1.** Its preconditions, verified read-only on disk this pass: `src/mgb_sediment.py`'s `load_geometry` defaults are `urh_ls2d = "urh_ls2d.csv"` (:863) and `ls2d_column = "ls2d_hs"` (:757, :801, :864); **`V4_dg` exists in NEITHER committed file**; `urh_ls2d.csv` and `minibacia_ls2d.csv` **may not be overwritten** (§3.1). **It cannot even be drafted** until the column is materialised. |
+
+**ENACTMENT IS A WRITTEN AMENDMENT, NOT A CODE EDIT.** A code change to a default that is not
+preceded by act 1 and separately dated as act 2 is **not** enactment — it is an **unrecorded default
+switch**, which is exactly what `docs/46` §5 and §9's *"no engine default moved"* card exist to make
+detectable.
+
+**What the switch may NOT drag with it, when it eventually happens:** `ls2d_aggregation` and
+`ls2d_resolution` stay at factor **1.000** (`area_weighted_mean`, `native_90m`) — `docs/42` **G4.2**
+forbids using them to move the level, and `docs/46` §3.2 forbids `per_cell_median` for any variant
+in any table. `cp_revision`, `volume_convention`, `k_unit_system`, the **H2E** parameters, α, β, `P`
+and `FG` do **not** move (`docs/46` §5). `data/processed/urh_ls2d.csv`, `minibacia_ls2d.csv`,
+`urh_ls2d_variants.csv` and everything in `sim_calibrated_v2/` stay **read-only**. **And the switch
+changes NO grade:** after it, the LS level is **still UNVALIDATED** and must be printed that way
+(`docs/42` G4.2, `docs/46` §9.2).
+
+**Until act 2, the engine keeps running `V0` with the discrepancy DECLARED.** That is **the interim
+engine state, not an outcome**, and `V0` is emphatically **not validated by having survived**
+(`docs/46` §7.3).
+
+**Every prior variant stays reachable BY NAME** (`docs/46` §3.1): `V0` `ours_2026_08` · `V1`
+`lim_pixel` · `V2a` `m_cap05` · `V2b` `m_step_eq14` · `V3` `s_ws78` · `V4` `buarque_2015` (the
+hybrid) · `V4'` `buarque_2015_cap` (whose `min(m, 0.5)` may never be graded CITED) · **`V4_dg`
+`buarque_2015_dg` (adopted)** · `V5` `L_dg96_fd`. **Nothing is retired by this adoption**, and
+`V4`'s ×0.43194 row stays reproducible precisely because `docs/35` §9.3.1, §4 candidate 0 and
+`docs/43` §1.4 quote it.
+
+### A3.5.2 What A3 does **NOT** conclude — from `docs/46` §8.2 and §9.2
+
+1. **It does NOT validate the LS level.** `docs/42` **G4.2** stands: the level is **UNVALIDATED** and
+   must be printed that way. **CITED is not validated** (A1.6 item 3); **fitted is not validated
+   either** (`docs/43` §3.3 item 1). Raising four levers to CITED raises their **provenance** grade
+   and nothing else.
+2. **It does NOT close C3, and the verdict line of this document is unchanged: OPEN.** Clause 2 of
+   A1.1's conjunction needs the ***shape*** decision, and clauses **3** and **4″** are untouched by
+   anything here (`docs/43` §2). **Settling LS is NECESSARY AND NOT SUFFICIENT** (`docs/46` §8.2
+   item 6). Concretely, clause 2 remains NOT MET on three separate counts: the outcome is recorded
+   and not **exercised** (A3.1.6); the engine default has not **moved** (A3.5.1); and the **shape**
+   defect A2.2 classifies is not repaired — the adopted field is not in the engine, H-S's field
+   clause (R7)/(R8) items 2–3 have never been read out, and G4.1 is measured **3.1× underpowered**
+   to see the shape at all.
+3. **It does NOT say the LS *shape* is right**, on any non-detection: a G4.1 non-detection exonerates
+   the field's shape and **says nothing about its level**, and a non-detection at unreported power
+   says nothing at all (`docs/46` §8.2 item 5).
+4. **It says NOTHING about the `C` level, the `K` unit system, the volume convention, `P` or `FG`.**
+   They are the same parameter written differently; an LS result that appeared to speak about one of
+   them would be speaking about **Π** (`docs/46` §8.2 item 4, §8.1).
+5. **It says NOTHING about whether the model is under- or over-erosive.** **A1.9 WITHDREW the
+   direction**: the C3 residual's direction is **UNKNOWN** (2.27× low … 1.49× high), and the
+   *"~2× under-erosive"* claim is **withdrawn**. No LS variant may be argued for or against by which
+   way it moves the load (`docs/46` §8.2 item 3) — which is exactly why A3.3.1 declines to re-derive
+   the struck ADR and Leg-A numbers rather than correcting them.
+6. **It settles NOTHING about α = 11.8's like-for-likeness with any 2-D contributing-area LS.**
+   **NOT SETTLED, and no band is offered** (`docs/46` §1.0 residue 3, §9.2; `docs/47` §4.2 item 6,
+   O4). It bounds every number in A3.2 from above.
+7. **It says NOTHING about the 66.53 % of the model's erosion upstream of no usable SSC station**, or
+   about the **801.1 km** of channel below the outlet-most one (`docs/46` §8.2 item 7).
+8. **It does NOT unblock C4.3** (A3.4), and **it does not license re-fitting anything to the new
+   level without `docs/46` §6** (§4.2's ADOPT-SOURCE row, final column).
+
+---
+
+## A3.6 Direction disclosure, and what was NOT done
+
+**Measured by me in this pass, read-only, and not carried from any summary or panel:**
+
+- the three live superseded-number sites this document still carried at §4 candidate 0's *"DO NOT
+  stack"* paragraph, A1.5's *"What would close C3"* paragraph, and §4 candidate 0's interaction
+  identity (A3.3.1's closing block) — found by grep, corrected here;
+- the whole of A3.2's arithmetic, recomputed at full precision with `python3.10` (A3.8), including
+  the erosion-weighted lever product, where **I first wrote the wrong number and caught it by
+  measuring**: `0.362435 × 0.517480 × 1.694054 = 0.3177246791318452` is **the cap**, while the
+  product that pairs with the registered joint/product ×1.347608646050708 uses the **eq.-14 step**,
+  `0.362435 × 0.522043 × 1.694054 = 0.3205262902296241`. Recorded because the standing rule in this
+  project is *measure before asserting*, and this is a live instance of it;
+- **B3** at `src/mgb_transport.py`:908 and `tests/test_transport.py`:274, and **B4** at `docs/42`
+  §9.1–§9.6 with the §9 card cell at :604 — both **DISCHARGED**;
+- `docs/45` §8 at :610–612 still **"Empty at registration"**, and `docs/35` §9 carrying §9.1/§9.2/§9.3
+  only — so **B2, B5 and the §5.5 disclosure had NOT landed at the time of my read**;
+- `docs/35` §9.3.2 item 1 at :710–715 read verbatim — the **three-lever** enumeration that grounds
+  A3.1.3's supremacy objection;
+- `src/mgb_sediment.py`'s `ls2d_column = "ls2d_hs"` (:757, :801, :864) and `urh_ls2d =
+  "urh_ls2d.csv"` (:863); `urh_ls2d_variants.csv`'s header (**no `V4_dg`**) and `urh_ls2d.csv`'s
+  four columns;
+- `data/raw/refs/buarque2015.pdf` at **9,646,521 bytes**, sha256
+  `3047624f641b335900eb3bc2191308b03a22148bd30aeb7227031bf42e1c0037` — **MATCHES** `docs/38` §9.1;
+- **slope terciles CONFIRMED ABSENT** — a grep across `docs/`, `scripts/` and `src/` returns only
+  documents saying they are owed;
+- `docs/47`:369–371's `formPRESED.exe` `S`-user-choice finding, and `docs/53`:23–24/:134/:141/:143's
+  `Δ_shape`, argmax and CAL-8 spread.
+
+**Carried and cited, not re-derived here:** the engine re-runs of `docs/47` §4.3 (0.25146, 0.43194,
+75.3235, 129.3840); the lever factors of `docs/49` and `docs/50`; `docs/46` §10 amendment 1's second
+erosion-weighted reproduction; the transcriptions of Buarque pp. 47, 48, 94, 98, 121, which three
+independent panellists each re-read from the hash-matching PDF this run; the `docs/47` §4.1 findings
+and §4.4 power numbers; the 153-passed test-suite state; and `Δ_shape`'s thirty-reading range.
+
+**What was NOT done:**
+
+- **No frozen artifact was opened for writing.** `docs/33`, `docs/35`, `docs/42`, `docs/45`,
+  `docs/46` and `docs/51` were **read only**. `data/processed/urh_ls2d.csv`,
+  `minibacia_ls2d.csv`, `urh_ls2d_variants.csv` and everything in
+  `data/processed/sim_calibrated_v2/` were **read only**.
+- **No engine default moved.** `ls2d_column`, `urh_ls2d`, `ls2d_aggregation`, `ls2d_resolution`,
+  `cp_revision`, `volume_convention`, `k_unit_system`, α, β and the H2E parameters are all
+  **untouched**. No file under `src/` or `scripts/` was edited.
+- **No fit, no calibration, no LS pass was run. No α̂ was produced or quoted, provisional or
+  otherwise. `KGE_ln` was not evaluated against the `docs/45` §2.1 box.**
+- **No git command was run.** The orchestrating session commits.
+- **No new band was introduced and no materiality bar was reconstructed.** `docs/52`'s striking
+  stands; nothing here compares a difference to a threshold.
+- **Gauge-referenced t/km²/yr yields remain embargoed** (`docs/23` §13.2). Every load in this
+  amendment is **absolute flux**.
+
+**Files written by this amendment:** `docs/37_c3_closure.md` (this section, plus A3.3's in-place
+corrections) and `docs/agents/journal_a3-enactment.md`. **Nothing else.**
+
+**A panel was used and is disclosed as what it is.** Three independent **read-only** panellists each
+derived the §4.2 outcome from the frozen rule before this amendment was written
+(`docs/agents/journal_panel-fidelity.md`, `journal_panel-negative.md`,
+`journal_panel-posthoc.md`). **All three returned ADOPT-SOURCE at `buarque_2015_dg`, determined but
+not exercisable, and C4.3 NOT unblocked.** They are **evidence, not instructions**, and two
+adjudications were needed. **First**, they split on whether §4.2 item 3's rescaling obligation
+attaches at all to a *default* rather than a *deviation*; resolved in A3.2's blockquote, against the
+narrow reading, on §4.2's own licence cell and §7.3 item 5. **Second, one of the three omitted the
+`docs/35` supremacy objection entirely** — the strongest objection to the adopted **value** on the
+record — and it is adjudicated in **A3.1.3** with the branch under which this amendment would be the
+bug written out in full. **Where all three were wrong:** none named the three live superseded-number
+sites of A3.3.1's closing block, which were found by grep in this pass. Convergence of three
+panellists and two prior sessions on one outcome is **persistence, not reproduction**, and is not
+counted as evidence for the outcome.
+
+---
+
+## A3.7 Cross-references — what is owed, to which owner, so a reader can audit whether the enactment travelled
+
+**This amendment enacts NONE of these. Each is recorded as owed, dated, and to be applied by its own
+owner as a dated correction — never as a silent edit** (`docs/46` §7.3).
+
+| owed to | what | source of the obligation |
+|---|---|---|
+| **`docs/35` §9** (amendment slot) | **(a)** the ruling A3.1.3 asks for: that §9.3.2 item 1's **three-lever** enumeration is superseded by eq. 13's reading — **without it, `docs/35` wins on its literal text and this amendment's outcome becomes NEGATIVE — UNRESOLVED**; **(b)** §9.3.3's expected consequence **re-based** from the prior `C` to 299.5387088405831 Mt/yr; **(c)** §9.3.1's *"his eq. 14"* mislabel on the ×0.502 row (A3.3.2); **(d)** §9.3.2 item 3's *"expected ≈ 2.0 – 9.9, hard stop ≈ 11.8 – 14.9"* re-derived to A3.2's numbers; **(e)** B2's α-box re-registration, which may only be **PROPOSED** by the session that hits the stop (`docs/45` §6.1) | A3.1.3; `docs/46` §7.3 items 1–3; `docs/47` §6.1 B2 |
+| **`docs/45` §8** (amendment slot, **"Empty at registration"** at the time of my read) | **B2** (the gate re-expressed in Π, or the α box re-registered against the adopted `f_LS`); **B5** (the ±38 % Π band replaced; the `k` bound restated as ~10× over 342 km); the **§5.5 pre-fit-profile disclosure**; and §2.1's superseded *"2.37× – 3.00×"* derivation re-derived | `docs/47` §6.1 B2/B5, §5.5; `docs/46` §7.3 item 3 |
+| **`docs/46` §10** (amendment slot; §1–§9 frozen) | the **identity defect** below; and the closing note's own list — H-S's (R7)/(R8) items 2–3 and §3.3's stratified report — before ADOPT-SOURCE is **exercised** | A3.1.6; below |
+| **`docs/51`** | the same identity defect at §2.3 | below |
+| **`docs/42` §9** | **nothing further from this amendment.** B4 is **DISCHARGED** (A3.4), verified on disk. `docs/42` **G4.1/G4.2** are unchanged by anything here | `docs/46` §7.3 item 4, read out |
+| **`docs/43`** | §1.4's *"his eq. 14"* mislabel (A3.3.2); and `docs/47` §2.5 C1's correction to §3.4 — 6.83 – 8.73 is at the **prior** `C`, and at the adopted `C` the deposition-free band is 5.67 – 7.25 | `docs/46` §7.3 item 2; `docs/47` §2.5 |
+| **`src/nbgen/make_nb18.py`, `make_nb19.py`** | the same *"his eq. 14"* mislabel, and the superseded bracket wherever it is printed into a notebook | `docs/46` §7.3 items 2–3 |
+| **whoever materialises the adopted field** | a durable, **gated `V4_dg` column** in a **NEW** committed product — `urh_ls2d.csv` and `minibacia_ls2d.csv` **not** overwritten (`docs/46` §3.1, §5) — which is simultaneously the fix for §3.1's *"reachable by name"* failure, the precondition of act 2, and the route to a **third** erosion-weighted reproduction of the endpoint (`docs/51` §7 item 7) | A3.1.6 item 3 |
+| **C4.3's session** | `docs/47` §6.2's six items, **item 2 in its POINT branch**, on the **adopted LS field** and never on a rescaling; A5's **named** noise-floor construction | A3.4 |
+
+> **A DEFECT IN FILES THIS AMENDMENT DOES NOT OWN — REPORTED, NOT FIXED.** `docs/46` §1.0 (at
+> `docs/46`:127) and `docs/51` §2.3 both print the identity
+> `ln(0.43194 / 0.25146) = 0.5410 = −ln 0.580685`. **Measured:**
+> `−ln(0.580685) = 0.543546837831505` against `ln(0.43194/0.25146) = 0.5410027585442313` — a gap of
+> **0.0025440792872737372 ln** — and `exp(−0.5410027585442313) = 0.5821641894707599`, so **0.5410
+> pairs with 0.58216, not 0.580685**. **Both constituents are separately correct** — 0.580685 is
+> `docs/50`'s measured in-formulation `L`-form ratio, and 0.5410 is the ln ratio of the two 5-s.f.
+> endpoints — but **the IDENTITY as written does not hold**. It is **immaterial to every verdict in
+> this amendment and to every verdict in either source document**; the two quantities are simply
+> not the same number and should not be joined by an `=`. Owed to `docs/46` §10 and to `docs/51`.
+
+**Also still open and NOT fixed by any outcome of this amendment:** `docs/47` **O4** — α = 11.8's
+like-for-likeness with any 2-D contributing-area LS is **NOT SETTLED, no band offered**, and it
+bounds every rescaled number from above; **O2** — which `S` function is valid above tan θ 0.50,
+where 11.26 % of cells carry **35.5 %** of the basin's area-weighted `S` signal and **no** primary
+source validates **any** `S` function; **O3** — the exact cap value, which the literature calls
+*"arbitrary"* in print; **O1** — Desmet & Govers (1996) and Fagundes et al. (2026) **unobtained**;
+**O5** — `F_report` re-profiled on a corrected LS **field**, runnable only after C3.1 lands; and the
+**governance gap** A3.1.6 names, that §4.2's table contains no row for *"determined but not
+exercisable"*.
+
+---
+
+## A3.8 Reproduction
+
+Every number this amendment prints, recomputed read-only. Nothing below writes, fits, or runs the
+engine.
+
+```
+python3.10 -c "
+import math
+f = 0.25146                 # registered f_ero(V4_dg), docs/47 §4.3 / docs/46 §1.0, §3.1
+fe = 0.2514648985839397     # 2nd independent erosion-weighted reproduction, docs/46 §10 amd 1
+fa = 0.2446790094097074     # area-weighted PROXY, docs/50 (never overrides f_ero, docs/46 §3.3)
+fh = 0.43194                # the documented HYBRID V4 (source's 3 levers + our L)
+for x in (3.9, 5.9, 11.8, 23.6, 35.4, 2.0, 30.0, 3.40):
+    print(x, repr(x*f), repr(x*fe), repr(x*fa))
+print(repr(1/f), repr(1/fe), repr(1/fa), repr(math.log(f)))
+print(repr(11.8*fh), repr(35.4*fh), repr(1/fh))
+print(repr(f/fa), repr(math.log(fh/f)), repr(fh/f))
+print(repr(299.5387088405831*fe), repr(129.3840/299.5387088405831))
+print(repr(0.431944/(0.362435*0.522043*1.694054)))
+print(repr(0.362435*0.522043*1.694054), repr(0.362435*0.517480*1.694054))
+print(repr(39.812/9.741), repr(-math.log(0.580685)), repr(math.exp(-0.5410027585442313)))
+"
+
+3.9  f 0.9806940000000001  exact 0.9807131044773649  area 0.9542481366978589   <- lower hard stop
+5.9  f 1.4836140000000002  exact 1.4836429016452444  area 1.443606155517274    <- band, low edge
+11.8 f 2.9672280000000004  exact 2.9672858032904887  area 2.887212311034548    <- ALPHA REFERENCE
+23.6 f 5.934456000000001   exact 5.9345716065809775  area 5.774424622069096    <- band, high edge
+35.4 f 8.901684            exact 8.901857409871466   area 8.661636933103642    <- UPPER HARD STOP
+2.0  f 0.50292             exact 0.5029297971678794  area 0.4893580188194148   <- docs/45 box floor
+30.0 f 7.543800000000001   exact 7.543946957518192   area 7.3403702822912225   <- docs/45 box ceil
+3.40 f 0.8549640000000001                                                      <- 5%-of-box rail
+1/f  3.976775630318937   1/fe 3.9766981619750683   1/fa 4.08698728351287
+ln f -1.3804713478171018
+hybrid V4:  11.8f 5.096892   35.4f 15.290676   1/f 2.315136361531694
+proxy bias f_ero/f_area          1.0277138223121463      (docs/47 §3.1 R7 independently 1.0278)
+L-form lever ln(0.43194/0.25146) 0.5410027585442313   ratio 1.7177284657599616
+basin load 299.5387088405831*fe  75.32347104056149 Mt/yr   (absolute flux; docs/23 §13.2 embargo)
+implied f_ero of the 129.3840 re-run  0.43194417342854735   ("0.43194" is its 5 s.f. rounding)
+joint / product of single levers 1.347608646050708   <- NEVER quote the product as the joint
+  eq.-14 STEP product 0.362435*0.522043*1.694054 = 0.3205262902296241   (pairs with x1.34762)
+  CAP product         0.362435*0.517480*1.694054 = 0.3177246791318452
+docs/46 §4.2 item 3's literal area rescaler 39.812/9.741 = 4.087054717174828 (= 1/fa to 5 s.f.)
+REPORTED DEFECT, not fixed:  -ln(0.580685) = 0.543546837831505
+                             exp(-0.5410027585442313) = 0.5821641894707599
+
+# provenance and state checks, read-only
+sha256sum data/raw/refs/buarque2015.pdf
+  3047624f641b335900eb3bc2191308b03a22148bd30aeb7227031bf42e1c0037   9,646,521 bytes  -> MATCHES docs/38 §9.1
+head -1 data/processed/urh_ls2d_variants.csv     -> no V4_dg column (A3.1.6 item 3)
+head -1 data/processed/urh_ls2d.csv              -> ls2d, ls2d_hs, ls2d_mb86, ls2d_dg96 only
+grep -n "if not (m <= max_resid)" src/mgb_transport.py       -> :908       B3 DISCHARGED
+grep -n "isnan" tests/test_transport.py                     -> :274       B3 test present
+grep -n "A-P1\|A-P2\|A-P3" docs/42_*.md                      -> §9.1-§9.6 B4 DISCHARGED
+grep -n "Empty at registration" docs/45_*.md                -> :612       B2/B5/§5.5 NOT landed
+grep -rn "tercile" docs/ scripts/ src/   -> only documents saying they are OWED; NO artifact
+
+Delta_shape = 0.1299456916752905 (docs/53; argmax 24037390 CAPITANEJO; smallest CAL station
+  26127010 EL ALAMBRADO AUT 0.0179854753; no CAL station invariant; CAL 8 f_s spread x1.250023)
+  => Branch B MANDATORY (docs/46 §6.3 B1), and B2 makes it mandatory regardless.
+
+Test suite: 153 passed, 1 warning (measured 2026-08-12; unchanged by this amendment, which
+  edits no code). No fit was run; no alpha-hat exists.
+```
