@@ -340,9 +340,14 @@ land-class fractions, $K$, $C$, $P$, $LS$): the `data/processed/*.csv` inventory
 Period 2009-01-01 to 2018-12-31.""")
 
 code(r"""t0 = time.time()
-GEOM = sed.load_geometry()                      # adopted C (cited_central_2026_08_11)
-GEOM_PRIOR = sed.load_geometry(cp_revision='prior_2026_08_11')
-DRV = sed.load_drivers()                        # READ-ONLY on the frozen npz
+DRV = sed.load_drivers(FROZEN / 'h2e_drivers.npz')   # READ-ONLY on the frozen npz
+# mini_ids is passed so geometry rows and driver columns share ONE order by construction.
+# They happen to coincide here (both ascending, 0 differing positions, measured), but a
+# positional pairing that is only accidentally right is a silent spatial scramble waiting
+# for the first reordering upstream - so it is asserted, not assumed.  Same as nb18.
+GEOM = sed.load_geometry(PROC, mini_ids=DRV.mini_ids)    # adopted C (cited_central_2026_08_11)
+GEOM_PRIOR = sed.load_geometry(PROC, mini_ids=DRV.mini_ids,
+                               cp_revision='prior_2026_08_11')
 NDAYS = DRV.qsur_mm.shape[0]
 YEARS = NDAYS / 365.25
 print(f'drivers  {DRV.qsur_mm.shape[0]} days x {DRV.qsur_mm.shape[1]} minibacias  '

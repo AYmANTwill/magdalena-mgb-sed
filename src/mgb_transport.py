@@ -199,7 +199,14 @@ from typing import Optional, Sequence
 
 import numpy as np
 
+# Resolved from this file, not the caller's cwd - see mgb_sediment.DEFAULT_PROCESSED_DIR.
+DEFAULT_TOPOLOGY_PATH = (
+    pathlib.Path(__file__).resolve().parent.parent
+    / "data" / "processed" / "model_inputs_v2" / "topology.npz"
+)
+
 __all__ = [
+    "DEFAULT_TOPOLOGY_PATH",
     "DT_DAYS",
     "DEP_MODES",
     "DEFAULT_DEP_MODE",
@@ -412,7 +419,7 @@ def build_network(ids, downstream_idx, reach_km, own_area_km2, upstream_area_km2
     )
 
 
-def load_network(path="data/processed/model_inputs_v2/topology.npz",
+def load_network(path=DEFAULT_TOPOLOGY_PATH,
                  *, mini_ids: Optional[Sequence[int]] = None) -> ReachNetwork:
     """Read the reach network from the model-inputs bundle.
 

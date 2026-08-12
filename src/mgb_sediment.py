@@ -444,7 +444,15 @@ from typing import Optional, Sequence
 
 import numpy as np
 
+# Resolved from this file, never from the caller's cwd: nbconvert runs a notebook's kernel in
+# notebooks/, so a relative "data/processed" default silently becomes notebooks/data/processed.
+_REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
+DEFAULT_PROCESSED_DIR = _REPO_ROOT / "data" / "processed"
+DEFAULT_DRIVERS_PATH = DEFAULT_PROCESSED_DIR / "sim_calibrated_v2" / "h2e_drivers.npz"
+
 __all__ = [
+    "DEFAULT_PROCESSED_DIR",
+    "DEFAULT_DRIVERS_PATH",
     "DT_DAYS",
     "COP90_PIXEL_AREA_KM2",
     "WILLIAMS_ALPHA",
@@ -845,7 +853,7 @@ def build_geometry(
 
 
 def load_geometry(
-    processed_dir="data/processed",
+    processed_dir=DEFAULT_PROCESSED_DIR,
     *,
     minibacias: str = "minibacias.csv",
     urh_fractions: str = "urh_fractions.csv",
@@ -1285,7 +1293,7 @@ class SedDrivers:
 
 
 def load_drivers(
-    path="data/processed/sim_calibrated_v2/h2e_drivers.npz",
+    path=DEFAULT_DRIVERS_PATH,
     *,
     qsur_field: str = "qsur_rel_mm",
 ) -> SedDrivers:
