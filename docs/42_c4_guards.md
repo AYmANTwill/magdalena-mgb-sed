@@ -597,11 +597,11 @@ What survives and still does useful work:
 | Guards | **G1–G9**, §6; every one with a threshold and a failure action; coverage table §7 |
 | Registered yardsticks | σ_r = **0.465 ln** (estimator disagreement, 32 station-windows); `b_obs` between-station IQR = **0.464**; pair-σ = **0.658 ln** |
 | Registered primary estimator | (b) rating flux on all days; (a) reported, non-deciding; **exception G2.2 runs on (a)** |
-| Registered station sets | CAL 13 (`docs/32` §R6 tributary set) for fitting; **all 18 for every residual-structure guard**, the 5 evaluation stations scored and never fitted |
+| Registered station sets | CAL 13 (`docs/32` §R6 tributary set) for fitting; **all 18 for every residual-structure guard**, the 5 evaluation stations scored and never fitted — ⚠ **the fitting set is SUPERSEDED by amendment A-P1 (§9.2): it is the CAL 8.** The all-18 clause and the never-fit rule are **unchanged** and are re-affirmed by A-P2 (§9.3) |
 | Measured before registration | `Lw` per station (§4.1); power k_min (§4.2); land-class erosion shares (§4.4); unobserved fraction (§4.5); exponent spread (§4.3) — all from read-only reads of `topology.npz`, `_c1_geom.csv`, `urh_*.csv`, the C2 artifacts, and one scratchpad run of `src/mgb_sediment.py` at adopted defaults (248.696 Mt/yr, ledger `exact = True`) |
 | Not evaluable, and why | **above/below the Momposina** — all 18 usable SSC stations lie upstream of the Cauca–Magdalena confluence (`docs/34` §4.2); 801.1 km of channel and 63.9 % of gross erosion lie below the outlet-most station |
 | Sources of every number | `docs/32` §R6 (station classification), `docs/33` §7.3–§7.5 (peak ratios), `docs/34` §3.1/§4.2/§5.1 (observed contrast, nesting, anchors), `docs/35` §5–§6 + §9.2 (proxy, bias, conventions), `docs/37` §2–§5 (the re-run, the residuals, the blinded guard), `docs/23` §13.2 (the embargo) |
-| Amendments | none |
+| Amendments | ⚠ **THREE, all dated 2026-08-11 — A-P1, A-P2, A-P3, plus A-P1.1 (the power-table correction P1 requires). See §9.1–§9.6 below.** This cell read `none` until 2026-08-11 while C4 was already under way; that gap is the audit-trail defect `docs/47` §2.4 (D4) recorded, and §9.1 states plainly that the transcription is late |
 
 **Disclosure, per the fix protocol.** No frozen artifact was modified:
 `sim_calibrated_v2/{h2e_drivers.npz, parameters_H2E.csv, q_gauge_H2E.npz}` were opened
@@ -610,3 +610,223 @@ repository. No calibration was launched. Nothing is backdated. `docs/35` was not
 document cross-references it and states in §8.1 exactly which of its clauses survive. C3 remains
 **OPEN** (`docs/37`) and this document does not close it — it registers the conditions under
 which C4 may proceed while C3 is open, alongside `docs/37` §5's five prohibitions.
+
+---
+
+## 9.1 — Amendment log: opened 2026-08-11, and it is late
+
+**Written by the `debt-b4-transcription` agent; process record
+`docs/agents/journal_debt-b4-transcription.md`.** This block is the amendment slot §9 reserved on
+2026-08-11 ("**Amendments go in §9, dated, with a reason**", §0). It is the **only** part of this
+document this pass wrote, apart from the two pointer cells in §9's table above, whose original
+text is preserved verbatim beside the pointer. **No threshold in §5 or §6 is altered. No number in
+§1–§8 is edited or deleted.** §4.2's body still prints the number A-P1.1 corrects; see §9.6 F1.
+
+**The lateness is recorded, not smoothed.** `docs/43` §3.1 declared P1/P2/P3 **blocking
+preconditions on C4's start**, to be transcribed here "before C4 begins". They were not. C4 began
+anyway: `1e0843c` (C4.1 channel transport), `865f674` (C4.2, `docs/45` frozen), `831bd0a` /
+`02e7e95` (nb19 written and executed), `608a39e` ("tracker: C4 is under way"). Until this entry,
+§9 read `Amendments | none` and `Registered station sets | CAL 13`.
+
+**What was and was not at risk.** The **substance** was discharged on time: `docs/45` (FROZEN
+2026-08-11) registered the same three decisions in its own frozen §2.2, §2.4 and §2.3, and
+recorded in its §0 that the `docs/42` §9 transcription "remains owed". So no fit ran under the
+superseded rules. What was broken was the **audit trail**: a reader opening this document — the
+one `docs/37` A1.6 and `docs/45` §1.1 both say C4 is held to — was given a superseded fit set and
+an uncorrected power table with no amendment note. That is `docs/47` §2.4's finding **D4**, and
+this block closes it.
+
+---
+
+## 9.2 — AMENDMENT A-P1 · 2026-08-11 · the fitting set is the **CAL 8**, not the CAL 13
+
+**Source:** `docs/43` §3.1 **P1**, measured by lens 3 (`docs/agents/journal_adj-c4-feasibility.md`).
+**Discharged in substance by** `docs/45` §0 and §2.2 (frozen 2026-08-11).
+**Reason:** 5 of the 13 CAL stations have **no paired SSC + observed-Q day** in the registered CAL
+window 2012–14. A station that cannot contribute a single scored day is not a fit point.
+
+**The 8 that survive all four filters** — this is the fit set:
+`23127010` BORBUR-AUT · `22017010` BOCAS · `22017030` BOCAS · `24037390` CAPITANEJO ·
+`26137110` BANANERA LA 6-909 · `26127010` EL ALAMBRADO AUT · `24027030` NEMIZAQUE ·
+`21197010` EL PROFUNDO.
+
+**The 5 lost, each for a hard record-window reason, named so the loss cannot be re-litigated:**
+
+| station | reason |
+|---|---|
+| `23087210` CANTERAS | zero SSC before 2015 |
+| `26167060` PAILA LA | zero SSC before 2015 |
+| `21147030` CARRASPOSO | zero SSC before 2015 |
+| `22057090` BOCATOMA TRIANGULO | 619 CAL SSC days, but observed Q ends 2009-03-19 |
+| `26107130` MATEGUADUA | neither |
+
+**Measured consequences, carried from lens 3 and not recomputed here:** fitted area falls
+**10.1 % → 5.4 %** of the basin (13,862 km²); supported free parameters fall **3 → 2**
+(`docs/45` §2.2); joint-regression residual df on the fit set = **4**; composition design
+condition number **5,682** (basin-total form still **inf**, §3.1 unchanged); only **1** of §4.1's
+3 claimed CAL–CAL nested pairs survives (`22017030` → `22017010`, 39.9 km).
+
+> **NOT AMENDED by A-P1, and re-affirmed:** *"**all 18** for every residual-structure guard, the 5
+> evaluation stations scored and never fitted."* A-P1 changes **only** the set that is **fitted**.
+> **G1.2 still runs on all 18 and keeps `k_min` = 0.00216 /km.** Every threshold in §6 is untouched.
+
+---
+
+## 9.3 — AMENDMENT A-P2 · 2026-08-11 · `21237020` ARRANCAPLUMAS is EVALUATION-ONLY
+
+**Source:** `docs/43` §3.1 **P2**, which required the `docs/31` §C4.1 ↔ `docs/42` §4.2/§9 conflict
+be decided **in writing, either way, before a fit exists**. **Decided in** `docs/45` §2.4
+(process record `docs/agents/journal_c42-prereg.md` D6), **for this document**:
+
+> **`21237020` ARRANCAPLUMAS is an EVALUATION station. It is scored and never fitted.** So are
+> `26017060` PUENTE ARAGÓN, `26017020` JULUMITO, `26167070` IRRA and `26207080` BOLOMBOLO.
+
+This **confirms** §9's existing never-fit rule against `docs/31` §C4.1's permission; the conflict is
+resolved in favour of this document. Reasons, recorded before the decision entered `docs/45`:
+(1) admitting it would relax a frozen registration to gain power **after** the power had been
+measured — the post-hoc move this project forbids; (2) it is the **only Magdalena-trunk SSC
+station in the network** (`docs/32` §R6) and is worth more as the single independent trunk check;
+(3) the entire cost falls on **fitting `k`**, which A-P3 does not do.
+
+**The cost, stated and not hidden:** fitted area stays **5.4 %** instead of 25.1 %; the fit set's
+own `k_min` stays **0.02092 /km** instead of **0.00303 /km** — a factor **6.9** in deposition
+detectability *on the fit set*. Both figures are recomputed and confirmed in §9.5.
+
+---
+
+## 9.4 — AMENDMENT A-P3 · 2026-08-11 · deposition `k` is FIXED at 0, reported as a bound; **2 free + 1 fixed**
+
+**Source:** `docs/43` §3.1 **P3**. **Discharged in substance by** `docs/45` §2.3.
+**Reason:** `k` is **not identifiable on the achievable fit set** (`k_min` 0.02092 /km over its own
+60.4 km ⇒ only a sink stronger than **3.54×** would be detectable). Reporting a fitted `k` would be
+reporting noise with a decimal point.
+
+- **`k` = 0.0 /km, FIXED and not fitted** — `TransportParams.k_dep = 0.0`, `dep_mode = 'per_km'`,
+  `tau_channel_days = 0.0`, `SedParams.tau_delivery_days = 0` (`docs/45` §2.3, against
+  `src/mgb_transport.py` from C4.1).
+- **Registered parameter count: 2 free (Π level via α, β) + 1 fixed-and-reported-as-a-bound.**
+  `docs/31` §C4.2's "three free" is superseded.
+- **`docs/42` G5 is satisfied by option 2, not option 1.** `k_dep` is a *named* parameter, so the
+  machinery for option 1 exists, but at `k_dep` = 0 the sink is **trivial** and option 1 requires a
+  non-trivial one. `docs/45` §2.3 therefore states the words G5 demands:
+  **"This model asserts SDR = 1.0 between hillslope and station."**
+- **G5's second leg is unchanged and still binds:** G1.2's `k̂` with its 95 % station-bootstrap
+  interval must appear **in the same table as α**, in the registered sentence form *"no first-order
+  channel sink stronger than X× over Y km is detectable on this fit set"*, never as a fitted value.
+
+---
+
+## 9.5 — AMENDMENT A-P1.1 · 2026-08-11 · §4.2's power table, corrected — and the **0.0096-vs-0.0104 discrepancy resolved**
+
+`docs/43` §3.1 P1 also instructs: *"Correct §4.2's power table with it."* Doing so exposed a
+discrepancy the record carried unresolved (`docs/47` §7 open item **O7**): P1 writes *"the
+fitted-set `k_min` is 0.0209 /km, **not 0.0096 /km**"*, attributing **0.0096** to this document,
+while §4.2 prints **0.0104**. **This amendment resolves it by recomputation, not by preference.**
+
+### The method, recovered and stated
+
+§4.2 never printed its formula. It is recovered from `src/nbgen/make_nb19.py:1970` (`def k_min`) —
+the minimum |slope| whose 95 % two-sided normal interval excludes 0 in the OLS regression
+`r_i = c + k · Lw_i` of G1.2:
+
+```
+k_min = 1.96 · σ_r / sqrt( Σ_i (Lw_i − L̄)² )          σ_r = 0.465 (§4.2, registered, unchanged)
+```
+
+evaluated on **§4.1's own `Lw` column**. That this is *this document's* method, not an imported
+one, is established by it reproducing three published numbers of the same lineage:
+
+| set | n | recomputed here | published | source of the published value |
+|---|---:|---:|---:|---|
+| all 18 | 18 | **0.002158** | 0.00216 | **§4.2 itself** |
+| CAL 8 | 8 | **0.020916** | 0.02092 | `docs/43` §3.2, nb19 |
+| CAL 8 + ARRANCAPLUMAS | 9 | **0.003031** | 0.00303 | `docs/43` §3.1 P2 |
+| **CAL 13** | 13 | **0.009640** | **§4.2 prints 0.0104** | — **does not reproduce** |
+
+`docs/47` §2.2 reached the identical digits independently from a different agent's script (all-18
+**0.002157**, CAL-8 **0.02092**).
+
+### Five attempts to reproduce 0.0104, all failed
+
+1. **A different z.** 0.0104 needs z = **2.115**; 1.96 is what the all-18 cell uses, and at 2.115
+   that cell would read 0.00233, not 0.00216.
+2. **A different σ.** 0.0104 needs σ = **0.5017**, not the registered **0.465**.
+3. **A t-critical value.** df = n−2 ⇒ 0.01083; df = n−1 ⇒ 0.01072. Neither is 0.0104, and either
+   moves the all-18 cell off 0.00216.
+4. **A different 13 of the 18.** Exhaustive search of all C(18,13) = **8,568** subsets of §4.1's
+   `Lw`: **zero** subsets give 0.0104 ± 5e-5.
+5. **The joint form of G1 note 3** (`Lw` residualised on §4.1's Grassland and Bare shares): CAL 13
+   ⇒ 0.01062 — still 2.1 % away — and it fails to reproduce the CAL-8 0.02092 (gives 0.02529), so
+   the lineage's numbers are univariate. Hypothesis rejected.
+
+**Sixth check, and it is decisive: `docs/43`'s own arithmetic runs on 0.00964.** P1 states that
+losing the 5 stations costs a factor **2.2** and is **9.7×** worse than the all-18 guard.
+0.020916 / 0.009640 = **2.170** (→ 2.2) and 0.020916 / 0.002158 = **9.693** (→ 9.7). At 0.0104 the
+first factor would be **2.011** (→ 2.0), which is not what P1 prints. Every downstream consequence
+already quoted in `docs/43` and `docs/45` was computed from 0.00964.
+
+### RESOLVED
+
+> **`docs/42` §4.2's CAL-13 cell is the wrong number. The correct value, at this document's own
+> registered σ_r and its own `Lw` table and its own method, is `k_min` = 0.00964 /km.**
+> `docs/43` P1's **number** is right. `docs/43` P1's **attribution** is wrong: it presents 0.0096
+> as what `docs/42` printed, and `docs/42` printed 0.0104.
+> `docs/agents/journal_adj-c4-feasibility.md:167` explained the gap as *"method rounding"*; **that
+> explanation is withdrawn here** — 7 % is far outside 1-dp rounding of any input, and no method
+> has been found that yields 0.0104. It is an arithmetic error, isolated to that one cell.
+
+**A second, separate inconsistency inside the same cell, recorded and not repaired here:** the
+CAL-13 row's contrast column uses the **max−min span** (exp(0.0104 × 107.8) = 3.068 → "3.06"),
+while the all-18 and 22-pair rows use the **max `Lw`** (exp(0.00216 × 348.4) = 2.122 → "2.12";
+exp(0.00119 × 348.4) = 1.514 → "1.51"). Corrected, the CAL-13 contrast is **2.83×** on its own
+row's stated span convention, **2.90×** on the convention its two neighbours use.
+
+**No verdict moves, and this is stated so the correction cannot be read as a rescue.** 0.00964 is
+still **4.47×** the all-18 figure and still sits outside the 0.0020–0.0032 /km reference — which is
+**UNCITED** and, per the standing rule, may pass or fail nothing either way (§4.2, unchanged). The
+CAL-13-only test remains **underpowered** and remains rejected as the deposition test. The
+correction moves the number 7 % in the *more powerful* direction and changes no verdict anywhere in
+this document.
+
+### The corrected table, for the station set actually in force
+
+| test form | n | `k_min` /km | survival contrast over its own max `Lw` | status under A-P1 / A-P2 / A-P3 |
+|---|---:|---:|---:|---|
+| slope over the **CAL 8** — the fit set (A-P1) | 8 | **0.02092** | **3.54×** over 60.4 km | **not used to fit** — `k` is FIXED at 0 (A-P3); the number's job is to justify fixing it |
+| **slope over all 18 — G1.2, the registered primary** | 18 | **0.00216** | **2.12×** over 348.4 km | **UNCHANGED and re-affirmed.** Still the deciding test |
+| 22 nested pairs (stations shared ⇒ not independent) | 22 | 0.00119 | 1.51× | corroboration only, **unchanged**. Not recomputed here — the pair list is not printed in this document |
+| ~~slope over the CAL 13~~ | 13 | ~~0.0104~~ → **0.00964** | ~~3.06×~~ → **2.83×** (span) / **2.90×** (max) | **SUPERSEDED by A-P1** *and* arithmetically corrected above |
+| counterfactual: CAL 8 + ARRANCAPLUMAS | 9 | 0.00303 | 2.88× | **REJECTED by A-P2.** Printed so the 6.9× cost of that decision is visible |
+
+> **MANDATORY POINTER, and it is not an amendment.** Every `k_min` above is **proportional to
+> σ_r = 0.465**, and `docs/47` §2.2 (**D2**) measures the actual between-station residual sd on the
+> CAL 8 at **1.9618 ln (×4.22)**, giving a corrected all-18 `k_min` of **0.0066–0.0069 /km
+> (≈ 10× over 342 km)** and a corrected CAL-8 form of **0.0130 /km**. **σ_r is a registered
+> threshold and this pass does not touch it** — `docs/47` **B5** assigns that repair to a
+> `docs/45` §8 amendment, by its owner. The table above is therefore corrected **at the registered
+> σ_r**, and a reader must carry D2 alongside it. Re-basing the table on a threshold this pass has
+> no standing to change would have been the convenient move and is refused.
+
+---
+
+## 9.6 — What this amendment does NOT do, and what is flagged to the document owners
+
+**Untouched, explicitly:** every threshold in §5 and §6 (G1–G9); σ_r = **0.465**; the `b_obs` IQR
+**0.464**; the pair-σ **0.658**; the β band **0.45–0.65**; G2.2's **+25 %**; G7's **+10 %**; G8's
+**0.465 ln**; the primary estimator (b) and the G2.2 exception on (a); §3's non-separability
+finding; §4.1's `Lw` table; §4.3–§4.5; §7; §8. **No frozen artifact was opened for writing**
+(`sim_calibrated_v2/{h2e_drivers.npz, parameters_H2E.csv, q_gauge_H2E.npz}` untouched); **no
+calibration was launched; no simulation was run; nothing is backdated; no git command was run.**
+The only computation performed was the `k_min` arithmetic of §9.5, from §4.1's printed `Lw` values
+and §4.2's registered σ_r, in a scratchpad script that wrote nothing into the repository.
+
+**Flagged for the document owners / orchestrator — deliberately NOT edited by this pass:**
+
+| # | flag | recommended action |
+|---|---|---|
+| **F1** | **§4.2's body still prints `0.0104` and `3.06×`** in the CAL-13 row. This pass may write only in the §9 amendment slot, so the wrong number is still quotable from the body. | Apply the **`docs/37` A2.7 precedent**: strike-through + pointer **in place**, nothing deleted, so the retired number cannot be quoted from the body. §4.2's following paragraph (*"the 13-station test's 0.0104 /km does not"*) needs the same treatment — its **conclusion survives** at 0.00964. |
+| **F2** | **`docs/43` §3.1 P1 mis-attributes 0.0096 to `docs/42`** (*"is 0.0209 /km, not 0.0096 /km"*). Its number is right; its attribution is wrong. | One-line correction in `docs/43`, e.g. *"not 0.00964 /km (`docs/42` §4.2 mis-printed this as 0.0104; corrected in its §9.5)"*. Not this pass's file. |
+| **F3** | **`docs/agents/journal_adj-c4-feasibility.md:167`** explains the 7 % gap as *"method rounding"*. Withdrawn by §9.5. | Record the withdrawal where that journal is next cited. |
+| **F4** | **`docs/47` open item O7** (*"the B4 transcription must pick one and record why"*) is answered by §9.5. | O7 may be **CLOSED**: 0.00964 is correct, `docs/42` §4.2 was wrong, reason recorded. |
+| **F5** | **`docs/47` §2.4 D4** (this transcription unperformed) is discharged by §9.1–§9.5. | D4 may be **CLOSED**. `docs/47` B5 (the σ_r / Π-band repair) is **NOT** discharged and remains open. |
+| **F6** | **`docs/00_INDEX.md`** carries no row for this amendment log, and its status table still describes `docs/42` as unamended. | Add the pointer when the index is next synced. |
