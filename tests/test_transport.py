@@ -229,6 +229,53 @@ def test_the_per_reach_partition_residual_is_exactly_zero_for_every_parameter_va
         assert res.ledger["node_partition_exact"] is True
 
 
+def test_a_nan_local_load_is_rejected_at_the_door():
+    """The cheap screen: a non-finite load never reaches the router at all.
+
+    Documented as a test because it is what makes the NaN residual below reachable ONLY by
+    overflow - without this screen there would be a much easier path to the same failure.
+    """
+    net = _forked()
+    load = _float_loads(net, ndays=6)
+    load[2, 1] = np.nan
+    with pytest.raises(ValueError, match="non-finite"):
+        tr.simulate_transport(net, tr.TransportParams(), load)
+
+
+def test_the_partition_claim_does_not_survive_an_overflowing_run():
+    """`node_partition_exact` must not be True on a run whose mass is NaN.
+
+    The residual tracker compared `m > max_resid`, and in IEEE-754 every comparison against
+    NaN is False - so a NaN residual left max_resid at its 0.0 initial value and the ledger
+    then announced `node_partition_exact: True`, the module's STRONGEST mass statement, on a
+    run carrying no usable mass.
+
+    This is reachable WITHOUT passing a NaN in: the loads below are all finite, so they pass
+    the screen above, but they are large enough that accumulation overflows to inf, and
+    inf - inf = NaN inside the residual.  A finite-input screen structurally cannot see a
+    defect that is manufactured during the arithmetic - the same lesson as the precipitation
+    zero-suppression (a value screen cannot see absent records).
+
+    The fix tests the negation (`not (m <= max_resid)`), which IS True for NaN.
+    """
+    net = _forked()
+    load = np.full((6, net.ids.size), 1e308, dtype=np.float64)
+    assert np.all(np.isfinite(load)), "the point of this test is that the INPUT is finite"
+
+    with np.errstate(over="ignore", invalid="ignore"):
+        res = tr.simulate_transport(net, tr.TransportParams(), load)
+
+    assert not math.isfinite(res.ledger["exported_t"]), (
+        "test premise broken: this run was supposed to overflow"
+    )
+    assert not res.ledger["node_partition_exact"], (
+        "a run with non-finite mass reported an exact per-reach partition"
+    )
+    assert math.isnan(res.ledger["max_node_residual_t"]), (
+        "the NaN residual was swallowed instead of being reported"
+    )
+
+
 def test_mass_conservation_on_real_valued_loads_is_rounding_only():
     """Float loads: the global identity is re-association rounding, and it is tiny."""
     net = _forked()

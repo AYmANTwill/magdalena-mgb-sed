@@ -899,7 +899,13 @@ def simulate_transport(
             # IEEE-754 for every parameter value; see the module docstring, MASS LEDGER.
             resid = (((prev + inflow) - dep_t) - out_t) - st.store_t
             m = float(np.abs(resid).max())
-            if m > max_resid:
+            # NOT `m > max_resid`: every IEEE-754 comparison against NaN is False, so a NaN
+            # residual would leave max_resid at 0.0 and this module would then announce
+            # `node_partition_exact: True` - its STRONGEST mass claim - on a run carrying no
+            # usable mass.  Testing the negation lets NaN through to be reported.  Reachable
+            # with finite inputs: loads large enough to overflow give inf - inf = NaN, which
+            # the finite-load screen at the top of this function cannot see.
+            if not (m <= max_resid):
                 max_resid = m
         accum += out_t
         dep_accum += dep_t
