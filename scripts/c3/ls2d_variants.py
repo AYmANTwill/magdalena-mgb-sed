@@ -124,6 +124,7 @@ VARIANTS = [
     "V2b_m_step_eq14",
     "V3_s_ws78",
     "V4_buarque_2015",
+    "V4_dg",
     "V4p_buarque_2015_cap",
     "V5_L_dg96_fd",
 ]
@@ -195,6 +196,12 @@ def variant_block(tan_theta: np.ndarray, upslope_area_m2: np.ndarray,
         "V2b_m_step_eq14":      length(a_hs, m_step) * s_ours,
         "V3_s_ws78":            length(a_hs, m_cont) * s_ws,
         "V4_buarque_2015":      length(a_px, m_step) * s_ws,
+        # V4_dg (ACT 1 / docs/47 §9.2 blocker 2): the adopted `ls_formulation = buarque_2015_dg`,
+        # the source formulation READ WHOLE — D&G finite-difference L on the ONE-PIXEL basis
+        # (a_in = 0, so it degenerates to (d/(22.13*x))^m), m = eq.14 step, S = W&S-78.
+        # Ported VERBATIM from ls2d_defect_b.py:146-159 (`l_dg_px(m_step, x_aspect) * s_ws`),
+        # the harness that derived f_LS = 0.25146 erosion / 0.2446790094097074 area-weighted.
+        "V4_dg":                (d / (L.UNIT_PLOT_LEN_M * x_aspect)) ** m_step * s_ws,
         "V4p_buarque_2015_cap": length(a_px, m_cap) * s_ws,
         "V5_L_dg96_fd":         l_dg_hs * s_ours,
         "D_ls2d_uncapped":      ls1,
