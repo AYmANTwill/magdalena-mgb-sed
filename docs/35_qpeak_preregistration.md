@@ -349,6 +349,15 @@ written. See **§9.3** and `docs/37` §4 candidate 0.
 > values, and the fact that they are a *consequential restatement* and **not** a change to this
 > registered band, are in **§9.4.5**. The original sentence is left readable, nothing is deleted.
 
+> **[WARN] AMENDMENT §9.5, 2026-08-12 — this band is now RE-REGISTERED at the adopted LS level.**
+> ACT 2 switched the engine default to the adopted field `V4_dg` (`f_LS = 0.25146`). A fit run
+> against the engine default is judged against the **operative** gate — reference **2.967**,
+> expected **1.484 – 5.934**, HARD STOP upper **8.902**, lower **0.981** — enacted in **§9.5.2**.
+> The source-LS numbers in the table below are **UNCHANGED** and remain the registered band for a
+> fit run explicitly at `ls2d_hs` (V0). β (§6.3) and the §6.2 scale table are unchanged. **The
+> upper hard stop 8.902 now sits BELOW the unfitted α = 11.8** (§9.5.4). This does **not** unblock
+> C4.3.
+
 | band | α (at the §4 pixel scale) | C4 action |
 |---|---|---|
 | expected | **5.9 – 23.6** (0.5× – 2× Williams) | adopt; report α with this band beside it |
@@ -1241,3 +1250,116 @@ blocks). A reader can still identify the superseded statement wherever it is quo
 
 **C3.5** (cross-check against implementation B's `musle.py`) remains **BLOCKED** (§8 item 2,
 unchanged). **C4.3 remains BLOCKED** (`docs/47`; §9.4.6).
+
+---
+
+### 9.5 — Amendment — 2026-08-12 — the §6.1 α band is RE-REGISTERED at the adopted LS level (ACT 1 + ACT 2 executed)
+
+**Status of this amendment.** This is the dated §9 amendment §9.4.5's ownership note said was
+owed: *"Any change to §6.1's band as a registered object requires its own dated §9 amendment,
+written after such a proposal arrives."* The proposal arrived (`docs/45` §8.5.11 item 2, the
+threshold-moving half of `docs/47` **B2**); ACT 1 and ACT 2 have now been executed; this
+amendment enacts the re-registration. It **re-registers the α gate** and nothing more — it runs
+no fit, adopts no LS shape, validates no level, and does not unblock C4.3 (§9.5.5).
+
+#### 9.5.1 What forces this section — ACT 1 and ACT 2 have landed
+
+Until now §6.1's band was registered for the **source** LS with α = 11.8 as the like-for-like
+reference, and §9.4.5 could only *record* the rescaled arithmetic because the adopted field was
+not a committed product and the engine default had not moved — blockers 2 and 3 of `docs/47`
+§9.2. Both are now discharged:
+
+- **ACT 1** materialised the adopted field `V4_dg` (`ls_formulation = buarque_2015_dg`) into the
+  committed product `data/processed/urh_ls2d_variants.csv` (`scripts/c3/ls2d_variants.py`;
+  self-check `f_area = 0.2446790094097074`; protected products `urh_ls2d.csv` /
+  `minibacia_ls2d.csv` **unchanged**).
+- **ACT 2** switched the engine default: `src/mgb_sediment.py:load_geometry` now defaults to
+  `ls2d_column = "V4_dg"`, `urh_ls2d = "urh_ls2d_variants.csv"`. Verified by the test suite
+  (**154 passed**, incl. the new `test_default_ls_column_is_adopted_v4dg`); the historical V0
+  records (nb18/nb19, the V0 reference tests, `scripts/c3/ls_erosion_weights.py`) pin
+  `ls2d_hs`/`urh_ls2d.csv` explicitly and are unchanged.
+
+A C4.3 fit run against the engine default now evaluates α **at the adopted level** `f_LS =
+0.25146` (erosion-weighted; `docs/37` A3.1.4(B)), not at the source level. The gate it is judged
+against must be expressed at that level. That is what this amendment registers.
+
+#### 9.5.2 The re-registered α gate — operative band for a fit on the adopted field
+
+The gate for a fit run at the adopted LS level is §6.1's band **× `f_LS = 0.25146`** (MUSLE is
+linear in LS; `f_LS` multiplies the load, so α scales by `f_LS` at fixed load). These are
+§9.4.5's **POINT** column, now enacted as the operative gate:
+
+| §6.1 quantity | source-LS registration (UNCHANGED, historical) | **adopted-LS registration (operative, `f_LS = 0.25146`)** |
+|---|---:|---:|
+| reference α (Williams 1975) | 11.8 | **2.9672280000000004** |
+| expected band | 5.9 – 23.6 | **1.4836140000000002 – 5.934456000000001** |
+| **HARD STOP**, upper | 35.4 | **8.901684** |
+| **HARD STOP**, lower | 3.9 | **0.9806940000000001** |
+
+**§6.1's source-LS numbers are NOT deleted and NOT changed in status.** They remain the
+registered band for a fit run explicitly at the source/V0 level (`ls2d_column="ls2d_hs"`), and
+such a fit is judged against §6.1 as written, not against this table. What this amendment adds is
+the **operative** gate for the now-default adopted field; the engine default selects which
+applies, and §6.2 / Test T3 already require every fitted α to be reported with the LS level it was
+fitted at.
+
+The adopted field is the **POINT** (`buarque_2015_dg`, source read whole). The **HYBRID** column
+of §9.4.5 (`f_LS = 0.43194`, the source's three levers with our L) is **not** the adopted field
+and is **not** registered as a gate here; it is retained in §9.4.5 for reference only.
+
+#### 9.5.3 β and the §6.2 scale table are UNCHANGED — structurally, not by omission
+
+§6.3's β band (0.45 – 0.65) and §6.2's `N^(2β−1)` scale table are **unchanged**, for the reason
+§9.4.5 and §9.2 give: a constant multiplicative factor on the load moves α by `f_LS` and **cannot
+move β** (β sits inside the power; `f_LS` multiplies the load, outside it), and `N^(2β−1)` is
+dimensionless. The re-registration touches the α reference and its two hard stops **only**.
+
+#### 9.5.4 The uncomfortable consequence, and the O4 bound
+
+At the adopted level the upper hard stop is **8.901684**, which is **below the adopted, unfitted
+α = 11.8**. A C4.3 fit that lands near the incumbent α would therefore **trip the upper hard
+stop** (STOP-and-report, §6.1). This is stated plainly because it points against the incumbent
+and is the single most consequential effect of the switch.
+
+It is a statement about the **pairing** of α with an LS level — **not** that α is right or wrong,
+and **not** a licence to move α (`docs/46` §8.2 item 2). The arithmetic pairing (α = 11.8 × `f_LS`)
+assumes α = 11.8 is like-for-like with a **2-D contributing-area** LS, which is exactly `docs/47`
+**O4** — and O4 is **UNRESOLVED, no band offered** (`docs/46` §1.0 residue 3). O4 bounds this
+re-registration from above: if α = 11.8 is *not* like-for-like with `V4_dg`, the reference and
+both hard stops move by whatever the like-for-like correction proves to be. The gate is registered
+**with that bound stated**, not as a settled physical claim.
+
+#### 9.5.5 What this amendment does NOT do
+
+- It does **not unblock C4.3.** `C4.3-BLOCKED-UNTIL-LS-LANDS` holds. **Branch B is MANDATORY**
+  (`Δ_shape = 0.1299456916752905 > 0`; `docs/46` §10 amd 1, `docs/53`): the fit must be a **first
+  run** on the adopted field with every guard statistic re-derived — **no rescaling substitutes
+  for a re-run** (`docs/46` §6.2 A6). This amendment discharges **only** the `docs/35` §9 item of
+  `docs/47` §9.2 blocker 4; the `docs/46` §3.3 **stratified report** and the §2.3 H-S field-clause
+  items remain owed.
+- It does **not validate the LS level.** `docs/42` **G4.2** stands: UNVALIDATED, printed that way.
+  Cited is not validated; fitted is not validated either.
+- It does **not close C3.** Clause 2 still needs the LS **shape** decision (`docs/46` §6.1);
+  settling LS is necessary, not sufficient.
+- It **quotes no α̂**, runs no fit, evaluates nothing against `docs/45`'s box, opens no frozen
+  artifact.
+- It **introduces no new band or threshold** beyond rescaling §6.1's registered one — in
+  particular **no materiality bar** (`docs/46`'s 0.1644 ln bar is STRUCK, `docs/52`, not
+  rescaled). An uncited band cannot pass or fail a gate.
+
+#### 9.5.6 Disclosure and reproduction
+
+**Ordering.** Written 2026-08-12, **after** ACT 1 and ACT 2 were executed and verified (154-test
+suite green) this session, and **after** §9.4.5 published the rescaled arithmetic this amendment
+enacts. Nothing is backdated: §9.4.5 recorded the numbers and re-registered nothing; this section
+performs the registration §9.4.5's ownership note deferred to "its own dated §9 amendment."
+
+**Arithmetic.** The operative-column values are §6.1's registered numbers × `f_LS = 0.25146`:
+`11.8·f = 2.9672280000000004`, `5.9·f = 1.4836140000000002`, `23.6·f = 5.934456000000001`,
+`35.4·f = 8.901684`, `3.9·f = 0.9806940000000001` — the same products disclosed and reproduced in
+§9.4.5 / `docs/agents/journal_amend-35-label.md`. **No new arithmetic is introduced.**
+
+**Nothing deleted.** §6.1's source-LS band and every prior number remain readable; this amendment
+adds a parallel operative registration and a pointer, per the house pattern.
+
+**C4.3 remains BLOCKED** (`docs/47`; §9.5.5).
