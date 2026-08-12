@@ -307,3 +307,31 @@ Listed so a future reader knows the referenced artifacts exist on disk but not i
 - `data/raw/observed/precip/dhime/*.zip` (the department downloads, many split into numbered parts)
 - `data/raw/observed/caudal/caudal_<dept>.csv`, `data/raw/observed/sedimento/ssc_<dept>.csv`
 - `data/raw/soils/suelos_<dept>.gpkg`
+
+---
+
+## 9 — Primary sources held locally but gitignored (provenance so they are re-obtainable)
+
+`data/` is gitignored, so a source PDF that only exists there is one `rm` away from taking
+its citations with it. Anything a **CITED** evidence grade rests on is recorded here with
+enough provenance to re-obtain and verify it.
+
+### 9.1 Buarque (2015) — the LS chain of custody
+
+| | |
+|---|---|
+| Reference | Buarque, D. C. (2015). *Simulação da geração e do transporte de sedimentos em grandes bacias: estudo de caso do rio Madeira.* Tese de Doutorado, IPH/UFRGS, Porto Alegre. |
+| Repository | LUME/UFRGS, handle **`10183/129875`** |
+| Local copy | `data/raw/refs/buarque2015.pdf` (**gitignored**, 9,646,521 bytes) |
+| `sha256` | `3047624f641b335900eb3bc2191308b03a22148bd30aeb7227031bf42e1c0037` |
+| Pages that carry weight here | **47–48** (eq. 13 `L`, eq. 14 step `m`, and the `Sf` units), **94** (the one-pixel slope-length limiter), **98**, **121** |
+
+**Why this one is load-bearing.** It closes lever (R6) of `docs/46` as **CITED** rather than
+UNRESOLVED, and eq. 13 read verbatim — with `Xdir` = 1 orthogonal / √2 diagonal — is what
+collapses the LS source formulation from an interval to a **point** at ×0.25146
+(`docs/50`, `docs/51`). Without the PDF, `Sf`'s units are unverifiable, (R6) is
+unfalsifiable, and the honest outcome for that lever reverts to **NEGATIVE — UNRESOLVED**.
+
+**Verify before quoting it:** re-hash the file and compare against the `sha256` above. A
+different hash means a different scan or edition, and the page numbers above are then not
+guaranteed to point at the same equations.
