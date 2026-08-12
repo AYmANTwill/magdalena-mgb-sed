@@ -10,7 +10,7 @@ C3 is **OPEN**, not closed. Precisely:
 | the factor chain is fully explained by evidence-based corrections | **MET** — 0.684 → 248.73 Mt/yr is exactly `1000^0.56 × (1/0.1317) = 363.4245196`, measured to the last stored digit |
 | no decision left unresolved | **NOT MET** (amended 2026-08-11) — the four *convention* questions below are resolved from source derivations, but a fifth question was measured and left explicitly UNRESOLVED: the **LS formulation level**. Our LS sits **2.37× – 3.00×** above the LS that α = 11.8 is paired with in the MGB-SED lineage, measured on our own 90 m grid. See §4 candidate **0**. |
 | the independent audit agreed with the decisions | **MET** — agreement on all three decisions; the audit's fourth finding was verified here from this repository's own source text, not taken on trust |
-| **the implied sediment delivery ratio is physically plausible (0.05 – 0.30)** | **NOT MET — implied SDR is 0.579 – 0.740**, and under §4 candidate 0 it becomes 1.37 – 2.22, i.e. impossible |
+| ~~**the implied sediment delivery ratio is physically plausible (0.05 – 0.30)**~~ **RETIRED — see `docs/40`** | ~~**NOT MET — implied SDR is 0.579 – 0.740**, and under §4 candidate 0 it becomes 1.37 – 2.22, i.e. impossible~~ → **the ratio 248.730 Mt/yr ↔ 144–184 Mt/yr is not a sediment delivery ratio** (all-source numerator, hillslope-only denominator) and cannot be tested against a published SDR band in either direction. The band was uncited, its supporting relations use an all-source denominator and were fitted 993× below this scale, and no Magdalena SDR exists in the literature. **A retired gate is neither a pass nor a fail.** The clause that replaced it — 4′ — was itself **re-opened as 4″, NOT ESTABLISHED**: see **A1.1** and **A1.9**, not this row. *(Struck in place 2026-08-11 per `docs/40` §8.2 as amended by its §0; applied by **A2.7**. Original text preserved above.)* |
 
 Do not read the METs as "closed with caveats". The purpose of C3 was to make the
 basin-scale sediment level defensible, and it is not yet defensible.
@@ -62,24 +62,37 @@ Frozen H2E hydrology (`h2e_drivers.npz:qsur_rel_mm`), 3,652 days × 8,672 miniba
 | `cells` vs `collapsed` backend | relative difference **exactly 0.0** |
 | wall time | 1.44 s |
 
-### The implied delivery ratio, which is why this document says OPEN
+### ~~The implied delivery ratio, which is why this document says OPEN~~ — **RETIRED, `docs/40`**
+
+> **STRUCK IN PLACE 2026-08-11 (applied by A2.7, wording from `docs/40` §8.2 as amended by its §0).**
+> The whole of this sub-section is retired and is preserved only as the record of what was believed.
+> **This is no longer why this document says OPEN** — see **A1.1** (clauses 2, 3, 4″) and **A1.9**.
+> Two specific sentences below are false as written and are struck rather than deleted.
 
 MUSLE computes **gross hillslope erosion**; the outlet load is what survives channel transport
-and floodplain deposition. So `SDR = outlet / gross` must be < 1, and for a basin of
-257,097 km² the published expectation is roughly 0.05 – 0.30.
+and floodplain deposition. ~~So `SDR = outlet / gross` must be < 1~~ — **FALSE for the quantity
+computed:** the ratio of outlet load to *hillslope-only* gross erosion has **no upper bound of 1**;
+channel-bank supply alone averages **1.3×** the outlet flux in the Brazilian Amazon (Dunne et al.
+1998), and USDA NEH Table 6-2's own mixed ratio is **1.7778** — and ~~for a basin of
+257,097 km² the published expectation is roughly 0.05 – 0.30~~ — **UNCITED in this repository and
+retired in both directions** (`docs/40` §8.1).
 
-| against outlet anchor | implied SDR | verdict |
+| against outlet anchor | ~~implied SDR~~ **apparent delivery ratio (ADR), not an SDR** | ~~verdict~~ **no verdict — the gate is retired** |
 |---|---|---|
-| 144 Mt/yr | **0.579** | above the plausible band |
-| 184 Mt/yr | **0.740** | above the plausible band |
+| 144 Mt/yr | **0.579** | ~~above the plausible band~~ — *below* USDA's own reference ADR of 1.7778 and ≈ its true SDR of 0.6957 |
+| 184 Mt/yr | **0.740** | ~~above the plausible band~~ — as above |
 
 Read as the gross erosion that the anchor plus a plausible SDR would require:
 
 | required SDR | required gross erosion | shortfall of the model | α that would be needed at the adopted convention |
 |---|---|---|---|
-| 0.30 | 480 – 613 Mt/yr | **1.93 – 2.47×** | 22.8 – 29.1 (1.93× – 2.47× Williams) |
-| 0.15 | 960 – 1,227 Mt/yr | 3.86 – 4.93× | 45.5 – 58.2 — **past the `docs/35` §6.1 hard stop** |
-| 0.05 | 2,880 – 3,680 Mt/yr | 11.6 – 14.8× | 136.6 – 174.6 — far past the hard stop |
+| ~~0.30~~ | ~~480 – 613 Mt/yr~~ | ~~**1.93 – 2.47×**~~ | ~~22.8 – 29.1 (1.93× – 2.47× Williams)~~ |
+| ~~0.15~~ | ~~960 – 1,227 Mt/yr~~ | ~~3.86 – 4.93×~~ | ~~45.5 – 58.2 — **past the `docs/35` §6.1 hard stop**~~ |
+| ~~0.05~~ | ~~2,880 – 3,680 Mt/yr~~ | ~~11.6 – 14.8×~~ | ~~136.6 – 174.6 — far past the hard stop~~ |
+
+> **ALL THREE ROWS STRUCK 2026-08-11** (A1.2 consequence 2, applied in place by A2.7). They rest
+> entirely on the retired band and on the ADR/SDR conflation; the 0.15 and 0.05 rows **overstated the
+> problem by 4 – 8×**. Nothing in this table may be quoted as a requirement on the model.
 
 The amendment moved the model onto the physically *possible* side of the outlet anchor for the
 first time (gross 248.7 > outlet 144–184, where all three pre-amendment conventions had gross
@@ -157,10 +170,14 @@ so the simulated contrast is overstated by ~+10 %, and the whole level is a **lo
 
 ## 4. What remains OPEN, and what would resolve it
 
-The unexplained residual is **1.93 – 14.8×** of gross erosion, depending on which end of the
-0.05 – 0.30 SDR band is taken — and **candidate 0 below makes that residual larger, not smaller,
+~~The unexplained residual is **1.93 – 14.8×** of gross erosion, depending on which end of the
+0.05 – 0.30 SDR band is taken~~ — **STRUCK 2026-08-11 (A2.7): this sizing is derived entirely from
+the retired band. The residual's current form is A1.9's — magnitude bracketed, DIRECTION UNKNOWN,
+2.27× too low … 1.49× too high** — and **candidate 0 below makes that residual larger, not smaller,
 by a further 2.37× – 3.00×**. Five candidates, with what would settle each. None of them may be
-absorbed into α (`docs/35` §6 RULE 0).
+absorbed into α (`docs/35` §6 RULE 0). **Amended by A2:** candidates 0 and 2 decompose into a
+*level* part, which A2 reclassifies as C4's calibration target, and a *shape* part, which it does
+not — read A2.1–A2.2 before treating any candidate as a single quantity.
 
 0. **The LS *formulation* level — the largest term in this list, and it points the WRONG WAY.**
    Listed first because it is the biggest and because it was missing from every numbered document
@@ -224,14 +241,23 @@ absorbed into α (`docs/35` §6 RULE 0).
    **RESOLVER:** nothing inside C3 — `docs/35` §6.5 permits only an explicit, separately named,
    separately reported `f_peak` with its own derivation, never a fold-in to α. Reporting the
    result as a lower bound is the registered default and needs no justification.
-3. **The 0.05 – 0.30 SDR expectation itself is uncited in this repository.** It arrived as a
+3. ~~**The 0.05 – 0.30 SDR expectation itself is uncited in this repository.** It arrived as a
    brief-level assertion, exactly like the "mountainous LS 2–10" comparison that decision 4
    retired. The Magdalena is an unusually high-yield system, and a large basin SDR near 0.5 is
    not self-evidently absurd for it.
    **RESOLVER:** a citation for basin-scale SDR in humid tropical Andean catchments, or a
    Magdalena-specific sediment-budget paper. **This is a reason C3 is OPEN, not a reason to call
    it closed:** an uncited plausibility band cannot be used to *pass* a gate any more than it
-   could be used to fail one, and until it is cited the level remains unvalidated.
+   could be used to fail one, and until it is cited the level remains unvalidated.~~
+   → **RESOLVED AND RETIRED (`docs/40`).** *(Replacement wording from `docs/40` §8.2, applied in
+   place 2026-08-11 by A2.7; the same text already stands as A1.5 residual 3.)* The band is retired
+   as a gate: the tested quantity is an **apparent** delivery ratio (all-source outlet load ÷
+   hillslope-only gross erosion), not an SDR, and the same mixed ratio is **1.7778** in USDA NEH
+   Ch. 6's own reference example (true SDR 0.6957, hillslope-only ratio 0.33). No Magdalena SDR
+   exists, because every published Magdalena "erosion rate" is a sediment *yield*. §2's SDR = 0.15
+   and SDR = 0.05 requirement rows are **struck**. The residual survives, relocated to the erosion
+   side — **and per A1.9 its direction is now UNKNOWN** (2.27× low … 1.49× high), so `docs/40`
+   §8.2's own "1.59 – 2.74×" figure in this slot is **not** re-adopted here.
 4. **Terms known to point the wrong way, listed so they are not proposed later as fixes.**
    P = 1.0 and FG = 1.0 are both upper bounds on erosion (P ≤ 1, FG ≤ 1), so any real value
    *lowers* the model and widens the residual. Driving MUSLE with released rather than generated
@@ -959,3 +985,254 @@ alpha reading B          11.8/1.4897 = 7.921 ; 11.8/1.3323 = 8.857   (G5 band 6.
 alpha reading A          11.8*2.034 = 24.00 ; 11.8*2.275 = 26.84
 python3.10 -m pytest tests/ -q     # unchanged by this amendment: 94 passed, 2 failed (A1.7 item 2)
 ```
+
+---
+
+# AMENDMENT A2 (2026-08-11, after A1.9) — the residual's **level** is RECLASSIFIED from defect to calibration target. **C3 stays OPEN.**
+
+Written by the `decide-c3-c4` agent (`docs/agents/journal_decide-c3-c4.md`) after three independent
+lenses reported: `journal_adj-ratio.md` (does the bias cancel in the ENSO ratio — **PARTIALLY**),
+`journal_adj-alpha-role.md` (what α is for — **does not block C4**), `journal_adj-c4-feasibility.md`
+(is C4 feasible — **PARTIALLY**). The adjudication that combines them is **`docs/43_c3_c4_gate.md`**;
+this amendment records only what it does to *this* document.
+
+**Nothing above this line is rewritten**, with one exception that is itself an amendment: **A2.7**
+applies `docs/40` §8.2's paste-ready corrections *in place* to §1, §2 and §4, as **strike-through
+with a dated pointer**, so that no sentence is deleted and the retired gate can no longer be quoted
+out of the body. A1 and A1.9 are untouched.
+
+> **THE VERDICT DOES NOT MOVE. C3 was OPEN and stays OPEN**, on clauses **2**, **3** and **4″**.
+> What moves is the *name* of one component of the residual, and it moves on evidence.
+
+> **`docs/42` G9 disclosure, required in the same paragraph as any basin-scale statement:** at the
+> adopted `C`, **66.53 % of the model's gross erosion — 199.29 of 299.54 Mt/yr — is upstream of no
+> usable SSC station**; only **33.47 %** is; and **801.1 km of channel, including the whole
+> Depresión Momposina, lies below the outlet-most SSC station** (`21237020` ARRANCAPLUMAS).
+
+---
+
+## A2.1 The reclassification, and the evidence for it
+
+**The multiplicative LEVEL component of the C3 residual is reclassified from *defect* to
+*calibration target*.** Two independent legs, either sufficient on its own:
+
+1. **The transposed method defines α and β as free.** Re-extracted from the primary sources in this
+   run, not from secondary notes. Fagundes (2018) eq. 11 calls them *"coeficientes de ajuste … ora
+   adotados como 11,8 e 0,56 … ora **calibrados automaticamente**"*; §6.3.1 places them in the
+   MOCOM-UA parameter vector alongside TKS; they are fitted **per sub-basin** (1, 5 or 17) and
+   **separately against each of four observed sediment datasets** (in-situ CSS at 21–26 stations,
+   red-band surface reflectance at 21, turbidity at 61–63, SST at 61–63) over 1997–2010, under a
+   search prior α ∈ [2.0, 25.0], β ∈ [0.2, 1.7] (widened to α ∈ [0.0001, 500.0] in experiment C4).
+   **The decisive measurement, from the source's own Appendix IV (426 published fitted pairs): for
+   the same sub-basin in the same experiment, fitted α changes by median 1.28× and up to 7.78×
+   depending only on which observed dataset was the calibration target** (101 complete rows; 30.7 %
+   spread > 1.5×, 13.9 % > 2×; β likewise, median 1.33×, max 3.25×). A physical constant cannot do
+   that. **An unfitted α is an unset lever, not a wrong value.**
+2. **The level has no separate existence to be defective.** `docs/42` §3.1: α, the C level, the LS
+   level, the K unit system, the volume convention, P and FG are seven ways of writing **one
+   identifiable product Π**, design-matrix condition number measured as **inf** (exactly singular).
+   The "level residual" *is* Π; Π is what a C4 fit sets.
+
+**This is a reclassification, not a tolerance.** The claim is not that the level is right, nor that
+the residual is small. The claim is that the level belongs to a parameter the method leaves free, so
+"the unfitted model is off by a factor" is a statement about C4's starting point, not a defect of the
+C3 build.
+
+**What A1 and this document said about that level, which is now labelled rather than repaired.**
+`docs/35` §6.1's α band was imported from the wrong branch of the lineage: it cites **Buarque (2015)**,
+who writes 11.8 and 0.56 as *literals*, runs MOCOM-UA on the **hydrology only**, sets the MUSLE
+factors "de acordo com faixas de valores obtidas da literatura" — and then **recommends** the
+per-sub-basin spatialisation of the MUSLE parameters that Fagundes went on to do. `docs/00`'s H3
+declares the transposition to be of **Fagundes**, the branch that fits them.
+
+**Empirical falsification of the band, run on this repository's own unmodified code.**
+`check_musle_parameters` (`docs/35` §6.1 + §6.3 thresholds) over all **426** published, **adopted**
+(α, β) pairs of the source method returns:
+
+| verdict | count | share |
+|---|---:|---:|
+| `STOP` | **185** | **43.4 %** |
+| `watch` | 59 | 13.8 % |
+| `ok` | 182 | 42.7 % |
+
+**42.7 points of that STOP rate is the β hard stop 0.45 – 0.65** — and β is **dimensionless**, so no
+unit or convention argument can rescue it (the very property `docs/35` §9.2 and `docs/42` §8.1 rely
+on). The α hard stop trips on only 5/426 = 1.2 %, because our stops are *wider than the source's own
+search prior* — which is also why 97.7 % of the fits land inside the "expected" 5.9 – 23.6 band: the
+statistic measures the prior, not the physics.
+
+> **What this amendment does NOT do with that finding.** It does **not** edit `docs/35` (a frozen
+> pre-registration, not this pass's file) and it does **not** relax the β band for C4. `docs/42` G2.3
+> re-affirms the β hard stop and it stands until whoever owns `docs/35`/`docs/42` re-derives or demotes
+> it, with a date and a reason. This amendment records only that **an α band is a test on Π with six
+> of seven factors assumed, and could never have been a test on α** — which is `docs/42` §3.1's
+> position, now with a measured reason and a source-side falsification behind it.
+
+---
+
+## A2.2 What is NOT reclassified — and this is why C3 stays OPEN
+
+`docs/42` §1's principle: **a scalar absorbs a level; it cannot absorb a structure.** Three structural
+components of the residual survive the reclassification, each measured, each with an owner that is not
+α:
+
+| residual component | classification | measurement | owner |
+|---|---|---|---|
+| the multiplicative **level** (Π) | **CALIBRATION TARGET** — status **UNVALIDATED and unfittable-apart** | A2.1 | **C4**, as a fitted Π reported with its equifinal family |
+| the **LS slope-dependent shape** | **STILL A DEFECT**, direction known | §4 candidate 0: the three levers (limiter ×0.351, `m` cap ×0.502, `S` ×1.714) act per cell as a function of slope and do **not** multiply out (0.502 × 1.714 × 0.351 = 0.302 ≠ the joint 0.421). Only the joint *level* joins Π | **C3.1** — a written source-grounds decision (`docs/35` §9.3). `docs/42` **G4.1** can detect the shape, never fix it |
+| **station-to-station heterogeneity** of the residual | **STILL A DEFECT**, unresolvable at this fleet size | I² **96.0 – 99.2 %**, Cochran Q p ≤ 3.2e-16, τ **2.03× – 3.40×** per station, station `expD` 0.203 – 4.550, **18 of 24** station-cells with CIs excluding 1 | not resolvable by C4; needs n ≈ 19 stations for ±50 %, n ≈ 94 for ±20 % |
+| **period-dependent peak deficit** | **STILL A DEFECT**, direction known, magnitude registered | `R_AMS` 0.808 (LN) vs 0.686 (EN) ⇒ **×1.096** (`docs/35` §5.4) | not resolvable — propagate as a caveat (`docs/43` §5.2) |
+| **which quantity the MUSLE sum is** | **UNRESOLVED LABEL** — neither defect nor target | A1.9.1 (SWAT Ch. 4:1 calls this equation's output a sediment **yield**) | a written, cited answer — A1.9.3 resolver (1) |
+
+**Clause-by-clause effect on A1.1's conjunction:**
+
+- **Clause 2 — still NOT MET, and now split.** The LS *level* reclassifies into Π; the LS *shape*
+  does not, and the C3.1 decision remains unmade. **This clause alone still forbids closure.**
+- **Clause 3 — still NOT MET, upgraded to PARTIAL.** The three lenses of this adjudication did
+  constitute an adversarial pass over `docs/35` §6.1 (falsified against its own source), `docs/42`
+  §4.1–§4.2 (fit set CAL 13 → **CAL 8**; `k_min` 0.0096 → **0.0209 /km**) and this document's A1.3.4
+  (comparison-basis artifact — A2.3). **`docs/41`'s C rows remain unaudited**, and `docs/42` G3.1 is
+  measured incapable of auditing them: its minimum detectable class-C error is **≈ 4.2×** on the
+  achievable fit set, against a revision of **×1.2043**.
+- **Clause 4″ — still NOT ESTABLISHED**, unchanged. A1.9's resolver step (1) has not been done.
+  **This pass deliberately declines to do it** (A2.6): it is research rather than adjudication, and
+  the reading that would settle it favourably — reading B — is the one A1.9 refused *because* it
+  flatters the result. It is not adopted here by the side door.
+
+**Why CLOSED was available and was refused.** Closing today would require retiring a **third**
+successive level clause (SDR → 4′ → 4″) and reading the accumulated retirements as a pass. `docs/40`
+§8.1, A1.2 and A1.9.6 all say the same thing: **a retired gate is neither a pass nor a fail.**
+
+---
+
+## A2.3 Correction owed to **A1.3.4**: "short by 1.22 – 2.01×" is largely a comparison-basis artifact
+
+A1.3.4 reported the simulated contrast **short of observation by 1.22 – 2.01×** (primary pair) and
+**1.61 – 2.34×** (sensitivity pair). **The arithmetic is right and the comparison is not.** It sets a
+**basin-total** simulated ratio against a **fleet-median tributary-station** observed ratio computed on
+a **different day set** — three mismatches at once.
+
+**Reproduction gates passed before the correction was accepted:** the lens reproduced this document's
+own simulated basin ratios to 4 d.p. (**2.2915** primary, **3.9725** sensitivity, mass ledger
+`exact = True`) and `docs/34` §3.1's observed estimator-(a) fleet median (**4.62**), so both sides are
+the quantities the project already published.
+
+**Repaired to like-for-like — same stations, same days, same estimator:**
+
+| pair | est | n | OBS median | SIM median | obs / sim |
+|---|---|---:|---:|---:|---:|
+| primary | (a) | 6 | 4.620 | **4.903** | **0.9423** |
+| primary | (b) all | 7 | 2.949 | **2.904** | **1.0154** |
+| primary | (b) ok-only | 4 | 2.845 | 3.081 | 0.9232 |
+| sensitivity | (a) | 4 | 9.320 | **4.212** | **2.2129** |
+| sensitivity | (b) all | 7 | 4.650 | **4.998** | 0.9304 |
+| sensitivity | (b) ok-only | 5 | 6.404 | 4.970 | 1.2887 |
+
+**In three of six cells the model reproduces the observed ENSO contrast to within 8 %, and in five of
+six to within 1.29×.** Repairing the basis moves the simulated number 2.2915 → 4.903 (est. a) or
+2.904 (est. b) — **×2.14 / ×1.27**, of which the day set alone is **×1.69** — and that is essentially
+the whole of the primary-pair gap.
+
+**What this corrects, and what it does not.** It corrects the *comparison*, not the model: A1.3.4's
+"the magnitude is short" must now be quoted as **"the basin-total-vs-station-median comparison was
+short; like-for-like it is not"**. It does **not** license calling the contrast reproduced — the
+period-differential is centred on 1 but is **not constant** (A2.2), and `docs/35` §5.4's **+9.6 %**
+over-statement still applies to every simulated contrast (peak-corrected: **2.0908×** primary,
+**3.6245×** sensitivity). A1.3.4 keeps its numbers and gains this pointer; nothing in it is deleted.
+
+---
+
+## A2.4 What this changes for C4 — added to A1.6, which otherwise stands unchanged
+
+`docs/43` §3 is the full contract. The three items that belong in *this* document, because they modify
+what A1.6 permits:
+
+1. **A1.6's permission to "fit α and β on the 13-station calibration set" is superseded on the set,
+   not on the permission.** The achievable set is **8** stations: `23127010` BORBUR-AUT, `22017010`
+   BOCAS, `22017030` BOCAS, `24037390` CAPITANEJO, `26137110` BANANERA LA 6-909, `26127010` EL
+   ALAMBRADO AUT, `24027030` NEMIZAQUE, `21197010` EL PROFUNDO. Five of the registered 13 have **no
+   paired SSC + observed-Q day** in CAL 2012–14. Consequences, measured: fitted area **10.1 % → 5.4 %**
+   of the basin; `k_min` **0.0096 → 0.0209 /km** (2.2× worse than `docs/42` assumed, **9.7×** worse
+   than the all-18 guard that will judge the fit); surviving CAL-CAL nested pairs **3 → 1**.
+2. **The parameter count is 2 free + 1 bounded, not 3 free.** Π (the level) is identifiable with
+   SE = 0.465/√8 = **0.1644 ln = ±38 % at 95 %**; **β is identifiable** (SE 0.020, 95 % half-width
+   0.039 against a band half-width of 0.10) **but physically confounded with the surface-runoff
+   partition**; the **deposition coefficient is NOT identifiable** on this set and must be reported as
+   a **bound**, never a value.
+3. **A1.6 item 1 / `docs/42` G5 gains a second reason to be load-bearing.** A1.9.4 already showed the
+   deposition-free α band (**6.83 – 8.73**) overlaps the reading-B α (**7.92 – 8.86**). A2 adds: since
+   `k̂` will be a *weak* bound on the achievable set, **the named claim — an explicit transport sink,
+   or the words "this model asserts SDR = 1.0 between hillslope and station" — is what carries the
+   weight, not the number beside it.**
+
+**Nothing in A1.6's eight prohibitions is relaxed by this amendment.** In particular: the
+reclassification is **not** a licence to fit α to close a level gap (`docs/35` §6 RULE 0 unchanged) —
+the level is a target because the method leaves it free, **not** because there is a gap of known size
+to close. Per A1.9, **there is no gap of known size**.
+
+---
+
+## A2.5 Consequential corrections applied and owed
+
+| item | status |
+|---|---|
+| `docs/40` §8.2's paste-ready corrections to §1 row 4, §2's `< 1` premise, §2's SDR = 0.15 / 0.05 requirement rows, §4's opening residual sizing, and §4 residual 3 | **APPLIED IN PLACE 2026-08-11** as strike-through + dated pointer — **A2.7** |
+| A1.3.4's "short by 1.22 – 2.01× / 1.61 – 2.34×" | **CORRECTED by A2.3** (pointer added; A1.3.4 not rewritten) |
+| `docs/42` §9 — three amendments (fit set CAL 8 + `k_min` 0.0209; the ARRANCAPLUMAS conflict decided explicitly; deposition reported as a bound, 2 free + 1 bounded) | **OWED — blocking on C4's start.** `docs/43` §3.1. Not this pass's file |
+| A1.7 items 2 and 7 (`tests/test_sediment.py`; `notebooks/18` §6.4/§7 + `src/nbgen/make_nb18.py`) | **OWED**, unchanged |
+| `docs/00_INDEX.md` — a row for `docs/43`, and its "Is stage C3 closed?" answer to point there | **OWED** — not this pass's file |
+
+---
+
+## A2.6 Direction disclosure, and what was NOT done
+
+- **The change that would most flatter the project is again the one refused.** Adopting A1.9's reading
+  B would convert the residual from "2.03 – 2.27× low" to "1.33 – 1.49× high" and make clause 4″
+  evaluable. This amendment **declines to adopt it**, for A1.9's stated reason: it is unestablished,
+  and it is the reading that helps.
+- **The reclassification does not move a single number.** No level, no parameter, no convention, no
+  `cp_revision`, no threshold, no gate. What changes is one **label** on one component of a residual,
+  and the **owner** it is assigned to.
+- **No gate was passed.** Clause 2 still fails, clause 3 still fails, clause 4″ is still not
+  established. C3 is **OPEN**.
+- **No frozen artifact was opened or written**: `sim_calibrated_v2/{h2e_drivers.npz,
+  parameters_H2E.csv, q_gauge_H2E.npz}` untouched. **No simulation was run, no calibration launched,
+  no headline number recomputed, nothing backdated, no git command issued.**
+- **Files written by this pass:** `docs/43_c3_c4_gate.md`, this amendment plus the A2.7 in-place
+  corrections in §1/§2/§4 of this document, and `docs/agents/journal_decide-c3-c4.md`. Nothing else —
+  `docs/35`, `docs/40`, `docs/41`, `docs/42` and all code were **not** edited.
+- **Gauge-referenced t/km²/yr yields remain embargoed** (`docs/23` §13.2).
+
+---
+
+## A2.7 The `docs/40` §8.2 corrections, applied in place
+
+`docs/40` §8.2 flagged that this document would otherwise **keep asserting a retired gate from its
+body**, where a reader who never reaches A1 would find it. A1.7 item 5 recorded the corrections rather
+than applying them, under the "nothing above the line is rewritten" rule. Both concerns are satisfiable
+at once, and this is how it was done:
+
+**Method: strike-through with a dated pointer. Nothing is deleted.** Every original sentence remains
+readable, marked `~~struck~~`, with the replacement text and the reason beside it. The record of what
+was believed survives intact; the retired claim can no longer be quoted as live.
+
+**Applied, five places:**
+
+1. **§1's closure table, row 4** — the SDR clause struck and marked **RETIRED — see `docs/40`**, with
+   `docs/40` §8.2's replacement text and a pointer that its successor clause 4′ was itself re-opened
+   as **4″** (A1.1, A1.9). **`docs/40` §8.2's own replacement row 4′ is deliberately NOT pasted**, per
+   that document's own §0.
+2. **§2's "The implied delivery ratio, which is why this document says OPEN"** — the whole
+   sub-section marked retired; *"So `SDR = outlet / gross` must be < 1"* struck and replaced with
+   `docs/40` §8.2's wording (no upper bound of 1; Dunne et al. 1998's 1.3×; NEH's 1.7778); the
+   "published expectation is roughly 0.05 – 0.30" struck as **uncited and retired in both
+   directions**; the two-row ADR table relabelled and its verdicts struck.
+3. **§2's requirement table** — the SDR = 0.30 / 0.15 / 0.05 rows struck, with a note that the 0.15
+   and 0.05 rows **overstated the problem by 4 – 8×** (A1.2 consequence 2).
+4. **§4's opening sizing** — *"the unexplained residual is 1.93 – 14.8×"* struck as derived entirely
+   from the retired band, and pointed at A1.9's current form (**direction UNKNOWN**).
+5. **§4 residual 3** — replaced with `docs/40` §8.2's wording, **except** its "1.59 – 2.74×" figure,
+   which is **not** re-adopted because A1.9 withdrew the direction of exactly that quantity.
+
+**§3, §5, §6, A1 and A1.9 are untouched.** The document's headline verdict line is untouched: it says
+**OPEN** and that is still correct.
