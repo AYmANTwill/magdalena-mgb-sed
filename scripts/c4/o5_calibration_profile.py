@@ -44,6 +44,8 @@ FROZEN = PROC / "sim_calibrated_v2"
 
 CAL8 = ["22017030", "26137110", "24027030", "21197010",
         "23127010", "26127010", "22017010", "24037390"]
+EVAL5 = ["26017060", "26017020", "26167070", "26207080", "21237020"]  # scored, never fitted (§2.4)
+ALLSTA = CAL8 + EVAL5
 FLOW_SELECTIVE = {"26127010"}                       # docs/45 §3.4, kept but flagged (G12)
 CAL_START, CAL_END = np.datetime64("2012-01-01"), np.datetime64("2014-12-31")
 BETAS = [0.40, 0.45, 0.50, 0.56, 0.60, 0.65, 0.70, 0.75]
@@ -64,7 +66,7 @@ def observed_flux() -> dict[str, pd.DataFrame]:
     obs["flux"] = obs[qcol] * obs["ssc_mean_mg_l"] * 0.0864
     obs = obs[(obs["flux"] > 0) & (obs["date"] >= CAL_START) & (obs["date"] <= CAL_END)]
     out = {}
-    for code in CAL8:
+    for code in ALLSTA:
         d = obs[obs["code"] == code][["date", "flux"]].dropna()
         out[code] = d.set_index("date")["flux"]
     return out
@@ -79,16 +81,16 @@ def sim_base_series(betas, mini_col, cats) -> dict:
     dates = np.asarray(drv.dates, dtype="datetime64[D]")
     # catchment -> delivered_t_day column indices (columns are geom.mini_ids order)
     mid_to_col = {int(m): j for j, m in enumerate(geom.mini_ids)}
-    cat_cols = {c: [mid_to_col[m] for m in cats[c] if m in mid_to_col] for c in CAL8}
+    cat_cols = {c: [mid_to_col[m] for m in cats[c] if m in mid_to_col] for c in ALLSTA}
 
-    series = {c: {} for c in CAL8}
+    series = {c: {} for c in ALLSTA}
     for b in betas:
         t0 = time.time()
         p = sed.SedParams(alpha=1.0, beta=float(b))
         run = sed.simulate_sediment(geom, p, drv.qsur_mm, dates=drv.dates,
                                     store_daily=True, dtype_out=np.float64)
         D = run.delivered_t_day                     # (ndays, n_mini) tonnes/day at alpha=1
-        for c in CAL8:
+        for c in ALLSTA:
             series[c][b] = D[:, cat_cols[c]].sum(axis=1)
         print(f"  beta={b:.2f}: engine {time.time()-t0:.0f}s "
               f"(basin day-mean {D.sum(axis=1).mean():.3g} t/d at alpha=1)")
@@ -99,20 +101,24 @@ def kge_profile(obs, sim) -> dict:
     dates = sim["dates"]
     date_idx = {d: i for i, d in enumerate(dates)}
     # per station, per beta: the log-flux moments needed to close alpha analytically
+    MIN_N = 15                                    # need enough paired days for a KGE at all
     moments = {}
-    for c in CAL8:
+    for c in ALLSTA:
         od = obs[c]
-        di = np.array([date_idx[np.datetime64(d, "D")] for d in od.index
-                       if np.datetime64(d, "D") in date_idx])
-        x = np.log(od.values[[np.datetime64(d, "D") in date_idx for d in od.index]])
-        moments[c] = {"n": int(x.size), "meanx": float(x.mean()), "sdx": float(x.std(ddof=1))}
-        moments[c]["by_beta"] = {}
+        keep_mask = [np.datetime64(d, "D") in date_idx for d in od.index]
+        di = np.array([date_idx[np.datetime64(d, "D")] for d, k in zip(od.index, keep_mask) if k],
+                      dtype=int)
+        x = np.log(od.values[keep_mask])
+        moments[c] = {"n": int(x.size)}
+        if x.size < MIN_N:
+            moments[c]["insufficient"] = True
+            continue
+        moments[c].update(meanx=float(x.mean()), sdx=float(x.std(ddof=1)), by_beta={})
         for b in BETAS:
-            base = sim["series"][c][b][di]
-            lb = np.log(base)
-            r = float(np.corrcoef(x, lb)[0, 1])
+            lb = np.log(sim["series"][c][b][di])
             moments[c]["by_beta"][b] = {"mean_lnbase": float(lb.mean()),
-                                        "sd_lnbase": float(lb.std(ddof=1)), "r": r}
+                                        "sd_lnbase": float(lb.std(ddof=1)),
+                                        "r": float(np.corrcoef(x, lb)[0, 1])}
 
     def kge(c, b, alpha):
         mo = moments[c]
@@ -153,6 +159,31 @@ def kge_profile(obs, sim) -> dict:
 
     verdict_railed = bool(best.alpha <= ALPHAS[0] * 1.001 or best.alpha >= ALPHAS[-1] * 0.999)
     verdict_bar = "PASS" if best.F_report >= BAR[0] else "FAIL"
+
+    # G12 — mandatory leave-one-out on the flow-selective station (docs/45 §3.4)
+    keep = [c for c in CAL8 if c not in FLOW_SELECTIVE]
+    g12 = []
+    for b in BETAS:
+        for a in ALPHAS:
+            ks = np.array([kge(c, b, a) for c in keep])
+            g12.append({"beta": b, "alpha": float(a), "F_report": float(np.median(ks))})
+    g12df = pd.DataFrame(g12)
+    g12df = g12df[(g12df.beta >= 0.45) & (g12df.beta <= 0.65)]
+    g12best = g12df.loc[g12df.F_report.idxmax()]
+    g12_bar = "PASS" if g12best.F_report >= BAR[0] else "FAIL"
+    g12_flips = bool((g12_bar != verdict_bar))
+
+    # EVAL — 5 stations scored at the CAL optimum, never fitted (§2.4)
+    eval_scores = {}
+    for c in EVAL5:
+        if "by_beta" not in moments[c]:
+            eval_scores[c] = {"n": moments[c]["n"], "scored": False,
+                              "reason": "fewer than 15 paired CAL days"}
+        else:
+            eval_scores[c] = {"n": moments[c]["n"], "scored": True,
+                              "r": moments[c]["by_beta"][best.beta]["r"],
+                              "KGE_at_cal_opt": float(kge(c, best.beta, best.alpha))}
+
     return {
         "betas": BETAS, "alpha_box": [float(ALPHAS[0]), float(ALPHAS[-1])], "bar": list(BAR),
         "in_box_optimum": {"beta": float(best.beta), "alpha": float(best.alpha),
@@ -165,6 +196,10 @@ def kge_profile(obs, sim) -> dict:
         "F_report_at_beta056": {f"{a:.3g}": float(np.median([kge(c, 0.56, a) for c in CAL8]))
                                 for a in [2.0, 2.967, 8.902, 11.8, 30.0]},
         "per_station": per_station,
+        "g12_leave_out_flowsel": {"dropped": list(FLOW_SELECTIVE), "beta": float(g12best.beta),
+                                  "alpha": float(g12best.alpha), "F_report": float(g12best.F_report),
+                                  "vs_bar": g12_bar, "verdict_flips": g12_flips},
+        "eval_stations_at_cal_opt": eval_scores,
         "n_stations": len(CAL8),
     }
 
@@ -191,6 +226,17 @@ def render_md(rep) -> list[str]:
     for c, s in rep["per_station"].items():
         L.append(f"| {c} | {s['n']} | {'Y' if s['flow_selective'] else ''} | "
                  f"{s['r']:.2f} | {s['KGE_at_box_opt']:.3f} |")
+    g = rep["g12_leave_out_flowsel"]
+    L += ["", f"**G12 (leave out flow-selective {g['dropped']}):** F_report **{g['F_report']:.3f}** "
+          f"(β {g['beta']:.2f}, α {g['alpha']:.3g}), {g['vs_bar']} vs bar — "
+          f"verdict {'FLIPS ⇒ INDETERMINATE' if g['verdict_flips'] else 'holds'}."]
+    L += ["", "**EVAL stations (scored at CAL optimum, never fitted):**", "",
+          "| station | n | r | KGE |", "|---|--:|--:|--:|"]
+    for c, s in rep["eval_stations_at_cal_opt"].items():
+        if s.get("scored"):
+            L.append(f"| {c} | {s['n']} | {s['r']:.2f} | {s['KGE_at_cal_opt']:.3f} |")
+        else:
+            L.append(f"| {c} | {s['n']} | — | not scored ({s['reason']}) |")
     return L
 
 
