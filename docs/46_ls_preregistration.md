@@ -1583,3 +1583,54 @@ hand-edited; no git command run. `urh_ls2d.csv`, `minibacia_ls2d.csv`, `urh_ls2d
 written by this session: **`docs/51`** (four strike-through pointers plus a new §9 amendment slot),
 **this §10 amendment**, and its journal. **§1–§9 of this document were not touched.** The `docs/23`
 §13.2 yield embargo is in force; no t/km²/yr appears here.
+
+---
+
+### Amendment 3 — 2026-08-12 — the §3.3 STRATIFIED LS report is DELIVERED (the last owed item of `docs/47` §9.2 blocker 4)
+
+§3.3 made a stratified report **mandatory for every variant** on three strata and left it owed.
+It is now computed and committed: `scripts/c3/ls_stratified_report.py` →
+`data/processed/ls_stratified_report.{json,md}`. This amendment records the read-out; it
+**adopts nothing, fits nothing, and unblocks nothing** (§ "what this does NOT do", below).
+
+**Method (per engine unit, `mini,urh`).** LS per unit from `urh_ls2d_variants.csv` (ACT 1's
+committed product, all nine variants); the erosion weight `E_u` from a decade engine run at the
+adopted defaults **pinned to V0** (`ls2d_column='ls2d_hs'`, so the weights are the baseline
+erosion field, not self-referential) — same run that produces **299.5387 Mt/yr**; per-minibacia
+mean elevation and mean native-90 m Horn slope from a zonal pass over the COP DEM
+(`scripts/c3/ls2d.py`'s grid mapping); station catchments from `minibacias.csv:downstream`
+traversed from each station's outlet minibacia (`sediment_inventory_qc.csv`).
+
+**Gates.** **G1** basin erosion at adopted defaults = **299.5387 Mt/yr** (PASS, engine).
+**G2** V0 is 1.000 in every stratum by construction. **G3** V0 per-station erosion-weighted
+`LS̄` range **40.2 – 117 … 115.4** (ln **1.055**) is **consistent** with `docs/42` §4.1's
+**38.2 – 117.1** (ln **1.12**); the residual is a set difference — this report is over the **18
+usable** SSC stations, §4.1 is over the **CAL-13** — so it *tracks* rather than equals, which a
+mis-catchment or mis-weight would not (PASS as a consistency check, not an exact reproduction).
+
+**What the report shows.**
+1. **Erosion is steep-and-high.** The `> 1000 m` band carries **68.6 %** of basin erosion (area
+   48 %), the steepest slope tercile **65.6 %**. So LS is a steepness-driven factor and a
+   *steepness-dependent* LS error has leverage — this is the field `docs/42` **G4.1** reads.
+2. **The adopted formulation is a SHAPE change, not a level rescale — measured.** The
+   erosion-weighted ratio `V4_dg / V0` is **not** constant across strata: **0.298** on gentle/low
+   terrain falling to **0.235** on steep/high terrain (per-station **0.207 – 0.270**). The adopted
+   LS is cut *more* exactly where erosion concentrates. This corroborates, from a second and
+   independent direction, `Δ_shape = 0.1299456916752905 > 0` (amendment 1) and therefore that
+   **Branch B is mandatory** — a first C4.3 run on the adopted field, with **no** rescaling of a
+   surface already seen (§6.2 A6).
+
+**What this does NOT do.** No fit, no α̂, no `KGE_ln`, no evaluation against `docs/45`'s box.
+It does **not** unblock C4.3: Branch B (first-run) and **O4** (α's like-for-likeness with a 2-D
+contributing-area LS, no band offered) stand. It does **not** validate the LS **level** (`docs/42`
+G4.2). The engine-default switch to `V4_dg` was **ACT 2** (`src/mgb_sediment.py`, 2026-08-12), a
+separate act; the run here is V0-pinned and this amendment moves no default. It introduces **no
+band and no threshold**. This **discharges the `docs/46` §3.3 item of `docs/47` §9.2 blocker 4**;
+with the `docs/35` §9.5 gate re-registration already landed, blocker 4 is now cleared and the
+outstanding C4.3 conditions are Branch B (a search-time property) and O4.
+
+**Disclosure.** New files only: `scripts/c3/ls_stratified_report.py`,
+`data/processed/{ls_stratified_report.json, ls_stratified_report.md, minibacia_topo.csv,
+urh_erosion_weights.csv}`. `urh_ls2d.csv`, `minibacia_ls2d.csv`, `urh_ls2d_variants.csv` and the
+frozen bundle were **not written**. The `docs/23` §13.2 yield embargo is in force — the report
+carries LS levels (dimensionless) and per-station catchment counts only, **no t/km²/yr**.
