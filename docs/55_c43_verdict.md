@@ -105,9 +105,16 @@ observed ENSO contrast (~3–9×, `docs/34`) carries the study's scientific clai
   JS-rendered). Per `docs/45` §3.5's registered fallback the CAL window is labelled
   **OUT-OF-WINDOW** (by date), **not out-of-phase**, until the ONI values, retrieval date and
   threshold are recorded in `report_C4.json`. **Owed.**
-- **Estimator (b) robustness** (rating-curve flux) and the **`k_hi` deposition re-solve**
-  (`docs/45` §2.3, §3.3) — registered robustness runs, not yet performed; neither can change the
-  verdict except a sign disagreement makes it INDETERMINATE. **Owed.**
+- **Estimator (b) robustness — DONE (2026-08-12).** Refit on rating-curve flux
+  (`ssc_rating_fits.csv`, usable eras) gives in-box `F_report` = **0.139** (PASS), **same sign** as
+  estimator (a) (−0.118): **no sign disagreement, so the verdict is NOT INDETERMINATE.** Estimator
+  (b) rails less — its unconstrained optimum α ≈ **5.9** sits *inside* the box — because it compares
+  two Q-driven quantities (sim and a rating that is itself a function of Q), the exact reason
+  `docs/45` §3.3 fits on (a), not (b). The EXPLORATORY verdict holds under both.
+- **`k_hi` deposition re-solve** (`docs/45` §2.3) — **owed.** It reports a *level* pair (α at
+  k = 0 vs k = k_hi) and needs the per-minibacia→station flow-path lengths; it **cannot change the
+  verdict** (deposition raises the fitted α but does not move the bar comparison's sign). Deferred
+  with that scope stated.
 - **C5** (the ENSO out-of-sample application, 2011 / 2015–16) — not started; the strictly
   out-of-sample windows are untouched by this fit.
 
