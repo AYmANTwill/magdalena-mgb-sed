@@ -61,9 +61,13 @@ No station reverses sign; the disagreements are in magnitude, and the observed (
   RAILED/EXPLORATORY verdict stands; α is a handle on Π; the LS level is UNVALIDATED (`docs/42`
   G4.2); O4 is open. The `docs/23` §13.2 **yield embargo** holds — this is a dimensionless ratio
   of absolute fluxes, **no t/km²/yr**.
-- **β-sensitivity** (the ratio depends weakly on β through the event exponent) and the **S-EN/S-LN
-  ONI-peak sensitivity windows** (`docs/34` §1.2) are owed as a robustness pass; neither is
-  expected to change the direction (18/18).
+- **β and window sensitivity — DONE (2026-08-12, `scripts/c5/c5_sensitivity.py`,
+  `c5_sensitivity.csv`).** The direction (La Niña > El Niño, **18/18**) holds in **every** one of
+  the six (β ∈ {0.45, 0.56, 0.65} × {primary, secondary}) cells. Primary-window median rises with
+  β: **2.59 → 3.05 → 3.50**; the secondary ONI-peak windows (S-LN 2010-07…2011-06, S-EN
+  2015-10…2016-04, `docs/34` §1.2) *sharpen* the contrast: **3.78 → 4.92 → 5.90**. β and the window
+  definition move the magnitude but **never the sign**, and the primary range brackets the
+  observed ~3–5. The finding is robust.
 
 ## 5 — Disclosure
 
