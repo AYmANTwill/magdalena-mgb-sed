@@ -434,8 +434,58 @@ pic(s, "yb_demo_synthetic_overview.png", Inches(4.3), height=Inches(2.55),
 note(s, "Steps 2 and 3 are cheap and entirely in our control; step 1 decides whether the dry "
         "phase moves. The Phase C components already exist and are waiting on data quality.")
 
-# ============================================================== 18 the ask
-s, y = slide(18, "The question we need your guidance on")
+# ============================================================== 18 PHASE C: water to sediment
+s, y = slide(18, "Phase C — from water to sediment", "the ENSO question, made physical")
+bullets(s, y, [
+    "We drove a MUSLE erosion model with the calibrated runoff, and re-derived the slope factor to "
+    "the published source method (f_LS = 0.25146 — our original was ~4× too strong)",
+    "One question: does the El Niño–La Niña swing change suspended-sediment transport, and by how much?",
+    "Basin gross hillslope erosion at reference parameters: 299.5 Mt/yr — quoted with its convention, "
+    "NEVER as a per-area yield (catchment-area embargo, docs/23 §13.2)",
+], size=15)
+note(s, "The bridge from the hydrology ceiling to the sediment question. Keep short.")
+
+# ============================================================== 19 the calibration rails
+s, y = slide(19, "The sediment calibration rails — a finding, not a failure",
+             "the absolute level is not identifiable")
+bullets(s, y, [
+    "Best in-box median KGE_ln −0.118 (est. a) / +0.139 (est. b — same sign, so not indeterminate)",
+    "The level knob wants α ≈ 0.48 — below the plausible floor",
+    "The equation multiplies SEVEN constants the network cannot separate (design-matrix condition "
+    "number = ∞); only the product Π is identifiable",
+    "A fitted α would HIDE errors, not find them — so we report the level as unresolved, with a "
+    "stated reason. Two independent implementations agree (docs/59)",
+], size=13.5, width=int(BW * 0.5))
+pic(s, "gen_kge_rail.png", Inches(1.55), height=Inches(3.4),
+    left=int(M + BW * 0.5), cap="Median sediment KGE vs α — the fit rails at the box floor")
+
+# ============================================================== 20 the ENSO contrast (the result)
+s, y = slide(20, "The ENSO contrast — the model reproduces it (18 / 18)", "THE RESULT")
+callout(s, Inches(1.45), "La Niña carries about 3× more sediment than El Niño — observed AND "
+                         "modelled, at every station.", GOOD, 16, Inches(0.8))
+bullets(s, Inches(2.5), [
+    "Observed (model-free): 22/22 stations La Niña > El Niño, ~3–5× (est. b 2.84–2.95; est. a 4.62)",
+    "Modelled (this study): 18/18 stations, median 3.05×, robust across β and both window pairs",
+    "It works BECAUSE the wet/dry ratio cancels α and the LS level exactly — immune to the C4.3 railing",
+    "Strictly out-of-sample; CAL window neutral-core (2013) with a stated edge caveat (NOAA ONI)",
+], size=13)
+pic(s, "gen_enso_contrast.png", Inches(4.75), height=Inches(2.5),
+    cap="Modelled wet/dry ratio vs observed, all 18 stations — every bar exceeds 1")
+
+# ============================================================== 21 the limits, quantified
+s, y = slide(21, "The limits, quantified — not hand-waved", "measured, not waved away")
+bullets(s, y, [
+    "Gauges: only ~18 have paired sediment + discharge; the 46 sediment-only sites have no discharge "
+    "record at all (B5) → the flux set cannot grow. A physical limit of the network",
+    "The r ≈ 0.57 ceiling proved unliftable: the one surviving rainfall lever bounded at ≤ +0.006 r",
+    "The conclusion rests on THREE converging independent lines (observed flux 22/22, observed "
+    "concentration, modelled 18/18) — not on gauge count",
+], size=14, width=int(BW * 0.52))
+pic(s, "gen_ceiling_bound.png", Inches(2.2), height=Inches(2.7),
+    left=int(M + BW * 0.52), cap="A perfect rainfall repair lifts r by only +0.006")
+
+# ============================================================== 22 the ask
+s, y = slide(22, "The question we need your guidance on")
 callout(s, Inches(1.55), "Is the input-ceiling result (slide 15) an acceptable closing statement "
                           "for the hydrological phase?", NAVY, 17, Inches(0.85))
 bullets(s, Inches(2.75), [
@@ -449,9 +499,11 @@ callout(s, Inches(5.0), "This changes what \"done\" means for Phase B — the mo
                          "can settle today.", ACCENT, 15)
 note(s, "End here, not on the summary. Asking the scope question is worth more than a recap.")
 
-# ============================================================== 19 contribution
-s, y = slide(19, "What we have contributed")
+# ============================================================== 23 contribution
+s, y = slide(23, "What we have contributed")
 bullets(s, y, [
+    "The ENSO sediment contrast REPRODUCED out-of-sample (18/18 stations, ~3×) — plus the proof "
+    "that the absolute level is not identifiable from this network: the headline of the whole study",
     "First MGB-SED transposition to the Magdalena–Cauca, in TWO independent implementations that "
     "agree to ~0.02 KGE — one fast enough to calibrate, one carrying the paper's floodplain physics",
     "A mass-conservative, reproducible engine (residual 1.67 × 10⁻¹⁷, 11.7 s per basin-decade) "

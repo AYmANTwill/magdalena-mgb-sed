@@ -758,6 +758,53 @@ Status of anything you are about to claim: progress_map.html wins.]`
 
 ---
 
+## PHASE C — the sediment result (added 2026-08-13) · deliver after Slide 14
+
+> These four are the payoff and were added once Phase C finished. They convert Slides 17–18 from
+> "the open question" into "the answered question". Keep them tight — the contrast slide (G3) is
+> the one to land.
+
+### Slide G1 — From water to sediment
+> *"Everything so far has been water. The reason we care about the water is this: it carries
+> sediment, and sediment is what actually damages reservoirs and farmland downstream. So we drove a
+> physical erosion model — MUSLE — with the runoff we just calibrated, and we asked one question:
+> does the El Niño–La Niña swing change how much sediment the rivers carry? One correction mattered
+> first — the slope factor in the erosion equation was about four times too strong, so we re-derived
+> it from the published source method. With that fixed, the basin produces about 300 million tonnes
+> of hillslope erosion a year — and I'll only ever quote that as a total, never as a per-area yield,
+> because our catchment areas are not reliable enough for that."*
+
+### Slide G2 — The calibration rails, and that is a finding
+> *"When we tuned the sediment model against the gauges, it railed. The level knob wanted to go to
+> about 0.48 — far below the physical value of 11.8 — and the best score we could get was slightly
+> negative. Now, why is that a finding and not a failure? Because the erosion equation multiplies
+> seven quantities together that this gauge network simply cannot separate — mathematically, only
+> their product is identifiable. If we had reported a nicely-fitted coefficient, we would have been
+> hiding the errors inside it, not resolving them. Two independent implementations of the method
+> reached that same conclusion by different routes. So we report the absolute tonnage as unresolved,
+> and we say exactly why."* `[Figure: gen_kge_rail.png]`
+
+### Slide G3 — The ENSO contrast: the model reproduces it  ·  **THE RESULT**
+> *"But here is the thing we most wanted to know, and here the model succeeds. The question was never
+> really 'how many tonnes on Tuesday' — it was 'does La Niña move more sediment than El Niño, and by
+> how much'. That is a ratio, and a ratio cancels exactly the parts of the model we could not pin
+> down — the level knob and the slope factor divide out top and bottom. The measurements show about
+> three to five times more sediment in the wet La Niña year, at every station. Our model shows a
+> median of about three times, at eighteen of eighteen stations, and it stays that way whether we
+> change the storm exponent or the exact window definition — and these ENSO years were never used in
+> the calibration. So the model can carry a weak absolute score and still get the climate contrast
+> right, because the contrast is immune to the thing that is unresolved."* `[Figure: gen_enso_contrast.png]`
+
+### Slide G4 — The limits, quantified
+> *"And we are honest about what bounds this. There are only about eighteen usable gauges, because a
+> sediment site is only usable if it also measures discharge — we recovered the coordinates of forty-
+> six more, but not one of them gauges water, so the set cannot grow. And the accuracy ceiling — the
+> 0.57 — we proved cannot be lifted: the one remaining idea for better rainfall would raise it by at
+> most six thousandths. So the limits are measured, not waved away, and the contrast result stands on
+> three independent lines of evidence agreeing."* `[Figure: gen_ceiling_bound.png]`
+
+---
+
 ## Anticipated questions
 
 **"Why is the KGE only 0.45? That seems low."**

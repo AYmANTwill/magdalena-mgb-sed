@@ -367,6 +367,61 @@ This changes what "done" means for Phase B, so it is the most useful thing we ca
 
 ---
 
+## G — Phase C: the sediment result (added 2026-08-13) — *the study's headline, and it succeeds*
+
+> Deliver these **after Slide 14** (the input ceiling), as the payoff. They answer the Phase C
+> question Slides 17–18 used to pose as open: **the sediment work is now done.** No slide here
+> carries t/km²/yr (docs/23 §13.2 yield embargo) — sediment results are ratios or basin-internal
+> fluxes only.
+
+### G1. From water to sediment — the ENSO question made physical
+- We drove a MUSLE erosion model with the calibrated runoff (Phase B, at its r ≈ 0.57 ceiling) and
+  the topographic factor **re-derived to the published source method** (`f_LS` = 0.25146; ACT 2
+  moved the engine default to that field).
+- One question: does the El Niño / La Niña swing change suspended-sediment transport, and by how much?
+- Basin gross hillslope erosion at reference parameters: **299.5 Mt/yr** (always quoted with its
+  convention *and* `cp_revision`; **never** a yield).
+
+### G2. The sediment calibration rails — and that is a finding, not a failure
+
+| measurement | value |
+|---|---|
+| best in-box median KGE_ln, estimator (a) | **−0.118**, railed at the α floor |
+| robustness, estimator (b) | **+0.139** (same sign ⇒ **not** indeterminate) |
+| α the data wants (unconstrained) | **≈ 0.48** — below the plausible floor |
+| no-skill line (mean predictor) | **1 − √2 = −0.414** |
+
+- The erosion equation multiplies **seven** constants the network cannot separate (design-matrix
+  condition number **= ∞**); only the product Π is identifiable. A fitted α would **hide** errors,
+  not find them — so we report the absolute level as **unresolved, with a stated reason.**
+- Two independent implementations reach this by different routes (docs/59). Figure: `gen_kge_rail.png`.
+
+### G3. The ENSO contrast — the model reproduces it (18 of 18) — *the success*
+
+| | direction | median ratio |
+|---|---|---|
+| observed (model-free) | **22/22** La Niña > El Niño | ~3–5× (est. **b** 2.84–2.95; est. a 4.62) |
+| **modelled (this study)** | **18/18** | **3.05×** (robust across β and both window pairs) |
+
+- It works **because** the wet/dry ratio cancels α and the LS level *exactly* — so the result is
+  immune to the C4.3 railing. Strictly out-of-sample; CAL window neutral at its core (2013), with a
+  stated edge caveat (weak La Niña early 2012, El Niño onset late 2014; NOAA ONI, retrieved 08-13).
+- **This is the scientific contribution:** the contrast is reproduced even though the absolute level
+  is not identifiable. Reference estimator is **(b)**; both observed values shown. Figure: `gen_enso_contrast.png`.
+
+### G4. The limits, quantified — not hand-waved
+- **Gauges:** only ~18 have paired sediment + discharge; the 46 sediment-only sites have no discharge
+  record at all (B5), so the flux set **cannot grow** — a physical limit of the network.
+- **The ceiling holds:** the one surviving rainfall lever was bounded at **≤ +0.006 r**; the r ≈ 0.57
+  ceiling is structural, not a processing gap. Figure: `gen_ceiling_bound.png`.
+- The conclusion rests on **three converging independent lines** (observed flux 22/22, observed
+  concentration, modelled 18/18), not on gauge count.
+
+**Figures added (`figures/deck/`):** `gen_enso_contrast.png`, `gen_kge_rail.png`, `gen_kge_vs_r.png`,
+`gen_ceiling_bound.png` — all on the adopted V4_dg configuration.
+
+---
+
 ## Speaking notes
 
 - **Lead with slide 7 (the Klemeš split).** "Both ENSO phases are out-of-sample" is what makes
