@@ -21,6 +21,13 @@ the modelled median (3.05) sits at the lower edge of the observed ~3–5 band. T
 §1.2), rates only (the windows are unequal, 12 vs 24 months, so totals are never divided —
 `docs/34` §1.4).
 
+**Named reference estimator, both values printed (`docs/34`'s "gate on one, report both").** The
+observed median is **4.62** on estimator (a) (paired sample-day flux) and **2.84–2.95** on estimator
+(b) (rating-curve flux). The reference for judging the model is **estimator (b)**, because (a) is
+sparse-sample noisy (per-station spread 1.21–11.68 vs (b)'s 1.14–6.19); the modelled **3.05**
+matches (b) closely and sits **below** (a). This is stated explicitly so the model is not compared
+against whichever observed estimator flatters it.
+
 ## 2 — Why this holds even though C4.3 railed
 
 The within-station wet/dry ratio is **invariant to α and to the LS level** — both are static
