@@ -227,7 +227,7 @@ over-read:
 
 | test | measured | bar | verdict |
 |---|---:|---:|---|
-| (R4) `|ln f(V2b) − ln f(V2a)|` | **0.0088** ero (0.0052 area) | 0.1644 | **FIRES** ⇒ H-M's **field clause REFUTED**, 19× inside |
+| (R4) `|ln f(V2b) − ln f(V2a)|` | **0.0088** ero (0.0052 area) | 0.1644 | **FIRES** ⇒ H-M's **field clause REFUTED**, 19× inside |  **[⚠ Amd 3, 2026-08-13: this verdict was read against the **STRUCK** 0.1644 ln bar. See §9 Amendment 3 and `docs/52`.]**
 | (R5) sign `f(V2b) > f(V2a)` | 0.52204 > 0.51748 | — | **does not fire** — the predicted sign held |
 | Defect A on the **upper** endpoint | `|ln V4/V4′|` = **0.00362** | 0.1644 | immaterial (45× inside) |
 | Defect A on the **lower** endpoint | `|ln V4_dg/V4′_dg|` = **0.00101** | 0.1644 | immaterial (163× inside) — *measured here, not previously stated* |
@@ -254,7 +254,7 @@ source field's erosion. It carries 4.1 %.)*
 
 | test | measured | bar | verdict |
 |---|---:|---:|---|
-| H-L, as `docs/46` §2.5 states it: `|ln f(V5) − ln 0.790|` | **0.0258** | 0.1644 | **REFUTED** — the confound is immaterial at basin scale |
+| H-L, as `docs/46` §2.5 states it: `|ln f(V5) − ln 0.790|` | **0.0258** | 0.1644 | **REFUTED** — the confound is immaterial at basin scale |  **[⚠ Amd 3, 2026-08-13: this verdict was read against the **STRUCK** 0.1644 ln bar. See §9 Amendment 3 and `docs/52`.]**
 | the endpoint the defect was raised against: ×0.333 vs ×0.2447 | `|ln|` **0.307** | 0.1644 | **MATERIAL** — the endpoint is wrong |
 | bracket ln width, published → corrected | 0.2345 → **0.5410** | — | **2.31× WIDER**; the widening (+0.305) is itself ~2× the bar |
 | the published 0.790, factorised exactly | **0.852262 (`L` form) × 0.926925 (`S` swap)** | — | the split is effectively unique |
@@ -348,7 +348,7 @@ which 0.465 is the residual sd.
 | (R4) H-M field clause | 0.0088 | refuted | refuted — **robust** |
 | H-L (§2.5) | 0.0258 | refuted | refuted — **robust** |
 | (R12) proxy vs exact | 0.0248 | refuted | refuted — **robust** |
-| **(R10) "decide the levers as a set"** | **0.2983** | **survives** (levers interact) | **FIRES** (levers separable) — **verdict flips** |
+| **(R10) "decide the levers as a set"** | **0.2983** | **survives** (levers interact) | **FIRES** (levers separable) — **verdict flips** |  **[⚠ Amd 3, 2026-08-13: this verdict was read against the **STRUCK** 0.1644 ln bar. See §9 Amendment 3 and `docs/52`.]**
 | bracket **width** | 0.5410 | material | **immaterial** |
 | bracket **endpoints** vs 1.0 | 0.8395 / 1.3805 | material | **material — robust** |
 
@@ -758,3 +758,39 @@ arithmetic identity attached to it is corrected.** No bar is invoked and none is
 - **The `docs/23` §13.2 yield embargo is in force**; no t/km²/yr appears here.
 - **The LS level remains UNVALIDATED** (`docs/42` G4.2). This amendment corrects a proxy's
   arithmetic; it validates nothing.
+
+
+### Amendment 3 — 2026-08-13 — **§3 / §4's verdict tables were read against the STRUCK 0.1644 ln bar**
+
+Closes `docs/54` §6's third surviving T6 finding (`refute-t6-4`, **HIGH**, confirmed by an
+independent refuter). **`docs/52` §8(d) itself flagged this as owed to this document's owner**;
+this is that amendment. **No number in §2 moves, and no verdict about the LS formulation
+changes** — the adopted `ls_formulation` remains `buarque_2015_dg` and `f_LS` remains 0.25146.
+
+**The defect.** Three verdict cells compare a measured `|ln|` to **0.1644 ln** and read a
+PASS/FAIL off it. That bar was **STRUCK, not rescaled** (`docs/46` §2.0; decision `docs/52`;
+falsification `docs/47` §2.2 D2 + `docs/48`) — its stated derivation, the SE of the fleet-mean
+level from σ_r = 0.465, is **falsified**: the measured SE is **0.6936 ln** (est. b) /
+**0.4775 ln** (est. a). The cells were correct **against the bar they were measured against**,
+and the INDEX advertises these tables as executable, so a reader could take them as live.
+
+| site | as printed | corrected reading, and what decides it now |
+|---|---|---|
+| **§3, :230** — (R4), `\|ln f(V2b) − ln f(V2a)\|` = **0.0088** ero (0.0052 area) | *"FIRES ⇒ H-M's field clause REFUTED, 19× inside"* | **(R4) is RETIRED as a refutation clause** (`docs/46` §2.2, ground **G-iv**). H-M's field content is a **SIGN** prediction; the sign test is **(R5)**, which is exact and threshold-free, and **the sign HELD** (0.522043 > 0.517480 ero). **H-M's field clause is CONFIRMED on its sign**, magnitude reported at full precision as **×1.008878** ero / ×1.005212 area and **compared to nothing**. The **reading** clause — eq. 14's step ≠ `min(m,0.5)`'s cap — is independent, is **CITED**, and stands. |
+| **§4, :257** — H-L, `\|ln f(V5) − ln 0.790\|` = **0.0258** | *"REFUTED — the confound is immaterial at basin scale"* | **H-L is NOT refuted** (`docs/46` §2.5). The clause is threshold-free: it asks *whether 0.790 is the object it is labelled as*, and **it is not** — it factorises exactly as **0.790 = 0.852262 (`L` form) × 0.926925 (`S` swap)**, measured on the **wrong column** (`ls2d`, not the engine's `ls2d_hs`). The 0.0258 is **reported and is not the test**. |
+| **§5, :351** — (R10), product vs joint, **0.2983** | *"survives (levers interact)"* vs *"FIRES (levers separable) — verdict flips"* | **(R10) is RETIRED as a refutation clause and is decided BY THE CITATION** (`docs/52` §3, `docs/46` §2.4): eqs. 13/14/18 plus the p. 94 / p. 98 limiter are **one formulation**, all four levers CITED, read whole a **POINT** at ×0.25146; the formulation is **adopted whole or not adopted**. The arithmetic non-multiplicativity is a **reported fact with a standing instruction** — **joint / product = ×1.34762**, and *never quote a product of single-lever factors as the joint factor*. **Even if the levers multiplied out exactly, the answer would be the same.** *(The **statistical** version of this conclusion is **BAR-DEPENDENT** — `docs/46` §2.0.1 register entry 1, `docs/52` §5 entry 1: it **reverses on all seven** admissible SE constructions, on a **2.4 %** margin. The citation route is **bar-independent**, which is why it is the one in force.)* |
+
+**The rows are corrected in place with a dated pointer, not deleted** — the record of what was
+adjudicated against the falsified bar is itself the audit trail, and `docs/46` §1.0's precedent
+is to keep superseded numbers printed so they stay identifiable.
+
+**One clause of the finding is NOT sustained, and is recorded as such.** The finding also
+alleged a *"fourth retired band"* overclaim in this document's wording. **Grepped: no such
+phrase is present in `docs/51`** (`"fourth retired"`, `"fourth band"`, `"retired band"` all
+return nothing). Nothing is changed on that ground, and **no wording is invented to match a
+finding** — an unlocatable clause is reported unlocatable.
+
+**What this amendment does NOT do:** it moves no engine default, runs no fit, quotes no α̂,
+opens no frozen artifact for writing, and **introduces no replacement bar and reconstructs
+none** — not 0, not 0.1644, not 0.3054, not 0.4775, not 0.6936 (`docs/52` §7 items 1–2).
+`docs/46` remains FROZEN and was not touched by this amendment.

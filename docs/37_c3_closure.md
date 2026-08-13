@@ -238,7 +238,7 @@ not — read A2.1–A2.2 before treating any candidate as a single quantity.
    >    **0.25146**, `f_area` = **0.2446790094097074** — and ×0.43194 is a **documented HYBRID**
    >    (the source's three levers with *our* `L`), retained only for reproducibility. The
    >    0.5410027585442313 ln span between them **is the `L`-form lever** (×1.7177284657599616).
-   > 4. **`docs/46` §4.2's outcome is now exercised as ADOPT-SOURCE at `ls_formulation =
+   > 4. **`docs/46` §4.2's outcome is now exercised as ADOPT-SOURCE at `ls_formulation = **[⚠ A3.9, 2026-08-13: "exercised" was PREMATURE as written here — `docs/46` §4.2 note 3 reserves *exercised* for the step gated on §3.3's full stratified report, and A3.1.6 of this amendment correctly said **determined and recorded, NOT YET EXERCISABLE**. It has since become TRUE: see A3.9.]**
    >    buarque_2015_dg`** — see **A3.1**. The RESOLVER named below has therefore been executed on
    >    source grounds; what remains owed before the engine default may move is **A3.1.6**'s three
    >    deliverables. **STANDING INSTRUCTION** (`docs/46` §2.4): never quote a product of
@@ -1573,6 +1573,8 @@ interpretation rather than a rewriting:**
 > **as incumbent and never as validated**, the bracket carried, and C4.3 still blocked. That branch
 > is written here so that no downstream session can present A3.1's ADOPT-SOURCE as unconditional.
 >
+> **[⚠ A3.9, 2026-08-13 — THIS BRANCH IS CORRECTED AND CLOSED. Nothing above is deleted.]** The branch as written names an outcome **no governing document admits**: `docs/46` §4.2's NEGATIVE — UNRESOLVED row is a **closed disjunction** (≥ 1 lever with no citable ground either way · (R6) fires · the source text cannot be obtained/verified), and **A3.1.1 of this same amendment measures all three disjuncts FALSE**. A *documentary* ground is not in that disjunction, and a frozen row's entry conditions may not be extended by an amendment in another file. Separately, *"`V0` retained"* is an **engine-state fact (A3.5.1), not a §4.2 outcome** — the conflation A3.1.1's own RETAIN-OURS row expressly rejects. The correct characterisation is a **supremacy conflict between two frozen documents**, for their owners, not a third §4.2 outcome; and the gap between the two *fallbacks* (`V0` vs `docs/35` §9.3.2's registered three-lever default `V4`) is **×2.3151**, **not** the ×1.7177 POINT-vs-hybrid `L`-form lever. **AND THE TRIGGER DID NOT FIRE:** the owed `docs/35` §9 amendment (A3.7 row (a)) **arrived** — `docs/35` **§9.5, 2026-08-12**, written by `docs/35`'s own owner, re-registers the §6.1 α band at the adopted LS level and records *"ACT 1 and ACT 2 have now been executed"*. `docs/35`'s owner **did not decline**. See A3.9.
+>
 > **A second, related exposure, recorded rather than argued away.** `docs/46` §4.2 item 5's fourth
 > lever came in by **amendment (d), dated 2026-08-11 — the same day as the freeze and after the
 > ×0.25146 total was on the record** (`docs/47` §4.3). A hostile auditor can say the `L` lever was
@@ -2380,3 +2382,79 @@ Delta_shape = 0.1299456916752905 (docs/53; argmax 24037390 CAPITANEJO; smallest 
 Test suite: 153 passed, 1 warning (measured 2026-08-12; unchanged by this amendment, which
   edits no code). No fit was run; no alpha-hat exists.
 ```
+
+
+---
+
+## A3.9 Closure of the three surviving T6 findings — 2026-08-13
+
+`docs/54` §6 recorded **four** adversarial findings that survived independent refutation and
+were left OPEN when the run that raised them was cut short. One was CRITICAL and belonged to
+the notebook track (`refute-t6-2`, the retired ±38 % band live in `src/nbgen/make_nb19.py`);
+it is **fixed and verified from executed output** — 14 sites, nb19 re-executed, all 33
+integrity assertions passed, 299.5387 / 248.7298 reproduced, `pytest` 154 passed. The two
+that belong to **this** document are closed here, and the third is closed in `docs/51` §9
+Amendment 3. **None of the four touched a canonical result number**, and none does now.
+
+### A3.9.1 `refute-t6-1` (HIGH, freeze-honesty) — *"exercised"* was premature. It is now TRUE.
+
+**The finding, confirmed by its refuter** (`docs/agents/journal_refute-t6-1.md`: *"I could not
+kill it"*): §A3.3's item 4 at line **241** said `docs/46` §4.2's outcome *"is now exercised as
+ADOPT-SOURCE"*, while `docs/46` §4.2 note 3 reserves **exercised** for the step gated on §3.3's
+**full stratified report**, and **A3.1.6 of this very amendment** said *"determined and
+recorded, NOT YET EXERCISABLE"*. The refuter found the one substantive site to be :241;
+:1394 and :1423 use the same verb in a *defensible-but-colliding* sense, and
+`src/mgb_sediment.py`:242 is mitigated in place two lines later.
+
+**What discharged it — measured on disk, not asserted.** The gating condition has since been
+met, by other owners, after A3 was written:
+
+| what was owed | discharged by | evidence on disk |
+|---|---|---|
+| `docs/46` §3.3's **full stratified LS report** (slope terciles were *confirmed absent* when A3 was written) | **`docs/46` §10 Amendment 3, 2026-08-12** — *"the last owed item of `docs/47` §9.2 blocker 4"* | `scripts/c3/ls_stratified_report.py`, `data/processed/ls_stratified_report.{json,md}` |
+| §2.3's **H-S field clause (R7)/(R8) items 2–3** — the one part of `docs/46` §2 never read out | **`docs/46` §10 Amendment 4, 2026-08-12** | `docs/46`:1642 |
+| the **engine default** itself (A3.5.1 named this as a separate dated act) | **ACT 1 + ACT 2, 2026-08-12** | `V4_dg` materialised, then made the default; `V0` pinned explicitly |
+
+> **RESOLUTION.** *"Exercised"* was **wrong when written** and is **right now**. The wording at
+> :241 is corrected in place with a dated pointer rather than silently repaired, because the
+> record of what was claimed prematurely is itself the audit trail. **A3.1.6's
+> *determined-but-not-yet-exercisable* status is therefore SUPERSEDED BY EVENT, not by
+> argument** — and the sequence is checkable: the report landed *after* the claim.
+
+### A3.9.2 `refute-t6-6` (HIGH, a3-overreach) — the fallback branch named an inadmissible outcome
+
+**The finding, confirmed on three independent legs** (`journal_refute-t6-6.md`), against A3.1.3's
+*"THE HONEST LIMIT OF THIS ADJUDICATION"* blockquote:
+
+1. it asserts **NEGATIVE — UNRESOLVED on a *documentary* ground**, which is **absent from**
+   `docs/46` §4.2's frozen disjunction — and **A3.1.1 measures all three disjuncts FALSE**. A
+   frozen row's entry conditions cannot be extended by an amendment in another file;
+2. it contradicts **`docs/35` §9.4.3's** own stated consequence for the same premise, **and
+   contradicts this document's own :1536–1538**;
+3. *"`V0` retained"* as part of a §4.2 outcome is exactly the **engine-state / outcome
+   conflation** that A3.1.1's RETAIN-OURS row expressly rejects.
+
+**Two corrections to the finding as raised**, from its own refuter, so the record is right in
+both directions: the *fallback-vs-fallback* gap is **×2.3151** (`V0` vs `docs/35` §9.3.2's
+registered three-lever default `V4`), **not ×1.7177** (which is the POINT-vs-hybrid `L`-form
+lever, correct in its own place at :240 and :1409); and the locator must include **A3.7's
+`docs/35` row (a)**, which is where the owed amendment was registered.
+
+> **RESOLUTION — and the branch's trigger DID NOT FIRE.** The branch was conditional on
+> *"if `docs/35`'s owner declines"* the owed §9 amendment. **The owner did not decline.**
+> **`docs/35` §9.5, dated 2026-08-12**, re-registers the §6.1 α band at the adopted LS level and
+> records in its own words that *"ACT 1 and ACT 2 have now been executed"*. So the supremacy
+> conflict this branch was insurance against **was resolved by the document that would have
+> lost**, in its own amendment slot, by its own owner — which is the correct route and the one
+> A3.7 row (a) asked for. The branch is **corrected in place and closed**; it is not deleted,
+> so a future reader can see what it protected against and why it lapsed.
+
+### A3.9.3 What A3.9 does NOT do
+
+It moves **no engine default** (ACT 2 did that, separately and earlier, and A3.9 is a written
+record only); it **runs no fit** and quotes **no α̂**; it opens no frozen artifact for writing;
+it introduces **no materiality bar** and reconstructs none (`docs/52` §7 item 2); it does not
+re-open `docs/46` §1–§9, `docs/35` §1–§8, `docs/42` §1–§8 or `docs/45` §2–§6; and it does **not**
+close C3 — clauses 3 and 4″ of A1.1's conjunction are untouched, and A3.4's **C4.3 verdict is
+unchanged by this section** (C4.3's own outcome is `docs/55`, RAILED / EXPLORATORY). The
+`docs/23` §13.2 yield embargo is in force: no t/km²/yr appears here.
