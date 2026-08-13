@@ -1896,16 +1896,39 @@ $$\text{ratio} = \frac{n_{\text{effective}}}{n_{\text{free parameters}}}$$
 | raw paired SSC-Q days | **3,266** | it is what the files contain | **flattering and wrong** - consecutive days are not independent |
 | autocorrelation-effective days, median lag-1 $\rho$ = 0.771 | **474.2** | corrects for temporal dependence within a station | the honest **temporal** n |
 | station-months with data | **126** of 288 possible | a coarse independence unit | coverage, not power |
-| **stations** | **8** | the registered noise floor $\sigma_r$ = 0.465 ln is a **per-station** residual floor and does **not** average down within a station | **the binding one**, used for every spatial claim |
+| **stations** | **8** | the level residual is a **per-station** quantity: it does **not** average down *within* a station, so stations are the independence unit for every spatial claim | **the binding one**, used for every spatial claim |
 
-$\sigma_r$ is itself measured, not chosen: the two independent observed-flux estimators disagree
-by $\mathrm{sd}[\ln(a/b)]$ = 0.658 over the 32 station-windows where both are admissible, so a
-single estimator carries $0.658/\sqrt{2}$ = **0.465 ln** - a factor of 1.59.
+$\sigma_r$ is measured, not chosen, and it measures **one specific thing**: the two independent
+observed-flux estimators disagree by $\mathrm{sd}[\ln(a/b)]$ = 0.658 over the 32 station-windows
+where both are admissible, so a single estimator carries $0.658/\sqrt{2}$ = **0.465 ln** - a factor
+of 1.59. **That is an estimator-DISAGREEMENT statistic, and in that role it stands.**
+
+> ### RETIRED, 2026-08-12: $\sigma_r$ = 0.465 ln is NOT the per-station residual sd
+>
+> `docs/47` section 2.2 (D2) measured the actual per-station residual sd on the registered CAL
+> window at **1.9618 ln** - a factor of **4.22** larger - and `docs/48` found **no admissible
+> construction** on which 0.465 is that quantity. So every quantity below that was built as
+> $\sigma_r/\sqrt{n}$ is **superseded**: the SE of the fleet-mean level (published 0.1644 ln,
+> measured **0.6936 ln** on estimator (b) / **0.4775 ln** on (a)) and the **+/-38 %** level band
+> that followed from it. The replacement is registered in `docs/45` section 8.1.3 and is a
+> **station-level bootstrap**, not a formula - see the next cell. **`min`-style reuse of an
+> observation-side statistic for a model-side quantity is the category error `docs/48` retired;
+> rescaling the number would have repaired the size and left the type.**
+>
+> **What is NOT affected** (`docs/47` section 2.2's own scope correction): `SE(beta)` = 0.0199,
+> built on $\sigma_{day}$ = 0.809; the `b_obs` IQR yardstick 0.464, independently measured; and
+> every place 0.465 / 0.658 is a **firing threshold** (G1.1's pair backstop, G8, G11), where the
+> error errs **safe**. G12's 0.644 ln fragility threshold is untouched.
 
 **Data source:** counts computed above and in `journal_adj-c4-feasibility.md` section 3.2;
-$\sigma_r$ and $\rho$ carried from `docs/42` section 4.2.""")
+$\sigma_r$ and $\rho$ carried from `docs/42` section 4.2; the retirement and its replacement from
+`docs/45` section 8.1, `docs/47` section 2.2, `docs/48`.""")
 
-code(r"""SIGMA_R = 0.465          # ln units, docs/42 section 4.2 - PER STATION, does not average down
+code(r"""# SIGMA_R is the two-estimator DISAGREEMENT statistic (docs/42 section 4.2). It is RETIRED
+# as a per-station residual sd (docs/47 section 2.2 D2 measures that at 1.9618 ln, x4.22 larger).
+# Kept here only to reproduce the SUPERSEDED construction so it stays identifiable.
+SIGMA_R = 0.465          # ln units - estimator disagreement ONLY, NOT a residual floor
+RESID_SD_MEASURED = 1.9618   # ln, docs/47 section 2.2 (D2): the actual per-station residual sd
 N_FREE = 2               # docs/45 section 2.2: alpha (as the handle on Pi) and beta
 DEN = pd.DataFrame({
     'denominator': ['raw paired SSC-Q days', 'autocorrelation-effective days (rho 0.771)',
@@ -1919,11 +1942,34 @@ print(f'binding ratio, 8 stations : 2 free parameters = {n_d/N_FREE:.1f} : 1')
 print(f'      (at the 3 free parameters originally registered it would be {n_d/3:.1f} : 1 - '
       f'"not a fit, a fitted curve through a rumour")')
 
+# ---- the SUPERSEDED construction, reproduced so it stays identifiable, NOT quoted as current
 SE8 = SIGMA_R / np.sqrt(8); SE13 = SIGMA_R / np.sqrt(13)
-print(f'\nSE of the fleet-mean LEVEL at n=8  : {SE8:.4f} ln = +/-{100*(np.exp(1.96*SE8)-1):.0f} % '
-      f'at 95 %  ({np.exp(-1.96*SE8):.3f}x - {np.exp(1.96*SE8):.3f}x)')
-print(f'SE of the fleet-mean LEVEL at n=13 : {SE13:.4f} ln = '
-      f'+/-{100*(np.exp(1.96*SE13)-1):.1f} %   (what docs/42 assumed)')
+print('RETIRED construction (docs/45 section 8.1 replaced it) - shown, not quoted as current:')
+print(f'  sigma_r/sqrt(8)  = {SE8:.4f} ln = +/-{100*(np.exp(1.96*SE8)-1):.0f} % '
+      f'({np.exp(-1.96*SE8):.3f}x - {np.exp(1.96*SE8):.3f}x)   <- the published +/-38 %')
+print(f'  sigma_r/sqrt(13) = {SE13:.4f} ln = +/-{100*(np.exp(1.96*SE13)-1):.1f} %   '
+      f'(what docs/42 assumed)')
+print(f'  measured per-station residual sd is {RESID_SD_MEASURED} ln, not {SIGMA_R} '
+      f'(x{RESID_SD_MEASURED/SIGMA_R:.2f}) - docs/47 section 2.2 (D2)')
+
+# ---- THE REGISTERED BAND: docs/45 section 8.1.3. A PROCEDURE, NOT A CONSTANT.
+# station-level bootstrap of the fleet-mean per-station log residual; 10,000 station resamples,
+# seed 20260810; C4.3 recomputes it on its own residuals. Values below are the PRE-FIT EXPECTATION.
+BOOT = pd.DataFrame({
+    'estimator': ['(a) the objective estimator (docs/45 section 7.1)',
+                  '(b) the docs/42 section 9 registered primary'],
+    'point_ln': [2.5772, 1.9240],
+    'band_lo': [0.418, 0.286],
+    'band_hi': [2.289, 3.730],
+    'halfwidth_ln': [0.8500, 1.2833]})
+print('\nREGISTERED band on the level - station bootstrap, 10,000 resamples, seed 20260810')
+print('(docs/45 section 8.1.3; PRE-FIT EXPECTATION - the band is a PROCEDURE, not a constant):')
+print(BOOT.to_string(index=False))
+print('\n  REPORTING CONVENTION (registered, and explicitly NOT a statistical claim):')
+print('    Pi_hat  x  [0.29, 3.73]   95 %, station bootstrap, UNION over estimators (a) and (b)')
+print('  The per-estimator bands are printed beside the union, ALWAYS.')
+print('  The union spans a factor of 13.0; the retired +/-38 % band spanned 1.91.')
+print('  Mandatory beside it: "the level is set by 8 stations whose residuals span a factor of 412."')
 
 fig, ax = plt.subplots(1, 2, figsize=(12.6, 3.7))
 yv2 = np.arange(len(DEN))[::-1]
@@ -1952,7 +1998,8 @@ ax[1].text(13.2, 100 * (np.exp(1.96 * SE13) - 1) + 8,
 ax[1].set_xlabel('number of calibration stations')
 ax[1].set_ylabel('95 % half-width on the fitted LEVEL (%)')
 ax[1].set_ylim(0, 75)
-ax[1].set_title('$\\sigma_r$ = 0.465 ln is per STATION, so only $\\sqrt{n}$ helps', fontsize=9.3)
+ax[1].set_title('RETIRED construction $\\sigma_r/\\sqrt{n}$ - superseded by the station\n'
+                'bootstrap, $\\Pi\\times$[0.29, 3.73] (docs/45 section 8.1.3)', fontsize=8.6)
 ax[1].grid(alpha=0.25)
 plt.tight_layout(); plt.show()""")
 
@@ -1960,15 +2007,21 @@ reading(
     what=r"""**Left:** the four candidate observation counts on a log axis, each annotated with
 the observations-to-parameters ratio it implies at two free parameters. **Right:** the 95 %
 half-width on the fitted level as a function of the number of calibration stations, given the
-registered per-station noise floor $\sigma_r$ = 0.465 ln, with the achievable n = 8 and the
-registered n = 13 marked.""",
+**RETIRED** construction $\sigma_r/\sqrt{n}$, with the achievable n = 8 and the
+registered n = 13 marked - shown so the superseded band stays identifiable, **not** as the current
+band.""",
     shows=r"""The denominators run from **3,266** down to **8** - a factor of 408 - and only the
-last one is defensible, because the noise floor is a per-station quantity that does not average
+last one is defensible, because the level residual is a per-station quantity that does not average
 down within a station. At 8 stations and 2 free parameters the ratio is **4.0 : 1**; at the three
-free parameters originally registered it would have been **2.7 : 1**. The level's 95 % band is
-consequently **+/-38 %** (0.724x to 1.380x); 13 stations would have given +/-28.8 %.""",
+free parameters originally registered it would have been **2.7 : 1**. The right panel's
+**+/-38 %** (0.724x to 1.380x) is the **RETIRED** band: it was built as $\sigma_r/\sqrt{n}$ from a
+statistic that is **not** the per-station residual sd (measured **1.9618 ln**, x4.22 larger -
+`docs/47` section 2.2). **The registered band is the station bootstrap of the fleet-mean
+per-station log residual: $\Pi\times$[0.29, 3.73], the union over estimators (a) and (b)**
+(`docs/45` section 8.1.3) - a factor of **13.0**, where the retired band spanned **1.91**.""",
     means=r"""**C4 is feasible, but only as a small fit**: two free parameters, eight stations,
-and a level that arrives with a factor-of-two-wide band around it. This is what licenses the
+and a level that arrives with a band around it spanning a factor of **13**, not the factor of two
+this section originally claimed. This is what licenses the
 registered posture - the calibration may report a **level and a shape parameter and a bound**, and
 nothing else. It also fixes, in advance, what "3,266 observations" may be used for: **nothing**.
 That number may not be quoted as an $n$ anywhere in stage C4.""")
@@ -1980,7 +2033,9 @@ returned a different verdict for each of them, and the C4 registration was rebui
 
 **1. $\alpha$ alone - NOT identifiable.** Section 3.4. The design matrix is exactly singular in
 the basin-total form (condition number `inf`) and 5,682 in the eight-station composition form.
-What is identifiable is the **level $\Pi$**, with the +/-38 % band of section 4.2.
+What is identifiable is the **level $\Pi$**, with the registered station-bootstrap band
+$\Pi\times$**[0.29, 3.73]** (`docs/45` section 8.1.3) - **not** the retired +/-38 % of
+section 4.2.
 
 **2. $\beta$ - identifiable, and comfortably.** This one changed the verdict when it was measured
 properly. Because $q_{peak}$ is linear in $Q_{sur}$ (section 2.5), a station's flux is
@@ -2006,6 +2061,24 @@ depends on the **spread of $L_w$** in the set:
 
 $$k_{\min}\;=\;\frac{1.96\,\sigma_r}{\sqrt{\sum_i (L_{w,i}-\bar L_w)^2}}\quad[\text{km}^{-1}],
 \qquad\text{survival over a path } L:\ \exp(-k L).$$
+
+> ### CORRECTED, 2026-08-12 (`docs/45` section 8.1.4)
+> $k_{\min}$ is **linear in $\sigma_r$**, so retiring $\sigma_r$ = 0.465 as a residual sd moves
+> every $k_{\min}$ in the corpus. On the registered joint form (G1.2 fitted jointly with G3.1 and
+> G4.1, all 18), with the **measured** residual sd:
+> ```
+> k_min = 0.0065 - 0.0069 /km        (registered: 0.00216 /km)
+> ```
+> > **"No first-order channel sink WEAKER than ~10x over ~342 km is detectable on this fit set."**
+> > *(equivalently: $|k| <$ 0.0069 /km cannot be distinguished from zero)*
+>
+> Registered **2.12x over 348.4 km**; corrected **~9x - 11x, central ~10x**. **Sense settled:**
+> only *"weaker"* is the correct reading of a detection floor, and *"weaker"* is the registered
+> wording from that amendment forward. `k` stays **FIXED at 0.0 /km** and the *"this model asserts
+> SDR = 1.0"* claim stands in the words `docs/45` section 2.3 registers - what changes is the
+> **strength of the evidence** for it: the guard that would betray SDR = 1.0 is weaker than
+> registered by **x3.18** in `k` and **x4.91** in the survival contrast. The values reproduced
+> below are the **superseded** ones, kept so they stay identifiable.
 
 **Data source:** the $L_w$ ladder of `docs/42` section 4.1 (18 stations, 2.6-348.4 km, measured
 from `topology.npz`), carried; $k_{\min}$ values from lens 3, reproduced arithmetically below.""")
@@ -2122,7 +2195,7 @@ scale: *does this block stage C4?*
 |---|---|---|---|
 | **1** `adj-ratio` (section 2) | does the level error cancel in the ENSO ratio? | **PARTIALLY** | the period-differential is centred on 1 - but it is **not a constant**, and the band is as wide as the residual it would certify |
 | **2** `adj-alpha-role` (section 3) | what is $\alpha$ for? | **NO - does not block** | $\alpha$ and $\beta$ are **fitted coefficients of adjustment** in the transposed method, so the level is a target, not a defect |
-| **3** `adj-c4-feasibility` (section 4) | is C4 feasible? | **PARTIALLY** | feasible as **2 free parameters + 1 bounded, on 8 stations** - with a +/-38 % level band and no ability to decompose it |
+| **3** `adj-c4-feasibility` (section 4) | is C4 feasible? | **PARTIALLY** | feasible as **2 free parameters + 1 bounded, on 8 stations** - with a level band spanning a factor of **13** ($\Pi\times$[0.29, 3.73], `docs/45` section 8.1.3; the +/-38 % originally claimed here is RETIRED) and no ability to decompose it |
 
 > ## The verdict: `C3-STAYS-OPEN-C4-PROCEEDS-CONDITIONALLY`
 
@@ -2210,12 +2283,18 @@ BOUND = pd.DataFrame({
                            'beta with its CI AND the confounding note',
                            'a BOUND, never a value', 'c_G, c_B with intervals'],
     'the number': ['cond = inf (basin form), 5,682 (CAL-8 composition form)',
-                   f'+/-{100*(np.exp(1.96*SE8)-1):.0f} % at 95 % (SE {SE8:.4f} ln, n=8)',
+                   'x[0.29, 3.73] at 95 % - station bootstrap, UNION over (a),(b) '
+                   '(docs/45 s8.1.3; the retired +/-38 % / SE 0.1644 ln is NOT this number)',
                    'SE 0.0199; 95 % half-width 0.039 vs band half-width 0.10',
-                   f'k_min {KMIN["CAL 8 (achievable)"]:.4f} /km on the fit set; 0.00216 /km on '
-                   f'all 18',
-                   'minimum detectable class-C error ~4.2x (CAL 8), ~2.9x (all 18)']})
-print(BOUND.to_string(index=False))""")
+                   'k_min 0.0065-0.0069 /km (all 18, G1.2 joint form, measured residual sd) => '
+                   'no sink WEAKER than ~10x over ~342 km is detectable (docs/45 s8.1.4; '
+                   'the registered 0.00216 /km and 2.12x are SUPERSEDED)',
+                   'NO CORRECTED NUMBER - the ~4.2x (CAL 8) / ~2.9x (all 18) figures are '
+                   'sigma_r-scaled and did not reproduce (x8.2 / x3.2); OPEN ITEM O8']})
+print(BOUND.to_string(index=False))
+print('\nNOTE: the Pi row is a PROCEDURE (recomputed by C4.3 on its own residuals), not a constant;')
+print('      and it is quoted with "the level is set by 8 stations whose residuals span a factor')
+print('      of 412." The k row is a DETECTION FLOOR - "weaker", not "stronger" (docs/45 s8.1.4).')""")
 
 md(r"""### 5.4 - The bound on C4's output, and the statements that must travel with every number
 
@@ -2240,8 +2319,11 @@ reporting guards:
 And three things must be said with the verdict whatever it is: the success bar is **asymmetric**
 (the mean predictor scores KGE = $1-\sqrt2$ = -0.414, so the bar's lower edge of -0.26 sits only
 **0.15 KGE units above no skill** - *passing it is not evidence of a good model; failing it is
-evidence of a bad one*); the level's band is **+/-38 %**; and **$\beta$ cannot reach the observed
-contrast** anywhere inside its registered band (section 2.5).
+evidence of a bad one*); the level's band is the **station bootstrap** of the fleet-mean
+per-station log residual, $\Pi\times$**[0.29, 3.73]** - a factor of **13**, quoted with *"the level
+is set by 8 stations whose residuals span a factor of 412"* (`docs/45` section 8.1.3; the +/-38 %
+this line used to print is **RETIRED**); and **$\beta$ cannot reach the observed contrast**
+anywhere inside its registered band (section 2.5).
 
 ### 5.5 - How to disagree with this decision
 
@@ -2955,9 +3037,13 @@ code(r"""checks = [
     ('the funnel reproduces 79 / 28 / 18 / 13 / 9 / 8',
      (n_all, n_mapped, n_usable, n_trib, n_c, n_d) == (79, 28, 18, 13, 9, 8)),
     ('the paired-day total reproduces the documented 3,266', N_PAIRED_DAYS == 3266),
-    ('the level band at n=8 is +/-38 % at 95 %',
+    ('the RETIRED sigma_r/sqrt(8) construction still reproduces its published +/-38 % '
+     '(kept identifiable; the registered band is the station bootstrap, docs/45 s8.1.3)',
      abs(100 * (np.exp(1.96 * SE8) - 1) - 38) < 1.0),
-    ('k_min on all 18 reproduces the documented 0.00216 /km',
+    ('the measured per-station residual sd is 4.22x the retired sigma_r (docs/47 s2.2 D2)',
+     abs(RESID_SD_MEASURED / SIGMA_R - 4.22) < 0.01),
+    ('k_min on all 18 reproduces the SUPERSEDED documented 0.00216 /km '
+     '(corrected: 0.0065-0.0069 /km, docs/45 s8.1.4)',
      abs(KMIN['all 18 (the guard set)'] - 0.00216) < 5e-5),
     ('k_min on the CAL 8 reproduces the documented 0.0209 /km',
      abs(KMIN['CAL 8 (achievable)'] - 0.02092) < 5e-4),
