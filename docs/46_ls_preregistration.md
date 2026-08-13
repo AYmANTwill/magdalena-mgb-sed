@@ -1626,11 +1626,51 @@ contributing-area LS, no band offered) stand. It does **not** validate the LS **
 G4.2). The engine-default switch to `V4_dg` was **ACT 2** (`src/mgb_sediment.py`, 2026-08-12), a
 separate act; the run here is V0-pinned and this amendment moves no default. It introduces **no
 band and no threshold**. This **discharges the `docs/46` §3.3 item of `docs/47` §9.2 blocker 4**;
-with the `docs/35` §9.5 gate re-registration already landed, blocker 4 is now cleared and the
-outstanding C4.3 conditions are Branch B (a search-time property) and O4.
+its H-S field-clause item ((R7)/(R8) items 2–3) is discharged in **Amendment 4** below, and with
+the `docs/35` §9.5 gate re-registration those three together clear blocker 4. The outstanding
+C4.3 conditions are then Branch B (a search-time property) and O4 (a carried limitation), plus
+**O5** — the objective re-profiled on the adopted LS *field* — which is the C4.3 run itself.
 
 **Disclosure.** New files only: `scripts/c3/ls_stratified_report.py`,
 `data/processed/{ls_stratified_report.json, ls_stratified_report.md, minibacia_topo.csv,
 urh_erosion_weights.csv}`. `urh_ls2d.csv`, `minibacia_ls2d.csv`, `urh_ls2d_variants.csv` and the
 frozen bundle were **not written**. The `docs/23` §13.2 yield embargo is in force — the report
 carries LS levels (dimensionless) and per-station catchment counts only, **no t/km²/yr**.
+
+---
+
+### Amendment 4 — 2026-08-12 — §2.3's H-S field clause (R7)/(R8) items 2–3 are READ OUT (the last owed item of `docs/47` §9.2 blocker 4)
+
+§2.3 left the H-S **field clause** the one hypothesis in §2 "not read out": item 1 (per-cell
+`S_WS78/S_MB86` range) was DERIVED in §3.4 (**≈ 0.975 – 3.81, non-monotone**), but items 2 and 3
+— the per-station erosion-weighted dispersion and the stratified factors on **our** slope field —
+"do not exist" (§1.2, `docs/51` §7 item 9). They are now measured, from the same per-unit LS ×
+erosion-weight join as Amendment 3 (`V3_s_ws78 / V0_ours_2026_08` **is** the `S` lever in
+isolation — V3 is V0 with only `S` swapped, so the ratio is `S_WS78/S_MB86` per unit).
+
+**Item 3 — stratified `S` factor (area-weighted), beside the published basin 1.714:**
+
+| stratum | `S_WS78/S_MB86` |
+|---|--:|
+| < 200 m | **1.329** |
+| 200–1000 m | **1.621** |
+| > 1000 m | **1.747** |
+| basin (area-weighted) | **1.714** — reproduces the published proxy exactly |
+
+**Item 2 — per-station erosion-weighted `S` factor, and its between-station dispersion:** mean
+ratio **1.765**, range **1.528 – 2.014**, **sd(ln) = 0.0596** over the 18 usable stations, beside
+`docs/47` §4.4's **0.0769** (all 18) / **0.0868** (CAL-13) for the **joint** three-lever
+formulation. The `S`-lever-alone dispersion is smaller than the joint's, as expected (the joint
+also carries `m` and `L`); the same 18-usable vs CAL-13 set caveat as Amendment 3's G3 applies, so
+this is a *consistency* comparison, not an exact reproduction.
+
+**The verdict, written as a measurement (never a pass/fail), as (R7)/(R8) requires:** *the `S`
+ratio field spans ≈ 0.98 – 3.81 per cell (× 3.9) and is non-monotone; its per-station
+erosion-weighted factor disperses at sd(ln) 0.0596 between stations and rises 1.33 → 1.62 → 1.75
+across the elevation strata — **`S` is not a scalar**.* This is the field content G4.1's
+steepness test exists to detect, and it **discharges the H-S field-clause item of blocker 4**.
+With Amendment 3 (§3.3 report) and `docs/35` §9.5 (gate re-registration), **`docs/47` §9.2 blocker
+4 is now cleared in all three items.** Blockers 2 and 3 were cleared by ACT 1 / ACT 2; the residue
+before a C4.3 verdict is **Branch B** (first-run, a search-time property), **O5** (the re-profile
+on the adopted field — the run itself), and **O4** (carried as a declared limitation, no band).
+No fit, no α̂, no default moved here.
