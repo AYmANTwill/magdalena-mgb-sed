@@ -101,10 +101,15 @@ observed ENSO contrast (~3–9×, `docs/34`) carries the study's scientific clai
 
 ## 6 — Owed and NOT done
 
-- **ONI 2012–2014 record.** NOAA CPC ONI v5 could not be retrieved this session (page
-  JS-rendered). Per `docs/45` §3.5's registered fallback the CAL window is labelled
-  **OUT-OF-WINDOW** (by date), **not out-of-phase**, until the ONI values, retrieval date and
-  threshold are recorded in `report_C4.json`. **Owed.**
+- **ONI 2012–2014 record — DONE (2026-08-13).** Fetched from NOAA CPC's plain-text ONI v5
+  series (`https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt`; threshold: El Niño/La Niña
+  when ONI ≥ +0.5 / ≤ −0.5 for ≥ 5 consecutive overlapping seasons), recorded in
+  `report_C4.json:oni_2012_2014`. **Verdict:** the CAL window is ENSO-neutral through **all of 2013**
+  (every season within ±0.45) and most of 2014, **but** early 2012 (DJF −0.71, JFM −0.56) is a weak
+  La Niña tail and the last three seasons of 2014 (SON +0.51, OND +0.70, NDJ +0.80) reach the
+  El Niño threshold — the onset of the 2015–16 event C5 scores against. **The out-of-sample claim is
+  strong (neutral core) but qualified at the window edges — stated, not overclaimed.** The
+  OUT-OF-WINDOW label is upgraded to NEUTRAL-CORE (with the edge caveat).
 - **Estimator (b) robustness — DONE (2026-08-12).** Refit on rating-curve flux
   (`ssc_rating_fits.csv`, usable eras) gives in-box `F_report` = **0.139** (PASS), **same sign** as
   estimator (a) (−0.118): **no sign disagreement, so the verdict is NOT INDETERMINATE.** Estimator
