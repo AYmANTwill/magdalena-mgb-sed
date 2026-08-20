@@ -3,11 +3,13 @@ C3.1 / docs 46 §3.1 — the LS **variant** harness.  Measures the levers; chang
 
 WHAT THIS IS FOR
 ----------------
-`docs/46_ls_preregistration_DRAFT.md` names eight LS formulations and asks for each one's
-basin level on our own 90 m grid, so that the choice between them can be made on written
-source grounds instead of on what each does to the sediment total.  Four of the eight have
-already been published (`docs/46` §1, from `journal_decide-ls-resolution` §3b); this harness
-recomputes those **and** the ones that have never been measured.
+`docs/46_ls_preregistration.md` (cited here as `..._DRAFT.md` when this harness was written;
+the pre-registration has since been frozen under the shorter name) names eight LS
+formulations and asks for each one's basin level on our own 90 m grid, so that the choice
+between them can be made on written source grounds instead of on what each does to the
+sediment total.  Four of the eight have already been published (`docs/46` §1, from
+`journal_decide-ls-resolution` §3b); this harness recomputes those **and** the ones that
+have never been measured.
 
 IT IS NOT A SECOND IMPLEMENTATION OF LS
 ---------------------------------------
@@ -27,8 +29,8 @@ cells).  A harness that cannot reproduce a known number cannot be trusted with u
 The tolerance is 1e-3 absolute on that mean; the value obtained is always printed to full
 precision, gate or no gate.
 
-THE EIGHT VARIANTS  (docs/46 §3.1; ids are the column names in the output CSV)
------------------------------------------------------------------------------
+THE NINE VARIANTS  (docs/46 §3.1; ids are the column names in the output CSV)
+----------------------------------------------------------------------------
 All are evaluated on the native 90 m grid.  "hs basis" = upslope area capped at the
 channel-initiation source area A_CHANNEL = 1 km², which is what `ls2d_hs` means.
 
@@ -48,9 +50,26 @@ channel-initiation source area A_CHANNEL = 1 km², which is what `ls2d_hs` means
                         does, and claims no verification.)
   V3_s_ws78             V0 with S -> Wischmeier & Smith (1978) = Buarque eq. 18,
                         65.41 sin²θ + 4.56 sinθ + 0.065.
-  V4_buarque_2015       V1 + V2b + V3 — the source formulation AS READ.
-  V4p_buarque_2015_cap  V1 + V2a + V3 — the ×0.421 row exactly as published, kept so the
-                        prior number stays reproducible.
+  V4_buarque_2015       V1 + V2b + V3 — the source's three levers carried on OUR continuous
+                        `L`.  **THIS is the ×0.421 row exactly as published**, kept so the
+                        prior number stays reproducible: its area-weighted level
+                        16.775413430326214 reproduces the published row to 15 significant
+                        figures (docs/51 §2.2).  A documented **hybrid**, not the source read
+                        whole — ~~"the source formulation AS READ"~~ was this line's label
+                        until 2026-08-19 and is wrong; the source read whole is `V4_dg`.
+  V4_dg                 V1 + V2b + V3 + eq. 13's finite-difference `L` — **the source
+                        formulation READ WHOLE**, and the ADOPTED field
+                        (`ls_formulation = 'buarque_2015_dg'`, f_LS = 0.25146
+                        erosion-weighted / 0.2446790094097074 area-weighted; docs/46 §3.1).
+                        Added by ACT 1, after the other eight were registered; see the
+                        inline note at its variant expression.
+  V4p_buarque_2015_cap  V1 + V2a + V3 — the **cap** composition.  ~~the ×0.421 row exactly as
+                        published, kept so the prior number stays reproducible~~ **RETIRED /
+                        superseded 2026-08-19 — shown, not quoted as current.**  V4 and V4′
+                        were SWAPPED in the draft: the published ×0.421 row is V4 (the eq. 14
+                        STEP), and this cap composition is **nobody's published formulation**
+                        (docs/46 §2.2) and had NEVER been measured before 2026-08-11
+                        (docs/46 §3.1 amendment (b), docs/49, docs/51 §7 (b)).
   V5_L_dg96_fd          V0 with the literal Desmet & Govers (1996) finite-difference L
                         (their eq. 11 = Buarque eq. 13) and **S HELD AT V0's**
                         (sinθ/0.0896)^1.3, on the **hs (1 km²) basis**:

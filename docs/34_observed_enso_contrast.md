@@ -203,6 +203,17 @@ retransformation would have understated every rating flux by ~8–83 %.
 **Every station that supports a ratio shows La Niña > El Niño, in every estimator, in both window
 pairs. 22 of 22 station-ratios exceed 1.0. There are no counter-examples.**
 
+> **NOTE ADDED 2026-08-19 — the unanimity is confirmed; the DENOMINATOR is loose.** The pooled
+> counts ~~22 of 22~~ (here) and ~~16 of 22~~ (§3.1 last bullet, §7) are shown for the audit trail
+> and should not be quoted as artifact-row counts: **22** is a pooled figure across estimators and
+> window pairs and ties out to no single row of any artifact. Recomputed from the same inputs,
+> `notebooks/16_observed_enso_contrast.ipynb` §9.5 (generator `src/nbgen/make_nb16.py`) measures
+> **24 available ratios** (primary (a) 6, primary (b) 7, sensitivity (a) 4, sensitivity (b) 7) —
+> **24 of 24 exceed 1**, and **18 of 24** conservative intervals exclude 1 (**16 of 19** over the
+> headline, `partial-rating`-dropped subset, which is where the "16" is right). **The finding does
+> not move: the direction is unanimous with no counter-example, and every per-station value in §3.2
+> stands.** Open item: `docs/39` §K7. §1 is frozen pre-registration and is not edited by this note.
+
 | window pair | estimator | n stations | median RATE ratio | geo-mean | range | ratios > 1 | CIs excluding 1 |
 |---|---|---:|---:|---:|---|---:|---:|
 | **PRIMARY** | (a) sample-day | 6 | **4.62** | 3.96 | 1.21 – 11.68 | 6/6 | 5/6 |
@@ -228,6 +239,8 @@ Reading, with the disagreements kept visible rather than averaged:
   the reverse bias operating in the dry window.
 - The ratio CIs quoted are **conservative by construction** (`lo_wet / hi_dry`, `hi_wet / lo_dry`),
   i.e. wider than a proper paired-bootstrap ratio interval. Even so, 16 of 22 exclude 1.0.
+  (Denominator: see the 2026-08-19 note at the head of §3.1 — measured **18 of 24** over all
+  ratios, **16 of 19** over the headline subset.)
 
 ### 3.2 Per-gauge scale — every station, both pairs, both estimators
 
@@ -476,6 +489,14 @@ band**, which is §2's finding rendered directly.
 > contrast must be quoted as a range, never as a single number. **No mainstem Magdalena contrast
 > exists in the observations**, because the only trunk SSC station loses its discharge record on
 > 2014-12-31. This is the target C5 must reproduce.
+
+**NOTE ADDED 2026-08-19 — on the "22 of 22" in the verdict blockquote above.** The unanimity is
+confirmed and the verdict stands; the denominator is a pooled count and is not an artifact row. The
+recomputation in `notebooks/16_observed_enso_contrast.ipynb` §9.5 measures **24 of 24 ratios > 1**
+and **18 of 24** intervals excluding 1 (16 of 19 on the headline subset). Read the verdict as
+*"unanimous across every available station-ratio — 24 of them, measured"*. Full statement of the
+discrepancy: §3.1 note above and `docs/39` §K7. The registered ~~22~~ / ~~16 of 22~~ figures are
+kept visible, not quoted as current counts.
 
 **Issues raised for docs/31's open list (not resolved here — thresholds are frozen):**
 

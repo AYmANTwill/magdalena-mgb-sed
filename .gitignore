@@ -47,3 +47,11 @@ figures/deck/
 Protocolo_descarga_*.docx
 Guia_descarga_*.docx
 Explanation_script_*.pdf
+
+# colleague data exchange (large, regenerable, never committed)
+*.zip
+data/raw/colleague_share/
+
+# build intermediates that used to show up as untracked clutter
+_eq/
+.pytest_cache/

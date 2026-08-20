@@ -251,9 +251,22 @@ UNITS - AND THE CONVENTION LADDER, STATED NOT HIDDEN
     (nb18/nb19, the V0 reference tests, ``scripts/c3/ls_erosion_weights.py``) pin themselves
     that way.  This switch discharges blocker 3 of docs/47 §9.2 **only**.  The LS **LEVEL**
     remains **UNVALIDATED** (docs/42 G4.2): a CITED formulation is not a validated level, and a
-    fitted one is not either.  **C4.3 stays BLOCKED** - blockers 1 (Branch B / first-run on the
-    adopted field), 4 (owed deliverables) and the LS **SHAPE** decision are untouched by this
-    switch (docs/47, docs/54 §4).
+    fitted one is not either.  ~~**C4.3 stays BLOCKED** - blockers 1 (Branch B / first-run on
+    the adopted field), 4 (owed deliverables) and the LS **SHAPE** decision are untouched by
+    this switch (docs/47, docs/54 §4).~~
+    *RETIRED / superseded 2026-08-19 - shown, not quoted as current.  It was true when written
+    on 2026-08-12; two of the three items it lists have since been discharged.*
+    **C4.3 HAS SINCE RUN** - as exactly the Branch-B first run on the adopted field that this
+    paragraph anticipated (blocker 1), and blocker 4's owed deliverables were closed by docs/46
+    §10 amendments 3 and 4.  The outcome is docs/55: **RAILED / EXPLORATORY, NOT adopted.**
+    The in-box optimum of the registered objective sits ON the box floor at ``alpha`` = 2.0
+    while the UNCONSTRAINED optimum wants ``alpha`` ~ 0.48, below that floor - the registered
+    signature of mild upstream over-production, which is a DIAGNOSIS and not a value to adopt.
+    Median ``KGE_ln`` is -0.118 on estimator (a) and +0.139 on estimator (b): the SAME sign, so
+    the verdict is NOT indeterminate.  The design-matrix condition number is ``inf``, so only
+    the product ``Pi`` is identifiable and ``alpha`` is never reported alone (docs/42 G6).
+    **What this switch still does NOT do:** the LS **LEVEL** remains **UNVALIDATED** and the
+    LS **SHAPE** decision remains owed (docs/47, docs/54 §4).
 
     One related label correction, unconditional (docs/46 §1.1 Defect A, §2.2, §7.3 item 2;
     measured in docs/49): Buarque's **eq. 14 is a STEP FUNCTION** - m = 0.2 / 0.3 / 0.4 / 0.5

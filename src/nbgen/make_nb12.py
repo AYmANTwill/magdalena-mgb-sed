@@ -63,11 +63,21 @@ This notebook does exactly that, and nothing else. It does not run a model. Its 
 is `data/processed/model_inputs/` - a bundle of dense arrays, all on the same minibacia index and
 the same date index, with a manifest giving every array's shape, dtype, units and provenance.
 
+**"v2", stated in the body and not only in the banner.** **v1** = the original gauge forcing.
+**v2** = the zero-suppression repair (`docs/18` §9-§12) + the deterministic, order-invariant IDW +
+the co-located-gauge merge (`docs/23` §11) - **still gauge-only**, and the adopted forcing. It is
+written to `data/processed/model_inputs_v2/`, and the `_v2`-suffixed source files are the ones the
+cells below actually read. A CHIRPS-merged **v3 does not exist** (`docs/18` §15.5) and would need a
+new pre-registration.
+
 **The reason this notebook exists.** In Phase B a wrong hydrograph has many possible causes: bad
 model code, bad parameters, bad forcing, a bad gauge, or a bad *join*. The join class is the only
 one that can be eliminated in advance, and it is the one that has already bitten this project twice
 (`docs/17` section 3.1: the gauge to minibacia mapping was physically impossible for half the
-network; `docs/16` section 4.1: 70 gauges were zero-suppressed). So: eliminate it in advance, in
+network; `docs/16` section 4.1: 70 gauges were zero-suppressed - and the v2 repair this bundle
+consumes found **153**, not 70, once a selectivity detector with a threshold from the measured null
+replaced the value screen, inserting 240,158 inferred-dry station-days (`docs/18` §10). So:
+eliminate it in advance, in
 writing, with figures.
 
 **Working rules applied throughout** (they are the user's, and they are not decoration):
@@ -91,7 +101,7 @@ md(r"""## 0.1 - Inputs, and what each one is for
 | `urh_fractions.csv` | 8,672 | area share of each of 24 URH per minibacia - the balance runs once per URH |
 | `minibacia_soil_params.csv` | 8,672 | `Wm_mm` (storage capacity) and `K` (MUSLE erodibility) |
 | `forcing_minibacia_precip.csv` | 4,018 days | rainfall, mm/day |
-| `forcing_minibacia_pet.csv` | 3,287 days | Penman-Monteith PET, mm/day |
+| `forcing_minibacia_pet.csv` | 4,018 days | Penman-Monteith PET, mm/day (~~3,287 days, PET-bounded~~ is **RETIRED 2026-08-19** - shown, not quoted as current; all 132 ERA5-Land mosaics now exist, `docs/18` §14.1) |
 | `forcing_minibacia_provenance.csv` | 8,672 | centroid, IDW fallback count, distance to nearest gauge, flag G/GC/C |
 | `discharge_daily.csv` | 1.3 M station-days | the calibration target |
 | `gauge_minibacia.csv` + `gauge_minibacia_remap_report.csv` | 159 | which minibacia each gauge observes |
@@ -770,25 +780,35 @@ it is the calibration, with the flag visible.""")
 # ============================================================ 4 forcing
 md(r"""## 4 - Forcing alignment
 
-Rainfall spans 2008-2018 (4,018 days) and PET 2009-2017 (3,287 days, bounded by ERA5-Land). The
+Rainfall and PET both span 2008-2018 - **4,018 days each** - so the intersection is the whole
+rainfall record, not a PET-bounded subset (`docs/18` §14.1: open item 3 closed, 132/132 ERA5-Land
+mosaics readable). ~~PET 2009-2017, 3,287 days, bounded by ERA5-Land~~ is **RETIRED 2026-08-19** -
+shown, not quoted as current. The
 model period is the intersection. Three checks:
 
-1. **The intersection is contiguous and complete** - 3,287 consecutive calendar days, no duplicates,
+1. **The intersection is contiguous and complete** - 4,018 consecutive calendar days, no duplicates,
    no holes. A hole would shift every subsequent day in a positionally-indexed matrix.
-2. **No NaN anywhere in the model period**, in either field. `docs/16` reports 118,124 gap cells
-   before the k=20 IDW fallback and 0 after; this verifies the "0 after" in the file as delivered
+2. **No NaN anywhere in the model period**, in either field. The v2 field has **41,180** k=6
+      fallback cells (0.118 %), all filled by the k=20 pass, and 0 remaining NaN (`docs/18` §14.1);
+   ~~`docs/16`'s 118,124 gap cells before the k=20 fallback~~ is the **v1** count, **RETIRED
+   2026-08-19** - shown, not quoted as current. This verifies the "0 after" in the file as delivered
    rather than trusting the notebook that wrote it.
-3. **The basin means reproduce `docs/16`** - 2,206 mm/yr over 2008-2018. Recomputed here two ways
+3. **The basin means reproduce the post-repair figure** - **2,073.1 mm/yr** over 2008-2018
+   (`docs/18` §14.2, which records this notebook's own number). ~~2,206 mm/yr~~ is the **v1** basin
+   mean and is **RETIRED 2026-08-19** - shown, not quoted as current; `docs/16` still publishes it
+   as the v1 figure. Recomputed here two ways
    (area-weighted mean of daily basin means, and total volume divided by area and time), because a
    simple column mean would silently weight a 3 km2 minibacia the same as a 576 km2 one.
 
-**Kept out of the bundle: 2008.** Rainfall exists for it and a warm-up year is genuinely useful -
-the three linear reservoirs start empty and need months to fill. But PET does not exist for 2008, so
-a 2008 warm-up would have to invent PET, and inventing input data inside an input-assembly notebook
-is exactly the failure mode this notebook is written against. The bundle therefore exports the model
-period only. `warmup_available_days` is now **0** by construction - the period starts where the
+**2008 is IN the bundle.** Rainfall exists for it and a warm-up year is genuinely useful -
+the three linear reservoirs start empty and need months to fill. PET now exists for 2008 too, so
+no PET has to be invented - and inventing input data inside an input-assembly notebook
+is exactly the failure mode this notebook is written against. The bundle therefore exports the full
+2008-2018 record, **4,018 days**. ~~2009-2017, 3,287 days, PET-bounded~~ is **RETIRED 2026-08-19** -
+shown, not quoted as current (all 132 ERA5-Land mosaics now exist; `docs/18` §14.1).
+`warmup_available_days` is **0** by construction - the period starts where the
 rainfall does - so the spin-up must come from inside it (2008), which is what Phase B does
-with the fact in front of it. Rejected alternative: fabricate 2008 PET from the 2009-2017 day-of-year
+with the fact in front of it. Rejected alternative, now **moot** because 2008 PET is real: fabricate 2008 PET from the 2009-2017 day-of-year
 climatology. It is defensible, but it is a modelling decision, and it belongs in the notebook that
 owns the spin-up, not here.""")
 
@@ -912,7 +932,7 @@ and is stated in the classification below rather than argued away.
 | `excl_energy_floor` | `energy_floor_triage.csv` | `docs/23` 12 | Observed runoff coefficient is below the minimum the forcing permits by more than a 25 % rainfall correction could close, with no dominant rain-selective gauge to blame. Two gauges; both in Antioquia, both plausibly hydropower diversions (open item 15). |
 | `excl_intake_canal` | by name + doc list | `docs/17` 3.6 | Stations named BOCATOMA / CANAL gauge diversion works, not rivers. They produce persistent mass-balance deficits by design. |
 | `excl_multitest_fail` | 1 | `docs/17` 5.1 | `28037020` HACIENDA CONVENCION fails four independent tests. |
-| `excl_no_window_data` | computed | this notebook | Zero discharge days inside 2009-2017. Nothing to calibrate against. This has nothing to do with the re-snap and caps the fleet regardless. |
+| `excl_no_window_data` | computed | this notebook | Zero discharge days inside 2008-2018. Nothing to calibrate against. This has nothing to do with the re-snap and caps the fleet regardless. |
 | `excl_short_window` | computed | this notebook | < 1,095 days (3 yr) in the window. |
 | `review_rc_implausible` | computed | `docs/17` 3.1 | Runoff coefficient outside [0.03, 1.2] *recomputed on common days*. |
 | `review_qspec_outside_healthy` | computed | `docs/17` 4.2 | Specific discharge outside the **7.0-74.9 l/s/km2** envelope of the audit's 80 healthy stations. `docs/17` declared 80 gauges usable by passing **two** tests; the RC band alone is the looser one. |
@@ -923,8 +943,16 @@ and is stated in the classification below rather than argued away.
 **The q_spec gate is not independent of the RC gate, and that is measured below.** `RC = Q/(P*A)` and
 `q_spec = Q/A` differ only through upstream mean rainfall, which spans ~1.4x across the basin, so the
 two are ~collinear (correlation of their logs is printed). The q_spec band is included anyway for one
-reason: it is **tighter and empirically calibrated** - [7.0, 74.9] l/s/km2 is the observed spread of
-the 80 stations `docs/17` certified, whereas [0.03, 1.2] on RC is a 40x a-priori window that only
+reason: it is tighter. Its construction, stated honestly: **[7.0, 74.9] l/s/km2 is composed here**
+from `docs/17` §4.2's **p5 = 7.0** and its **observed max = 74.9** over the 80 stations that audit
+certified. `docs/17` publishes no such band - its stated spread is **p5-p95 7.0-57.1** - so this is
+a **house convention**, not a certified envelope, and it is the **sole** difference between the
+70-gauge RC-band-only set and the 63-gauge primary set. It also divides by an upstream area this
+notebook manufactures, and `docs/23` §13.2 measures those areas unreliable **per gauge** in **both**
+implementations - the same finding that put gauge-referenced t/km2/yr under embargo. `q_spec`
+inherits that uncertainty one-for-one, and anything derived from it does too. Whereas [0.03, 1.2]
+on RC *is* a band `docs/17` publishes (its closing Update table), and it is a 40x a-priori window
+that only
 catches catastrophes. So this is not a second opinion; it is the same opinion held to a higher
 standard. Both are reported, and the bundle exports **two** sets so the choice stays with Phase B:
 a **primary** set (both bands, mislabels removed) and the wider **RC-band-only** set.
@@ -934,8 +962,12 @@ geographic neighbours' q_spec), which is what `docs/17` used as its genuinely in
 test. It is the better test and it is not reproduced here, because it needs a neighbour-selection
 rule and a null distribution, and re-deriving those inside an input-assembly notebook would be a
 second audit wearing an assembly notebook's clothes. Consequence recorded honestly: this notebook's
-screen is **weaker** than `docs/17`'s, not stronger, and the fact that 61 survives against the
+screen is **weaker** than `docs/17`'s, not stronger, and the fact that **63** survives against the
 audit's 80 (on a different period, with a rebuilt mapping) is a coincidence of counts, not a match.
+(~~61~~ is **RETIRED 2026-08-19** - shown, not quoted as current. `docs/18` §14.2 owns the
+correction: *"Every brief and note in this project had been arithmetic from a fixed pool of 61"*,
+and widening the window to 2008-2018 changed the population rather than filtering it, so the set
+grew to 63 and the predicted 59 was wrong.)
 
 **Why 3 years and not 1.** A single year cannot be split into calibration and validation periods, and
 this study's whole point is the 2011 La Nina vs 2015-16 El Nino contrast: a gauge that covers one
@@ -1246,15 +1278,15 @@ so their RC gate is independent. Anyone using this bundle can calibrate on the `
 treat the `remapped` ones as a sensitivity check; `action` is exported for exactly that.
 
 **One structural loss to record.** Of the five mainstem anchors `docs/17` identifies as strictly
-monotonic, `23157080` MALDONADO has **zero** days inside 2009-2017 - the anchor chain that validated
+monotonic, `23157080` MALDONADO has **zero** days inside 2008-2018 - the anchor chain that validated
 the network in the audit is not fully available in the model window. The remaining four still span
 1,464 to 257,097 km2, which is a 176x range of scales, so the chain is thinned rather than broken.""")
 
 # ============================================================ 6 export
-md(r"""## 6 - Export: `data/processed/model_inputs/`
+md(r"""## 6 - Export: `data/processed/model_inputs_v2/`
 
 **Format: compressed `.npz` for the dense arrays, CSV for the audit tables, JSON for the manifest.**
-Measured, not asserted - the benchmark below writes the same 3,287 x 8,672 float32 rainfall matrix
+Measured, not asserted - the benchmark below writes the same 4,018 x 8,672 float32 rainfall matrix
 three ways and reports size and read time. The argument for npz:
 
 - The forcing is a **homogeneous dense matrix with no missing values**. Parquet's advantages
@@ -1601,8 +1633,8 @@ code(r"""# --- README, and a round-trip verification that reads the bundle back 
  '',
  '```python',
  'import numpy as np',
- 'top = np.load("data/processed/model_inputs/topology.npz")',
- 'frc = np.load("data/processed/model_inputs/forcing.npz")',
+ 'top = np.load("data/processed/model_inputs_v2/topology.npz")',
+ 'frc = np.load("data/processed/model_inputs_v2/forcing.npz")',
  'P   = frc["precip_mm"]          # (3287, 8672) float32, mm/day',
  'order = top["topo_order_idx"]   # route in this order',
  '```',
@@ -1679,7 +1711,15 @@ bias there; there is no orographic correction, so headwater rainfall is interpol
 stations. The safe-gauge map in section 5 is thinnest in those same headwaters, so a wet bias there
 can be compensated by a small `Wm` or a large `b` without any gauge objecting. *Check:* the CHIRPS
 quantile-map merge (`docs/16` item 3), then re-run the same calibration and see whether the fitted
-parameters move.
+parameters move. **This *Check* is CLOSED, 2026-08-19 - do not re-open it.** The merge was built
+(`src/merge_chirps_gauges.py`); its LOOCV gate **passed** (median daily r **0.447** > 0.429) and its
+volume gate **failed twice** (**2,188.5 mm/yr, +7.5 %** against the registered band). The registered
+repair was then executed and was a **no-op**, and the diagnosed cause was **wrong**. `docs/18` §15.5
+is the owning read-out: *"no route to a passing volume gate exists inside the merge code."* **No v3
+forcing exists.** `docs/58` bounds the entire remaining rainfall lever at **<= +0.006 r** - the
+constraint is structural, not a missing dataset. One untested upstream hypothesis survives (the
+**139** stations still reporting rain-selectively after the repair, `docs/18` §9.3) and it cannot be
+tested inside the merge. The mechanism described above is real; only the proposed remedy is spent.
 
 **5. Rainfall gaps are MNAR, and the estimator cannot fix it** (`docs/16` section 11). Gauges are
 missing disproportionately on dry days - the ratio of neighbour-estimated rainfall on missing vs
@@ -1712,15 +1752,26 @@ minibacias have IGAC texture on under half their cells and 1,426 have drainage o
 (`igac_*_cover`), so it can be used as a weight. *Check:* correlate calibration residuals against
 `igac_texture_cover`.
 
-**9. The 2008 warm-up is available for rainfall and not for PET.** The bundle exports 2009-2017 only.
-Whoever writes the spin-up must choose: start reservoirs empty and discard the first months, or
-synthesise 2008 PET. Both are defensible; silently doing the second inside the model loop is not.
+**9. RESOLVED 2026-08-19 - no longer an open risk.** ~~The 2008 warm-up is available for rainfall
+and not for PET; the bundle exports 2009-2017 only.~~ Shown, not quoted as current: all 132
+ERA5-Land mosaics now exist, PET is real for 2008, and the bundle exports **2008-2018, 4,018 days**
+(`docs/18` §14.1-§14.2).
+Phase B did not have to choose: it took the spin-up from inside the period - **2008 warms up,
+2009-2018 is scored** (`docs/26` and its 2026-08-10 addendum). No PET was synthesised, and nothing
+was silently invented inside the model loop.
 
 **10. URH fractions come from majority-resampled land cover at `SCALE=8`** (`notebooks/08` QA note),
-which under-represents fragmented cropland. Cropland URHs total 1.4 % of basin area here, which is
+which under-represents fragmented cropland. Cropland URHs total **1.57 %** of basin area here
+(0.23 Coarse-Crop + 0.17 Medium-Crop + 1.17 Fine-Crop, from section 3's own composition print;
+~~1.4 %~~ is **RETIRED 2026-08-19** - shown, not quoted as current), which is
 implausibly low for the Magdalena valley and is a resampling artefact rather than a measurement.
 Cropland matters far more for MUSLE `C` than for the water balance, so this is a Phase C risk more
-than a Phase B one. *Check:* re-run notebook 08 at `SCALE=1` for a sub-basin and compare the mix.
+than a Phase B one. Phase C has since run to completion carrying this risk (`docs/55`: C4.3 is
+**RAILED / EXPLORATORY, not adopted**; `docs/56`: C5 reproduced the observed ENSO contrast at
+**18/18** stations, median rate ratio **3.05x**). `docs/42` records that MUSLE `C` is one of **seven
+ways of writing one product Pi**, condition number `inf`, so this resampling artefact is not
+separately identifiable from the rest of Pi - report Pi and evidence grades, never "validated".
+*Check:* re-run notebook 08 at `SCALE=1` for a sub-basin and compare the mix.
 
 **11. The bifurcating lower Magdalena is unrepresentable, and 10 gauges were excluded for it, not
 repaired.** The `brazos` split flow that a single-downstream D8 graph cannot express. Excluding the
@@ -1742,7 +1793,11 @@ either a mapping error that survived, a real abstraction, or a rating problem; t
 (`nested_inversion`) rather than guessing.
 
 **14. Everything here is validated for *internal consistency*, which is not the same as being
-right.** The strongest external anchor used is Calamar's ~874 mm/yr specific runoff over 257,097 km2.
+right.** The strongest external anchor used is Calamar's specific runoff over 257,097 km2:
+**912.4 mm/yr**, measured here over 3,992 days (section 5; `manifest.json`'s
+`calamar_runoff_depth_mm_yr`; `docs/18` §14.2 records the same number), against the **~880 mm/yr**
+`docs/17` accepts. The earlier figure ~~"~874 mm/yr"~~ is **RETIRED 2026-08-19** - shown, not quoted
+as current; it matched neither the measurement nor the accepted value.
 That single number cannot distinguish a 5 % rainfall over-estimate paired with a 5 % PET
 over-estimate. `docs/16` section 6.1 is the standing reminder: a +7 % radiation error lived
 comfortably inside its own plausibility band. Treat every band in this notebook as a gross-error
@@ -1752,17 +1807,29 @@ md(r"""## Summary
 
 | | |
 |---|---|
-| Bundle | `data/processed/model_inputs/` - 4 npz + 2 CSV + manifest + README |
-| Model period | 2009-01-01 .. 2017-12-31, 3,287 contiguous days (PET-bounded) |
+| Bundle | `data/processed/model_inputs_v2/` - 4 npz + 2 CSV + manifest + README. **v2 = GAUGE-ONLY** (zero-suppression repair + deterministic IDW + co-located merge); the v1 bundle is deliberately untouched, and no v3 exists |
+| Model period | 2008-01-01 .. 2018-12-31, **4,018** contiguous days; P and PET both span it, so nothing bounds it. ~~2009-01-01 .. 2017-12-31, 3,287 days, PET-bounded~~ is **RETIRED 2026-08-19** - shown, not quoted as current |
 | Minibacias | 8,672, one outlet (2470 = Calamar), acyclic, upstream area closes on the accepted basin area |
 | Join integrity | six id sets compared in both directions, identical, no duplicates, forcing column order verified |
 | Parameters | Wm, MUSLE K, 24 URH fractions, plus IGAC coverage arrays that did not previously exist |
-| Forcing | no NaN, no negatives, P and PET on the same 3,287 days |
+| Forcing | no NaN, no negatives, P and PET on the same 4,018 days |
 | Calibration gauges | two nested sets (primary and RC-band-only) plus review/excluded tiers, every gate traced to `docs/17` or computed here |
 | Smoke tests | 11, all on synthetic cases with analytically known answers, run before any basin data |
 | Self-checks | upstream area 3 ways, basin means 2 ways, flatline count 2 ways, full bundle round-trip |
 
-**Next (Phase B proper):** implement the `notebooks/03_hydrology.ipynb` water balance on
+**What this bundle handed forward, and what happened to it (2026-08-19).** It went to notebooks
+13/14. **Phase B is CLOSED on H2E** - v2 forcing + revised objective + FAO-56 ET, theta_crit 0.6,
+**F = 0.25931** - at the **r ~= 0.57** rainfall-input ceiling, closed by team decision at a measured
+input ceiling rather than at a target, and closed a second time after C2b re-opened it under
+pre-registration and H-PEAK was refuted (`docs/26` + its 2026-08-10 addendum, `docs/30` §1,
+`docs/33` §8). The inherited caveat travels with the fit: El Nino skill-over-climatology is
+**-0.0005**, so the dry phase sits **AT** climatology, not above it. **Phase C then ran to
+completion** on this same bundle; its headline is `docs/56` - the observed ENSO sediment contrast
+reproduced at **18/18** stations, median rate ratio **3.05x** (range 1.62-4.85), robust across beta
+and both window pairs.
+
+~~**Next (Phase B proper):**~~ **RETIRED 2026-08-19** - shown, not quoted as current. The original
+hand-off read: implement the `notebooks/03_hydrology.ipynb` water balance on
 `model_inputs/`, route with `topo_order_idx`, and calibrate `b`, `Kint`, `Kbas` against
 `is_calibration_safe` - splitting on the ENSO episodes, with the `kept` gauges as the calibration set
 and the `remapped` ones held out to test item 1 above. Report the same metrics on
@@ -1771,15 +1838,16 @@ carrying real information; if it does not, the tighter gate cost information for
 worth knowing before the next audit reuses it.""")
 
 
-def cell(kind, src):
+def cell(kind, src, idx=0):
     c = {"cell_type": kind, "metadata": {},
          "source": src.strip("\n").splitlines(keepends=True)}
+    c["id"] = "c%03d" % idx        # nbformat 5 requires a cell id; deterministic
     if kind == "code":
         c.update({"execution_count": None, "outputs": []})
     return c
 
 
-nb = {"cells": [cell(k, s) for k, s in C],
+nb = {"cells": [cell(k, s, i) for i, (k, s) in enumerate(C)],
       "metadata": {"kernelspec": {"display_name": "Python 3", "language": "python",
                                   "name": "python3"},
                    "language_info": {"name": "python", "version": "3.10"}},

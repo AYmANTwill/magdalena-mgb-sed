@@ -10,6 +10,18 @@ Then: python -m nbconvert --to notebook --execute --inplace \
 The four DDS searches are separate OS processes (src/calib_v2.py --cell ... --seed ...).
 The notebook launches them if their outputs are absent and otherwise loads them, so it
 is reproducible from cold and cheap to re-execute.
+
+RETIRED / superseded 2026-08-19 - shown, not quoted as current: the sentence above is no longer
+true, and acting on it is expensive.  (a) Measured 2026-08-19, src/mgb_hydrology.py is sha256
+93b180a9113f5946 and src/calib_v2.py is 30ab13a630278d5d, against the cdea026afe796f6d and
+3342728f2a38bac1 the committed outputs record, so the section-0.1 cell's
+`assert ENG_SHA == V1['engine']['sha256']` STOPS a re-execution at the fourth cell.  (b) The
+cell() helper below emits every code cell with outputs: [], so merely RE-RUNNING THIS GENERATOR
+discards the committed executed outputs, which by (a) cannot be reproduced.  (c) The export cell's
+`SUM.to_csv(OUTD / 'metrics_fleet.csv')` is an unconditional overwrite of a file that
+src/report_h2e.py appends the 12 adopted H2E rows to, and that nb15 and nb17 read; a re-execution
+deletes them, recoverable only by re-running `python3.10 src/report_h2e.py`.  Treat the committed
+notebook as a record: edit markdown cells in BOTH this generator and the .ipynb, in step.
 """
 import json
 import pathlib
@@ -58,7 +70,18 @@ md(r"""> ### STATUS - annotated 2026-08-12 by agent `nb-banner-1217`. Nothing be
 > (why Phase B closed: by decision, at a measured input ceiling). Section 12.2's *"only
 > remaining untried lever"*, the CHIRPS-gauge merge, was subsequently **built, validated and NOT
 > adopted** (`docs/18` §15) and refuted again as **H-CHIRPS** on its **+7.5 %** volume gate
-> (`docs/33`), so the forcing is still **v2, gauge-only**; a merged **v3** does not exist.""")
+> (`docs/33`), so the forcing is still **v2, gauge-only**; a merged **v3** does not exist.
+>
+> **Addendum 2026-08-19 - this page is a RECORD, and re-executing it is not free.** Measured
+> today: `src/mgb_hydrology.py` is sha256 **93b180a9113f5946** and `src/calib_v2.py` is
+> **30ab13a630278d5d**, against the **cdea026afe796f6d** and **3342728f2a38bac1** recorded in the
+> executed output below - the engine moved with `80a7c10` (the FAO-56 threshold ET that H2E is
+> built on) and the search code with `19dce32` (the C2b peak term). Section 0.1's cell asserts
+> `ENG_SHA == V1['engine']['sha256']`, so a re-execution **stops there** - which is the guard
+> working, not a bug: on today's engine H1 would no longer isolate the objective. Read every number
+> below as the record of the run that produced it. The second consequence, a destructive overwrite,
+> is at **§13**; and the final state of §12.2's *"only untried lever"* - the last route measured
+> and bounded at **Δr = +0.0058**, r 0.57 -> ~0.576 (`docs/58`) - is read out at **§12.2**.""")
 
 # ============================================================ title
 md(r"""# Notebook 14 - refit under a revised objective, on two pre-registered forcing cells
@@ -95,6 +118,18 @@ never implemented in notebook 11 - the areal mean is exactly the gauge-only figu
 quantile-mapping output exists - so there is nothing to run. It is logged as the remaining open item
 in section 12, and given the gauge-only leave-one-out daily $r$ of 0.429 it is now the only
 untried lever on the dry phase.
+
+> **RETIRED / superseded 2026-08-19 - shown, not quoted as current.** "The only untried lever" was
+> true when written and is not true now. The merge was built (`src/merge_chirps_gauges.py`): its
+> leave-one-out gate **passed** at $r$ **0.447** against the gauge-only **0.429**, and its volume
+> gate **failed** at **2,188.5 mm/yr**, **+7.47 %** against the registered band
+> **[2,016.0, 2,056.8]** - twice, because the registered repair (H-CHIRPS, `docs/33` §1) was run
+> and was a **no-op**, with the diagnosed cause **wrong**. `docs/18` §15.5 is the owning read-out:
+> *"no route to a passing volume gate exists inside the merge code."* The one surviving upstream
+> route - the **139** stations still reporting rain-selectively, whose missing days are not in the
+> record at all - was measured and bounded at **Δr = +0.0058**, a perfect-case ceiling of
+> r 0.57 -> ~0.576 (`docs/58`). The ceiling is **structural**. No v3 forcing exists and none is
+> pending. The full read-out is at §12.2.
 
 **The expectation, written down before the numbers.** The repair fixed *volume*. Volume was never
 what limited *correlation* (`docs/22` s4.7: $r$ stayed inside 0.556-0.572 across all twelve
@@ -719,7 +754,19 @@ whose only use is as a seed, and the nested comparison is not what this notebook
 **Budget, and where the parallelism goes.** One evaluation is one 4-year segment run on one core.
 The four searches (2 cells x 2 seeds) therefore run as four **concurrent OS processes**, and the
 parallelism is spent on **budget, not wall time**: each seed gets 1,000 evaluations against the
-v1 run's 178-209, at roughly the same wall clock. Separate processes rather than a thread pool or
+v1 run's 178-209, at roughly the same wall clock.
+
+> **Corrected 2026-08-19 from this notebook's own printed numbers - the clause kept above is wrong
+> on the wall clock.** Section 0.1's cell prints the whole v1 run as **5.73 s/run, 63 min total**
+> over **774** evaluations; the cell below prints **330 min** for the longest worker over **4,000**.
+> So the four concurrent searches bought **5.2x** the evaluations at **5.2x** the wall clock, not
+> at a comparable one - the per-evaluation cost rose as well, to **19.70 s** from v1's 5.73 s. What
+> the concurrency did buy, computed from the same two outputs, is the honest form of the claim:
+> 4,000 x 19.70 s = **1,313 min of CPU retired in 328 min of wall**, a **4x** saving against
+> running the same four searches in series. The printed line in the cell below - *"bought 5.2x the
+> v1 evaluation count for comparable wall time"* - carries the same error and is **left as
+> executed**: it is inside a code cell, and correcting it means re-executing an 8-hour notebook
+> that, per the banner, no longer re-executes at all. Separate processes rather than a thread pool or
 `ProcessPoolExecutor` inside the kernel, because on Windows `spawn` from a Jupyter kernel has to
 reconstruct a `__main__` that does not exist as a file - it usually works and occasionally hangs,
 and a hang two hours into a four-way search is not a failure mode worth accepting.
@@ -1175,6 +1222,13 @@ the v2 bundle also spans one more year and carries two more calibration-safe gau
 co-located merge. Those two extras are real gains and they are reported - separately, as gains, not
 folded into a difference they cannot legitimately appear in.
 
+> **Corrected 2026-08-19 - "two more" is a NET count, and the cells below print a different
+> number.** Section 3's cell measures **61** primary gauges in v1 and **63** in v2, but the sets are
+> not nested: **4** gauges are in v2 only (`23087300`, `26157080`, `26187170`, `26217050`) and **2**
+> are in v1 only (`22017010`, `23087200`), leaving **59** in common. The difference below is
+> therefore taken on 59 gauges, and the extras "reported separately as gains" are the **four** the
+> next cell names, not two. The net +2 is right; the referent was not.
+
 **The prediction registered in the title cell:** $\beta$ and PBIAS improve while $r$ and the
 dry-phase ceiling hold, because the repair fixed volume and volume was never what limited
 correlation. If that is what happens, it **confirms that volume and correlation are independent
@@ -1365,10 +1419,53 @@ is the right next thing and why nothing done here was ever going to substitute f
 
 Recorded as an open item, with its own pre-registered gate: implement the merge, measure its
 leave-one-out daily $r$ against the gauge-only 0.429, and **only if it beats that** re-run this
-notebook as cell H3.""")
+notebook as cell H3.
+
+> **READ-OUT 2026-08-19 - the open item above is CLOSED, negative. Kept visible, not quoted as
+> current.** The gate was executed exactly as registered, and the merge was built as
+> `src/merge_chirps_gauges.py` (quantile-mapping CHIRPS to the gauge distribution per elevation
+> band x hydrographic zone). **LOOCV passed**: merged median daily $r$ **0.447** against the
+> gauge-only **0.429**. The volume gate registered alongside it **failed**: **2,188.5 mm/yr**
+> against the band **[2,016.0, 2,056.8]**, **+7.47 %** - and failed a second time, because the
+> registered repair (H-CHIRPS, `docs/33` §1) was run and turned out to be a **no-op**, the
+> re-run bit-identical, and the diagnosed cause **wrong**. `docs/18` §15 titles it *"built,
+> validated, and NOT adopted"*; §15.5 is the owning read-out and concludes *"no route to a passing
+> volume gate exists inside the merge code."* This notebook was therefore **never re-run as H3**,
+> and **no v3 forcing was ever written**.
+>
+> The one untested upstream route left - the **139** stations still reporting rain-selectively
+> after the zero-suppression repair, whose missing days are *not in the record at all* and so
+> cannot be put into a pool by any change to the merge code - was itself measured: area-weighted
+> basin-mean **Δr = +0.0058**, a perfect-case ceiling of **r 0.57 -> ~0.576** (`docs/58`). So the
+> paragraph above is right that the deficit is in daily correlation and wrong that a merge could
+> close it. The dry-phase ceiling of `docs/22` s4.7 stands unmoved, and it is **structural**.""")
 
 # ============================================================ 13
-md(r"""## 13 - Export""")
+md(r"""## 13 - Export
+
+The two cells below write `data/processed/sim_calibrated_v2/`. **What this notebook hands on:**
+`metrics_fleet.csv` and `q_gauge_H1.npz` / `q_gauge_H2.npz` are read by **notebook 15** (the SSC
+quality gate) and **notebook 17** (runoff signatures); `src/report_h2e.py` writes the **adopted**
+H2E artifacts - `parameters_H2E.csv`, `q_gauge_H2E.npz`, `report_H2E.json` - into the same
+directory, and every later stage quotes those, not the H1/H2 parameters on this page.
+
+> **Two hazards recorded 2026-08-19, before anyone re-executes this section.**
+>
+> 1. **The `metrics_fleet.csv` write below is an unconditional overwrite of a file that is appended
+>    to elsewhere.** Measured today, the file on disk carries **39 rows / 4 configurations**
+>    (H1 10, H2 12, **H2E 12**, ref 5); this notebook's `SUM` carries **27 rows / 3
+>    configurations**, and the round-trip print below says exactly that. `src/report_h2e.py`
+>    appends the 12 **H2E** rows and asserts the pre-existing rows are unaltered byte-for-byte.
+>    Re-executing this cell **deletes the adopted configuration's rows**, which notebooks 15 and 17
+>    then read as absent. Recovery is `python3.10 src/report_h2e.py` (its own gate: $F$ must match
+>    **0.25931** to 1e-8) - but the deletion is silent, so it is stated here rather than discovered
+>    there.
+> 2. **`README.md`, written by the last cell, still carries a retired claim.** Its "Carried
+>    forward" item 1 - *"the CHIRPS-gauge merge is the only remaining lever on the dry phase"* -
+>    was true when the cell ran and is not true now; the correction is at **§12.2** above
+>    (`docs/18` §15.5, `docs/33` §1, `docs/58`). The sentence lives inside a code cell's f-string,
+>    so rewriting the artifact means re-executing an 8-hour notebook that no longer re-executes;
+>    the claim is retired here instead, and the file on disk is regenerable.""")
 
 code(r"""OUTD = PROC / 'sim_calibrated_v2'
 OUTD.mkdir(exist_ok=True)
@@ -1592,7 +1689,7 @@ md(r"""## Summary
 | `k_int < k_bas` | by reparameterisation to the ratio, not by penalty | a penalty piles probability mass on the constraint surface and breaks DDS's reflection, which is what stops a boundary optimum looking real |
 | Recession term | log-ratio of simulated to observed constant, weight 0.20 | Morris put $\mu^*$ for `k_bas` at 0.044, so the daily-KGE objective could not see the stores at all; the term is validated against `docs/22`'s recorded 3-4x before being optimised against |
 | Budget | 1,000 evaluations per seed, four concurrent processes | one evaluation is one core, so concurrency buys **budget**; the v1 run had 178-209 |
-| H2 - H1 | matched 2009-2017 window, common gauge set | the v2 bundle has one more year and two more gauges, and neither belongs inside a difference that is supposed to isolate the forcing |
+| H2 - H1 | matched 2009-2017 window, common gauge set | the v2 bundle has one more year and a different gauge set - 63 against 61, but only **59 in common** (4 in v2 only, 2 in v1 only), so the wording "two more gauges" used elsewhere on this page is the NET count and is retired 2026-08-19 - and neither the extra year nor the changed fleet belongs inside a difference that is supposed to isolate the forcing |
 
 **What would falsify this run** rather than merely limit it: a mass-balance residual above round-off
 at the fitted parameters (checked in section 7), seeds disagreeing by a large fraction of the
@@ -1601,15 +1698,16 @@ not on the held-out years (section 10 reports F3 per period), or a skill gain bo
 parameter (section 8 counts them, and section 10 treats it as a failure regardless of the skill).""")
 
 
-def cell(kind, src):
+def cell(kind, src, idx=0):
     c = {"cell_type": kind, "metadata": {},
          "source": src.strip("\n").splitlines(keepends=True)}
+    c["id"] = "c%03d" % idx        # nbformat 5 requires a cell id; deterministic
     if kind == "code":
         c.update({"execution_count": None, "outputs": []})
     return c
 
 
-nb = {"cells": [cell(k, s) for k, s in C],
+nb = {"cells": [cell(k, s, i) for i, (k, s) in enumerate(C)],
       "metadata": {"kernelspec": {"display_name": "Python 3", "language": "python",
                                   "name": "python3"},
                    "language_info": {"name": "python", "version": "3.10"}},

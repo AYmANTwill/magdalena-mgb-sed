@@ -73,10 +73,24 @@ failures turn out to be a *separate, local* problem rather than the basin-wide s
 >   [docs/32](32_ssc_qc_audit.md) is that explicit SSC-quality gate, pre-registered §0–§6 and read
 >   out R1–R7.
 >
-> Phase C has since advanced to C3 (OPEN — [docs/37](37_c3_closure.md), four amendments) with
+> ~~Phase C has since advanced to C3 (OPEN — [docs/37](37_c3_closure.md), four amendments) with
 > **C4.3, the sediment calibration search, formally BLOCKED** ([docs/47](47_c4_entry_verdict.md):
-> *"`C4.3-BLOCKED-UNTIL-LS-LANDS`. **C4.3 may not start.**"*). For live status read
+> *"`C4.3-BLOCKED-UNTIL-LS-LANDS`. **C4.3 may not start.**"*).~~ For live status read
 > `progress_map.html`.
+>
+> **⚠ THAT SENTENCE IS ITSELF SUPERSEDED — REFRESHED 2026-08-19** (it was written 2026-08-12 and
+> was true then; kept struck, not quoted as current). **Phase C has since COMPLETED:**
+> - **C3 remains OPEN** on its closure conjunction — [docs/37](37_c3_closure.md), four amendments;
+>   A3 (2026-08-12) states *"C3 stays OPEN"*.
+> - **C4.3 RAN and RAILED** — [docs/55](55_c43_verdict.md), verdict **RAILED / EXPLORATORY, NOT
+>   adopted**. The `C4.3-BLOCKED-UNTIL-LS-LANDS` entry condition was **discharged** when the LS
+>   act landed (`ls_formulation = buarque_2015_dg`).
+> - **C5 REPRODUCED the observed ENSO contrast** — [docs/56](56_c5_enso_application.md):
+>   **18/18** stations, median modelled rate ratio **3.05×** (range 1.62–4.85), robust across
+>   β ∈ {0.45, 0.56, 0.65} and both window pairs. **The 3.05 sits at the LOWER EDGE of the
+>   observed ~3–5 primary band** — which is where the caveat two paragraphs above lands: the dry
+>   phase is at climatology (−0.0005), so nothing here licenses reading the agreement as tighter
+>   than its lower-edge position.
 
 Nothing in `data/processed/` was modified by the diagnostic work in §4–§6: every experiment
 rebuilt parameters in memory from `sim_calibrated/minibacia_params.npz` and discarded the result.

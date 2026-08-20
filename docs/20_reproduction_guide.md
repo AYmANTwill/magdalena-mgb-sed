@@ -133,6 +133,13 @@ Non-negotiable conventions on this chain:
   `F` to match `0.25930593639066796` to ≤ 1e-8 relative. Measured 2026-08-10: **0.000e+00**,
   with all 3 × 63 stored per-gauge terms bit-identical. Run it after any environment change
   before trusting anything built on H2E.
+  > **Known benign drift (recorded 2026-08-19).** `src/calib_v2.py` changed after the H2E freeze
+  > (commit `f700524`), so `report_H2E.json:calib_v2_sha256` — which records the **freeze-time**
+  > hash — no longer matches the current file. This is **intentional and not repaired**:
+  > `report_H2E.json` is a frozen record and is NOT edited, and the drift is **behaviour-preserving**
+  > — `F` still reproduces to `0.25930593639066796` at 1e-8 (the gate above). The frozen bundle was
+  > restored byte-for-byte rather than the frozen hash updated. Do not "fix" the sha256; the gate to
+  > trust is `F`, not the stored hash.
 - nb13's assertions (period, forcing identity) must pass in the executed notebook. If a
   re-run of nb14 starts a *new* search instead of reading the four checkpoints, kill it —
   the fix belongs in `src/calib_v2.py` (doc 25 stage 0).

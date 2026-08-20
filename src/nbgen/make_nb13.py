@@ -48,7 +48,45 @@ md(r"""> ### STATUS - annotated 2026-08-12 by agent `nb-banner-1217`. Nothing be
 >
 > **Where the current state lives.** `docs/26` + its 2026-08-10 Addendum (**§5.1 before quoting
 > any fitted parameter**) · `docs/29` (seed-expansion read-out) · `docs/30` §1 (why Phase B
-> closed).""")
+> closed).
+>
+> ### ADDENDUM - 2026-08-19, corpus coherence pass. Nothing above this line was rewritten.
+>
+> **Four numbers in the prose below are v1 leftovers that the v2 re-execution invalidated**, and
+> they are corrected in place. RETIRED / superseded - shown, not quoted as current:
+> ~~best-gauge KGE ~ 0.77~~, ~~alpha and beta both within 2 % of 1~~, ~~basin bias roughly
+> +80 %~~, ~~over-produces runoff by roughly a factor of two~~. What this notebook's own executed
+> output actually says: best gauge `24027070` **KGE 0.747, r 0.766, alpha 0.927, beta 0.937**
+> (cell 41); basin **Q 1,464 mm/yr against an observed 912 mm/yr = 1.63x**, i.e. **+63 %**
+> (cell 32). With that correction the notebook's working rule 4 - *"no number appears here that
+> this notebook did not compute"* - holds again.
+>
+> **The engine provenance stamp in cell 3 is stale.** It prints `44.0 kB sha256
+> cdea026afe796f6d`. Measured 2026-08-19: `src/mgb_hydrology.py` is **48,097 B = 47.0 kB, sha256
+> 93b180a9113f5946**, changed by commit `cdee2c9` (FAO-56 threshold ET stress, opt-in), which
+> landed *after* this notebook was executed. The two added constructor fields default to the old
+> behaviour, so these numbers are expected to reproduce - expected, not verified, because
+> re-executing this notebook costs its registered 7,200 s.
+>
+> **Where the r-ceiling ended up.** Item 4 of the Summary held, and the ceiling is now *bounded*
+> rather than merely observed: `docs/58` measures the last remaining rainfall lever at
+> **<= +0.006 r**, so the limit is structural, not a search that was not run hard enough. Carry
+> the caveat that comes with it - `docs/26` Addendum A.5: El Nino **skill-over-climatology =
+> -0.0005**, i.e. in the adopted fit the dry phase sits AT climatology, not above it.
+>
+> **What became of the project.** Phase C is **COMPLETE**: `docs/55` (C4.3, the sediment
+> calibration - **RAILED / EXPLORATORY, not adopted**), `docs/56` (C5 - the ENSO sediment
+> contrast reproduced, **18/18** stations, median rate ratio **3.05x**, range 1.62-4.85),
+> `docs/57` (the flux gauge set cannot grow past ~18), `docs/59` (the second implementation is an
+> independent *implementation*, not independent *data*).
+>
+> **One check this notebook stored the ingredients for and never made.** Cell 35 writes
+> `gauge_area_km2` (IDEAM) and `model_area_km2` (derived) side by side into `metrics_gauge.csv`
+> and never compares them. `docs/23` §13.2 later did, against a second delineation: the two
+> disagree **beyond 2x on 31 of 85 shared gauges (36 %)** while the median agrees to ~1 %, which
+> is the origin of the gauge-referenced t/km2/yr embargo. No number on this page is wrong -
+> `obs_qspec` and `sim_qspec` both divide by `model_area_km2`, so the comparison is area-free -
+> but the check belonged here.""")
 
 # ============================================================ title
 md(r"""# Notebook 13 - the uncalibrated baseline run
@@ -84,7 +122,7 @@ that the calibration that follows knows what it is being asked to fix.
 3. New helper code passes a **synthetic smoke test with an analytically known answer** (section 0.3)
    before it touches basin data.
 4. No number appears here that this notebook did not compute.
-5. Where a result looks good it is attacked. Section 5.5 exists because one gauge scores KGE ~ 0.77
+5. Where a result looks good it is attacked. Section 5.5 exists because one gauge scores KGE 0.747
    in an uncalibrated run, and a plausibility band would have waved that through.""")
 
 # ============================================================ 0 setup
@@ -226,7 +264,7 @@ P_{thr} = \max(S_c - S_{i,max},\,0),\qquad S_c \leftarrow S_c - P_{thr}$$
 $$E_{can} = \min(PET,\,S_c),\qquad S_c \leftarrow S_c - E_{can},\qquad PET_{soil} = PET - E_{can}$$
 
 With $\mathrm{LAI}=0$ the store is inert and $P_{thr}\equiv P$, so the engine degrades *exactly* to
-notebook 03. Section 4.5 measures what switching it on costs.
+notebook 03. Section 4.4 measures what switching it on costs (there is no section 4.5).
 
 **2. Saturation-excess runoff on a variable contributing area** (nb03 s.2, verbatim):
 
@@ -527,7 +565,7 @@ classes and nothing is left implicit:
 | `wm_scale` | 1.0 for all 24 URH | **PRIOR** (identity) | no data | Per-URH multipliers (e.g. deeper effective storage under forest). Rejected: nb09 s.7 says explicitly that *calibration* will scale $W_m$ per URH. Inventing 24 unmeasured multipliers now would pre-empt calibration and make the baseline unfalsifiable. |
 | `b` | 0.6 | **PRIOR** | nb03 s.2 worked example | MGB-IPH applications commonly use $b\approx 0.4$ (Collischonn et al. 2007). Rejected as the *baseline* value because nb03 is this project's own derivation and 0.6 is the number it reasoned with; a value taken from another basin's calibration is not a prior, it is someone else's answer. |
 | `kc` | per land class: forest 1.00, shrub 0.90, grass 0.90, crop 1.00, urban 0.35, bare 0.25, water 1.05, wetland 1.05 | **PRIOR** | FAO-56 mid-season $K_c$ ranges | $k_c=1$ everywhere (literal nb03). Rejected: it gives asphalt and bare rock the same evaporative demand as closed tropical forest. Differentiating by **land class only** (8 numbers, not 24) is deliberate - soil family changes water *supply* through $W_m$, not canopy *demand*, so a soil-dependent $k_c$ would be double-counting. The cell below reports the area-weighted mean; if it is close to 1 the differentiation mostly redistributes ET rather than shifting the basin total, which is the property a baseline wants. |
-| `lai` | per land class: forest 5.0, shrub 2.0, grass 1.5, crop 2.5, urban 0.5, bare/water 0.0, wetland 2.0 | **PRIOR** | typical tropical values | $\mathrm{LAI}=0$ (engine default, interception off, literal nb03). Rejected because canopy interception is a first-order term in a wet tropical basin. But this prior is **weak and probably too small** - section 4.5 measures the interception loss it produces and compares it with the 10-20 % of $P$ that field studies report for tropical forest. Reported as a known deficiency rather than tuned away. |
+| `lai` | per land class: forest 5.0, shrub 2.0, grass 1.5, crop 2.5, urban 0.5, bare/water 0.0, wetland 2.0 | **PRIOR** | typical tropical values | $\mathrm{LAI}=0$ (engine default, interception off, literal nb03). Rejected because canopy interception is a first-order term in a wet tropical basin. But this prior is **weak and probably too small** - section 4.4 measures the interception loss it produces (3.25 % of $P$) and sets it beside the 10-20 % of $P$ commonly attributed to tropical forest. **That 10-20 % band is UNCITED in this notebook** - no source is named for it here - so it is a point of reference, not a bar this prior passes or fails. The gap is recorded as a known deficiency rather than tuned away; the word 'deficiency' rests on the uncited band, and that is stated rather than hidden. |
 | `alpha_int` | 0.2 mm per unit LAI | **PRIOR** | MGB-IPH standard value | Fitting $\alpha_{int}$. Rejected: it is not separately identifiable from LAI here (only the product $\alpha_{int}\mathrm{LAI}$ enters), so calibrating both would be fitting two knobs to one number. |
 | `percolation` | `'linear'`, $a_{dr}=0.06\,\mathrm{d^{-1}}$, $f_{int}=0.6$ | **PRIOR** | nb03 s.4 cell 7 | The published nonlinear MGB form (`'mgb'`: $K_{int}$, $K_{bas}$, $W_z$, $\lambda$). Rejected: four more unmeasured numbers and no more information about this basin. **$a_{dr}$ is nonetheless the parameter this baseline is most wrong about** - section 2.2 predicts the consequence *before* the run, and section 4.4 checks the prediction. |
 | `reservoir` | `'exact'` | engine default | analytic solution of nb03 s.3's own $Q=Q_0e^{-t/K}$ | `'euler'` ($Q=S/K$, nb03 cell 7 literally). Rejected: unstable for $K<1$ d - and calibration will want $K_{sup}<1$ d in flashy Andean headwaters - and it gives a 24 % higher peak on nb03's own case (engine test 7c). |
@@ -1334,13 +1372,18 @@ Now, and only now, `discharge.npz` is used. Notebook 12 defined two nested gauge
 
 Both are reported. `docs/17`'s gate cost information if the wider set scores no worse, and carried
 real information if it does - which is worth knowing before the next audit reuses that gate.
+The cell below turns that into a one-line categorical verdict using an **undisclosed +0.02 KGE
+margin**. Disclosed here, because a verdict decided by a hidden cut is not a measurement: the
+medians are **0.234** (primary) and **0.212** (wider), a gap of **0.022**, so the printed verdict
+clears its own threshold by 0.002. The +0.02 is a display convention of that cell, not a cited
+materiality bar, and nothing else in this notebook passes or fails on it - read the two medians.
 
 **Masking.** Observations are used exactly as `q_valid` allows: `False` where absent *or* masked by
 `docs/17` (flat-line runs, adjudicated zeros). Nothing is interpolated. A gauge needs >= 30 valid
 paired days to be scored at all, and `kge_parts` returns NaN rather than a lucky number below that.
 
 **Expectation, from section 4.4.** Poor scores. Specifically: $\beta>1$ nearly everywhere, because
-the baseline over-produces runoff by roughly a factor of two. What is *informative* is the split
+the baseline over-produces runoff by **1.63x** (s.4.4: Q 1,464 mm/yr against an observed 912 mm/yr; ~~"roughly a factor of two"~~ was the v1 run's 1.80x - RETIRED, shown not quoted). What is *informative* is the split
 between the three KGE terms - $r$ is a forcing-and-routing problem, $\alpha$ is a
 reservoir-time-scale problem, $\beta$ is a water-partition problem, and calibration attacks them
 with different knobs.""")
@@ -1580,8 +1623,10 @@ plt.tight_layout(); plt.show()""")
 
 md(r"""### 5.5 - Attacking the result: is any of this skill a leak?
 
-One primary gauge reaches KGE ~ 0.77 with $\alpha$ and $\beta$ both within 2 % of 1, in a run whose
-basin bias is roughly +80 %. That is exactly the kind of number rule 5 exists for. Three independent
+One primary gauge reaches KGE 0.747 with $\alpha$ = 0.927 and $\beta$ = 0.937 - 7.3 % and 6.3 % from 1 - in a run whose
+basin bias is +63 %. (RETIRED / superseded - shown, not quoted as current: ~~KGE ~ 0.77, alpha and
+beta both within 2 % of 1, basin bias roughly +80 %~~ were the v1 run's numbers, which the v2
+re-execution replaced.) That is exactly the kind of number rule 5 exists for. Three independent
 attacks:
 
 **(a) Structural.** Could observed discharge reach the model at all? `simulate()` takes
@@ -1855,7 +1900,9 @@ print(f'\nflag-C zone: {int((FRC["prov_flag_code"]==2).sum())} minibacias '
 # ============================================================ 7 outputs
 md(r"""## 7 - Outputs
 
-`data/processed/sim_baseline/` is written so that (a) the calibration notebook can score against this
+`data/processed/sim_baseline_v2/` is written - ~~`data/processed/sim_baseline/`~~ was the v1 run's
+directory and is deliberately left intact, because notebook 14's pre-registered H1 cell still needs
+it (cell 47's own comment: *"sim_baseline_v2, NOT sim_baseline"*) - so that (a) the calibration notebook can score against this
 baseline without re-running, and (b) anyone can reproduce the run from the stored parameter set.
 
 | File | Contents | Why this and not something else |
@@ -1870,7 +1917,16 @@ baseline without re-running, and (b) anyone can reproduce the run from the store
 | `README.md` | what all of the above is, and what is wrong with it | the next reader is the calibration, and it needs the caveats |
 
 **Deliberately not written:** any per-URH state (`W`, `S_c`) time series. It is 32,782 columns and
-nothing downstream consumes it; the final state is enough to restart, and it is stored.""")
+nothing downstream consumes it; the final state is enough to restart, and it is stored.
+
+**Two v1 phrasings survive inside the code cells below**, and are corrected here rather than in
+place, because editing a code cell forces a full re-execution of this notebook at its registered
+7,200 s. `parameters.json` (cell 47) and `README.md` (cell 48) both say the water partition is
+*"wrong by roughly a factor of two"* - the measured v2 value is **1.63x** - and both repeat the
+**UNCITED** 10-20 % of $P$ tropical-forest interception band, for which this notebook names no
+source. Neither string is consumed downstream: `notebooks/14` reads `balance.json` and
+`q_gauge.npz` from this directory, which carry numbers rather than prose, and takes
+`parameters.json` from the **v1** `sim_baseline/` instead.""")
 
 code(r"""# sim_baseline_v2, NOT sim_baseline: the v1 directory is the baseline of the v1 forcing on
 # the v1 period, and notebook 14's pre-registered cell H1 (v1 forcing + new objective) still
@@ -2201,15 +2257,16 @@ residual above round-off (it is not), or a dependence on the initial state (ther
 1 % level). None of those hold, so the baseline is usable.""")
 
 
-def cell(kind, src):
+def cell(kind, src, idx=0):
     c = {"cell_type": kind, "metadata": {},
          "source": src.strip("\n").splitlines(keepends=True)}
+    c["id"] = "c%03d" % idx        # nbformat 5 requires a cell id; deterministic
     if kind == "code":
         c.update({"execution_count": None, "outputs": []})
     return c
 
 
-nb = {"cells": [cell(k, s) for k, s in C],
+nb = {"cells": [cell(k, s, i) for i, (k, s) in enumerate(C)],
       "metadata": {"kernelspec": {"display_name": "Python 3", "language": "python",
                                   "name": "python3"},
                    "language_info": {"name": "python", "version": "3.10"}},

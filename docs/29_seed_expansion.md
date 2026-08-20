@@ -48,7 +48,7 @@ data/processed/_calib_cache/dds_<CELL>_<SEED>.npz`):
 | 9 | H2E | 20260901 |
 | 10 | H2E | 20260902 |
 
-Queued by `scripts/calib_queue_runner.py` with **at most 4 concurrent workers**
+Queued by `scripts/b/calib_queue_runner.py` with **at most 4 concurrent workers**
 (~465 MB resident each; the machine cannot take more), in the table order, feeding the
 queue as slots free. Logs go to `data/processed/_calib_cache/logs/<CELL>_<SEED>.log` in
 the same format as the completed runs (header line, `eval N/M best F` lines), so

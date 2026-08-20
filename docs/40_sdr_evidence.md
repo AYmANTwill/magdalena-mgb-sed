@@ -30,6 +30,26 @@ already estimated for itself. The residual is real; it is just not an SDR proble
 > three" is superseded: the residual's direction is UNKNOWN**, spanning 2.27× too low to 1.49× too
 > high. C3 stays OPEN regardless, on `docs/37` A1.1 clauses 2 and 3.
 
+> **LABEL AND `cp_revision` DISCIPLINE — added 2026-08-19, document-wide, and it changes no number
+> here.** Two reading rules for everything below.
+> **(1) Every area-normalised rate this document computes on the model side — every t/km²/yr and
+> every t/ha/yr — is a MODEL-INTERNAL SPECIFIC EROSION: model erosion divided by the model's own
+> area. It is NOT a gauge-referenced sediment yield, and the `docs/23` §13.2 embargo on
+> gauge-referenced t/km²/yr is in force.** Model-internal figures are permitted only when labelled
+> as such; §7 Leg B already labels its 931.95, and the labels missing at §1, §7 Leg A and §7 Leg C
+> are supplied in place below. The published *yields* these figures are set against (1,485 · 2,200 ·
+> ~690 t km⁻² yr⁻¹ · Tan's 1.3–16.9 t ha⁻¹ a⁻¹) are other authors' gauge-derived numbers and are
+> labelled as yields where they appear.
+> **(2) Every MODEL-SIDE number in §1 through §8 is computed at the PRIOR `cp_revision` =
+> `'prior_2026_08_11'` (248.7298 Mt/yr), which was the adopted level when they were written and is
+> NOT the adopted level now** — the loads, the two rates, and every ratio built on them, including
+> §5.2's 0.7237 / 1.0614 and §7 Leg B's 931.95 t km⁻² yr⁻¹. The adopted level is
+> **299.5387 Mt/yr** at `cp_revision='cited_central_2026_08_11'` (`docs/37` A1.3). §0 and §11
+> already carry the adopted-`C` re-derivation — **1,165.0805 t/km²/yr = 11.6508 t/ha/yr** — and it
+> is the one to quote. **Never quote a load or a rate from this document
+> without its `volume_convention='williams_m3'` + `k_unit_system='us_customary'` conventions AND its
+> `cp_revision`.** No number is deleted; the prior-`C` figures stay visible with this scope.
+
 ---
 
 ## 0. AMENDMENT, 2026-08-11 — **which quantity is the MUSLE sum?** The replacement clause's decisive leg is not like-for-like either
@@ -143,10 +163,17 @@ sink** is 75.5 – 119.5 Mt/yr (25.2 – 39.9 % of the hillslope yield) at the l
 
 ## 1. What is being tested, and with which numbers
 
+> ⚠ **Dated scope note, 2026-08-19: every number in this section is computed at the PRIOR
+> `cp_revision`** = `'prior_2026_08_11'` (248.7298 Mt/yr), the level adopted when §1 was written. The
+> adopted level is **299.5387 Mt/yr** at `cp_revision='cited_central_2026_08_11'` (`docs/37` A1.3);
+> the adopted-`C` restatement of this table's rate row is **1,165.0805 t/km²/yr = 11.6508 t/ha/yr**
+> (§0.2, §11). The verdict of this document does not turn on which level is used — it turns on
+> *which quantity* the MUSLE sum is (§0) — but **no row below may be quoted as the current level.**
+
 | quantity | value | provenance |
 |---|---|---|
-| gross **hillslope** erosion, MUSLE, basin decade 2009–2018 | **248.730 Mt/yr** | `docs/37` §2; `src/mgb_sediment.py`, adopted conventions |
-| — as a basin-mean rate over 257,097 km² | **967.46 t/km²/yr = 9.675 t/ha/yr** | computed here |
+| gross **hillslope** erosion, MUSLE, basin decade 2009–2018 | **248.730 Mt/yr** | `docs/37` §2; `src/mgb_sediment.py`, `volume_convention='williams_m3'` + `k_unit_system='us_customary'` @ **`cp_revision='prior_2026_08_11'`** — ~~"adopted conventions"~~; **superseded as the level by 299.5387 Mt/yr at `cp_revision='cited_central_2026_08_11'`**; see the header note and §0 |
+| — as a **MODEL-INTERNAL** basin-mean specific erosion over the model's own 257,097 km² (**NOT** a gauge-referenced yield — `docs/23` §13.2) | **967.46 t/km²/yr = 9.675 t/ha/yr** *(at the prior `cp_revision`; **1,165.0805 t/km²/yr = 11.6508 t/ha/yr** at the adopted one)* | computed here |
 | outlet anchor, low | **144 Mt/yr** (Calamar, 1975–1995) | Restrepo & Kjerfve (2000), verified in `docs/34` §5.1 |
 | outlet anchor, high | **184 Mt/yr** (1980–2010) | Restrepo & Escobar (2018), verified in `docs/34` §5.1 |
 | implied ratio | **144/248.730 = 0.5789** · **184/248.730 = 0.7397** | `docs/37` §2 |
@@ -455,8 +482,12 @@ yield levels. Three legs, three independent sources, all failing in the same dir
 > same direction" as **superseded**: the direction is unknown.
 
 **Leg A — against a published mountainous-basin gross erosion rate (like-for-like denominator).**
-Tan, Liu & Lu (2024) report **23.7 – 26.5 t ha⁻¹ a⁻¹** basin-average RUSLE hillslope erosion. Ours
-is **9.675 t ha⁻¹ a⁻¹**.
+Tan, Liu & Lu (2024) report **23.7 – 26.5 t ha⁻¹ a⁻¹** basin-average RUSLE hillslope erosion. Ours,
+**model-internal** (model erosion over model area, **not** a gauge-referenced yield — `docs/23`
+§13.2), at `cp_revision='prior_2026_08_11'`, is **9.675 t ha⁻¹ a⁻¹** — **11.6508 t ha⁻¹ a⁻¹** at the
+adopted `cp_revision='cited_central_2026_08_11'`, which is the figure §0.2 and §11 use and the one to
+quote (*dated label + provenance, 2026-08-19; the ratios in the table below are at the prior value and
+are superseded by §0.2's re-derivation*).
 
 | | our rate | Tan et al. | ratio | their rate over 257,097 km² | implied ADR vs 144 – 184 Mt/yr |
 |---|---:|---:|---:|---:|---:|
@@ -488,7 +519,10 @@ of magnitude statement, not a calibrated factor.
 
 **Leg C — against measured yield in this basin's own tributaries.** M7 reports in-basin yields up
 to **2,200 t km⁻² yr⁻¹** (catchments 320 – 59,600 km²), and a 32-sub-basin mean of
-**~690 t km⁻² yr⁻¹**. Our **basin-mean gross hillslope erosion is 967.46 t km⁻² yr⁻¹** — only
+**~690 t km⁻² yr⁻¹**. Our **model-internal basin-mean specific erosion (model erosion over model
+area, NOT a gauge-referenced yield — `docs/23` §13.2; dated label 2026-08-19, matching Leg B's
+wording) is 967.46 t km⁻² yr⁻¹** at `cp_revision='prior_2026_08_11'` (**1,165.08** at the adopted
+one, §0.2) — only
 **1.40×** the mean measured *yield*, and **0.44×** the maximum measured yield
 (2,200/967.46 = **2.274×** the other way). A basin-mean gross erosion barely above the mean gauged
 yield, and less than half the maximum gauged yield, is the signature of an under-erosive model.
@@ -592,8 +626,11 @@ Two further edits `docs/37` needs, both consequences of the above:
   resolver (a citable land-condition source for Colombian Andean pasture and cropland) is unchanged
   and is now the **single highest-value open item in Phase C**, because §7 shows the residual is the
   size that `C` alone can explain.
-- It does **not** unembargo gauge-referenced t/km²/yr yields (`docs/23` §13.2). §7 Leg B's model
-  figure is labelled model-internal throughout.
+- It does **not** unembargo gauge-referenced t/km²/yr yields (`docs/23` §13.2). ~~§7 Leg B's model
+  figure is labelled model-internal throughout.~~ → **Updated 2026-08-19: that was true of Leg B only,
+  and it was the gap. §1's rate row, §7 Leg A's 9.675 t ha⁻¹ a⁻¹ and §7 Leg C's 967.46 t km⁻² yr⁻¹
+  were NOT labelled; all three now are, in place, and the document-wide rule is stated in the header
+  note. Every model-side area-normalised rate in this document is a MODEL-INTERNAL specific erosion.**
 
 ---
 

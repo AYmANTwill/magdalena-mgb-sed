@@ -250,7 +250,7 @@ It changes what "done" means for Phase B (doc 25 §5).
 | artifact | what it is | rebuilt by |
 |---|---|---|
 | `MGB-SED_Magdalena_FIGURES.pptx` | the figure-led deck (gitignored) | `scripts/build_deck.py` after `scripts/extract_notebook_figures.py` + `scripts/make_deck_charts.py` |
-| `presentation_guide.html` | self-contained speaker guide | versioned artifact of the deck push |
+| `docs/archive/presentation_guide.html` | self-contained speaker guide | versioned artifact of the deck push |
 | [docs/24](24_presentation_outline.md) | slide-by-slide outline, delivery notes, figure sources | — |
 | [docs/27](27_presentation_script.md) | the spoken script | — |
 | [docs/28](28_presentation_explained.md) | plain-language explanation of every number in the deck | — |

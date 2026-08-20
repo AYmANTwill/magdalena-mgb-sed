@@ -94,7 +94,7 @@ Nothing below is transcribed from a prior pass. The chain is:
    `topology.npz:downstream_idx` in `topo_order_idx`. At the registered `k = 0.0 /km` and
    `tau_channel_days = 0` this *is* the model's station flux.
 3. Observed flux rebuilt from `sediment_daily_qc.csv` + `discharge_daily.csv` +
-   `ssc_rating_fits.csv` by re-implementing `scripts/c2_compute.py`'s two estimators —
+   `ssc_rating_fits.csv` by re-implementing `scripts/c2/c2_compute.py`'s two estimators —
    **(a)** sample-day flux mean, **(b)** per-era Duan-smeared rating flux — on the **registered
    CAL window 2012-01-01 … 2014-12-31** instead of on the four ENSO windows.
 4. `r_i = ln(mean sim) − ln(mean obs)`, **means over the same day set**, per `docs/42` §2.

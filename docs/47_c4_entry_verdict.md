@@ -7,6 +7,21 @@ adversarial lenses plus a three-agent LS track, and it adds one measurement of i
 It does not edit `docs/35`, `docs/37`, `docs/42`, `docs/43` or `docs/45`, all of which are frozen
 or closed to this pass.
 
+> ## ⚠ SUPERSEDED AS A LIVE BLOCK, 2026-08-19 — **C4.3 HAS RUN.** READ §10 FIRST
+>
+> **This document's verdict — `C4.3-BLOCKED-UNTIL-LS-LANDS`, *"C4.3 may not start"* — is the
+> record of 2026-08-11, re-affirmed 2026-08-12, and is NOT the current state.** Both of the
+> enacting acts §9.2 named as missing landed 2026-08-12 (ACT 1 `7e2daef`, ACT 2 `c3fdb55`), and
+> **stage C4.3 subsequently ran**: `docs/55_c43_verdict.md` is its deliverable and owns its verdict
+> — **RAILED / EXPLORATORY, not adopted.** Phase C is complete (C5 = `docs/56`).
+>
+> **Nothing in §1–§9 is rewritten.** §9.2 rows 2 and 3 are annotated in place as CLEARED and the
+> after-the-fact ledger is **§10**, appended 2026-08-19 by the corpus coherence sweep. **All four
+> §9.2 blockers were individually cleared or satisfied before the run** — the ledger is `docs/46`
+> §10 Amendments 3 and 4 — though **no document names a single act as the discharge of
+> `C4.3-BLOCKED`**, and §10.3 records that wording conflict rather than resolving it.
+> Quote `docs/55` for any C4.3 number, never this file.
+
 > ## ⚠ BACK-ANNOTATED 2026-08-12 — READ §9 BEFORE QUOTING ANY STATUS FROM THIS FILE
 >
 > **This document was written 2026-08-11 and its statuses are as of that date.** By 2026-08-12
@@ -954,11 +969,15 @@ default, and does not unblock C4.3.**
 > same day by `docs/45` §8 Amendment 4. It rests on **four** conditions, each verified against its
 > owner by this pass:
 >
+> > **⚠ 2026-08-19 — TWO OF THESE FOUR (rows 2 and 3) ARE NOW CLEARED, AND C4.3 HAS SINCE RUN.**
+> > The rows below are the 2026-08-12 record and are annotated in place, not rewritten. **Do not quote
+> > this table as the current entry state — read §10.** `docs/55_c43_verdict.md` owns the C4.3 verdict.
+>
 > | # | the surviving blocker | owner, verbatim | verified how |
 > |---|---|---|---|
 > | **1** | **Branch B is MANDATORY, so the fit must be a FIRST RUN on the ADOPTED LS FIELD** — every guard statistic re-derived on new residuals, and no rescaling of a surface already seen. | `docs/46` §6.1 as amended, §6.3 **B1**; the required sentence, written in `docs/37` A3.4: *"the fit is recoverable by rescaling `α̂` **if and only if** `Δ_shape` = 0 exactly; the measured value is **0.1299456916752905**, and **the re-run is owed**."* Branch A is **CLOSED**, so *"there is no legal PROVISIONAL C4.3 at all"*. | `docs/53`:19/:24; `docs/46` §10 amd 1; `docs/37` A3.4 (3) |
-> | **2** | **The adopted variant is NOT A COMMITTED PRODUCT.** C4.3 cannot consume a variant no committed product carries. | `docs/37` A3.4 (4): *"`urh_ls2d_variants.csv` has **no `V4_dg` column** and `urh_ls2d.csv` may not be overwritten … **C4.3 cannot consume a variant that no committed product carries**, and no default can be switched by name."* | **Read on disk this pass.** `urh_ls2d_variants.csv` header = `mini,urh,n_cells,area_km2,area_frac,V0_ours_2026_08,V1_lim_pixel,V2a_m_cap05,V2b_m_step_eq14,V3_s_ws78,V4_buarque_2015,V4p_buarque_2015_cap,V5_L_dg96_fd`; `urh_ls2d.csv` = `…,ls2d,ls2d_hs,ls2d_mb86,ls2d_dg96`. **No `V4_dg` in either.** |
-> | **3** | **ACT 2 — the default switch — is NOT DONE and cannot yet be drafted.** ADOPT-SOURCE is *determined and recorded but not exercisable*. | `docs/37` A3.5.1: ACT 2 *"**NOT DONE, and it MAY NOT PRECEDE ACT 1** … **It cannot even be drafted** until the column is materialised."* `src/mgb_sediment.py` defaults still `ls2d_column = "ls2d_hs"`, `urh_ls2d = "urh_ls2d.csv"`. | `docs/37` A3.5.1; `docs/45` §8.5.2 (ii) |
+> | **2** | **The adopted variant is NOT A COMMITTED PRODUCT.** C4.3 cannot consume a variant no committed product carries. | `docs/37` A3.4 (4): *"`urh_ls2d_variants.csv` has **no `V4_dg` column** and `urh_ls2d.csv` may not be overwritten … **C4.3 cannot consume a variant that no committed product carries**, and no default can be switched by name."* | **Read on disk this pass.** `urh_ls2d_variants.csv` header = `mini,urh,n_cells,area_km2,area_frac,V0_ours_2026_08,V1_lim_pixel,V2a_m_cap05,V2b_m_step_eq14,V3_s_ws78,V4_buarque_2015,V4p_buarque_2015_cap,V5_L_dg96_fd`; `urh_ls2d.csv` = `…,ls2d,ls2d_hs,ls2d_mb86,ls2d_dg96`. ~~**No `V4_dg` in either.**~~ → **⚠ CLEARED 2026-08-12 by ACT 1** (commit `7e2daef`): `urh_ls2d_variants.csv` now carries `V4_dg` — header re-read on disk 2026-08-19 = `mini,urh,n_cells,area_km2,area_frac,V0_ours_2026_08,V1_lim_pixel,V2a_m_cap05,V2b_m_step_eq14,V3_s_ws78,V4_buarque_2015,`**`V4_dg`**`,V4p_buarque_2015_cap,V5_L_dg96_fd`. `urh_ls2d.csv` was **not** overwritten. See `docs/35` §9.5.1 and §10 below. |
+> | **3** | **ACT 2 — the default switch — is NOT DONE and cannot yet be drafted.** ADOPT-SOURCE is *determined and recorded but not exercisable*. | `docs/37` A3.5.1: ACT 2 *"**NOT DONE, and it MAY NOT PRECEDE ACT 1** … **It cannot even be drafted** until the column is materialised."* ~~`src/mgb_sediment.py` defaults still `ls2d_column = "ls2d_hs"`, `urh_ls2d = "urh_ls2d.csv"`.~~ | `docs/37` A3.5.1; `docs/45` §8.5.2 (ii). **⚠ CLEARED 2026-08-12 by ACT 2** (commit `c3fdb55`): `src/mgb_sediment.py:load_geometry()` now defaults to `urh_ls2d = "urh_ls2d_variants.csv"`, `ls2d_column = "V4_dg"` (read on disk 2026-08-19, `:924`–`:925`). The `SedGeometry` field default `:818` and the packer default `:862` still read `ls2d_hs`, and are overridden explicitly by `load_geometry()` at `:910`/`:1076` — so the **engine** default is `V4_dg`. See `docs/35` §9.5.1, `docs/46` §10, and §10 below. |
 > | **4** | **Deliverables still owed before entry:** `docs/46` §3.3's **stratified report** (slope terciles per variant; per-station erosion-weighted `LS̄` as **levels**, not ratios) · `docs/46` §2.3's H-S field clause **(R7)/(R8)** items 2–3 · the **`docs/35` §9 amendment** A3.1.3 records as owed. | `docs/37` A3.4, *"The remaining blockers, listed plainly so nothing is inferred from silence."* | **`docs/35` §9 verified on disk this pass: §9.1, §9.2, §9.3, §9.4 only — there is no α-box re-registration.** `docs/45` §8.5.11 item 2 confirms the threshold-moving half of B2 is **PROPOSED, not enacted**. |
 >
 > **§5's three propositions, re-ordered as `docs/45` §8.5.12 item 3 requires:** **P1** (the box is
@@ -1043,3 +1062,105 @@ exercisable'"*. That gap is owed to `docs/46`'s owner, not settled here.)*
 - **Nothing below HIGH was promoted to make the list look decisive**, and everything checked and
   found **still open** is recorded in §9.3 so a later session does not re-litigate it. Where two
   owners disagree the disagreement is printed rather than resolved (§9.4).
+
+---
+
+## 10 — AFTER THE FACT, 2026-08-19: **C4.3 HAS RUN.** The verdict above is a record, not a state
+
+**Appended by the corpus coherence sweep, 2026-08-19.** **§1–§9 are not rewritten** — the two
+sites that had become factually wrong (§9.2 rows 2 and 3) are struck and annotated in place in the
+`docs/37` A2.7 house pattern, and the lead-in to §9.2's table now carries a dated pointer here.
+**This section decides nothing, runs nothing, and closes no clause.** It records three measured
+facts and one gap it declines to paper over.
+
+### 10.1 The blocker ledger, re-read 2026-08-19 — all four cleared or satisfied
+
+| §9.2 row | what it blocked on | measured now | status |
+|---|---|---|---|
+| **2** | *"the adopted variant is NOT A COMMITTED PRODUCT … no `V4_dg` column"* | `data/processed/urh_ls2d_variants.csv` header carries **`V4_dg`** (between `V4_buarque_2015` and `V4p_buarque_2015_cap`). Materialised by **ACT 1**, commit **`7e2daef`** (2026-08-12). `urh_ls2d.csv` was **not** overwritten — its header is unchanged at `…,ls2d,ls2d_hs,ls2d_mb86,ls2d_dg96`. | **CLEARED** |
+| **3** | *"ACT 2 — the default switch — is NOT DONE and cannot yet be drafted"* | `src/mgb_sediment.py:load_geometry()` `:924`–`:925` defaults to `urh_ls2d = "urh_ls2d_variants.csv"`, `ls2d_column = "V4_dg"`. **ACT 2**, commit **`c3fdb55`** (2026-08-12). The `SedGeometry` field default `:818` and the packer default `:862` still read `ls2d_hs`; both are overridden explicitly by `load_geometry()` at `:910`/`:1076`, so the **engine** default is `V4_dg`. | **CLEARED** |
+| **1** | *"the fit must be a FIRST RUN on the ADOPTED LS FIELD"* | **Not removed — asserted SATISFIED by the run itself.** `docs/55`:1–7 declares itself *"the first run of the registered objective (`docs/45` §3) on the ADOPTED LS field (`V4_dg`), as a Branch-B first run — every per-station `r, v, m` re-derived on new residuals, no rescaling of a surface already seen."* This section takes that at its owner's word; it did not re-verify the harness. | **claimed satisfied by `docs/55`** |
+| **4** | four owed deliverables | **All three items landed 2026-08-12.** (i) The `docs/35` §9 amendment A3.1.3 recorded as owed landed as `docs/35` **§9.5** — the §6.1 α band re-registered at the adopted LS level. (ii) `docs/46` §3.3's **stratified LS report** landed as `docs/46` §10 **Amendment 3**, harness `scripts/c3/ls_stratified_report.py` (commit **`84cb9e6`**, whose message reads *"blocker 4 cleared"*), output `data/processed/ls_stratified_report.json`. (iii) `docs/46` §2.3's **H-S field clause (R7)/(R8) items 2–3** were read out in `docs/46` §10 **Amendment 4**. That amendment states it in terms: *"**`docs/47` §9.2 blocker 4 is now cleared in all three items.**"* | **CLEARED** |
+
+*(Row 4's own "verified how" cell reads "verified on disk **this pass**" and was true at the hour it
+was written on 2026-08-12; it is left standing as a dated statement and updated here rather than
+edited there. The same applies to rows 2 and 3, whose struck cells record the pre-ACT disk state.)*
+
+### 10.2 C4.3 ran, and `docs/55` owns the verdict
+
+**`docs/55_c43_verdict.md`** (written 2026-08-12) is the C4.3 deliverable. Its verdict, quoted, not
+re-derived here:
+
+- **RAILED / EXPLORATORY. The fit is NOT adopted.**
+- The in-box optimum of `F_report` sits on the **box floor**, α = **2.0** — the `docs/45` §6.1
+  **FAIL — RAILED** outcome this document predicted in its verdict box.
+- Median `KGE_ln`: **−0.118** on estimator (a), **+0.139** on estimator (b) — **the same sign**, so
+  the verdict is **not indeterminate**.
+- The **unconstrained** optimum is α ≈ **0.48**, *below* the box floor: the registered signature of
+  **mild upstream over-production** — *a diagnosis, and not a value to adopt*.
+- Design-matrix condition number **`inf`**; only the product **Π** is identifiable (`docs/42` G6),
+  so α is never reported alone.
+- `docs/55` also discharges this document's **O5** (*"nobody has re-profiled the objective on a
+  corrected LS field"*).
+
+**The one sentence of the verdict box §9.2 called the survivor was borne out:** *"a pre-registered
+search whose verdict is already known is not a test."* The search railed where §5 said it would.
+**Quote `docs/55` for every C4.3 number. This file holds none that are current.**
+
+**Phase C is complete.** C5 ran on the frozen configuration and **reproduced** the observed ENSO
+contrast — 18/18 stations, median rate ratio **3.05×** (range 1.62–4.85) — `docs/56`.
+
+### 10.3 The entry position, as its owners left it — and the one wording conflict that survives
+
+**`docs/46` §10 Amendment 4 (2026-08-12) is the document that states the entry position in full**,
+and it is quoted rather than paraphrased:
+
+> *"With Amendment 3 (§3.3 report) and `docs/35` §9.5 (gate re-registration), **`docs/47` §9.2
+> blocker 4 is now cleared in all three items.** Blockers 2 and 3 were cleared by ACT 1 / ACT 2; the
+> residue before a C4.3 verdict is **Branch B** (first-run, a search-time property), **O5** (the
+> re-profile on the adopted field — the run itself), and **O4** (carried as a declared limitation,
+> no band)."*
+
+**So the four blockers of §9.2 were not bypassed.** Three were cleared by dated enactments (§10.1),
+and the fourth — Branch B — is a property of the search itself, which `docs/55` asserts it
+satisfied as a Branch-B first run; **O5 is discharged by `docs/55` by construction**, since O5 *was*
+the demand for that run. **O4 is carried as a declared limitation, with no band attached.**
+
+**The one thing that does not reconcile, recorded rather than smoothed:** `docs/35` **§9.5.5**
+(2026-08-12) states its §6.1 re-registration *"does not unblock C4.3"* and §9.5.6 closes with
+*"C4.3 remains BLOCKED"*, while `docs/46` §10 Amendment 4 — **written the same day** — leaves only
+search-time residue. **Both are true of what they are looking at**: `docs/35` is saying that *its
+own* amendment is not the unblocking act, and `docs/46` is totting up the ledger across all of them.
+It is the same shape of disagreement §9.4 records over B1 — *"the disagreement is over what to call
+that state, not over what the state is"* — and it has the same practical resolution: **no document
+records a single act named as the discharge of `C4.3-BLOCKED`; what is recorded is that every
+blocker was individually cleared or satisfied, and then the run happened.**
+
+**This section does not manufacture an authorising act, and does not need one to be honest about the
+outcome.** What is not in doubt: **the run happened, and its verdict is RAILED / EXPLORATORY, not an
+adoption.** A reader wanting the formal entry ledger should read `docs/46` §10 Amendments 3 and 4
+beside §10.1 above; a reader wanting the result should read `docs/55`.
+
+### 10.4 Disclosure for this section
+
+- **Written 2026-08-19.** Edits confined to `docs/47_c4_entry_verdict.md`: this section, the
+  2026-08-19 header banner, the §9.2 table lead-in note, and the two struck-and-annotated cells in
+  §9.2 rows 2 and 3. **Nothing else in this file, and no other file, was edited.**
+- **No frozen document was edited.** `docs/33`, `docs/35`, `docs/42`, `docs/45`, `docs/46` were read
+  only. **No engine default moved. No fit, notebook or simulation was run. No git command was run.**
+- **No number was derived here.** Every figure in §10.2 is quoted from `docs/55` / `docs/56` with
+  its owner named. **No band, threshold or materiality bar is introduced.**
+- **Read-only measurements, all of them:** the header line of
+  `data/processed/urh_ls2d_variants.csv` and of `urh_ls2d.csv`; the `load_geometry()` defaults and
+  `DEFAULT_CP_REVISION` in `src/mgb_sediment.py`; the existence of
+  `scripts/c3/ls_stratified_report.py` and `data/processed/ls_stratified_report.json`; and `git log`
+  for the three commit hashes `7e2daef` (ACT 1), `c3fdb55` (ACT 2) and `84cb9e6` (the §3.3 report).
+  `docs/35`, `docs/37`, `docs/40`, `docs/42`, `docs/45`, `docs/46`, `docs/51`, `docs/54`, `docs/55`,
+  `docs/56` were read and, except for the frozen-slot amendments this sweep wrote in `docs/35` §9.6
+  and `docs/42` §9.8, not edited.
+- **One correction this section made to its own first draft, disclosed rather than silently fixed:**
+  the draft asserted that three of blocker 4's items were "not found landed". **That was wrong** —
+  `docs/46` §10 Amendments 3 and 4 land all three, and `scripts/c3/ls_stratified_report.py` exists
+  on disk. Row 4 and §10.3 were rewritten before this section was finished.
+- **No original text was deleted.** Every superseded sentence remains readable, struck, with a
+  dated pointer to its owner.

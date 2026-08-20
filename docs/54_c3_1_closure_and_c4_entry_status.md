@@ -1,5 +1,19 @@
 # 54 — C3.1 enactment: closure record and C4.3 entry status
 
+> **STATUS — SUPERSEDED for C4.3 entry status, 2026-08-19. Read as the state on 2026-08-12.**
+> All four §4 blockers have since been **discharged**: LS landed as `ls_formulation =
+> buarque_2015_dg` (f_LS = 0.25146 erosion-weighted / 0.2446790094097074 area-weighted), **ACT 1**
+> materialised the `V4_dg` column into `urh_ls2d_variants.csv`, and **ACT 2** (commit `c3fdb55`,
+> 2026-08-12) moved the **engine default** of `src/mgb_sediment.py` `load_geometry()` to `V4_dg`
+> ([docs/35](35_qpeak_preregistration.md) §9.5.1; [docs/46](46_ls_preregistration.md) §10 —
+> *"Blockers 2 and 3 were cleared by ACT 1 / ACT 2"*). **C4.3 then RAN** — outcome
+> [docs/55](55_c43_verdict.md), verdict **RAILED / EXPLORATORY, NOT adopted** (in-box optimum on the
+> box floor at α = 2.0; unconstrained optimum α ≈ 0.48, *below* the floor; condition number `inf`,
+> only the product Π identifiable) — and **C5 completed** ([docs/56](56_c5_enso_application.md),
+> 18/18 stations, median rate ratio 3.05×). **Phase C is COMPLETE.** Nothing below is deleted: the
+> entry-status reasoning is the audit trail for *why* the block was held, and it is shown, not
+> quoted as current.
+
 **Synthesis written 2026-08-12 (orchestrating-session/thinking layer) from the C3.1-enactment
 run's outputs, every claim verified against its primary on disk this pass.** This is a
 **pointer-justified** document: the evidence for each statement lives in the cited primary
@@ -24,7 +38,9 @@ run's outputs, every claim verified against its primary on disk this pass.** Thi
 C3.1 named by `docs/46` §9's registration card: **ADOPT-SOURCE**, `ls_formulation =
 buarque_2015_dg`, decided on written source grounds.
 
-**C3 stays OPEN. `C4.3-BLOCKED` STILL HOLDS — C4.3 may not start.** B1 (the C3.1 formulation
+**C3 stays OPEN. `C4.3-BLOCKED` STILL HOLDS — C4.3 may not start.** *(The state on 2026-08-12.
+RETIRED / superseded 2026-08-19 — the block was discharged and C4.3 RAN: [docs/55](55_c43_verdict.md),
+RAILED / EXPLORATORY, not adopted. Shown, not quoted as current.)* B1 (the C3.1 formulation
 decision) was **necessary and is measured NOT to have been sufficient** (`docs/47` §9.2; `docs/37`
 A3.4 heading: *"Is C4.3 thereby UNBLOCKED? **NO** — this amendment is the act that makes the block
 *dischargeable*, not the act that discharges it."*).
@@ -53,11 +69,14 @@ different object (the T2b correction, §6).
 |---|---|---|
 | **B1** | C3.1 LS-formulation decision | **LANDED** (`docs/37` A3) — necessary, not sufficient |
 | **B2** | re-express the C4.3 gate off the ±38 % Π band / α box | **DISCHARGED** (`docs/45` §8 amd 4); the *threshold-moving* half is PROPOSED only (`docs/45` §8.5.11 item 2) |
-| **B3** | `mgb_transport` NaN mass-audit fix | **DISCHARGED** (`docs/47` §2.3; suite **140 passed** at that commit — re-verify, §7) |
+| **B3** | `mgb_transport` NaN mass-audit fix | **DISCHARGED** (`docs/47` §2.3; suite **140 passed** at that commit — re-verified §7: **154 passed** 2026-08-19) |
 | **B4** | `docs/42` §9 transcription | **DISCHARGED** (`docs/47` §2.4) |
 | **B5** | (SSC coordinate fetch — Phase-C data track, unrelated to C4.3 entry) | not in scope here |
 
-## 4 — Why C4.3 STILL may not start: the four surviving blockers (`docs/47` §9.2, verbatim-owned)
+## 4 — Why C4.3 STILL may not start **as of 2026-08-12**: the four surviving blockers (`docs/47` §9.2, verbatim-owned)
+
+> **All four were discharged and C4.3 RAN — see the banner at the top.** This section is kept as
+> the dated record of the entry gate, not as the current gate.
 
 The block **no longer rests on B1, and not on B2 either.** It rests on four conditions, each
 verified against its owner:
@@ -65,14 +84,22 @@ verified against its owner:
 1. **Branch B is MANDATORY → the fit must be a FIRST RUN on the adopted LS field.** `Δ_shape =
    0.1299456916752905 ≠ 0`, so `α̂` is **not** recoverable by rescaling a surface already seen
    (`docs/53`; `docs/37` A3.4(3)). Branch A is **CLOSED** — there is **no legal PROVISIONAL C4.3**.
-2. **The adopted variant is NOT a committed product.** `urh_ls2d_variants.csv` has **no `V4_dg`
-   column** and `urh_ls2d.csv` may not be overwritten; *"C4.3 cannot consume a variant that no
-   committed product carries"* (`docs/37` A3.4(4)) — confirmed on disk (its columns are
-   `V0_ours_2026_08 … V5_L_dg96_fd`; no `V4_dg`).
-3. **ACT 2 — the default switch — is NOT DONE and cannot yet be drafted.** ADOPT-SOURCE is
+2. ~~**The adopted variant is NOT a committed product.** `urh_ls2d_variants.csv` has **no `V4_dg`
+   column**~~ and `urh_ls2d.csv` may not be overwritten; *"C4.3 cannot consume a variant that no
+   committed product carries"* (`docs/37` A3.4(4)) — ~~confirmed on disk (its columns are
+   `V0_ours_2026_08 … V5_L_dg96_fd`; no `V4_dg`)~~ → **CLEARED by ACT 1 (2026-08-12); re-read on
+   disk 2026-08-19:** `data/processed/urh_ls2d_variants.csv` header now ends
+   `…,V3_s_ws78,V4_buarque_2015,V4_dg,V4p_buarque_2015_cap,V5_L_dg96_fd` — the `V4_dg` column **is**
+   in the committed product ([docs/35](35_qpeak_preregistration.md) §9.5.1;
+   [docs/46](46_ls_preregistration.md) §10).
+3. ~~**ACT 2 — the default switch — is NOT DONE and cannot yet be drafted.** ADOPT-SOURCE is
    *determined and recorded but not exercisable*; `src/mgb_sediment.py` defaults remain
-   `ls2d_column = "ls2d_hs"`, `urh_ls2d = "urh_ls2d.csv"`. ACT 2 **may not precede ACT 1** (`docs/37`
-   A3.5.1).
+   `ls2d_column = "ls2d_hs"`, `urh_ls2d = "urh_ls2d.csv"`.~~ ACT 2 **may not precede ACT 1** (`docs/37`
+   A3.5.1) — and it did not. → **ACT 2 EXECUTED 2026-08-12** (commit `c3fdb55`); re-read on disk
+   2026-08-19, `src/mgb_sediment.py` `load_geometry()` now defaults to
+   `urh_ls2d = "urh_ls2d_variants.csv"`, `ls2d_column = "V4_dg"` (its docstring records *"switched in
+   by ACT 2 (2026-08-12)"*). See [docs/35](35_qpeak_preregistration.md) §9.5.1,
+   [docs/46](46_ls_preregistration.md) §10, [docs/55](55_c43_verdict.md).
 4. **Deliverables owed before entry:** `docs/46` §3.3 stratified report (slope terciles per variant;
    per-station erosion-weighted `LS̄` as **levels**, not ratios) · `docs/46` §2.3 H-S field clause
    (R7)/(R8) items 2–3 · the `docs/35` §9 amendment `A3.1.3` records as owed.
@@ -88,6 +115,11 @@ No engine default moved in A3, and none moves here. **ACT 2** — switching `ls2
 `scripts/c3/ls2d.py` and `urh_ls2d.csv`**, and its trigger is **ACT 1**: materialising the `V4_dg`
 column into a committed product (blocker 2). Switching a default by name before ACT 1 is forbidden
 (`docs/37` A3.5.1).
+
+> **Update 2026-08-19: ACT 1 and ACT 2 have both been executed** (ACT 2 = commit `c3fdb55`,
+> 2026-08-12; [docs/35](35_qpeak_preregistration.md) §9.5.1). This section states the **ownership
+> rule**, which still stands; it is no longer a description of the current engine state — the engine
+> default is `ls2d_column = "V4_dg"` on `urh_ls2d_variants.csv`.
 
 ## 6 — Defect and finding status (T2, T3, T6)
 
@@ -133,8 +165,11 @@ column into a committed product (blocker 2). Switching a default by name before 
 2. **Commit the changeset.** ~40 files are uncommitted (`git status`); nothing from the run is in
    history. The orchestrating session reviews and commits — *before* any new agent run, or a fresh
    session may clobber it.
-3. **Re-run the test suite** — `src/mgb_sediment.py` is in the uncommitted set, so confirm still
-   **140 passed** (or record the new count) from executed output, never an exit code.
+3. ~~**Re-run the test suite** — `src/mgb_sediment.py` is in the uncommitted set, so confirm still
+   **140 passed** (or record the new count) from executed output, never an exit code.~~
+   → **DONE / DISCHARGED 2026-08-19: `python3.10 -m pytest -q` → 154 passed**, measured from
+   executed output. The suite grew past 140; **140 is stale** and is retained above only as the
+   count at the 2026-08-12 commit (§3, B3).
 4. **This document** is a synthesis pending the orchestrator's review and commit.
 
 ## 8 — Grade of this document

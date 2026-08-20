@@ -912,7 +912,7 @@ print(f'  NaN in either file: {int(ML.isna().sum().sum())} / {int(UL.isna().sum(
 aU = UL.area_km2.to_numpy(float)
 aM = ML.area_km2_cells.to_numpy(float)
 VAR = [('ls2d', 'primary, UNCAPPED - eq. above, literal'),
-       ('ls2d_hs', 'hillslope-limited (upslope area capped at 1 km2) - ADOPTED'),
+       ('ls2d_hs', 'hillslope-limited (cap 1 km2) - V0, the PRIOR default; ADOPTED is V4_dg'),
        ('ls2d_mb86', 'cross-check: FIXED m = 0.4 (Moore & Burch 1986)'),
        ('ls2d_dg96', 'cross-check: literal Desmet & Govers finite-difference L')]
 print(f'\n{"variant":11s} {"level":10s} {"area-wtd mean":>14s} {"median":>10s} {"max":>13s}   note')
@@ -1360,13 +1360,20 @@ unattractive total is not evidence against the source formulation.** It landed o
 graded **CITED** on all four levers.
 
 > **WHAT A3 DID NOT DO, so nothing here is over-read.** The decision is **DETERMINED and RECORDED,
-> NOT YET EXERCISABLE**. **No engine default has moved** - this notebook still runs on
-> `ls2d_column = 'ls2d_hs'`, i.e. `V0`, with $f_{LS}$ = 1.000, and every number below section 3.6 is
-> at that level. The **LS LEVEL remains UNVALIDATED** (`docs/42` G4.2) - *a cited formulation is not
-> a validated level, and a fitted one is not either*. **C3 stays OPEN** (clause 2 also needs the
-> *shape* decision: settling the level is necessary and not sufficient) and **C4.3 stays BLOCKED**
-> (`docs/47`). Switching the default is a separate, separately dated act that is **not draftable**
-> until a gated `V4_dg` column exists as a committed product.""")
+> NOT YET EXERCISABLE at the time of writing**. ~~**No engine default has moved** - this notebook
+> still runs on `ls2d_column = 'ls2d_hs'`, i.e. `V0`~~ / ~~Switching the default is a separate,
+> separately dated act that is **not draftable** until a gated `V4_dg` column exists as a committed
+> product.~~ **RETIRED / superseded 2026-08-12 - shown, not quoted as current.** **ACT 2 (commit
+> `c3fdb55`, 2026-08-12) MOVED THE ENGINE DEFAULT to `V4_dg`**: `load_geometry()` in
+> `src/mgb_sediment.py` now reads `urh_ls2d_variants.csv:V4_dg`, and that committed column is what
+> made the switch draftable. **This notebook is a `V0` record and pins `urh_ls2d='urh_ls2d.csv'`,
+> `ls2d_column='ls2d_hs'` explicitly** in section 2.3's loader cell, so its numbers stand as a V0
+> record: $f_{LS}$ = 1.000, and every number below section 3.6 is at that level. The **LS LEVEL
+> remains UNVALIDATED** (`docs/42` G4.2) - *a cited formulation is not a validated level, and a
+> fitted one is not either*. **C3 stays OPEN** (clause 2 also needs the *shape* decision: settling
+> the level is necessary and not sufficient; owner `docs/37`). **C4.3's entry block has since been
+> discharged** - C4.3 ran on the adopted field and returned **RAILED / EXPLORATORY, NOT adopted**
+> (`docs/55`), superseding this paragraph's earlier "C4.3 stays BLOCKED" pointer to `docs/47`.""")
 
 code(r"""# LS FORMULATION LEVEL.  Registered values, all cited in place - this cell RE-DERIVES nothing.
 #   f_ero  = exact engine re-run, DECIDES         (docs/46 section 3.3)
@@ -1450,6 +1457,9 @@ print(f'    the published x0.790 does NOT isolate it: 0.790 = 0.852262 (L) x 0.9
       f'= {0.852262*0.926925:.6f}, measured on the WRONG column (ls2d, not ls2d_hs).')
 print(f'    basin gross erosion at the endpoints (ENGINE re-runs, NOT the area proxy): '
       f'75.3235 - 129.3840 Mt/yr, vs 299.5387 at V0  (docs/47 section 4.3)')
+print(f'      all three at cp_revision {GEO.audit.get("cp_revision")!r}, volume_convention '
+      f'{PAR.volume_convention!r}, k_unit_system {PAR.k_unit_system!r} - a load is not quotable')
+print('      without BOTH its convention and its cp_revision (standing rule, docs/37).')
 print(f'    proxy bias f_ero/f_area: x{F_HYB_ERO/F_HYB_AREA:.4f} at the hybrid, '
       f'x{F_SRC_ERO/F_SRC_AREA:.4f} at the adopted point -> the proxy is ~2.5 % LOW')
 
@@ -1467,7 +1477,9 @@ print(f'\n  DECISION (docs/37 A3, 2026-08-12): ADOPT-SOURCE, ls_formulation = {A
 print(f'    f_LS = {ADOPTED_F} erosion-weighted (proxy {F_SRC_AREA}), formulation CITED on all 4')
 print(f'    levers.  STATUS: DETERMINED and RECORDED, NOT YET EXERCISABLE.')
 print(f'    THIS NOTEBOOK STILL RUNS ON ls2d_column={GEO.ls2d_column!r} (V0), f_LS = 1.000.')
-print(f'    The LS LEVEL remains UNVALIDATED (docs/42 G4.2); C3 stays OPEN; C4.3 stays BLOCKED.')""")
+print(f'    The LS LEVEL remains UNVALIDATED (docs/42 G4.2); C3 stays OPEN (docs/37).')
+print(f'    RETIRED / superseded 2026-08-12 - shown, not quoted as current: "C4.3 stays BLOCKED".')
+print(f'    C4.3 ran on the adopted field and returned RAILED / EXPLORATORY, NOT adopted (docs/55).')""")
 
 code(r"""fig, ax = plt.subplots(1, 2, figsize=(12.8, 3.9),
                        gridspec_kw={'width_ratios': [1.0, 1.15]})
@@ -1563,9 +1575,12 @@ outcome was pre-registered precisely so it could not be treated as evidence. It 
 quoting the rescaled $\alpha$ numbers as a **test** - they are bookkeeping about the *pairing* of
 $\alpha$ with an $LS$, they pass and fail nothing, and $\alpha=11.8$'s like-for-likeness with any
 2-D contributing-area $LS$ is **NOT SETTLED with no band offered**. And it does not license reading
-A3's decision as a change to this notebook: **no engine default has moved**, every number after
-section 3.6 is still at `V0` with $f_{LS} = 1.000$, the **LS level remains UNVALIDATED**, C3 stays
-**OPEN** and C4.3 stays **BLOCKED**.""")
+A3's decision as a change to *this notebook's numbers*: ~~no engine default has moved~~ - **RETIRED /
+superseded 2026-08-12, shown and not quoted as current**, because ACT 2 (commit `c3fdb55`) moved the
+engine default to `V4_dg`. This notebook is a **`V0` record** and pins `ls2d_column='ls2d_hs'`
+explicitly, so every number after section 3.6 is still at `V0` with $f_{LS} = 1.000$, the **LS level
+remains UNVALIDATED**, and C3 stays **OPEN**. C4.3's entry block has since been discharged: it ran
+and returned **RAILED / EXPLORATORY, not adopted** (`docs/55`).""")
 
 # ============================================================ 4 q_peak
 md(r"""## 4 - $q_{peak}$: what a daily model does about an instantaneous peak
@@ -2583,7 +2598,15 @@ The three legs, with what each establishes:
 
 * **Leg A - the only like-for-like denominator.** Tan, Liu & Lu (2024), *ESPL* 49:1778-1795, report
   **RUSLE hillslope** erosion of 23.7-26.5 t ha<sup>-1</sup> a<sup>-1</sup> in a large, data-sparse
-  mountainous basin. Hillslope against hillslope, so this is the leg that counts.
+  mountainous basin. ~~Hillslope against hillslope, so this is the leg that counts.~~ **RETIRED /
+  superseded by `docs/37` A1.9 (2026-08-11) - shown, not quoted as current.** RUSLE is a
+  **detachment**-side quantity while SWAT's own Ch. 4:1 calls MUSLE's output a sediment **yield**, so
+  the two sides of this leg may not name the same quantity, and A1.9.2 requires it read **both**
+  ways: under **reading A** (our sum is gross erosion) ours 11.6508 t ha<sup>-1</sup> a<sup>-1</sup>
+  is **2.034-2.275x LOW**; under **reading B** their erosion converted with NEH Table 6-2's own
+  sheet-erosion delivery ratio **0.33** gives 7.821-8.745 t ha<sup>-1</sup> a<sup>-1</sup> and ours is
+  **1.332-1.490x HIGH**. Reading B is **not adopted** - it flatters the result, which is the reason
+  to hold it at arm's length, not the reason to take it.
 * **Leg B - a hard inequality.** Latrubesse & Restrepo (2014) give a measured mean **yield** of
   1,485 t km<sup>-2</sup> yr<sup>-1</sup> across 119 Colombian Andean gauges. Since yield cannot
   exceed gross erosion wherever net deposition is non-negative, our Andean-flank erosion sitting
@@ -2612,7 +2635,8 @@ LEGS = [
     ('A  hillslope vs hillslope\nTan, Liu & Lu (2024) RUSLE',
      f'{23.7}-{26.5} t/ha/yr RUSLE hillslope', E_HA,
      23.7/E_HA, 26.5/E_HA, True,
-     'like-for-like denominator - THE leg that counts'),
+     'reading A: RUSLE erosion vs our erosion.  reading B (docs/37 A1.9.2): their erosion x NEH '
+     'Table 6-2 DR 0.33 = 7.821-8.745 t/ha/yr, ours 1.332-1.490x HIGH.  NOT like-for-like'),
     ('B  Andean flank vs measured YIELD\nLatrubesse & Restrepo (2014)',
      '1,485 t/km2/yr yield, 119 Andean gauges', ANDEAN_FLANK,
      1485.0/ANDEAN_FLANK, 1485.0/ANDEAN_FLANK, True,
@@ -2631,7 +2655,20 @@ for lab, pub, ours, slo, shi, _, note in LEGS:
     print(f'{"":52s} {note}')
 COMB_LO = min(1485.0/ANDEAN_FLANK, 23.7/E_HA, 2200.0/BASIN_T_KM2_YR)
 COMB_HI = max(1485.0/ANDEAN_FLANK, 26.5/E_HA, 2200.0/BASIN_T_KM2_YR)
-print(f'\ncombined: the model is {COMB_LO:.2f}x - {COMB_HI:.2f}x under-erosive')
+# docs/37 A1.9 WITHDREW the residual's DIRECTION.  A1.7 item 7 assigns this exact fix to this pass:
+# the legs must be printed under BOTH readings and the summary must say DIRECTION UNKNOWN.
+print(f'\ncombined, reading A (our sum is GROSS EROSION): {COMB_LO:.2f}x - {COMB_HI:.2f}x LOW')
+print('combined, reading B (a hillslope->stream YIELD, SWAT Ch. 4:1): 1.33x - 1.49x HIGH')
+print("  VERDICT (docs/37 A1.9.3): the residual's direction is UNKNOWN across a bracket of 2.27x")
+print('  too low to 1.49x too high.')
+print(f'  RETIRED / superseded 2026-08-11, shown and not quoted as current: "the model is '
+      f'{COMB_LO:.2f}x - {COMB_HI:.2f}x under-erosive" (docs/37 A1.4; direction withdrawn by A1.9).')
+print('  Reading B is NOT adopted: it makes the result look better, which is the reason to hold it')
+print("  at arm's length.  Our sum is neither exactly gross erosion nor exactly a basin yield, and")
+print('  saying so is the finding, not a hedge.')
+print("  Leg C's MAX form is WITHDRAWN as arithmetically invalid at basin scale under either")
+print('  reading: a basin mean over 257,097 km2 against the maximum of 32 catchments of')
+print('  320-59,600 km2 measures spatial variability (internal range 18.671x), not under-erosion.')
 print(f'  Leg A alone (the only like-for-like denominator): '
       f'{23.7/E_HA:.3f}x - {26.5/E_HA:.3f}x low')
 print(f'  Leg C, the OTHER direction, reported because it is not a defect: our basin mean is')
@@ -2660,15 +2697,18 @@ CLAUSES = [
     ('2  no decision left unresolved', 'NOT MET',
      'the LS FORMULATION level (section 3.6): ours is 2.3151x-3.9768x the level alpha = 11.8 is '
      'PAIRED with. The formulation is now DECIDED on source grounds (docs/37 A3: ADOPT-SOURCE, '
-     'buarque_2015_dg, CITED) but RECORDED and NOT EXERCISED - no engine default moved, the LS '
+     'buarque_2015_dg, CITED) and SINCE EXERCISED IN THE ENGINE - ACT 2 (c3fdb55, 2026-08-12) '
+     'moved the load_geometry default to V4_dg, which retires the earlier "no engine default '
+     'moved"; this notebook pins ls2d_column=ls2d_hs and stands as a V0 record.  The LS '
      'LEVEL stays UNVALIDATED, and clause 2 also needs the LS SHAPE decision'),
     ('3  the independent audit agreed with the decisions', 'NOT ESTABLISHED',
      'the three 2026-08-11 decisions (C revision, SDR retirement, guard set) are unaudited'),
     ("4  implied SDR is physically plausible (0.05-0.30)", 'RETIRED',
      'wrong quantity (ADR, not SDR) and the band is uncited - neither a pass nor a fail'),
     ("4' basin-mean gross HILLSLOPE erosion rate is consistent with published levels", 'NOT MET',
-     f'model is {COMB_LO:.2f}x-{COMB_HI:.2f}x under-erosive; Leg A alone '
-     f'{23.7/E_HA:.2f}x-{26.5/E_HA:.2f}x'),
+     f'DIRECTION UNKNOWN (docs/37 A1.9.3): reading A {COMB_LO:.2f}x-{COMB_HI:.2f}x LOW, reading B '
+     f'1.33x-1.49x HIGH; Leg A alone {23.7/E_HA:.2f}x-{26.5/E_HA:.2f}x under reading A.  A1.9 '
+     f're-opened this clause as 4" NOT ESTABLISHED - the two sides do not name one quantity'),
     ('5  the pre-registered stage-C4 guards are in place', 'MET',
      'G1-G9 with 17 explicit FAIL conditions, frozen before any C4 machinery existed'),
 ]
@@ -2702,7 +2742,8 @@ ax[0].axhline(1.0, color=CB['green'], lw=1.4, label='model = published level')
 ax[0].set_xticks(xx); ax[0].set_xticklabels(labs, fontsize=7.5)
 ax[0].set_ylabel('published level / our model  (>1 = model too low)')
 ax[0].set_ylim(0, 2.9)
-ax[0].set_title("Clause 4' : three independent legs, all pointing the same way")
+ax[0].set_title("Clause 4' under reading A: three legs; direction UNKNOWN once reading B is\n"
+                "admitted (docs/37 A1.9.3: 2.27x too low ... 1.49x too high)")
 ax[0].legend(fontsize=7.5)
 
 st_col = {'MET': CB['green'], 'NOT MET': CB['red'], 'RETIRED': CB['grey'],
@@ -2730,17 +2771,25 @@ MET, amber NOT ESTABLISHED, grey RETIRED - with each clause's verdict printed. T
 Leg C marks the one comparison the model is *supposed* to exceed, plotted separately so it is not
 mistaken for a shortfall.""",
     shows=r"""The model's basin-mean gross hillslope erosion is **1,165.08 t km<sup>-2</sup>
-yr<sup>-1</sup> = 11.6508 t ha<sup>-1</sup> yr<sup>-1</sup>** (model-internal). Leg A, the only
-like-for-like comparison, puts it **2.034x to 2.275x below** a published RUSLE hillslope rate for a
-comparable basin. Leg B, the hard inequality, is violated by only **1.027x** - 2.7 %. Leg C makes it
-**1.689x** the 32-sub-basin mean measured yield (green diamond - the direction that is *required*)
-and **1.888x short** of the in-basin maximum of 2,200. Combined over the three shortfall legs:
-**1.03x to 2.27x under-erosive**. Closing Leg A with the coefficient alone would need
-$\alpha \approx 23.7$-26.5, outside the pre-registered expected band at both ends. The scoreboard
-shows clauses 2 and 4' failing, clause 3 not established, clause 4 retired.""",
+yr<sup>-1</sup> = 11.6508 t ha<sup>-1</sup> yr<sup>-1</sup>** (model-internal specific erosion;
+`docs/23` §13.2's gauge-referenced-yield embargo unaffected). Leg A puts it **2.034x to 2.275x
+below** a published RUSLE hillslope rate under **reading A** (our sum is gross erosion), and
+**1.332x to 1.490x above** that same source converted to a yield with NEH Table 6-2's own
+sheet-erosion delivery ratio 0.33 under **reading B** (SWAT Ch. 4:1 calls MUSLE's output a yield).
+Leg B, the hard inequality, is violated by only **1.027x** - 2.7 %, and `docs/37` A1.4 already
+conceded that leg has stopped being evidence. Leg C makes it **1.689x** the 32-sub-basin mean
+measured yield (green diamond - the direction that is *required*), and its **max form is WITHDRAWN**
+as arithmetically invalid at basin scale (`docs/37` A1.9.2). Combined: ~~**1.03x to 2.27x
+under-erosive**~~ - **RETIRED / superseded 2026-08-11, shown and not quoted as current**; the
+current statement is A1.9.3's, **the residual's direction is UNKNOWN across a bracket of 2.27x too
+low to 1.49x too high**, and the yield reading is **not adopted** because it flatters the result.
+Closing Leg A with the coefficient alone would need $\alpha \approx 23.7$-26.5 under reading A,
+outside the pre-registered expected band at both ends. The scoreboard shows clauses 2 and 4'
+failing, clause 3 not established, clause 4 retired.""",
     means=r"""**Stage C3 is OPEN**, and it is open for reasons that survive the retirement of the
 old gate: an unresolved formulation decision (section 3.6), three unaudited decisions, and a
-measured, citable shortfall on the erosion side. Two honest qualifications that cut in opposite
+measured, citable **level discrepancy** on the erosion side whose **direction is UNKNOWN**
+(`docs/37` A1.9.3: 2.27x too low to 1.49x too high). Two honest qualifications that cut in opposite
 directions. **Leg B has stopped being evidence:** at the prior cover factor it was a proof by
 impossibility (modelled Andean gross erosion 1.593x *below* a published Andean yield), but at the
 adopted cover factor the gap is 2.8 %, which is inside the noise of a comparison whose spatial
@@ -2756,7 +2805,8 @@ basin mean is now 1.689x the measured sub-basin mean yield, up from 1.402x, and 
 should happen, since gross erosion must exceed yield. Finally, note the trap in the scoreboard:
 clauses 2 and 4' are **the same lever pointing opposite ways** - resolving the topographic
 formulation would lower the model by **2.3151x-3.9768x**, and by **3.9768x at the point actually
-adopted** (`docs/37` A3), while clause 4' asks for 1.03-2.27x more. Resolving
+adopted** (`docs/37` A3), while clause 4' asks for **1.03-2.27x more under reading A** - and for
+*less* under reading B, which is why `docs/37` A1.9.3 records the direction as **UNKNOWN**. Resolving
 it in the direction its own source argues for takes the model *further* from clause 4', and that
 must be reported rather than quietly averaged away.""")
 
@@ -2897,14 +2947,18 @@ ax[1].plot(fam_a, 11.8/fam_a, color=CB['red'], lw=1.8,
            label=r'the equifinal curve: $\alpha \times \lambda = $ const')
 for a_, lab in [(11.8, r'adopted $\alpha$=11.8, $\lambda$=1'),
                 (5.9, 'expected band low'), (23.6, 'expected band high'),
-                (4.45, r'like-for-like ref for OUR $LS$')]:
+                (2.9672, r'like-for-like ref at the ADOPTED $f_{LS}$')]:
     ax[1].plot([a_], [11.8/a_], 'o', ms=5.5, color=CB['dark'])
     ax[1].annotate(lab, xy=(a_, 11.8/a_), xytext=(a_ + 0.7, 11.8/a_ + 0.16), fontsize=6.6)
 ax[1].axvspan(5.9, 23.6, color=CB['green'], alpha=0.14, label='pre-registered expected band')
-ax[1].axvspan(2.0, 9.9, color=CB['amber'], alpha=0.14,
-              label='the SAME band rescaled for our $LS$ level')
+# The amber band read 2.0-9.9 and the marker 4.45 until 2026-08-12: both came from the SUPERSEDED
+# x0.333-x0.421 LS bracket.  RETIRED - shown here in the comment, not plotted as current.  On the
+# registered bracket f_LS in [0.25146, 0.43194] (docs/37 A3, docs/46) the rescaled numbers are:
+# reference 11.8*f = 2.967-5.097, band 5.9-23.6*f = 1.484-10.194, hard stop 35.4*f = 8.902-15.291.
+ax[1].axvspan(1.4836, 10.1939, color=CB['amber'], alpha=0.14,
+              label='the SAME band rescaled for our $LS$: 5.9-23.6 x $f_{LS}$')
 ax[1].set_xlabel(r'$\alpha$'); ax[1].set_ylabel(r'required uniform $C\!\cdot\!LS$ multiplier $\lambda$')
-ax[1].set_ylim(0, 2.6)
+ax[1].set_ylim(0, 4.3)   # raised from 2.6 so the ADOPTED-point reference (alpha 2.9672) is on-axis
 ax[1].set_title('Equifinality: every point on the red curve fits identically')
 ax[1].legend(fontsize=6.6, loc='upper right')
 for a in ax:
@@ -2916,15 +2970,20 @@ reading(
 multiplicative value on a log axis, with the product $\Pi$ in the title. **Right:** the equifinal
 family - the red curve is the locus of $(\alpha, \lambda)$ pairs that give an identical basin total,
 where $\lambda$ is any uniform multiplier on the cover or topographic field; the green band is the
-pre-registered expected range for $\alpha$ and the amber band is the same range rescaled for our
-measured topographic level.""",
+pre-registered expected range for $\alpha$ and the amber band is the same range rescaled by the
+registered erosion-weighted $f_{LS} \in [0.25146, 0.43194]$ (`docs/51`; the adopted point is
+$f_{LS}$ = 0.25146) - a named, registered bracket, not an unnamed measured level.""",
     shows=r"""$\Pi = 11.8 \times 47.86301 \times 7.593014 \times 1 \times 1 \times 1 =
 4{,}288.409$ at the prior cover factor and **5,164.418** at the adopted one. Four illustrative
 members of the equifinal family are numerically indistinguishable: $\alpha = 11.8$ with no
 multiplier; $\alpha = 5.9$ with the cover factor doubled; $\alpha = 35.4$ with the topographic
 factor divided by three; $\alpha = 5.0$ with a 2.36x multiplier. The right panel shows the
-pre-registered band (5.9-23.6) and its rescaled counterpart (2.0-9.9) overlapping only partially,
-with the like-for-like reference for our own topographic level at about 4.45.""",
+pre-registered band (5.9-23.6) and its rescaled counterpart **1.484-10.194** ($5.9\!-\!23.6\times
+f_{LS}$ on the registered bracket $f_{LS}\in$ **[0.25146, 0.43194]**) overlapping only partially,
+with the like-for-like reference at the **adopted** point, $11.8\times0.25146 =$ **2.9672**. *(This
+panel carried ~~2.0-9.9~~ and ~~4.45~~ until 2026-08-12; both came from the superseded
+x0.333-x0.421 bracket and are **RETIRED / superseded - shown, not quoted as current**. Section 3.6
+owns the replacement.)*""",
     means=r"""This is a **proof of non-identifiability, not a caution about noisy data**: no amount
 of sediment observation can separate these seven numbers, because they appear only as a product.
 Three practical consequences. (1) Any future statement that "$\alpha$ was calibrated to 8.4 and
@@ -2982,7 +3041,8 @@ this repository and no path or URL is recorded anywhere.** It is therefore recor
 than as done or as failed. This matters more than a missing nice-to-have: the two-implementation
 discipline is what caught errors elsewhere in this project, and its absence here means the only
 independent checks on the sediment engine are the hand-computed unit-day of section 5.7, the two
-internal backends, and the 82-test suite.
+internal backends, and the test suite: ~~82 tests~~ **154 tests, measured 2026-08-19**
+(`python3.10 -m pytest -q`) - the struck count is shown, not quoted as current.
 
 ### 7.4 Beliefs held earlier in this project that turned out to be wrong
 
@@ -3031,9 +3091,11 @@ those cells was explicitly rejected because it would hide a known input problem 
 3. **Not** that the topographic factor is settled. Its *level* is **UNVALIDATED** (`docs/42` G4.2),
    measured at **2.3151x-3.9768x** the level the coefficient is *paired* with, and resolving it
    makes the answer worse. The *formulation* is now decided on source grounds (`docs/37` A3:
-   ADOPT-SOURCE, `buarque_2015_dg`, **CITED** on all four levers) but that decision is **RECORDED
-   and NOT EXERCISED** - no engine default moved, every number in this notebook is still at `V0`
-   with $f_{LS}=1.000$ - and **a cited formulation is not a validated level.**
+   ADOPT-SOURCE, `buarque_2015_dg`, **CITED** on all four levers) and has since been **EXERCISED in
+   the engine**: ACT 2 (commit `c3fdb55`, 2026-08-12) moved `load_geometry()`'s default to `V4_dg`,
+   which retires ~~no engine default moved~~ (**shown, not quoted as current**). This notebook
+   remains a **`V0` record** and pins `ls2d_column='ls2d_hs'` explicitly, so every number in it is
+   still at `V0` with $f_{LS}=1.000$ - and **a cited formulation is not a validated level.**
 4. **Not** that any load may be quoted without its conventions. After section 5 a load is **363x
    ambiguous** in unit convention and 1.2x (at the band endpoints 0.43x-7.62x) ambiguous in cover
    factor. `SedParams.convention_summary()` and the geometry's cover-factor provenance must travel in
@@ -3059,7 +3121,10 @@ md(r"""## 8 - First look at the ENSO signal - UNCALIBRATED, and NOT the study's 
 The study's question is whether Magdalena sediment transport differs between a wet La Nina and a dry
 El Nino. This section reports what the **uncalibrated** model says about that. It is included because
 a sign or an order-of-magnitude disagreement here would be evidence that something in sections 2-5
-is wrong; it is **not** the contrast analysis, which is a later stage with its own pre-registration.
+is wrong; it is **not** the contrast analysis. That analysis has since been done as stage **C5** on
+the frozen configuration, under its own pre-registration, and it **reproduces** the observed
+contrast: **18/18 stations, median rate ratio 3.05x (range 1.62-4.85)** (`docs/56`). Nothing below
+is that result - the numbers here are this notebook's own uncalibrated `V0` first look.
 
 **Why the comparison is of rates and never of window totals.** The pre-registered windows are of
 unequal length - the primary El Nino window is 731 days against La Nina's 365 - so dividing one
@@ -3195,7 +3260,8 @@ md(r"""## 9 - What this stage established, and what it did not
 1. **The equation is implemented correctly.** One real minibacia-day agrees between a hand
    computation carrying units and the engine to the last digit; two independent internal backends
    agree; the mass ledger closes **exactly** (bitwise zero, not "within tolerance") on every run; the
-   scale identity $n^{2\beta-1}$ is reproduced to $3\times10^{-15}$; 82 tests pass.
+   scale identity $n^{2\beta-1}$ is reproduced to $3\times10^{-15}$; ~~82~~ **154 tests pass**
+   (measured 2026-08-19; the struck count is shown, not quoted as current).
 2. **The order-of-magnitude gap is fully explained.** Two unit corrections, each derived from a
    source document *before* any basin total was consulted, account for the factor
    $47.86301\times7.593014 = 363.4245196$ to twelve significant figures.
@@ -3209,12 +3275,23 @@ md(r"""## 9 - What this stage established, and what it did not
 
 **What is not established.**
 
-1. **The level.** The replacement closure clause fails: the model is 1.03x-2.27x under-erosive
-   against three published levels, and 2.03x-2.27x on the only leg with a like-for-like denominator.
+1. **The level - and even its direction.** The replacement closure clause cannot be evaluated.
+   ~~the model is 1.03x-2.27x under-erosive against three published levels, and 2.03x-2.27x on the
+   only leg with a like-for-like denominator~~ - **RETIRED / superseded 2026-08-11, shown and not
+   quoted as current.** `docs/37` A1.9.3 withdrew the direction: under **reading A** (our sum is
+   gross erosion) the model is **1.03x-2.27x low**; under **reading B** (a hillslope->stream yield,
+   SWAT Ch. 4:1) it is **1.33x-1.49x high**. **The residual's direction is UNKNOWN across a bracket
+   of 2.27x too low to 1.49x too high**, and reading B is **not adopted** because it flatters the
+   result. Our sum is neither exactly gross erosion nor exactly a basin yield, and saying so is the
+   finding, not a hedge.
 2. **The topographic LEVEL.** Ours is **2.3151x-3.9768x** the level the coefficient is *paired*
    with, and **3.9768x at the point now adopted**. The *formulation* is decided on source grounds
-   (`docs/37` A3, **CITED**) but **RECORDED, not EXERCISED**: no default moved, the **LEVEL is still
-   UNVALIDATED**, and resolving it in the direction its own source argues for makes the level worse.
+   (`docs/37` A3, **CITED**) and has **since been EXERCISED in the engine** - ACT 2 (commit
+   `c3fdb55`, 2026-08-12) moved `load_geometry()`'s default to `V4_dg`, which retires this section's
+   earlier ~~"no default moved"~~ (**shown, not quoted as current**). This notebook is a **`V0`
+   record** and pins `ls2d_column='ls2d_hs'`, so its numbers stand at $f_{LS}$ = 1.000; the **LEVEL
+   is still UNVALIDATED**, and resolving it in the direction its own source argues for makes the
+   level worse.
 3. **Any individual factor.** Seven scalars form one identifiable product; none of them can be
    validated by any fit.
 4. **Comparability with a gauge.** There is no channel-deposition step, so the model's output is not
@@ -3290,10 +3367,11 @@ print('\nall integrity assertions passed.')""")
 nb = {
     "cells": [
         {"cell_type": kind,
+         "id": "c%03d" % i,          # nbformat 5 requires an id; deterministic
          "metadata": {},
          "source": src.splitlines(keepends=True),
          **({"execution_count": None, "outputs": []} if kind == "code" else {})}
-        for kind, src in C
+        for i, (kind, src) in enumerate(C)
     ],
     "metadata": {
         "kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},

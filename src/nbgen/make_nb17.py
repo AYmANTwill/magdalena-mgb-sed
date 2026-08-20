@@ -46,7 +46,9 @@ md(r"""> ### STATUS - annotated 2026-08-12 by agent `nb-banner-1217`. Nothing be
 > driver set.
 >
 > **One reading note.** `R_POT` **0.5672** here is a **fleet median of per-gauge ratios** over
-> 63 gauges (range 0.155-1.141) - the same statistic and the same range `docs/36` prints as
+> 63 gauges (per-gauge **IQR** 0.155-1.141 - that is the label `docs/36` §1's table gives that
+> pair, and it is *not* a range: §5.6 measures the full per-gauge range as 0.0 to 5.4, four gauges
+> producing zero simulated exceedances) - the same statistic and the same IQR `docs/36` prints as
 > 0.567. The pooled figure, **0.5747**, is a different aggregation (1,285 simulated events over
 > 2,236 observed) and `docs/36` carries that one too. They are not in conflict; quote the
 > aggregation with the number.
@@ -54,7 +56,30 @@ md(r"""> ### STATUS - annotated 2026-08-12 by agent `nb-banner-1217`. Nothing be
 > **Where things have moved since, downstream of this page.** §5.10 and §7.5 hand forward to C3
 > and C4. **C3 is still OPEN**, re-issued as `docs/37` **Amendment A1** (2026-08-11), and
 > **C4.3 is BLOCKED until the LS level lands** (`docs/47`); when it unblocks, C4 is held to
-> `docs/42`'s guards G1-G9.""")
+> `docs/42`'s guards G1-G9.
+>
+> ### UPDATE - 2026-08-19. The 2026-08-12 banner above is left exactly as written; this block supersedes its last paragraph only.
+>
+> **The three C2b verdicts are untouched.** What has moved is everything downstream of them.
+>
+> - **The LS level landed** on 2026-08-12 (`ls_formulation = buarque_2015_dg`, i.e. `V4_dg`;
+>   `f_LS` = 0.25146 erosion-weighted / 0.2446790094097074 area-weighted), so `docs/47`'s
+>   `C4.3-BLOCKED-UNTIL-LS-LANDS` is **discharged**. C4.3 has since run and its verdict is
+>   **RAILED / EXPLORATORY - not adopted** (`docs/55`: the in-box optimum sits on the box floor,
+>   the unconstrained optimum wants α ≈ 0.48 below it, the condition number is `inf`, and only the
+>   product Π is identifiable). The line above - "C4.3 is BLOCKED" - was true when written and is
+>   **superseded**.
+> - **C5 has run and REPRODUCED the observed contrast**: 18 of 18 stations in the same direction,
+>   median modelled rate ratio **3.05x** (range 1.62-4.85), against `docs/34`'s model-free 22 of 22
+>   (`docs/56`). That is the project's headline result, and **Phase C is complete**.
+> - **§5.9's own trigger is now in play, and this page does NOT adjudicate it.** §5.9 wrote: *"if
+>   the simulated contrast were ever to come within 10 % of the observed one, the caveat would stop
+>   being a caveat and become a refutation."* `docs/56` names estimator **(b)** as the reference for
+>   judging the model and prints observed **2.84-2.95** against modelled **3.05**. Whether that
+>   engages the clause is `docs/56`'s call, and **it has not been made**. Nothing here decides it.
+> - **The lower-bound framing of §5.10 and §7.5 survives** the C4.3 railing: `docs/56` §2 shows the
+>   within-station wet/dry ratio is invariant to α and to the LS level, both being static
+>   multipliers that cancel.""")
 
 # ============================================================ title
 md(r"""# Notebook 17 - stage C2b: validating the two quantities the sediment model consumes
@@ -349,8 +374,12 @@ $$\frac{\mathrm{Sed}^{\text{sim}}}{\mathrm{Sed}^{\text{obs}}}
 
 where $R$ is a simulated-to-observed peak ratio (dimensionless) and $\beta = 0.56$ is Williams
 (1975)'s exponent, inherited from `docs/31` §0 and **not fitted here**. The cell below evaluates
-$R^{\beta}$ at the five peak ratios §5 will measure. Inputs are five scalars from
-`c2b/peaks_summary.json`; output is a dimensionless sediment ratio per input.""")
+$R^{\beta}$ at five measured peak ratios. **Four** are fleet medians read from
+`c2b/peaks_summary.json` and are the ones §5 measures; the **fifth**, the *event-matched* ratio
+0.552, is carried as a literal from `docs/33` §7.6 - which is what the printed label `(S7.6)`
+refers to, a section of the **pre-registration** and not of this notebook, whose §7 stops at §7.5.
+§5 does not measure it, and §5.10 records a 0.006 arithmetic disagreement with `docs/33` §7.7 about
+its propagation. Output is a dimensionless sediment ratio per input.""")
 
 code(r"""RVALS = [('R_Q5  5 % exceedance', PSUM['R_Q5']['med']),
          ('R_Q1  1 % exceedance', PSUM['R_Q1']['med']),
@@ -683,7 +712,7 @@ contrast, moves hardly at all: 0.2125 observed, 0.2002 for $A$, 0.2133 for $B$ -
 total-discharge score cannot separate (KGE 0.693 against 0.665) hand the sediment equation peak
 drivers that differ by a factor of 2.2, and a MUSLE peak factor that differs by 1.6. It also delivers an unwelcome preview. The **peak** signature separates $A$ from $B$
 enormously; the **baseflow index** barely separates them at all, even though $A$ is a deliberate
-caricature of an over-smooth model. That is the first sign of the power problem §4.7 documents:
+caricature of an over-smooth model. That is the first sign of the power problem §4.6 documents:
 on this fleet the BFI is a blunt instrument, so "not refuted" from the BFI test is much weaker
 evidence than "refuted" from the peak test.""")
 
@@ -758,7 +787,7 @@ $1-\mathrm{BFI} = 0.2$ - the **quickflow share** - is the erosive fifth.
 MUSLE consumes surface runoff *at the hillslope*, before the water is routed down the channel
 network. A filter applied to a gauge hydrograph measures the *routed* signature, after channel and
 floodplain storage have already smeared the fast water into the slow tail. So BFI is not the
-model's internal partition and must never be compared with it - §4.6 shows the two differ by
+model's internal partition and must never be compared with it - §4.5 shows the two differ by
 0.60, and that difference is a property of the router, not evidence about the partition. What the
 BFI comparison *does* test is whether **the character of the hydrograph the model delivers to the
 gauge is as fast as the real one**. If the model's hydrograph is systematically slower than the
@@ -1034,7 +1063,7 @@ essentially the constant you handed it has very little room left to carry inform
 model. This **extends** `docs/33` §6.5, which noted the compression against 0.80 and observed that
 the 0.50 robustness column gave the same pass; the sweep shows the invariance holds across eight
 values with slope ~1, so "lower the ceiling" is measurably *not* the fix for the test's weakness.
-§4.7 states what would be.""")
+§4.6 states what would be.""")
 
 # ============================================================ 4
 md(r"""---
@@ -1124,7 +1153,7 @@ wrong it is too slow, never too fast. That last point matters for sediment in a 
 direction - a hydrograph that is too slow delivers too little of its water as quickflow, so the
 error, such as it is, biases MUSLE's $Q_{\text{sur}}$ **downward**, consistent with the peak
 deficit rather than compensating for it. What this result does *not* establish is anything about
-whether the model resolves flow character catchment by catchment: §4.7 is the necessary companion
+whether the model resolves flow character catchment by catchment: §4.6 is the necessary companion
 to this verdict, and it is not optional reading.""")
 
 md(r"""## 4.2 - Gauge by gauge: does the model know which catchment is flashy?
@@ -1201,7 +1230,7 @@ like. The model does **not** track which catchment is flashy: its BFI is nearly 
 the fleet, pinned near the filter's ceiling, and the entire structure of the error is "the
 observation departs from the ceiling and the simulation does not follow". The test passed because
 both distributions sit near 0.80, not because the model resolves flow character. Anyone quoting
-"BFI validated" as "flow character validated" is over-reading it by a wide margin - and §4.7 says
+"BFI validated" as "flow character validated" is over-reading it by a wide margin - and §4.6 says
 so in the terms a reader should carry away.""")
 
 md(r"""## 4.3 - Where the error lives: small, flashy catchments
@@ -1829,7 +1858,7 @@ reminder that **the incumbent objective contained no peak term at all**, so the 
 carry no peak advantage to lose. The real reading is the ENSO one, and it is a **prediction** in the
 Klemeš sense because neither ENSO window was fitted: the dry El Niño phase has the second-deepest
 annual-maximum deficit (0.686 against La Niña's 0.808). Propagated through $\beta = 0.56$ that is
-$-19.0$ % against $-11.5$ % - so a La Niña-minus-El Niño sediment contrast computed from these
+$-19.0$ % against $-11.3$ % - so a La Niña-minus-El Niño sediment contrast computed from these
 drivers is biased **toward a larger contrast**. §5.9 quantifies the same asymmetry at event level,
 and §7 states what it does to the deliverable.""")
 
@@ -1894,7 +1923,9 @@ significantly with area: **$\rho_r = +0.580$, p $= 6.3\times10^{-7}$**, with ter
 **$\rho_{\mathrm{AMS}} = +0.088$, p $= 0.49$** - indistinguishable from zero. The tercile medians
 of $R_{\mathrm{AMS}}$ (0.769 / 0.725 / 0.981) hint that the biggest catchments are least biased,
 but the rank correlation says that is not monotone and not significant at n = 63, and the two
-largest gauges in the fleet over-predict badly.
+largest gauges in the fleet over-predict badly (`c2b/peaks_per_gauge.csv`, read rather than printed
+above: 29037020 at $R_{\mathrm{AMS}}$ 1.690 - on only 3 observed flood events, the reason §7.1
+excludes it - and 21237020 at 1.523).
 
 **What it means.** **Peaks do not follow the correlation pattern**, and the honest reading of the
 tercile hint is that aggregation *cancels* peak errors of both signs inside a median without
@@ -2227,6 +2258,15 @@ inflation cannot flip a contrast of that size, let alone its sign. But the numbe
 the simulated contrast wherever it is quoted - and if the simulated contrast were ever to come
 within 10 % of the observed one, the caveat would stop being a caveat and become a refutation.
 
+**Added 2026-08-19 - that condition is now in play, and this page does not settle it.** `docs/56`
+(C5) has since applied the frozen sediment configuration to these two windows and printed a median
+modelled rate ratio of **3.05x** over **18 of 18** stations, against the **named** reference
+estimator (b), whose observed median is **2.84-2.95**. So the simulated and observed contrasts now
+agree to within the 10 % this paragraph nominated, while the peak asymmetry measured above inflates
+the simulated one by **+9.6 %** - a bias of the same size as the whole agreement. Whether the
+clause fires is `docs/56`'s adjudication to make and **it has not been made**; nothing here decides
+it, and the number above must be quoted alongside `docs/56`'s wherever either travels.
+
 *(The percentage printed by the cell is $+9.6$ %; `docs/36` §2.6 rounds it to "$\approx +10$ %".
 Both refer to the same calculation.)*""")
 
@@ -2247,7 +2287,7 @@ Three qualifications must travel with it, and none is optional:
    15 %, so at those gauges the sediment bias runs the other way. A basin-total inherits the
    $-10.5$ %; a per-gauge figure inherits that gauge's own row.
 3. **It bites hardest where the ENSO contrast is measured.** The dry phase has both the deepest peak
-   deficit and no skill over climatology, and the resulting $+9.3$ % inflation of the simulated
+   deficit and no skill over climatology, and the resulting $+9.6$ % inflation of the simulated
    contrast is an error that flatters the headline rather than protecting it.
 
 **And one arithmetic disagreement, reported rather than smoothed.** `docs/33` §7.7 gives the
@@ -2298,7 +2338,7 @@ incumbent terms, so their relative balance is preserved rather than re-litigated
 | incumbent H2E | 0.40 | 0.40 | 0.20 | - |
 | **H2E-S** (the row H-PEAK's refutation selected) | **0.34** | **0.34** | **0.17** | **0.15** |
 
-**The BFI term was NOT added**, because H-BFI held (§4.7).
+**The BFI term was NOT added**, because H-BFI held (§4.6).
 
 This cell plots the two transforms from the frozen `calib_v2` functions - not re-implemented here -
 so that a reader can see what the objective rewards.""")
@@ -2615,7 +2655,8 @@ F_{\text{incumbent}}\big|_i \;\bigr)$$
 computed on the **calibration window 2012-2014**, because that is the window the objective scores,
 whereas the pre-registered *gate* is defined on the full 2009-2018 record. The two differ - the
 incumbent's calibration-window value is 0.6482 (`docs/agents/journal_refit-launch.md`) against its
-full-record 0.8200. So this figure, and condition 1 above, are calibration-window statements. §8
+full-record 0.8200 - and §5.4's recomputation of that same window from the committed peaks table
+gives 0.6478 rather than 0.6482, a 0.0004 gap recorded as §8.3 item 5. So this figure, and condition 1 above, are calibration-window statements. §8
 records that as an open issue.""")
 
 code(r"""FR = {}
@@ -3117,6 +3158,13 @@ the **observed** response per mm of forcing rainfall runs the other way ($+0.397
 against 0.286 for captured. The model's own runoff coefficient at missed events is 0.212 against
 0.270 at captured ones.
 
+*(Provenance, because §0's rule is that every prose number was printed by a cell and these three
+were not: the p-value $1.2\times10^{-74}$ is `f_storm_in_forcing.P3_pct.mwu_p`, the August 94.3 %
+and September 93.4 % miss fractions are `d_season`, and the runoff coefficients 0.212 / 0.270 are
+`b_antecedent.qsur_rc` - all read from the committed `peakgap/summary.json` the cell above already
+loads. The cell prints the runoff coefficient as a within-gauge **percentile** (0.448 against
+0.770), not as the raw coefficient.)*
+
 **What it means.** The infiltration-excess hypothesis is **refuted as the primary cause and bounded
 at $\approx 5$ %**: even at 100 % attribution, a Hortonian module recovers 99 of 1,829 events. What
 the evidence points at instead is the **input**: the catchment responded (observed peak per mm of
@@ -3216,7 +3264,12 @@ embargo:
 3. **The simulated ENSO contrast is inflated by $\approx +10$ %** by the peak asymmetry, in the
    direction that flatters the headline. Quoted against an observed, model-free contrast of
    2.8x-4.6x (primary windows) with the same sign at 22 of 22 stations, a 10 % inflation cannot flip
-   it - but if the two ever came within 10 % of each other, this caveat would become a refutation.
+   it - but if the two ever came within 10 % of each other, this caveat would become a refutation - which
+   `docs/56` (C5, 2026-08-12) has since brought into play: a median modelled rate ratio of **3.05x**
+   over 18 of 18 stations against its named reference estimator (b)'s observed **2.84-2.95**. The
+   adjudication is `docs/56`'s and is **open**; §5.9 carries the detail. `docs/56` §2 also shows why
+   the lower-bound framing of this list survives the C4.3 railing: the within-station wet/dry ratio
+   is invariant to α and to the LS level.
 4. **MUSLE's $\alpha$ and $\beta$ must not be allowed to absorb any of this.** The compensation
    available by tuning them is roughly 5x, so a calibration free to move them could hide the entire
    deficit and report a perfect fit. `docs/35` §6 registers hard stops for exactly that reason, and
@@ -3243,7 +3296,7 @@ This project's value is its audit trail, so the failures get a section rather th
 | 1 | **The H2E-S peak refit** (§6) | **REJECTED** on 2 of 3 pre-registered conditions. It reached the peak band (`R_AMS` 0.820 &rarr; 0.94-1.00) and paid with 1.60x the allowed objective budget and two new parameter rails, buying peaks by deleting canopy interception. No further refit is licensed. |
 | 2 | **The daily-time-step explanation** (§7.1) | **REFUTED** with the fingerprint inverted: no area gradient ($\rho = +0.018$, p $= 0.89$), and if anything the larger catchments are worse. |
 | 3 | **The infiltration-excess explanation** (§7.2) | **REFUTED as primary and bounded at 5.4 %**: inverted intensity ratio ($-0.339$), inverted seasonality (worst in the Jun-Sep dry season at 91.5 %), and a candidate cell of 99 events. |
-| 4 | **Lowering the filter's ceiling to give H-BFI more power** (§3.5) | **measured and rejected**: the fleet-median BFI tracks $\mathrm{BFI_{max}}$ with slope 0.966 and the gate ratio stays in 0.45-0.74 across eight values, so no choice of the knob makes the test sharper. |
+| 4 | **Lowering the filter's ceiling to give H-BFI more power** (§3.5) | **measured and rejected**: the fleet-median BFI tracks $\mathrm{BFI_{max}}$ with slope 0.962 and the gate ratio stays in 0.45-0.74 across eight values, so no choice of the knob makes the test sharper. |
 
 ## 8.2 - Beliefs this stage corrected
 
@@ -3256,12 +3309,13 @@ This project's value is its audit trail, so the failures get a section rather th
    whole-record dispersion ratio: $-9.5$ % on the full validation record, $-0.4$ to $-11.7$ % across
    periods. The annual-maximum deficit is $-18.0$ %.
 4. **"A pass on H-BFI validates the flow partition" is an over-reading.** The test has weak power
-   (§4.7), the model carries no between-gauge information ($r = +0.094$), and the *internal*
+   (§4.6), the model carries no between-gauge information ($r = +0.094$), and the *internal*
    partition - the quantity MUSLE actually consumes - remains untested.
 
 ## 8.3 - Disagreements with project documents, reported not smoothed
 
-Four, all found by recomputing rather than transcribing. None changes a verdict.
+Six, all found by recomputing rather than transcribing. None changes a verdict. Items 5 and 6 were
+added on 2026-08-19; item 6 collects this notebook's disagreements with **itself**.
 
 | # | document | says | this notebook computes |
 |---|---|---|---|
@@ -3269,6 +3323,8 @@ Four, all found by recomputing rather than transcribing. None changes a verdict.
 | 2 | `docs/33` §7.7 | event-matched propagation $0.552^{0.56} = 0.723$, i.e. $-27.7$ % | $0.552^{0.56} = \mathbf{0.7169}$, i.e. $\mathbf{-28.3}$ %. (0.723 corresponds to $R = 0.5595$.) A diagnostic row, not a gate. |
 | 3 | `docs/33` §7.3 | excluding the 7 short-record gauges "moves nothing material" | the fleet median $R_{\mathrm{AMS}}$ moves **0.8200 &rarr; 0.7676**, larger than the gate margin - but *deeper* below the band, so the refutation is strengthened, not threatened. |
 | 4 | `docs/33` §7.2 | the deficit "switches on somewhere between the 95th and the 99th percentile" | with the full quantile ladder the **crossing of unity is between the 90th and the 95th** (1.045 &rarr; 0.975) and the deficit deepens monotonically to the annual maximum. A refinement, not a contradiction. |
+| 5 | `docs/agents/journal_refit-launch.md`, quoted in §6.3 and §8.4 | the incumbent's calibration-window fleet-median $R_{\mathrm{AMS}}$ is **0.6482** | §5.4's recomputation of that same window from the committed `c2b/peaks_per_gauge.csv` gives **0.6478**. Both round to 0.648, which is how §5.4 and §6.1 quote it. The two are formed on different day sets - the peaks table's $\ge$ 180-day segment rule against the objective's $\ge$ 300-valid-day calendar-year rule - which is the likely source, but that was **not** run down. A calibration-window diagnostic; no gate reads it. |
+| 6 | *this notebook, prose against its own printed cells* | four prose figures did not match the cell that printed them: §5.4 read the La Niña propagation as ~~$-11.5$ %~~, §5.10 item 3 read the contrast inflation as ~~$+9.3$ %~~, §8.1 row 4 and §10 read the BFI$_{max}$ tracking slope as ~~0.966~~ and ~~0.97~~, and §9 row 1 read §1.3's synthetic MUSLE peak factor as ~~1.97x~~ | corrected on 2026-08-19 to the values the cells actually print: **$-11.3$ %** ($0.8078^{0.56} = 0.8873$, §5.9's cell), **$+9.6$ %** (§5.9's cell and its figure title), **0.962** (§3.5's cell prints 0.9621) and **1.56x** (§1.3's cell, 0.669 against 1.046). The retired figures are shown struck through rather than deleted. No verdict reads any of them. |
 
 ## 8.4 - Objections journalled under the freeze rule, and followed anyway
 
@@ -3325,7 +3381,7 @@ objection and follows the rule**. These were:
 ## 8.6 - What a reader should NOT conclude
 
 - **NOT** that the flow partition is validated. H-BFI is *not refuted*, which is a much weaker
-  statement, and the internal partition MUSLE consumes was never tested (§4.5, §4.7).
+  statement, and the internal partition MUSLE consumes was never tested (§4.5, §4.6).
 - **NOT** that the model cannot produce large floods. It can - the refit proved it (condition 1
   passed). What it cannot do is produce them while remaining defensible (§6.4).
 - **NOT** that a denser rainfall network is the fix. It is the option with the largest gain ceiling
@@ -3344,7 +3400,7 @@ md(r"""---
 
 | choice | taken | alternative rejected, and why |
 |---|---|---|
-| validate the **drivers** rather than discharge | BFI and peak signatures against observation | *carry on with discharge KGE alone* - rejected because MUSLE reads $Q_{\text{sur}}$ and $q_{\text{peak}}$, and §1.3 demonstrates two series a discharge score cannot separate whose MUSLE peak factor differs by 1.97x |
+| validate the **drivers** rather than discharge | BFI and peak signatures against observation | *carry on with discharge KGE alone* - rejected because MUSLE reads $Q_{\text{sur}}$ and $q_{\text{peak}}$, and §1.3 demonstrates two series a discharge score cannot separate whose MUSLE peak factor differs by 1.56x |
 | baseflow separation method | Eckhardt two-parameter filter | *a graphical / straight-line separation* - not reproducible; *a tracer-based separation* - no isotope data for this basin |
 | $\mathrm{BFI_{max}}$ | **FIXED at 0.80**, Eckhardt's perennial porous-aquifer value | *fit it per gauge* - the standard practice that makes much of the BFI literature worthless: a free $\mathrm{BFI_{max}}$ can produce almost any BFI, so a validation done with one validates nothing |
 | the recession constant $a$ | from the **observed** master recession curve, same $a$ for both series | *let the simulation supply its own $a$* - would let the model define its own yardstick and stop the comparison being apples-to-apples |
@@ -3368,7 +3424,7 @@ md(r"""---
 model on total discharge, which is blind to the first and nearly blind to the second. Two
 pre-registered hypotheses tested them. The flow-partition hypothesis (H-BFI) was **not refuted**
 (median error 0.0163 against a gate of 0.0285) but the test had weak power - the filter's output
-tracks its own fixed constant with slope 0.97, the model carries no between-gauge information about
+tracks its own fixed constant with slope 0.96, the model carries no between-gauge information about
 flow character ($r = +0.094$), and the error is concentrated in the small catchments where erosion
 is generated. The flood-peak hypothesis (H-PEAK) was **refuted**: annual maxima 18.0 % low
 ($R_{\mathrm{AMS}} = 0.820$), 1 %-exceedance flows 15.3 % low, only 57.5 % as many independent flood
@@ -3414,15 +3470,16 @@ Phase C driver set. The peak bias travels with it as a named, quantified caveat 
 one.""")
 
 # ============================================================ emit
-def cell(kind, src):
+def cell(kind, src, idx=0):
     c = {"cell_type": kind, "metadata": {},
          "source": src.strip("\n").splitlines(keepends=True)}
+    c["id"] = "c%03d" % idx        # nbformat 5 requires a cell id; deterministic
     if kind == "code":
         c.update({"execution_count": None, "outputs": []})
     return c
 
 
-nb = {"cells": [cell(k, s) for k, s in C],
+nb = {"cells": [cell(k, s, i) for i, (k, s) in enumerate(C)],
       "metadata": {"kernelspec": {"display_name": "Python 3", "language": "python",
                                   "name": "python3"},
                    "language_info": {"name": "python", "version": "3.10"}},

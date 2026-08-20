@@ -120,8 +120,11 @@ observed ENSO contrast (~3–9×, `docs/34`) carries the study's scientific clai
   k = 0 vs k = k_hi) and needs the per-minibacia→station flow-path lengths; it **cannot change the
   verdict** (deposition raises the fitted α but does not move the bar comparison's sign). Deferred
   with that scope stated.
-- **C5** (the ENSO out-of-sample application, 2011 / 2015–16) — not started; the strictly
-  out-of-sample windows are untouched by this fit.
+- **C5 — DONE (2026-08-12, `docs/56`).** The ENSO out-of-sample application ran on the frozen
+  configuration: the contrast is **REPRODUCED, 18/18 stations, median rate ratio 3.05×**
+  (range 1.62–4.85), robust across β and both window pairs. The windows were strictly
+  out-of-sample to *this* fit and remained so — no parameter was adjusted against them.
+  ~~not started; the strictly out-of-sample windows are untouched by this fit~~
 
 ## 7 — Disclosure
 

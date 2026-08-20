@@ -41,7 +41,10 @@ md(r"""> ### STATUS - annotated 2026-08-12 by agent `nb-banner-1217`. Nothing be
 > configuration **H2E**; and **C1**, the SSC quality gate - 79 stations classified, 28 mapped,
 > 18 usable-or-caveated, **7** in both ENSO windows.
 >
-> **Both decisions still stand - nothing here has been overturned.** `docs/32` §R6 owns the C1
+> **Both decisions still stand as decisions - but one claim on this page HAS been overturned:**
+> §8.5 and §8.7 item 5 offer coordinate recovery for the 46 unmapped stations as the largest
+> available expansion of the usable set, and background task B5 refuted that (`docs/57`); the
+> dated notes at §8.5 and §8.7 carry the measurement. `docs/32` §R6 owns the C1
 > outcome and carries the same split of the 28 mapped (**6 usable / 12 usable-with-caveat / 10
 > excluded**); `docs/26`'s 2026-08-10 Addendum owns the C0 freeze and its reproduction gate.
 > `docs/31` **C1.0** records the matching decision explicitly: Phase C proceeds **now** on the
@@ -50,8 +53,21 @@ md(r"""> ### STATUS - annotated 2026-08-12 by agent `nb-banner-1217`. Nothing be
 > waits for it.
 >
 > **Where things have moved since, downstream of this page.** C2 landed (`docs/34` owns the
-> observed contrast); **C3 is still OPEN**, re-issued as `docs/37` **Amendment A1**
-> (2026-08-11); and **C4.3 is BLOCKED until the LS level lands** (`docs/47`). None of §9's
+> observed contrast). The LS level then landed: `ls_formulation = buarque_2015_dg` (V4_dg),
+> `f_LS` **0.25146** erosion-weighted / **0.2446790094097074** area-weighted, and **ACT 2
+> (commit `c3fdb55`, 2026-08-12) moved the engine default of `src/mgb_sediment.py`
+> `load_geometry()` to V4_dg**. No number on this page moves with it - this notebook never
+> calls the sediment engine; it reads frozen hydrology and SSC artifacts only. With LS landed,
+> **C4.3 ran, and its verdict is RAILED / EXPLORATORY - it is NOT adopted** (`docs/55`), and
+> **C5 then REPRODUCED the observed ENSO contrast: 18 of 18 stations, median rate ratio
+> 3.05x, range 1.62-4.85** (`docs/56`), on the 18-station working set this gate defines.
+> **Phase C is COMPLETE.** Whether `docs/37`'s C3 closure conjunction is met is a separate
+> register, owned by that document.
+>
+> *RETIRED / superseded - shown, not quoted as current (annotated 2026-08-19): "**C3 is still
+> OPEN**, re-issued as `docs/37` **Amendment A1** (2026-08-11); and **C4.3 is BLOCKED until
+> the LS level lands** (`docs/47`)". Both were true when this banner was written on
+> 2026-08-12; both were overtaken by `docs/55` and `docs/56`.* None of §9's
 > permitted/forbidden list has been relaxed - in particular the t/km2/yr embargo of §8.4
 > (`docs/23` §13.2) is still in force.""")
 
@@ -1261,7 +1277,13 @@ day-to-day structure. It was tried here, and it is the one lever that *did* move
 LOOCV $r$ rose from 0.429 to **0.447**. It was nevertheless **rejected**, because the merged
 field failed its pre-registered volume gate at **+7.5 %**. That decision is recorded rather than
 revisited: a field that improves timing while adding 7.5 % of water to a basin whose water
-balance is already the weak point buys correlation with volume.
+balance is already the weak point buys correlation with volume. Two later read-outs complete this
+paragraph, and are stated here rather than left to be inferred. First, the volume gate failed
+**twice**: the registered repair was a **no-op** and the cause it was aimed at was **wrong**, so
+the owning verdict is that *"no route to a passing volume gate exists inside the merge code"*
+(`docs/18` §15.5). Second, the one upstream hypothesis that survived - repairing the 139 residual
+rain-selective gauges - was **bounded without being run**, at **+0.006** in the precipitation
+field's daily $r$ (`docs/58`). **There is no v3 forcing, and none is waiting.**
 
 **Nothing in this section is recomputed here.** These are measurements from `docs/22` §4.7,
 `docs/16` §4.3 and `docs/18` §15, and they are cited rather than reproduced because reproducing
@@ -1338,8 +1360,16 @@ intervention that did lift the ceiling (a quantile-mapped CHIRPS-gauge merge, LO
 
 **What a reader should not conclude:** that the model is badly built. Its volume and variability
 are close to right and its recession now matches. What a reader *should* conclude is that a
-denser or better-merged rainfall field, not a better parameter set, is the only remaining lever
-on daily timing - and that no sediment claim in this project may rest on day-specific model
+denser or better-merged rainfall field, not a better parameter set, was the last remaining lever
+on daily timing - **and that lever has since been bounded, and it is closed-negative.** `docs/58`
+computes the perfect-case ceiling of the one surviving route (repair the 139 residual
+rain-selective gauges, then adopt the CHIRPS blend at every cell) as **+0.006 in the
+precipitation field's daily $r$**, area-weighted over the basin: the +0.023 it buys over the
+57 % of the basin at 10-30 km gauge isolation is very nearly cancelled by the -0.043 it costs
+over the 17 % beyond 30 km. The gain in *discharge* $r$ is smaller again, because discharge
+integrates and smooths the precipitation field. So the ceiling is structural - the information
+content of the observations rather than a processing gap - and no sediment claim in this project
+may rest on day-specific model
 timing.""")
 
 # ============================================================ 3
@@ -2198,7 +2228,14 @@ still below 10, so the fallback fires either way and the registered result does 
 that choice.
 
 The cell below verifies each of these statements against the artifact rather than restating
-them.""")
+them - with **one exception, named here rather than left to be found**. The line reading
+"excluded for selectivity ALONE: 0" is an **assertion, not a measurement**: its expression
+short-circuits to zero whatever the artifact contains, so it cannot fail. The zero is
+nonetheless correct, and the evidence for it is printed immediately underneath it - both
+excluded flagged stations carry `multiple deficiencies`, i.e. a window-coverage failure as well
+as the flag, so neither was excluded on selectivity alone. Making that line measure what it
+claims is recorded as an open item, to be done the next time this notebook is regenerated for
+a reason that already costs a re-execution.""")
 
 code(r"""print('C1.2 null-pool calibration - the registered path and what actually happened')
 print(f'  mapped stations tested                  : {len(MAPPED)}')
@@ -2618,7 +2655,10 @@ nothing below it - no station at the Magdalena-Cauca confluence, none in the Mom
 none at the outlet. The basin's sediment *export*, which is ultimately what the project is about,
 **is not observed anywhere**. It can only be inferred by routing a model calibrated on tributaries
 and one trunk station in the upper fifth of the basin. That is the precise, quantitative form of
-the statement "Phase C is blocked on mainstem sediment data", and it is a limitation of the
+the statement ~~"Phase C is blocked on mainstem sediment data"~~ - **that framing is RETIRED /
+superseded, and is shown here rather than deleted (annotated 2026-08-19): Phase C is now
+COMPLETE, C0 through C5 (`docs/55`, `docs/56`), and the one-station fact above is the precise
+form the retired phrase was reaching for. `docs/32` §R6 owns it.** It is a limitation of the
 observing network rather than of the analysis.""")
 
 md(r"""## 6.3 - The rating fits, and the $R^2$ that should not be quoted
@@ -2711,7 +2751,7 @@ concentration. **Nine** of the 30 eras have concentration $R^2$ below 0.05.
 **What it means.** **The fleet-median rating $R^2$ of 0.55 must not be quoted as evidence that
 discharge predicts sediment.** It is inflated by construction, because $Q_s = Q \cdot C \cdot
 0.0864$ puts $Q$ on both sides. The honest statement is that **discharge explains about 12 % of
-the variance in concentration** across this network, and at six of the thirty eras it explains
+the variance in concentration** across this network, and at **nine** of the thirty eras it explains
 essentially none.
 
 Two consequences must travel with every rating-derived flux. First, the uncertainty is
@@ -2978,9 +3018,22 @@ group, tributaries of a coastal lagoon system rather than of the Magdalena.
 Two things must be said about this.
 
 First, **it is an exclusion on grounds of georeferencing, not of data quality.** Some of those 46
-may hold excellent records. The project's own record labels recovering their coordinates as a
-background task, and if it succeeded the usable set could grow substantially - 46 is more than
-twice the size of the entire mapped set.
+may hold excellent records, and the project's own record labelled recovering their coordinates as
+background task B5.
+
+*RETIRED / superseded - shown, not quoted as current (annotated 2026-08-19):* ~~"and if it
+succeeded the usable set could grow substantially - 46 is more than twice the size of the entire
+mapped set."~~ **B5 ran, and it refuted that** (`docs/57` §1-§2). All 46 were geocoded from the
+IDEAM Catalogo Nacional de Estaciones and **43 fall inside the basin** - so the georeferencing
+gap is genuinely closed - but **0 of those 43 gauge discharge under the same code**, neither in
+`discharge_daily.csv` (192 stations) nor anywhere in the raw IDEAM discharge download, against
+**18 of the 18** usable stations that do. Flux is $Q \cdot C \cdot 0.0864$, so a sediment-only
+sampling point cannot enter a flux comparison at all, and the nearest discharge gauge is
+typically 10-35 km away on a different drainage area. The verdict: *"The flux-calibration gauge
+set cannot be grown past ~18. That is a physical limit of the monitoring network, not a
+processing gap."* What the recovered sites **can** support is the weaker concentration-only
+contrast, which B5 measured at 11 of 16 stations in the La Nina direction (median ratio 1.38) -
+same sign as the flux result, much noisier.
 
 Second, calling all 51 "no coordinates" would have been wrong, and the distinction was made
 explicitly: 46 have no coordinates, 5 are outside the domain. Collapsing them would have hidden the
@@ -3011,8 +3064,12 @@ Recorded plainly, because a project that only records its successes is not audit
    registered it is defeated by multi-year outages. A sensitivity variant raises the qualifying
    pool only from 2 to 6, so the conclusion does not change, but the diagnostic is broken.
 4. **17 of 24 SNHT break codes are unrecoverable** (8.2), so era segmentation is incomplete.
-5. **46 stations lack coordinates** (8.5); recovering them is the single largest available
-   expansion of the usable set.
+5. ~~**46 stations lack coordinates** (8.5); recovering them is the single largest available
+   expansion of the usable set.~~ **CLOSED, and closed in the refuted direction - RETIRED /
+   superseded, shown not deleted (annotated 2026-08-19).** Background task B5 geocoded all 46
+   (`docs/57`): 43 fall inside the basin, and **0 of the 43 gauge discharge under the same
+   code**, so not one of them can produce a flux. The usable flux set cannot grow past ~18;
+   that is a property of the monitoring network, not an open task.
 6. **`21237020`'s post-2014 discharge is missing** (8.1). Recovering it would, on its own, create
    the observed trunk ENSO contrast the project currently cannot produce.
 7. **`21197010` EL PROFUNDO carries an uncorroborated 15,180 mg/L spike inside the El Nino
@@ -3076,7 +3133,9 @@ print('output is a set of flags plus a per-station verdict, so every decision st
 md(r"""**What this cell shows (no figure).** `sediment_daily_qc.csv` has exactly the same 269,337
 rows and 79 stations as `sediment_daily.csv`, and zero rows carry `c1_deleted`. Instead the gate
 produced flags: 952 flatline rows (0.3535 % of valid days, which is 11.78 times the corrected
-within-year quantisation null of 0.030 % but only 1.511 times the within-14-day null of 0.234 %),
+within-year quantisation null of 0.030 % but only 1.511 times the within-14-day null of 0.234 % -
+both nulls taken from `docs/19` §3.4, which corrected an earlier whole-record-shuffle null that
+was wrong by roughly 600x, and neither reconstructed here),
 385 zero rows across 17 stations of which 380 were adjudicated as missing-coded-as-zero, and 33
 extreme candidates of which 2 were corroborated and **none** deleted.
 
@@ -3159,6 +3218,18 @@ this notebook, and none should be inferred from it.
 - Forbidden: any day-specific model-versus-observation sediment claim, because model daily timing
   is at $r \approx 0.59$ and at climatology in the dry phase.
 
+**What the next stage actually did with this - added 2026-08-19, so the handoff is checkable at
+both ends.** The 18 usable stations are **not** the sediment fit set, and the two must never be
+conflated: `docs/45` §3.4 registers three distinct sets. **CAL 8** is what the sediment
+calibration fits - 5 of the 13 C1-usable *tributary* stations have no paired SSC + observed-Q day
+inside the calibration window and so cannot be fitted at all. **EVAL 5** is scored but never
+fitted. **All 18** run every structure guard. Downstream of that split: the C4.3 calibration
+search came back **RAILED / EXPLORATORY and was NOT adopted** (`docs/55`), while C5 - which needs
+only the within-station wet/dry *ratio*, and is therefore invariant to the absolute sediment
+level the search could not pin - **reproduced the observed contrast at 18 of 18 stations, median
+rate ratio 3.05x, range 1.62-4.85** (`docs/56`), against the model-free observed 22 of 22 of
+`docs/34`. The rate-not-total rule stated above is precisely what makes those two comparable.
+
 # 10 - Every choice in this stage, with the alternative it rejected
 
 | choice | taken | rejected, and why |
@@ -3225,15 +3296,16 @@ flow-chasing is ruled out at the unflagged stations. Sections 8.6 to 8.8 give th
 the measurement behind each.""")
 
 # ============================================================ emit
-def cell(kind, src):
+def cell(kind, src, idx=0):
     c = {"cell_type": kind, "metadata": {},
          "source": src.strip("\n").splitlines(keepends=True)}
+    c["id"] = "c%03d" % idx        # nbformat 5 requires a cell id; deterministic
     if kind == "code":
         c.update({"execution_count": None, "outputs": []})
     return c
 
 
-nb = {"cells": [cell(k, s) for k, s in C],
+nb = {"cells": [cell(k, s, i) for i, (k, s) in enumerate(C)],
       "metadata": {"kernelspec": {"display_name": "Python 3", "language": "python",
                                   "name": "python3"},
                    "language_info": {"name": "python", "version": "3.10"}},

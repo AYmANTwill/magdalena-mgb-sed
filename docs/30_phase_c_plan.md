@@ -155,8 +155,13 @@ claim);~~ per-gauge **areas disagree >2× on 36 % of shared gauges** (docs/23 §
 >   (`docs/agents/journal_c31-ls2d.md`, carried into `docs/37`). The level is the open part:
 >   `f_LS` is graded **UNVALIDATED** and bracketed at **2.3151× – 3.9768×** the source level
 >   (`docs/47` §4.3, registered `docs/46` §1.0), and `docs/37` **Amendment A3 (2026-08-12)**
->   decides the *formulation* — ADOPT-SOURCE, `ls_formulation = buarque_2015_dg` — **without
->   moving the engine default**. This is what blocks C4.3 (§3, C4).
+>   decides the *formulation* — ADOPT-SOURCE, `ls_formulation = buarque_2015_dg` — ~~**without
+>   moving the engine default**. This is what blocks C4.3 (§3, C4).~~
+>   → **UPDATE 2026-08-19: the LS act LANDED and the block is discharged.** ACT 1 materialised
+>   the adopted field and **ACT 2 (commit `c3fdb55`, 2026-08-12) moved the ENGINE DEFAULT** of
+>   `src/mgb_sediment.py` `load_geometry()` to **`V4_dg`** (`docs/37` A3.9). Adopted
+>   **`f_LS` = 0.25146** erosion-weighted / **0.2446790094097074** area-weighted. C4.3 then ran —
+>   see `docs/55` and the refreshed status pointer in §3.
 > - **`q_peak` proxy: BUILT AND PRE-REGISTERED**, with its signed bias and the C4
 >   anti-compensation rule, in `docs/35` (REGISTERED 2026-08-11).
 
@@ -170,9 +175,21 @@ claim);~~ per-gauge **areas disagree >2× on 36 % of shared gauges** (docs/23 §
 > doc: **C0** → `docs/26` Addendum · **C1** → `docs/32` · **C2** → `docs/34` · **C2b** (a stage
 > that did not exist when this list was written, inserted between C0 and C3) → `docs/33` ·
 > **C3** → `docs/37` (**OPEN**, re-issued by Amendments A1/A1.9/A2, enacted by A3) and
-> `docs/43` · **C4** → `docs/42` (guards), `docs/45` (pre-registration), `docs/47`
-> (**C4.3 is BLOCKED**) · **C5** → not started. Read the stage text below as the original
-> intent, and the owning doc for what actually happened.
+> `docs/43` · **C4** → `docs/42` (guards), `docs/45` (pre-registration), `docs/47` (the **entry
+> verdict**) and **`docs/55` (the C4.3 OUTCOME: RAILED / EXPLORATORY, *not* adopted)** ·
+> **C5** → **`docs/56` (COMPLETE — the observed contrast is reproduced, 18/18 stations, modelled
+> median rate ratio 3.05×)**. Read the stage text below as the original intent, and the owning
+> doc for what actually happened.
+>
+> **⚠ POINTER REFRESHED 2026-08-19.** As written on 2026-08-12 this line said
+> ~~"`docs/47` (**C4.3 is BLOCKED**) · **C5** → not started"~~ — true at that date, superseded
+> since. The `C4.3-BLOCKED-UNTIL-LS-LANDS` entry condition (`docs/47`) was **discharged** when
+> the LS act landed; **C4.3 then RAN**, and its verdict is **RAILED / EXPLORATORY, not adopted**
+> (`docs/55`) — in-box optimum on the α box floor at **α = 2.0**, unconstrained optimum
+> **α ≈ 0.48** *below* the floor, which is the registered signature of mild upstream
+> over-production and is a **diagnosis, not a value to adopt**; design-matrix condition number
+> `inf`, so only the product **Π** is identifiable (`docs/42` G-set). **C5 is COMPLETE**
+> (`docs/56`). **PHASE C IS COMPLETE.**
 
 ### C0 — freeze and report H2E · *1 session*
 Generate the full per-period report for the best H2E seed (20260901, F 0.2593) with the

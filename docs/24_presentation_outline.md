@@ -23,7 +23,7 @@ One basin map. Method transferred from **Fagundes et al. (2026)**, *Int. Soil Wa
 Res.* 14, 100599 (Guaíba basin, Brazil).
 
 ### 2. The question
-- Magdalena–Cauca: **257,097 km²**, among the world's highest specific sediment yields.
+- Magdalena–Cauca: **257,097 km²**, among the ~~world's~~ **continent's** highest specific sediment yields — **published, and *theirs* not ours**: Restrepo A. (2015) has the highest specific yield in South America at Calamar, and Restrepo & Syvitski (2006) has the basin in the world's top ten by sediment *load* — a different quantity (`docs/40` §4.1 M4 / M10). Our own t/km²/yr stays embargoed (`docs/23` §13.2). *(Attribution added 2026-08-19; the claim was uncited and one scope too wide.)*
 - Strong ENSO control. Our own anomaly analysis fixes the contrast years:
   **La Niña 2011 (+1.7σ wet)** vs **El Niño 2015–16 (−1σ dry)**.
 - The gap: the ENSO–sediment link is documented observationally (Restrepo), never reproduced
@@ -379,8 +379,12 @@ This changes what "done" means for Phase B, so it is the most useful thing we ca
   the topographic factor **re-derived to the published source method** (`f_LS` = 0.25146; ACT 2
   moved the engine default to that field).
 - One question: does the El Niño / La Niña swing change suspended-sediment transport, and by how much?
-- Basin gross hillslope erosion at reference parameters: **299.5 Mt/yr** (always quoted with its
-  convention *and* `cp_revision`; **never** a yield).
+- Basin gross hillslope erosion at reference parameters: **299.5387 Mt/yr** @
+  `volume_convention='williams_m3'` / `k_unit_system='us_customary'` /
+  `cp_revision='cited_central_2026_08_11'` — α, β unfitted, so a **lower bound**; **never** a
+  per-area yield. *(The rule was stated here but not obeyed — the convention and `cp_revision` are
+  now printed, 2026-08-19. The prior revision `prior_2026_08_11` gave 248.7298: shown, not quoted
+  as current.)*
 
 ### G2. The sediment calibration rails — and that is a finding, not a failure
 

@@ -510,7 +510,13 @@ def main() -> int:
     qh = np.percentile(vals_hs[finite], pct).astype(float)
     mean_area_w = float(acc_ls1.sum() / acc_w.sum())
     mean_hs = float(acc_ls4.sum() / acc_w.sum())
-    print(f"\nGATE 2  basin distribution (published mountainous range ~2-10 for the median)")
+    # DIAGNOSTIC, not a gate.  Was printed as "GATE 2 ... published mountainous range ~2-10"
+    # until 2026-08-19; the band is UNCITED and was RETIRED in both directions (docs/37
+    # section 1 decision 4), so it grades nothing and cannot be gated on.
+    print("\nDIAGNOSTIC 2  basin distribution")
+    print("  (the '~2-10 mountainous LS' band is UNCITED and RETIRED - docs/37 section 1,")
+    print("   decision 4.  It grades nothing and cannot be gated on.")
+    print("   Printed as a SCALE REFERENCE only: it passes and fails nothing.)")
     print(f"  ls2d     per-cell median    : {q[3]:.3f}   area-wtd mean {mean_area_w:.3f}")
     print(f"  ls2d_hs  per-cell median    : {qh[3]:.3f}   area-wtd mean {mean_hs:.3f}"
           f"   <-- hillslope-limited (A capped at {A_CHANNEL_M2/1e6:g} km2)")
@@ -663,7 +669,7 @@ def main() -> int:
         ax2.hist(np.log10(np.clip(vals_hs[finite], 1e-6, None)), bins=bins,
                  color="#1C7293", alpha=0.60, label=f"ls2d_hs (median {qh[3]:.2f})")
         ax2.axvspan(np.log10(2), np.log10(10), color="#8FBF6F", alpha=0.22,
-                    label="published mountainous range 2–10")
+                    label='retired, UNCITED "mountainous 2–10" — scale reference only')
         ax2.axvline(np.log10(max(q[3], 1e-6)), color="#5B3A8E", lw=1.6)
         ax2.axvline(np.log10(max(qh[3], 1e-6)), color="#1C7293", lw=1.6)
         ax2.set_xlabel(f"log10 LS2D (per {args.scale*90} m cell)", fontsize=8)

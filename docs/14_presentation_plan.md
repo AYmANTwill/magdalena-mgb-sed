@@ -14,7 +14,7 @@
 
 **1. Title.** Project title; authors (TWILL + colleague); advisor; program; date. One basin image.
 
-**2. Problem & motivation (1 slide max).** Magdalena = one of the world's largest specific sediment yields; strong **ENSO**-driven interannual variability; consequences (reservoir siltation, delta, water quality). One sentence on the gap: the ENSO–sediment *link* is known observationally, but never reproduced with a **process-based, distributed** model over the whole basin.
+**2. Problem & motivation (1 slide max).** Magdalena = ~~one of the world's largest specific sediment yields~~ → **corrected 2026-08-19 to what the sources actually support: one of the largest specific sediment yields in *South America* — the continent's highest at Calamar in Restrepo A. (2015) ([docs/40](40_sdr_evidence.md) §4.1 M4); Restrepo & Syvitski (2006) (M10) puts the basin in the world's top ten by sediment *load*, which is a different quantity. That is a **published** yield, *theirs* not ours — our own t/km²/yr is 🚫 embargoed ([docs/23](23_gauge_geometry.md) §13.2);** strong **ENSO**-driven interannual variability; consequences (reservoir siltation, delta, water quality). One sentence on the gap: the ENSO–sediment *link* is known observationally, but never reproduced with a **process-based, distributed** model over the whole basin.
 
 **3. Question, objectives, hypothesis, novelty.**
 - Main objective: quantify & **explain** the sediment-flux difference between La Niña 2011 and El Niño 2015-16 with a calibrated MGB-SED.

@@ -5,6 +5,13 @@
 document *reports* disagreements, it does not fix them. No committed number was edited anywhere.
 No git operation was performed.
 
+> **ANNOTATED 2026-08-19 — one row of §1.9 has been superseded and is struck in place.** The LS
+> **formulation** row (×0.421 / ×0.333 ⇒ 2.37×–3.00×, and the 104.8/82.8 Mt/yr and implied-SDR
+> figures derived from it) carried a ✔ verdict; the bracket has since been re-measured to `f_LS` ∈
+> [0.25146, 0.43194] erosion-weighted ⇒ 2.3151×–3.9768× (`docs/46` §1.0, `docs/47` §4.3,
+> `docs/51` §2). The original text is left readable. **Nothing else in this audit was re-verified
+> in that pass** — the rest still reads as of 2026-08-11.
+
 **Scope.** `CLAUDE.md`, `README.md`, `docs/00_INDEX.md`, `docs/06`, `docs/12`, `docs/13`,
 `docs/16`–`docs/36`, `docs/PROGRESS.md`, `docs/progress_journal.md`, `docs/open_questions.md`,
 and the `DATA` block of `progress_map.html` (lines 410–674). `docs/37` did not exist when this
@@ -189,7 +196,7 @@ with its classification in the right-hand column.
 | α hard stop | > 35.4 or < 3.9 | `docs/35`:343-344, `progress_map`:562 | ✔ |
 | β band | [0.45, 0.65] vs Fagundes' published 0.44–0.93 | `docs/35`:371 vs `progress_map`:563,607 | known-open **K8** |
 | LS2D per-cell median | **12.77** (capped 12.49) vs published 2–10 | `progress_map`:550, `docs/00_INDEX`:180 | ✔ — now owned: `docs/37` §1 decision 4 retires the uncited 2–10 band; the *level* question it was probing is `docs/37` §4 **candidate 0** |
-| LS **formulation** level vs the α = 11.8 reference | ours area-wtd **39.812** vs source-faithful **16.775** = **×0.421** (×0.333 with the Desmet–Govers `L`) ⇒ our LS is **2.37×–3.00×** high | `docs/agents/journal_decide-ls-resolution.md`:§1a,§3b; now in `docs/37`:§4 cand. 0 and `docs/35`:§9.3 | ✔ (measured on all 30,235,916 basin cells at 90 m) — **was absent from every numbered doc until 2026-08-11**, and it is the largest wrong-way term in C3: it takes 248.730 → 104.8/82.8 Mt/yr, implied SDR 1.37–2.22 |
+| LS **formulation** level vs the α = 11.8 reference | ~~ours area-wtd **39.812** vs source-faithful **16.775** = **×0.421** (×0.333 with the Desmet–Govers `L`) ⇒ our LS is **2.37×–3.00×** high~~ → **SUPERSEDED 2026-08-12** — see the verdict cell | `docs/agents/journal_decide-ls-resolution.md`:§1a,§3b; now in `docs/37`:§4 cand. 0 and `docs/35`:§9.3 | ~~✔~~ **⚠ SUPERSEDED 2026-08-12 — shown, not quoted as current.** The *measurement* stands (all 30,235,916 basin cells at 90 m) and it **was** absent from every numbered doc until 2026-08-11; the *bracket* does not. Corrected: `f_LS` ∈ **[0.25146, 0.43194] erosion-weighted** ⇒ **2.3151× – 3.9768×**, and the source formulation read whole is a **POINT at ×0.25146** (`docs/46` §1.0, `docs/47` §4.3, `docs/51` §2) — the adopted `ls_formulation = buarque_2015_dg`. The area-weighted proxy upper end is **0.42136300143291305**, not ×0.42148 (`docs/51` §9 amd 1). ~~it takes 248.730 → 104.8/82.8 Mt/yr, implied SDR 1.37–2.22~~ → the endpoint **engine re-runs** are **299.5387 → 129.3840 / 75.3235 Mt/yr** (`docs/47` §4.3 table, `docs/51` §2), each at `volume_convention='williams_m3'` / `k_unit_system='us_customary'` / `cp_revision='cited_central_2026_08_11'`; and the **implied-SDR reading is retired outright** (`docs/40` §8.2 — *"the ratio … is not a sediment delivery ratio"*: all-source numerator, hillslope-only denominator, so it cannot be tested against a published SDR band in either direction) |
 | basin area-weighted C | 0.01082 | `progress_map`:553,555 | ✔ |
 | sediment skill bar | KGE −0.26…0.44 (Fagundes) | `docs/19`:430,715, `docs/30`:101,119, `docs/31`:36 | ✔ |
 | flux conversion | × **0.0864** | `docs/31`:34, `docs/34`:49, `docs/32`:99 | ✔ |

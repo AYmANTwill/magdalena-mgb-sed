@@ -10,7 +10,7 @@ def code(s): C.append(("code", s))
 md(r"""> # ⚠ STATUS 2026-08-12 — "adding CHIRPS in v2" never happened. **v2 is GAUGE-ONLY**, and v2 is the adopted forcing.
 >
 > **What this notebook built:** the per-minibacia daily rainfall + PET forcing, gauge-only, plus (§6) the leave-one-out baseline — median daily r **0.429** — that a CHIRPS merge was supposed to have to beat.
-> **What v2 actually became:** the **zero-suppression repair** (`docs/16` §4.1, `docs/18` §10; `src/repair_precip_zero_suppression.py` → `src/repair_precip_selectivity.py`) **plus deterministic IDW** (`docs/23` §11; `src/idw_forcing.py`, lexsort on (distance, gauge code)) — **still gauge-only, no CHIRPS**. This notebook's two forward references to CHIRPS "in v2" (the cell below, and the closing **Next:**) are **STALE**: they name something v2 is not. Both are annotated in place.
+> **What v2 actually became:** the **zero-suppression repair** (`docs/16` §4.1, `docs/18` §10; `src/repair_precip_zero_suppression.py` → `src/repair_precip_selectivity.py`) **plus deterministic IDW** (`docs/23` §11; `src/idw_forcing.py`, lexsort on (distance, gauge code)) — **still gauge-only, no CHIRPS**. This notebook's **three** forward references to CHIRPS "in v2" (the cell below, §6's *"the baseline skill a CHIRPS-merged v2 must beat"*, and the closing **Next:**) are **STALE**: they name something v2 is not. **All three are annotated in place** (~~two~~ → **three**; the tally was corrected 2026-08-19 — §6's reference was annotated on 2026-08-12 but was left out of this count).
 > **What happened to the CHIRPS merge:** built and measured against two pre-registered gates — LOOCV **PASSED** (0.447 > 0.429), volume **FAILED** (2,188.5 mm/yr vs the required [2,016.0, 2,056.8], +7.5 %) ⇒ **DO NOT ADOPT** (`docs/18` §15). Re-registered as **H-CHIRPS** (`docs/33` §1) and **REFUTED by its own volume gate**: the registered fix was a **no-op**, the re-run bit-identical, and the diagnosed cause **wrong** (`docs/18` §15.5). A CHIRPS-merged forcing would be **v3**; **v3 does not exist** and needs a new pre-registration (`docs/30` §1). See the **"Forcing versions — v1 / v2 / v3, stated once"** section of `docs/00_INDEX.md`.
 > **Note the version this notebook now runs:** the code sets `VERSION = 'v2'` and reads `precip_gauges_daily_qc_v2.csv`, so the prose below calling this *"the v1 baseline"* describes the notebook as first written, not the run whose outputs you are reading.
 >
@@ -45,7 +45,8 @@ minibacia so this stays visible instead of disappearing into a CSV.
 > - ~~so that adding CHIRPS in v2 becomes a measured improvement~~ → **v2 contains no CHIRPS.** v2 = zero-suppression repair (`docs/16` §4.1, `docs/18` §10) + deterministic IDW (`docs/23` §11), **gauge-only**, and it is the adopted forcing. The CHIRPS merge was built and measured *separately* and **NOT ADOPTED** (`docs/18` §15); as **H-CHIRPS** in `docs/33` §1 it is **REFUTED by its own volume gate**. A CHIRPS-merged forcing would be **v3** and **v3 does not exist**.
 > - ~~This is the v1 baseline~~ → **this notebook now runs v2** (`VERSION = 'v2'`, `precip_gauges_daily_qc_v2.csv`) and writes `forcing_minibacia_*_v2.csv`. v1 is kept on disk only so notebook 14's H2 − H1 attribution can re-run the same objective on the old forcing (`docs/26`).
 > - ~~the automatic network under-catches ~31 %~~ → **~19 %.** The 31 % figure was measured against the *pre-repair* gauge totals, which were inflated; notebook 10's own executed output now prints *"automatic under-catches ~19 %"*. Owning record: **`docs/16` §4.4**. The *"63 % of the basin >30 km from a gauge"* half of the sentence is current and correct.
-> - **§6's baseline did its job.** Median daily r **0.429** is the bar the merge had to clear, and the merge **cleared it at 0.447** — it was rejected on **volume**, not on skill (`docs/18` §15.1).""")
+> - **§6's baseline did its job.** Median daily r **0.429** is the bar the merge had to clear, and the merge **cleared it at 0.447** — it was rejected on **volume**, not on skill (`docs/18` §15.1).
+> - ~~CHIRPS reproduces the ENSO contrast exactly (1.69x vs 1.69x) ... damps daily extremes (P99 ratio 0.74)~~ → **RETIRED / superseded — note added 2026-08-19; shown, not quoted as current.** Both figures belong to notebook 10's **pre-repair** pass. Notebook 10 as it now stands prints a CHIRPS/gauge **P99 ratio of 0.72** (our own IDW field **0.73**, `docs/16` §4.3) and prints **no CHIRPS ENSO ratio at all** — its ENSO line reads *conventional 1.57× | automatic 2.06×*, and its §5 table records CHIRPS's ENSO behaviour only qualitatively. The 1.69×/1.69× pair is not reproducible from either notebook today. What the sentence is used for here — CHIRPS tracks the contrast but damps extremes — is unchanged.""")
 
 code(r"""import glob, pathlib, sys
 import numpy as np, pandas as pd, rasterio
@@ -208,7 +209,7 @@ $$P_{i,t}=\frac{\sum_{j\in N_i} w_{ij}\,\delta_{j,t}\,P_{j,t}}{\sum_{j\in N_i} w
 \delta_{j,t}=\begin{cases}1 & \text{gauge } j \text{ reported on day } t\\ 0 & \text{otherwise}\end{cases}$$
 
 **The $\delta_{j,t}$ mask is the part that quietly ruins this if omitted.** The gauge matrix is only
-~58 % filled. With fixed weights a missing gauge either propagates NaN or contributes an implicit
+~58 % filled — ~~58 %~~ → **79.2 %** on the v2 gauge file. **RETIRED / superseded, note added 2026-08-19; shown, not quoted as current:** §1's availability cell above prints *"filled 79.2 %"*, because the zero-suppression repair inserted **240,158 inferred-dry station-days**, and those are observations (`docs/18` §10.2). The argument is untouched — **20.8 % of the matrix is still absent**, so the $\delta_{j,t}$ mask is still the thing that keeps a silent gauge out of the denominator. With fixed weights a missing gauge either propagates NaN or contributes an implicit
 zero and silently drags the estimate down. The denominator must be recomputed every day over the
 gauges that actually reported.
 
@@ -220,7 +221,9 @@ honestly, at the point of use.
 **Adaptive fallback.** With $k=6$, some minibacia-days still come out NaN because all six nearest
 gauges were silent. MGB cannot accept NaN, so a second pass over $k=20$ fills only those cells. The
 tight $k=6$ behaviour is preserved everywhere else, and the number of fallback cells is reported -
-they are lower-confidence by construction.""")
+they are lower-confidence by construction.
+
+> **⚠ Note added 2026-08-19 — one count in the cell below.** Its comment reads *"Four gauge pairs sit at the same coordinates, so their distances TIE"*. The classification table printed at the top of this notebook shows **three** pairs at exactly **0.000000 m** — those are the ties — plus a fourth at **0.051952 m**, the EL DORADO / AEROPUERTO CATAM pair, which `docs/23` §11.2 found only by sweeping to 500 m (*"a fourth pair the exact-tie search had missed"*) and **refused to merge as a coordinate error**. So: **four co-located pairs, three exact distance ties.** The lexsort tie-break and the `NEVER_MERGE` guard are unaffected, and so is the order-invariance assertion that runs below.""")
 
 code(r"""G = W.copy()                                  # days x gauges (from the QC section)
 dates = G.index
@@ -663,19 +666,24 @@ section 6's LOOCV to test whether it actually beats the baseline measured here.
 >
 > **On limitation 1.** ~~That is the specific, measured case for adding CHIRPS to those minibacias~~ → **tested, and it did not hold.** In the LOOCV band beyond 30 km, pure mapped CHIRPS scored **r 0.300 against gauge-IDW's 0.343** — worse where the case was strongest. The merge's measured gain lives in the **10-30 km blend band (0.426 → 0.449)**, not in the ungauged headwaters (`docs/18` §15.2). The ungauged 17 % remains open, and it is where the rejected merge put its whole +7.5 % volume surplus (`docs/18` §15.5).
 >
+> **On limitation 1, the numbers — note added 2026-08-19; the list above is still unchanged.** ~~daily *r* falls to ~0.27 and bias rises to ~+12 %, against ~0.45 and ~+1 % where gauges are dense~~ → **RETIRED / superseded; shown, not quoted as current.** Section 6's own executed output on the v2 gauges reads **r 0.343, bias +3.9 %** beyond 30 km against **r 0.481, bias +3.6 %** below 10 km. The skill direction is unchanged — *r* still falls with isolation — but the bias does **not** rise with it: it reads **+3.6 / +0.3 / +3.9 %** across the `<10 km` / `10-30 km` / `>30 km` bands.
+>
+> **And the route this limitation points at is now bounded.** `docs/58` (2026-08-12) took `docs/18` §15.2's isolation-banded LOOCV deltas (**0.000 / +0.023 / −0.043**) together with **this notebook's own** area shares from `forcing_minibacia_provenance_v2.csv` (**25.8 / 57.1 / 17.1 %**, §5 above) and computed the perfect-case ceiling of repairing the **139 residual rain-selective gauges** and re-attempting the merge: **Δr = +0.0058 area-weighted**, i.e. the precipitation field's daily *r* ~0.57 → **~0.576**. The ungauged 17 % stays open as a *limitation*, but it is **not** an open lever: the rainfall ceiling is **structural**. Owning doc: **`docs/58`**.
+>
 > **On limitation 3, superseded numbers.** ~~(0.14 -> 0.29)~~ → **0.163 → 0.306** on the repaired gauges (notebook 10 §3's executed lag table; `docs/16` §4.2 records 0.160 → 0.304). The conclusion is unchanged and the limitation is **still open**: `docs/16` §4.2 carries it forward verbatim for calibration, while measuring that it does **not** matter for PET (mean bias −0.000 mm/day).
 >
 > **Limitation 2 is confirmed closed** — the model period is **2008-2018** (CLAUDE.md). **Limitations 4 and 5 stand as written**; the fallback count is now a deterministic quantity because the interpolator is order-invariant (`docs/23` §11.1).""")
 
 
-def cell(kind, src):
+def cell(kind, src, idx=0):
     c = {"cell_type": kind, "metadata": {}, "source": src.strip("\n").splitlines(keepends=True)}
+    c["id"] = "c%03d" % idx        # nbformat 5 requires a cell id; deterministic
     if kind == "code":
         c.update({"execution_count": None, "outputs": []})
     return c
 
 
-nb = {"cells": [cell(k, s) for k, s in C],
+nb = {"cells": [cell(k, s, i) for i, (k, s) in enumerate(C)],
       "metadata": {"kernelspec": {"display_name": "Python 3", "language": "python",
                                   "name": "python3"},
                    "language_info": {"name": "python", "version": "3.10"}},

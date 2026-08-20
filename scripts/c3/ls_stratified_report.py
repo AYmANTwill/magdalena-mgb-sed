@@ -10,12 +10,16 @@ the registered strata:
 
 Everything is per engine unit (mini, urh).  LS per unit comes from `urh_ls2d_variants.csv`
 (ACT 1's committed product); the erosion weight E per unit comes from a decade engine run at
-adopted defaults pinned to V0 (`ls_erosion_weights.erosion_weights`, GATE 299.5387 Mt/yr); the
+adopted defaults pinned to V0 (`ls_erosion_weights.erosion_weights`, GATE 299.5387 Mt/yr at
+`volume_convention='williams_m3'` + `k_unit_system='us_customary'` @
+`cp_revision='cited_central_2026_08_11'` — a load is never quoted without its convention AND
+its `cp_revision`, docs/37 A1.3); the
 per-minibacia elevation and slope come from a light Horn-slope zonal pass over the COP DEM using
 `scripts/c3/ls2d.py`'s own grid mapping.
 
 GATES (nothing from a failing run may be used):
-  G1  basin erosion at adopted defaults = 299.5387 Mt/yr           (via erosion_weights)
+  G1  basin erosion = 299.5387 Mt/yr at the adopted defaults `williams_m3` + `us_customary`
+      @ `cited_central_2026_08_11`                              (via erosion_weights)
   G2  V0 column is 1.000 in every stratum, by definition
   G3  V0 per-station erosion-weighted LS̄ range reproduces docs/42 §4.1's 38.2 – 117.1
 
@@ -265,7 +269,12 @@ def render_md(rep: dict) -> str:
     v = rep["vcols"]
     short = [VAR_LABELS.get(c, c) for c in v]
     lines = ["### docs/46 §3.3 — stratified LS levels (LS̄), per variant", ""]
-    lines.append(f"Basin erosion gate: **{rep['gate_total_mt_yr']:.4f} Mt/yr** (adopted defaults).")
+    # A load is never quoted without its convention AND its cp_revision (docs/37 A1.3,
+    # src/mgb_sediment.py's convention ladder).  These are SedParams()'s defaults, which
+    # erosion_weights() runs at; "(adopted defaults)" alone did not name them (2026-08-19).
+    lines.append(f"Basin erosion gate: **{rep['gate_total_mt_yr']:.4f} Mt/yr** "
+                 f"(volume_convention=williams_m3, k_unit_system=us_customary, "
+                 f"cp_revision='cited_central_2026_08_11').")
     lines.append("")
 
     def block(title, rows, wkey):

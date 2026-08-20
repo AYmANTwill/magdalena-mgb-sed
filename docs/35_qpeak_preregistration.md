@@ -701,12 +701,26 @@ both anchors, ~~implied SDR 1.37 – 2.22~~ — the direction failure would retu
 > **ADR, not an SDR**, is not bounded by 1, and **is not a gate** (`docs/47` §4.3; the 0.05 – 0.30
 > SDR band is retired as **UNCITABLE**, `docs/40`). ~~implied SDR 1.37 – 2.22~~ is struck for that
 > second reason as well as for the re-basing: **a retired gate is neither a pass nor a fail.**
-(b)'s magnitude question is **not** closed: an implied SDR of 0.579 – 0.740 sits above the
-0.05 – 0.30 range quoted for a basin of this size, i.e. gross erosion is still 1.93 – 14.8× too
-low. `docs/37_c3_closure.md` records C3 as **OPEN** for exactly that reason and names the
+(b)'s magnitude question is **not** closed: ~~an implied SDR of 0.579 – 0.740 sits above the~~
+~~0.05 – 0.30 range quoted for a basin of this size, i.e. gross erosion is still 1.93 – 14.8× too~~
+~~low.~~ `docs/37_c3_closure.md` records C3 as **OPEN** ~~for exactly that reason~~ and names the
 candidate residual terms (`C` at the low end of Roose's range; the §5 peak deficit, whose own
 1.4 – 4.8× bracket spans the SDR = 0.30 end; and the fact that the 0.05 – 0.30 SDR band is
 itself uncited in this repository).
+
+> **[WARN] AMENDMENT §9.6, 2026-08-19 — STRUCK: A RETIRED BAND CANNOT MEASURE A SHORTFALL.**
+> The struck clause used the **0.05 – 0.30 SDR band as a live comparator** and derived a magnitude
+> from it, one line below the §9.4 WARN block that retires that band as **UNCITABLE** (`docs/40`
+> §8.1; `docs/37` A1.2; `docs/47` §4.3) — and one line above this paragraph's own concession that
+> the band *"is itself uncited in this repository"*. **A retired gate is neither a pass nor a fail.**
+> **1.93 – 14.8× is arithmetic ON the retired band** (0.579/0.30 and 0.740/0.05), so it has no
+> standing independent of it, and it is read at the **prior** C level 248.730 Mt/yr, superseded by
+> **299.5387088405831 Mt/yr** (`docs/37` A1.3). **The residual's DIRECTION is WITHDRAWN**
+> (`docs/37` **A1.9**: *"2.27× low … 1.49× high"*), so there is no shortfall factor to restate.
+> ***No replacement number, band or bar is registered, and none may be reconstructed*** (`docs/52`).
+> *"for exactly that reason"* is struck on `docs/37`:69's own words: *"**This is no longer why this
+> document says OPEN** — see A1.1 … and A1.9."* **The ratio 0.579 – 0.740 itself stays readable in
+> the table above** — it is an **ADR, not an SDR**, not bounded by 1, and not a gate (§9.4). See §9.6.
 
 **Disclosure, per the fix protocol:** no frozen artifact was modified —
 `sim_calibrated_v2/{h2e_drivers.npz, parameters_H2E.csv, q_gauge_H2E.csv, q_gauge_H2E.npz}`
@@ -1363,3 +1377,91 @@ performs the registration §9.4.5's ownership note deferred to "its own dated §
 adds a parallel operative registration and a pointer, per the house pattern.
 
 **C4.3 remains BLOCKED** (`docs/47`; §9.5.5).
+
+---
+
+### 9.6 — Amendment — 2026-08-19 — §9.2's residual-**magnitude** sentence is STRUCK; nothing replaces it
+
+**Written 2026-08-19 by the corpus coherence sweep.** **This document is FROZEN. §1–§8 are not
+edited.** This entry is written in the §9 amendment slot the document reserves ("*Amendments go in
+§9, dated, with a reason*"), and the single in-place strike it authorises is inside **§9.2 — an
+earlier amendment, not the registered body** — applied in the exact pattern §9.4 used on the
+adjacent clause on 2026-08-12 (strike in place, original text left readable, dated WARN block
+naming the amending section).
+
+#### 9.6.1 The reason
+
+§9.2's closing paragraph read: *"an implied SDR of **0.579 – 0.740** sits above the **0.05 – 0.30**
+range quoted for a basin of this size, i.e. gross erosion is still **1.93 – 14.8× too low**."*
+
+**Four things were wrong with it as a live claim, and none of them is a new measurement.**
+
+1. **The comparator is retired.** `docs/40` is titled *"The sediment delivery ratio band:
+   **UNCITABLE**"* and its §8.1 verdict is UNCITABLE; `docs/37` A1.2 struck the gate that used it;
+   `docs/47` §4.3 lists *"The implied SDR 0.579–0.740 is above the plausible 0.05–0.30 band"* as
+   **RETIRED**. **§9.4's own WARN block, printed directly above this sentence, says so** — and
+   struck the sibling *"implied SDR 1.37 – 2.22"* for that reason. Its strike stopped one line
+   short. **A retired gate is neither a pass nor a fail.**
+2. **The magnitude has no independent standing.** 1.93 – 14.8× is the retired band restated as a
+   ratio — 0.579/0.30 = 1.93 and 0.740/0.05 = 14.8. It also reads at the **prior** C level
+   (248.730 Mt/yr), superseded by **299.5387088405831 Mt/yr** at
+   `cp_revision='cited_central_2026_08_11'` (`docs/37` A1.3).
+3. **The direction of the residual is WITHDRAWN.** `docs/37` **A1.9** re-opened clause 4′ as 4″ and
+   records the residual as **DIRECTION UNKNOWN — *"2.27× low … 1.49× high"***. A claim that erosion
+   is *"still too low"* asserts a direction the owning document has withdrawn.
+4. **The sentence contradicted itself.** Its own closing parenthesis already concedes *"the
+   0.05 – 0.30 SDR band is itself uncited in this repository."*
+
+#### 9.6.2 What is registered
+
+> **The magnitude claim is STRUCK. NOTHING REPLACES IT.**
+>
+> **No corrected shortfall factor is offered, and none may be reconstructed** — not from the anchors,
+> not from the ADR, not from any published SDR. `docs/52` governs: **a materiality bar or
+> plausibility band may not be invented, restated or implied.** The honest residue is: *the
+> magnitude question is not closed, and this document holds no number that measures it.*
+>
+> **What survives, unchanged:** the ratio **0.579 – 0.740** as printed arithmetic in §9.2's table
+> (prior C level ÷ the 144 / 184 Mt/yr anchors) — an **ADR, not an SDR**, not bounded by 1, **not a
+> gate** (§9.4) · the §9.2 table itself · §9.4's re-based loads **129.3840** (V4) and **75.3235**
+> Mt/yr (V4_dg) and its reaffirmed *direction-failure-would-return* conclusion · `docs/37`'s record
+> of C3 as **OPEN**, on A1.1's clauses 2, 3, 4″ and A1.9 — **not** on the struck comparison.
+
+#### 9.6.3 What this amendment does NOT do
+
+- **No edit to §1–§8.** No registered choice, bias statement, α band, β band, scale table or
+  anti-compensation rule is touched. §6.1 stands as re-registered by **§9.5**.
+- **No number is computed here.** Every figure above is quoted from `docs/37`, `docs/40`, `docs/47`
+  or §9.2/§9.4 with its section named. **No band, threshold or materiality bar is introduced.**
+- **It does not reopen or close C3**, does not move a `cp_revision` or a convention, and moves no
+  engine default.
+- **It does not adjudicate C4.3's entry.** See §9.6.4.
+
+#### 9.6.4 Status pointer (registers nothing)
+
+**§9.5.6's closing line — *"C4.3 remains BLOCKED (`docs/47`; §9.5.5)"* — was true when written on
+2026-08-12 and is left standing as a dated statement.** For the record a reader needs: **stage C4.3
+has since run.** `docs/55_c43_verdict.md` (2026-08-12) is its deliverable and owns its verdict —
+**RAILED / EXPLORATORY, not adopted**, the in-box optimum on the box floor **α = 2.0**, unconstrained
+optimum **α ≈ 0.48** *below* the floor — which is precisely **§6.1's lower hard stop** firing: *a fit
+that needs α far below Williams means something upstream is over-producing, and that must be found,
+not offset.* **§6.1's hard stop therefore did its registered job.** The entry-block authority is
+`docs/47`, whose **§10** (2026-08-19) re-reads its §9.2 blocker ledger and finds **all four cleared
+or satisfied** — the formal ledger being `docs/46` §10 Amendments 3 and 4, which state *"`docs/47`
+§9.2 blocker 4 is now cleared in all three items"*. `docs/47` §10.3 also records, without resolving
+it, that **§9.5.5's *"does not unblock C4.3"* and that ledger were written the same day**: no
+document names a single act as the discharge of `C4.3-BLOCKED`. **This pointer re-registers nothing,
+and no C4.3 number should be quoted from this document — quote `docs/55`.**
+
+#### 9.6.5 Disclosure
+
+- **Files written by this pass:** this §9.6 and **one** in-place strike-plus-WARN inside **§9.2**
+  (the paragraph closing the gate-(b) re-measurement). **Nothing else in this document.**
+  `docs/33`, `docs/37`, `docs/40`, `docs/42`, `docs/45`, `docs/46`, `docs/47`, `docs/52`, `docs/55`
+  were **read**; `docs/47` was edited by the same sweep under its own (unfrozen) authority and says
+  so in its §10.4.
+- **Nothing deleted.** The original wording of every struck clause remains readable inside its
+  strike-through, per the `docs/37` A2.7 house pattern.
+- **No calibration, fit, notebook or simulation was run. No engine default moved. No frozen
+  artifact was opened. No git command was run. Nothing is backdated.**
+- **The `docs/23` §13.2 yield embargo is in force.** No gauge-referenced t/km²/yr appears here.

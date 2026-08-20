@@ -6,7 +6,11 @@ Suspended sediment flux is a first-order control on river morphology, reservoir 
 contaminant transport, and delta stability. In the tropical Andes, sediment production is strongly modulated by
 **ENSO** (El Niño–Southern Oscillation): La Niña years tend to be wetter over much of Colombia (more runoff,
 more erosion), while El Niño years tend to be drier. The **Magdalena** is the main Colombian river draining the
-Andes to the Caribbean and carries one of the largest specific sediment yields in South America.
+Andes to the Caribbean and carries one of the largest specific sediment yields in South America
+(**published figures, not ours**: Restrepo & Syvitski 2006; Restrepo A. 2015, which reports the
+continent's highest specific yield at Calamar — see [docs/40](40_sdr_evidence.md) §4.1 M4/M10.
+Our own t/km²/yr is embargoed until the catchment areas get an external arbiter,
+[docs/23](23_gauge_geometry.md) §13.2, so this basin-scale framing is *theirs*.)
 
 This work asks whether a **physically based, spatially distributed** model (MGB-SED) can reproduce and explain
 the difference in suspended sediment transport between two contrasting ENSO years, transposing the methodology

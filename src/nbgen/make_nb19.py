@@ -87,7 +87,12 @@ Six named, measured, unresolved problems get their own subsections, not footnote
 **What this notebook is NOT.**
 
 * It is **not a calibration.** No parameter is fitted here. $\alpha$ and $\beta$ are the
-  published 1975 values throughout. The calibration is stage C4 and has not run.
+  published 1975 values throughout. The calibration is stage C4. **STATUS,
+  2026-08-19, added so this page is not read as the project's current position:** stage C4.3 has
+  since been **run**, and its verdict is **RAILED / EXPLORATORY, NOT adopted** (`docs/55`); the
+  strictly out-of-sample application C5 then **reproduced** the observed ENSO contrast at **18/18**
+  stations, median rate ratio **3.05x** (`docs/56`). Nothing on this page is fitted - those two
+  documents are where the fitted result and the headline live.
 * It does **not re-run the hydrology.** The water balance is frozen at the configuration `H2E`
   and is read read-only.
 * It is **not a closure.** C3 is **OPEN**, and section 5 explains exactly which clauses keep it
@@ -712,7 +717,11 @@ puts the model **2.27x too low** or **1.49x too high** - and the interval betwee
 **contains 1**. Reading A's decisive leg compares our sum against a RUSLE gross erosion; reading
 B converts that comparator to a yield with NEH Table 6-2's own sheet delivery ratio of 0.3333 and
 inverts the sign. The conversion-free cross-check agrees with reading B: Tan et al.'s own reported
-specific sediment yield is 1.3-16.9 t/ha/a and our 11.65 t/ha/a sits inside it.""",
+specific sediment yield is 1.3-16.9 t/ha/a and our 11.65 t/ha/a sits inside it. *(The cell above
+prints reading B as 1.319-1.475x because it converts with the exact 1/3 it computed from Table
+6-2; `docs/37` A1.9's **1.332-1.490x**, printed beside it and used in the table of section 1.4,
+converts with the rounded 0.33. The owning document's pair is the one to quote - the ~1 %
+difference is that rounding and nothing else.)*""",
     means=r"""**This refutes "the model is about 2x under-erosive"** as a statement anything may
 be built on - and that sentence had already been used, in this project's own documents, to
 motivate work. What survives is a *magnitude bracket with no sign*. Three consequences carried
@@ -1225,8 +1234,12 @@ with the actual run marked.""",
 1.9545 and 3.3598, map to **1.83x-2.39x** (primary) and **2.98x-4.83x** (sensitivity) across the
 *entire* registered $\beta$ band, against observed **2.8x-4.6x** and **6.4x-9.3x**. The two
 ranges barely touch on the primary pair and do not reach on the sensitivity pair. To hit the
-observed contrast the basin would need a runoff ratio of **2.54-3.92** (primary) or **5.25-7.34**
-(sensitivity); the frozen hydrology supplies 1.95 and 3.36.""",
+observed contrast the basin would need a runoff ratio of **2.21-5.45** (primary) or **4.17-11.91**
+(sensitivity) - the range across the whole registered $\beta$ band, which is the form the cell
+above prints and the form the rest of this paragraph uses; the frozen hydrology supplies 1.95 and
+3.36. *(RETIRED 2026-08-19, shown and not quoted as current: this line previously read
+~~**2.54-3.92**~~ and ~~**5.25-7.34**~~, which is the $\beta$ = 0.56 point form rather than the
+band form the cell computes - and its low primary endpoint did not reproduce even that.)*""",
     means=r"""**The basin-total simulated ENSO contrast is the surface-runoff contrast raised to
 $2\beta$ and essentially nothing else.** Two consequences are registered *in advance* for stage
 C5 so that neither can be discovered later and read as success. First, **$\beta$ is not a lever on
@@ -1646,7 +1659,15 @@ fits.** This is why the C4 gate was rebuilt around something else. The replaceme
 coefficient appears with its interval **in the same table as $\alpha$**. The registration takes
 the second option explicitly (section 5.3). **What this does not license:** discarding the
 $\alpha$ band. `docs/35` is a frozen pre-registration; C4 follows it anyway, reports its measured
-defects beside it, and may *propose* - never enact - an amendment.""")
+defects beside it, and may *propose* - never enact - an amendment. **And read every $\alpha$
+number in this section as V0-conditional.** The bands drawn here - expected **5.9-23.6**, hard
+stops **3.9** and **35.4** - and the deposition-free band derived from 299.5387 Mt/yr are all at
+$f_{LS}$ = 1.000. `docs/35` **section 9.5** (2026-08-12) **RE-REGISTERED** them at the adopted LS
+level, where they scale with $f_{LS}$: reference $11.8\cdot f_{LS}$ = **2.967**, expected
+**1.484-5.934**, upper hard stop $35.4\cdot f_{LS}$ = **8.902**, lower hard stop **0.981** - so the
+upper hard stop then sits *below* the unfitted $\alpha$ = 11.8. Those are the values `docs/55`
+profiles against. That is a change of *reference frame*, not a change of this section's
+conclusion, which is about the guard's blindness and not about any $\alpha$ value.""")
 
 md(r"""## 3.4 - The deeper reason: $\alpha$ has no separate existence to be validated
 
@@ -2167,12 +2188,21 @@ detectable first-order deposition rate $k_{min}$ for four candidate sets (log sc
 band implied by the retired SDR expectation drawn **as an UNCITED scale reference only**.""",
     shows=r"""The achievable fit set spans $L_w$ = **2.6-60.4 km**; the full guard set spans
 **2.6-348.4 km**, a 134-fold range. That collapse in lever arm takes $k_{min}$ from
-**0.00216 /km** (all 18) to **0.0209 /km** on the CAL 8 - **9.7x worse** - which means no channel
-sink weaker than a factor of ~3.5 over the fit set's own length is detectable at all. Adding the
+~~**0.00216 /km** (all 18)~~ to ~~**0.0209 /km**~~ on the CAL 8, and the
+~~**~3.5x** over the fit set's own length~~ detection floor that followed from them, are all
+**SUPERSEDED - shown, not quoted as current** (dated 2026-08-12, `docs/45` section 8.1.4, and
+section 4.3's own correction box above). Every one of them is linear in the retired
+$\sigma_r$ = 0.465; on the registered joint form with the **measured** residual sd the all-18
+floor is **0.0065-0.0069 /km**, i.e. **no first-order channel sink WEAKER than ~10x over ~342 km
+is detectable**. What the collapse in lever arm *costs* is unchanged, because it is a ratio of two
+$k_{min}$ and $\sigma_r$ cancels: the CAL 8 is still **9.7x worse** than the guard set. Adding the
 single trunk station would recover a factor of 6.9, and the registration declines to do it.""",
     means=r"""**The deposition coefficient is not fittable, so it is not fitted.** The
 registration fixes it at exactly zero and reports it as a **bound**, in a fixed sentence form:
-*"no first-order channel sink stronger than X x over Y km is detectable on this fit set."*
+*"no first-order channel sink **WEAKER** than X x over Y km is detectable on this fit set."*
+(~~stronger~~ $\rightarrow$ **weaker**; **sense settled 2026-08-12**, `docs/45` section 8.1.4 -
+only *weaker* is the correct reading of a *detection floor*, and *weaker* is the registered
+wording from that amendment forward, as section 4.3's correction box above already states.)
 Reporting a fitted $k$ here would be **reporting noise with a decimal point**. And fixing it at
 zero incurs a debt that must be paid in words rather than arithmetic: the model then asserts that
 everything eroded on a hillslope reaches the station. **The registration states that claim
@@ -2741,11 +2771,26 @@ break toward the **lower** $LS$ - and the registered expected consequence, that 
 against the source formulation.** **The comparison has now been made** (`docs/37` **A3**,
 2026-08-12): outcome **ADOPT-SOURCE**, `ls_formulation = buarque_2015_dg`, graded **CITED** on all
 four levers - and the total does get worse, exactly as registered. **Clause 2 of C3's closure still
-fails**, for three separate reasons: the decision is **RECORDED and NOT EXERCISED** (no engine
-default moved, so every number in this notebook is still at `V0` with $f_{LS} = 1.000$), the **LS
+fails**, for three separate reasons: the decision was **RECORDED and NOT EXERCISED when this page
+was written** - and that half of it has since moved. **UPDATE, and it supersedes the sentence the
+cell above prints:** *ACT 2* (commit `c3fdb55`, 2026-08-12) **moved the engine default of
+`src/mgb_sediment.py` `load_geometry()` to `V4_dg`**. The printed line *"No engine default moved -
+this notebook still runs at V0"* was true when written and is **RETIRED as a statement about the
+engine**. This notebook is nevertheless still a **V0 record**, and by construction rather than by
+accident: its cell-6 call pins `ls2d_column='ls2d_hs'` explicitly, so every number on this page
+remains at `V0` with $f_{LS} = 1.000$ and stands as a V0 record. The **LS
 LEVEL remains UNVALIDATED** (`docs/42` G4.2 - a cited formulation is not a validated level, and a
 fitted one is not either), and clause 2 also requires the **LS *shape*** decision, which A3 does not
-touch. **C4.3 remains BLOCKED** (`docs/47`).""")
+touch. ~~**C4.3 remains BLOCKED** (`docs/47`)~~ $\rightarrow$ **SUPERSEDED as a status statement,
+2026-08-19.** C4.3 has since been **run**, and `docs/55` - the C4.3 deliverable - records the
+verdict: **RAILED / EXPLORATORY, NOT adopted.** The in-box optimum of `F_report` sits on the box
+floor at $\alpha$ = **2.0** (median KGE$_{\ln}$ **-0.118** on estimator (a), **+0.139** on
+estimator (b)) and the unconstrained optimum wants $\alpha \approx$ **0.48**, below the box floor -
+the registered signature of mild upstream over-production, a diagnosis and not a value to adopt.
+The strictly out-of-sample application then landed: C5 **reproduces** the observed ENSO contrast,
+**18/18** stations, median rate ratio **3.05x** (range 1.62-4.85), robust across $\beta$ and both
+window pairs (`docs/56`). *(How `docs/47`'s `C4.3-BLOCKED-UNTIL-LS-LANDS` condition was formally
+discharged is not adjudicated here: `docs/55` owns the run, `docs/47` owns the condition.)*""")
 
 md(r"""## 6.5 - One trunk station, and a single station's residual exceeds the whole model above it
 
@@ -3087,10 +3132,11 @@ print(f'\nall {len(checks)} integrity assertions passed.')""")
 nb = {
     "cells": [
         {"cell_type": kind,
+         "id": "c%03d" % i,          # nbformat 5 requires an id; deterministic
          "metadata": {},
          "source": src.splitlines(keepends=True),
          **({"execution_count": None, "outputs": []} if kind == "code" else {})}
-        for kind, src in C
+        for i, (kind, src) in enumerate(C)
     ],
     "metadata": {
         "kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},

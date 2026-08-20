@@ -44,7 +44,7 @@ import subprocess
 import sys
 import time
 
-REPO = pathlib.Path(__file__).resolve().parents[1]
+REPO = pathlib.Path(__file__).resolve().parents[2]   # scripts/b/ -> scripts/ -> repo root
 CACHE = REPO / 'data' / 'processed' / '_calib_cache'
 LOGS = CACHE / 'logs'
 WORKER = REPO / 'src' / 'calib_v2.py'

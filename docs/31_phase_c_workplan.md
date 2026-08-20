@@ -8,16 +8,25 @@
 > *"Numbering corrected"* is trusted over a file listing, so this is the more misleading half.
 > The true assignment on disk (`ls docs/*.md`, checked 2026-08-12): **35 = `35_qpeak_preregistration.md`**
 > (the C3.3 `q_peak` proxy registration) · **36 = `36_peak_deficit_options.md`** (the peak-deficit
-> adjudication) · **45 = `45_c4_preregistration.md`** is the C4.2 pre-registration · **the C5
-> results document is unwritten and takes the next free number, 54** (`docs/00_INDEX.md` §3:
+> adjudication) · **45 = `45_c4_preregistration.md`** is the C4.2 pre-registration · ~~**the C5
+> results document is unwritten and takes the next free number, 54**~~ (`docs/00_INDEX.md` §3:
 > *"**44 was never assigned** … the next free number is 54"*). The `Out:` targets in C4.2, C5.4
 > and C2's paste-prompt below are annotated accordingly — **a stale target in a paste-prompt
 > writes the wrong file, it does not merely mislead.**
+>
+> **⚠ THE 54 TARGET IS ITSELF STALE — corrected 2026-08-19.** 54 was claimed by
+> `54_c3_1_closure_and_c4_entry_status.md`; the **C4.3 verdict landed as
+> `55_c43_verdict.md`** and the **C5 results document landed as `56_c5_enso_application.md`**
+> (both 2026-08-12), with 57/58/59 taken since (`57_b5_gauge_expansion.md`,
+> `58_rainfall_ceiling_bound.md`, `59_cross_implementation_comparison.md`). **Do not write to 54.**
+> Checked against `ls docs/*.md` 2026-08-19.
 
 > **⚠ STAGE STATUS POINTER, added 2026-08-12.** This is a *plan*: its stage sections say what to
 > do, not what has happened. Per RULE 0 (`docs/00_INDEX.md`) **status is owned by
-> `progress_map.html`**, and each stage's *outcome* is owned by its own document. As of
-> 2026-08-12, from those owners:
+> `progress_map.html`**, and each stage's *outcome* is owned by its own document. ~~As of
+> 2026-08-12~~ → **refreshed 2026-08-19** — C4.3 has since RUN (`docs/55`) and C5 is COMPLETE
+> (`docs/56`); the two rows those outcomes touch carry the superseded text struck through. From
+> those owners:
 >
 > | stage | owner | outcome |
 > |---|---|---|
@@ -25,9 +34,9 @@
 > | **C1** | `docs/32` (+ `notebooks/15`) | **complete** — 79/79 stations classified |
 > | **C2** | `docs/34` | **complete** — the observed contrast, model-free |
 > | **C2b** | `docs/33` §6–§8 | **complete** — a stage that did not exist when this plan was written; H-BFI held, **H-PEAK refuted**, the H2E-S refit failed 2 of 3 conditions |
-> | **C3** | `docs/37` | **built and run, and OPEN** — four amendments deep (A1, A1.9, A2, A3); A3 (2026-08-12) states in its own title *"C3 stays OPEN. C4.3 stays BLOCKED."* |
-> | **C4** | `docs/45` (C4.2 prereg) · **`docs/47` (the entry verdict)** | C4.1/C4.2 landed; **C4.3 is BLOCKED — see the marker at C4.3 below** |
-> | **C5** | — | not started |
+> | **C3** | `docs/37` | **built and run, and OPEN** — four amendments deep (A1, A1.9, A2, A3); A3 (2026-08-12) states in its own title *"C3 stays OPEN. C4.3 stays BLOCKED."* — **the *"C3 stays OPEN"* half still stands; the *"C4.3 stays BLOCKED"* half is spent, see the C4 row** |
+> | **C4** | `docs/45` (C4.2 prereg) · `docs/47` (the entry verdict — now the *historical* entry condition) · **`docs/55` (the C4.3 verdict, the owner)** | C4.1/C4.2 landed; ~~**C4.3 is BLOCKED — see the marker at C4.3 below**~~ → **C4.3 RAN (2026-08-12) — `docs/55`: RAILED / EXPLORATORY, the fit is NOT adopted.** The in-box optimum sits on the **box floor α = 2.0** (β 0.60), median `F_report` **−0.118** on estimator (a) and **+0.139** on estimator (b) — *same sign*, so the verdict is **not** INDETERMINATE; the *unconstrained* optimum **α ≈ 0.48** is below the box floor, which is the registered signature of **mild upstream over-production — a diagnosis, not a value to adopt**. Design-matrix condition number `inf`: only **Π** is identifiable, α is never reported alone |
+> | **C5** | **`docs/56`** | ~~not started~~ → **COMPLETE (2026-08-12) — the modelled ENSO contrast REPRODUCES the observed one:** La Niña > El Niño at **18/18** usable stations, median rate ratio **3.05×** (range 1.62–4.85, geo-mean 3.06), at the *lower edge* of the observed ~3–5 band and matching observed estimator (b); the direction holds in **all six** β ∈ {0.45, 0.56, 0.65} × {primary, secondary} sensitivity cells. Rates only, absolute flux only (`docs/23` §13.2 embargo). **Caveat: C5.3's pre-registered factor-swap experiments were NOT part of it** — `docs/56` runs §1–§5 with no swap section, and `docs/PROGRESS.md` still lists C5.3 unchecked |
 >
 > The subtask bodies below are **preserved as written**. Where an outcome contradicts them, the
 > owning document wins.
@@ -327,8 +336,17 @@ H2E runoff, verified the way the hydrology engine was.
 > `f_LS ∈ [0.25146, 0.43194]` erosion-weighted ⇒ **2.3151× – 3.9768×**) and `docs/37` **A3**, which
 > decides the *formulation* on source grounds — **ADOPT-SOURCE, `ls_formulation = buarque_2015_dg`**
 > — while stating that **no engine default moves, C3 stays OPEN and C4.3 stays BLOCKED**. It is the
-> unresolved denominator of the α box, and therefore the reason C4.3 is blocked (`docs/47`).
+> unresolved denominator of the α box, and ~~therefore the reason C4.3 is blocked (`docs/47`)~~.
 > **Do not re-derive an LS verdict from this gate.**
+>
+> **⚠ UPDATED 2026-08-19 — two clauses of the paragraph above have been overtaken.** (i) The engine
+> default **did** move: C3.1 **ACT 1** materialised the adopted field and **ACT 2** (commit
+> `c3fdb55`, 2026-08-12) switched `src/mgb_sediment.py` `load_geometry()` to **`V4_dg`**, with
+> `f_LS` = **0.25146** erosion-weighted / **0.2446790094097074** area-weighted. (ii) C4.3 is
+> therefore **no longer held**: it ran on the adopted field and its verdict is `docs/55`
+> (RAILED / EXPLORATORY, not adopted). **What has NOT changed: C3 is still OPEN**, and the LS
+> *level* is still graded **UNVALIDATED** (`docs/42` G4.2) — which is exactly why `docs/55` reports
+> **Π** and not α alone.
 
 ### C3.2 C and P factors
 - Map the 8 hydrological land classes → C values (take Fagundes' table as primary; keep
@@ -425,7 +443,35 @@ engine-grade tests; verify against implementation B on one sub-basin."*
 
 ### C4.3 Search, report, verdict
 
-> ## ⛔ C4.3 IS BLOCKED — do not start this subtask. Marker added 2026-08-12.
+> ## ✅ C4.3 HAS RUN — this marker is the HISTORICAL entry condition. Marker added 2026-08-12; discharged and superseded 2026-08-19 by `docs/55`.
+>
+> ~~## ⛔ C4.3 IS BLOCKED — do not start this subtask. Marker added 2026-08-12.~~
+>
+> **Outcome first, so that nothing below this line is mistaken for a live prohibition.** C4.3 ran on
+> **2026-08-12** against the *adopted* LS field (`ls_formulation = buarque_2015_dg`, `V4_dg` — the
+> engine default was moved there by the C3.1 ACT 2 commit `c3fdb55`), and the run is read out in
+> **`docs/55_c43_verdict.md`**, which is its owner:
+>
+> **VERDICT — `RAILED / EXPLORATORY`. The fit is NOT adopted.** The in-box optimum of `F_report`
+> (median KGE_ln over the CAL 8) sits on the **box floor**: α = **2.0**, β 0.60, `F_report` =
+> **−0.118**. Re-run on estimator (b) (rating-curve flux) it is **+0.139** — the **same sign**, so
+> the outcome is **not** INDETERMINATE. The *unconstrained* optimum is **α ≈ 0.48**, *below* the box
+> floor: the registered signature of **mild upstream over-production — a diagnosis, and not a value
+> to adopt.** The design matrix's condition number is **`inf`**, so only the product **Π** is
+> identifiable and α is never reported alone (`docs/42` G6). `docs/55` §6 lists what is still owed
+> (the `k_hi` deposition re-solve). **Read `docs/55`; do not restate its verdict from here.**
+>
+> ⚠ **`docs/47` has NOT been amended to record an unblock** (checked 2026-08-19: its VERDICT box
+> still reads `C4.3-BLOCKED-UNTIL-LS-LANDS`). Its block was conditioned on a single named event —
+> *"C3.1 lands"* (`docs/47` §6.1 B1) — and that event landed (`docs/37` **A3** = ADOPT-SOURCE, then
+> ACT 1 materialising the field and ACT 2 moving the engine default, `c3fdb55`). Reconciling
+> `docs/47`'s own text is owed to that document's owner; **this file records only the measured fact
+> that the run happened and where its read-out lives.** Nothing here authorises re-running or
+> re-interpreting the fit.
+>
+> **The 2026-08-12 entry reasoning is preserved verbatim below**, unedited — it is the record of why
+> the stage was held and it remains the clearest statement of what the run had to survive. Its
+> *status* claims are historical; its *mechanism* is not.
 >
 > **`docs/47_c4_entry_verdict.md` is the authority on whether C4.3 may start**, and it decides:
 > *"**`C4.3-BLOCKED-UNTIL-LS-LANDS`. C4.3 may not start.**"* (`docs/47`, THE VERDICT box.)
@@ -453,8 +499,9 @@ engine-grade tests; verify against implementation B on one sub-basin."*
 > have moved since it was written, and it is being amended concurrently. **Read `docs/47` §6.1–§6.3
 > before doing anything under this heading.**
 >
-> The subtask text below is preserved as written and describes what C4.3 will do **when it is
-> unblocked**. It is not a permission.
+> The subtask text below is preserved as written and describes what C4.3 ~~will do **when it is
+> unblocked**~~ → **did do, on 2026-08-12** (`docs/55`). It was never a permission, and it is not one
+> now.
 - Same machinery pattern as `calib_v2` (checkpoints, logs watch_calib can parse,
   detached queue if runs are long — they should not be).
 - Report per-period at every usable station: calibration set, validation set, and the
@@ -465,10 +512,14 @@ engine-grade tests; verify against implementation B on one sub-basin."*
 
 **Paste-prompt:** ~~*"Execute stage C4 of docs/31. C4.2's pre-registration must be
 committed before the first search runs. Calibrate upstream of the Momposina only."*~~
-→ **DO NOT PASTE THIS AS WRITTEN (2026-08-12).** C4.2's pre-registration is already committed
+→ ~~**DO NOT PASTE THIS AS WRITTEN (2026-08-12).** C4.2's pre-registration is already committed
 (`docs/45`, frozen 2026-08-11) and **C4.3 may not start** (`docs/47`). A session working here must
-open **`docs/47` first**, and may do only the LS-invariant preparation its §6.3 permits. The
+open **`docs/47` first**, and may do only the LS-invariant preparation its §6.3 permits.~~ The
 "calibrate upstream of the Momposina only" clause is unaffected and still binds whenever C4.3 runs.
+→ **DO NOT PASTE THIS AT ALL (2026-08-19): C4.3 has already run and its verdict is written**
+(`docs/55` — RAILED / EXPLORATORY, not adopted). Re-running the search would need a new
+pre-registration, not this prompt. Both the prompt and the 2026-08-12 prohibition above are kept as
+the record of the entry condition.
 
 ---
 
@@ -497,15 +548,28 @@ open **`docs/47` first**, and may do only the LS-invariant preparation its §6.3
 
 ### C5.4 Write-up
 - ~~`docs/35_enso_contrast_results.md`~~ → **the number 35 is taken** (`35_qpeak_preregistration.md`).
-  **Claim the next free number — 54 as of 2026-08-12** — and check `docs/00_INDEX.md` §3 and
+  ~~**Claim the next free number — 54 as of 2026-08-12**~~ — and check `docs/00_INDEX.md` §3 and
   `docs/agents/` for an in-flight claim before claiming it, as that file's numbering-discipline note
   requires. Plus the figure set; updates to docs/21 and the presentation material (docs/24 chain).
   Every number carries its window and its prediction/description label.
+- **LANDED 2026-08-12 as `docs/56_c5_enso_application.md`** — not 54, which
+  `54_c3_1_closure_and_c4_entry_status.md` took first. `docs/56` is the owner of the C5 read-out.
+  **What it carries:** C5.1 (the contrast run) and C5.2 (prediction vs target, 18/18, median rate
+  ratio 3.05×, β and window sensitivity) plus the mandatory "what this is and is NOT" section.
+  **What it does NOT carry:** the C5.3 spatial-attribution map and the pre-registered factor-swap
+  experiments — those were **not run** (`docs/56` has no such section; `docs/PROGRESS.md` still lists
+  C5.3 unchecked). The figure set and the docs/21 / docs/24 updates are tracked outside this file.
 
 **Paste-prompt:** *"Execute stage C5 of docs/31. Register the factor-swap list (C5.3)
-before running any swap. The deliverable is ~~docs/35~~ → **the next free doc number (54)** plus
-the figure set."* — **target corrected 2026-08-12.** Note C5 depends on C4, and **C4.3 is BLOCKED**
-(`docs/47`).
+before running any swap. The deliverable is ~~docs/35~~ → ~~**the next free doc number (54)**~~ →
+**`docs/56`** plus the figure set."* — **target corrected 2026-08-12, re-corrected 2026-08-19: the
+deliverable landed as `docs/56_c5_enso_application.md`, not 54.**
+~~Note C5 depends on C4, and **C4.3 is BLOCKED** (`docs/47`).~~
+→ **C5 has since been executed; its read-out is `docs/56`.** The paste-prompt above is preserved as
+the original instruction, not as pending work. C5 did depend on C4, and C4.3 ran first (`docs/55`);
+`docs/56` §2 records *why* the contrast survives C4.3's railing — the within-station wet/dry ratio
+is invariant to α and to the LS level, both being static multipliers that cancel. **The one clause
+still unexecuted is C5.3's factor-swap list**, which would need registering before any swap is run.
 
 ---
 
@@ -597,16 +661,32 @@ C1.0 decision (run on 28-station subset) means C1 does NOT wait for B5
 ```
 
 > **⚠ THE GRAPH HAS NO GATE ON IT, and there is one. Added 2026-08-12.** As drawn, `C3 → C4 → C5`
-> reads as an open path. It is not:
+> reads as an open path. It was not, when this note was written:
 >
 > ```
+> RETIRED / superseded 2026-08-19 — shown, not quoted as current
+> (strike-through does not render inside a code fence, so this is the dated form):
+>
 > C0 ──► C3 (OPEN, docs/37) ──► C4.1 ✔ ──► C4.2 ✔ ──► ⛔ C4.3 BLOCKED (docs/47) ──► C5
 >                                                      └─ LS-invariant prep only (docs/47 §6.3)
 > ```
 >
-> **`docs/47` is the authority on whether C4.3 may start**, and it says it may not:
+> **⚠ THE GATE HAS SINCE BEEN PASSED — redrawn 2026-08-19.** The block's named condition (*"C3.1
+> lands"*) landed, C4.3 ran, and C5 ran after it:
+>
+> ```
+> C0 ──► C3 (OPEN, docs/37) ──► C4.1 ✔ ──► C4.2 ✔ ──► C4.3 ✔ RAILED / EXPLORATORY (docs/55)
+>                                                          └─► C5 ✔ CONTRAST REPRODUCED, 18/18 (docs/56)
+> ```
+>
+> C3 is **still OPEN** (`docs/37` A3) — the path ran with it open, which is a stated limitation of
+> the C4/C5 results, not a closure of C3.
+>
+> ~~**`docs/47` is the authority on whether C4.3 may start**, and it says it may not:
 > *"`C4.3-BLOCKED-UNTIL-LS-LANDS`. C4.3 may not start."* C5 depends on C4.3 and therefore
-> inherits the block. **B1 is CLOSED-NEGATIVE** (see the back-annotation above), so the
+> inherits the block.~~ → **Historical.** `docs/47` is the authority on the *entry condition* and
+> its text is unamended; `docs/55` owns the C4.3 outcome and `docs/56` the C5 outcome.
+> **B1 is CLOSED-NEGATIVE** (see the back-annotation above), so the
 > "B1 success re-opens hydrology" branch is spent — the rule it invoked still stands for any
 > *future* forcing change, and there is no v3.
 

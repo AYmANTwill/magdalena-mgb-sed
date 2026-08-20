@@ -645,7 +645,7 @@ What survives and still does useful work:
 | Measured before registration | `Lw` per station (§4.1); power k_min (§4.2); land-class erosion shares (§4.4); unobserved fraction (§4.5); exponent spread (§4.3) — all from read-only reads of `topology.npz`, `_c1_geom.csv`, `urh_*.csv`, the C2 artifacts, and one scratchpad run of `src/mgb_sediment.py` at adopted defaults (248.696 Mt/yr, ledger `exact = True`) |
 | Not evaluable, and why | **above/below the Momposina** — all 18 usable SSC stations lie upstream of the Cauca–Magdalena confluence (`docs/34` §4.2); 801.1 km of channel and 63.9 % of gross erosion lie below the outlet-most station |
 | Sources of every number | `docs/32` §R6 (station classification), `docs/33` §7.3–§7.5 (peak ratios), `docs/34` §3.1/§4.2/§5.1 (observed contrast, nesting, anchors), `docs/35` §5–§6 + §9.2 (proxy, bias, conventions), `docs/37` §2–§5 (the re-run, the residuals, the blinded guard), `docs/23` §13.2 (the embargo) |
-| Amendments | ⚠ **THREE, all dated 2026-08-11 — A-P1, A-P2, A-P3, plus A-P1.1 (the power-table correction P1 requires). See §9.1–§9.6 below. Plus A-P4, dated 2026-08-12 (§9.7): σ_r's reuse as a residual sd retired, the level band and the `k` power restated, `docs/47` B5's `docs/42` half enacted.** This cell read `none` until 2026-08-11 while C4 was already under way; that gap is the audit-trail defect `docs/47` §2.4 (D4) recorded, and §9.1 states plainly that the transcription is late |
+| Amendments | ⚠ **THREE, all dated 2026-08-11 — A-P1, A-P2, A-P3, plus A-P1.1 (the power-table correction P1 requires). See §9.1–§9.6 below. Plus A-P4, dated 2026-08-12 (§9.7): σ_r's reuse as a residual sd retired, the level band and the `k` power restated, `docs/47` B5's `docs/42` half enacted.** This cell read `none` until 2026-08-11 while C4 was already under way; that gap is the audit-trail defect `docs/47` §2.4 (D4) recorded, and §9.1 states plainly that the transcription is late **Plus A-P5, dated 2026-08-19 (§9.8): the `cp_revision` LABEL on §4's and §9's provenance line — "adopted defaults" there names the **prior** revision.** |
 
 **Disclosure, per the fix protocol.** No frozen artifact was modified:
 `sim_calibrated_v2/{h2e_drivers.npz, parameters_H2E.csv, q_gauge_H2E.npz}` were opened
@@ -1147,3 +1147,85 @@ string still readable inside its strike-through:**
   plausibility band was invented, and no materiality bar was created, restated or implied**
   (`docs/52`).
 - **The `docs/23` §13.2 yield embargo is in force.** No t/km²/yr appears in this amendment.
+
+---
+
+## 9.8 — AMENDMENT A-P5 · 2026-08-19 · **"at adopted defaults" in §4 and §9 names the PRIOR `cp_revision`, not the adopted one**
+
+**Written 2026-08-19 by the corpus coherence sweep.** **This document is FROZEN; §1–§8 are not
+edited and no threshold in §5 or §6 is touched.** This entry is written in the §9 slot the document
+reserved for exactly this ("*Amendments go in §9, dated, with a reason*", §0). It corrects a
+**label**, not a measurement, and it introduces **no number of its own** — every figure below is
+quoted from `docs/37` or read from `src/mgb_sediment.py`.
+
+### 9.8.1 — The reason
+
+§4's provenance line and the §9 registration card's **"Measured before registration"** row both
+attribute their inputs to *"one read-only run of `src/mgb_sediment.py` **at adopted defaults**
+(basin total **248.696 Mt/yr**, mass ledger `exact = True`)"*.
+
+**That phrase was true of the engine on 2026-08-11 and is not true of the engine now.** Read on
+disk 2026-08-19: `src/mgb_sediment.py`:708 — `DEFAULT_CP_REVISION = "cited_central_2026_08_11"`,
+and `load_geometry(cp_revision=DEFAULT_CP_REVISION)` at `:923`. At that default the basin total is
+**299.5387088405831 Mt/yr** (`docs/37` A1.3 and its table at `docs/37`:518). The level printed in
+§4 — **248.696 Mt/yr**, and its `docs/37` §2 sibling **248.730 / 248.7298 Mt/yr**, which §4's own
+parenthesis already explains as a days-per-year divisor difference — is the
+**`cp_revision='prior_2026_08_11'`** level (`docs/37`:519, :538).
+
+**So the words "at adopted defaults" in §4 and §9 now point at the *prior* revision.** Left
+unlabelled, they invite a reader to quote 248.696 Mt/yr as the current adopted basin level. It is
+not.
+
+### 9.8.2 — What is registered here
+
+> **READ §4's and §9's provenance line as: `cp_revision='prior_2026_08_11'`,
+> `volume_convention='williams_m3'`, `k_unit_system='us_customary'`.**
+>
+> **The adopted level is 299.5387088405831 Mt/yr at `cp_revision='cited_central_2026_08_11'`**
+> (`docs/37` A1.3). **248.696 Mt/yr is NOT retired and NOT struck** — it is the level the §4
+> measurements were actually taken at, and a measurement must keep its own provenance. What changes
+> is the **label on it**, and this amendment supplies the label the frozen body cannot.
+>
+> **The house rule, restated because this defect is what it exists to prevent:** *never quote a
+> load without its **convention** and its **`cp_revision`***. Both must travel (`docs/37` §prohibition 6).
+
+### 9.8.3 — What this amendment does NOT do
+
+- **It does not recompute anything at the adopted revision.** That recomputation was already owed
+  before this entry and is **still owed**: **F8** (§9.7.8) — *"§4.1's `Lw` table and land-class
+  shares do not reproduce at the adopted `cp_revision` … **OWED to this document's owner:** one
+  recomputation at the adopted `cp_revision`"* — with the measured non-reproduction in **§9.7.5
+  row 21** and `docs/48` §2.5 / its open item **P3**. **A-P5 discharges the LABELLING half of F8
+  and leaves the ARITHMETIC half open.** F8 stays open.
+- **It does not edit §4 or §9's body text.** The freeze forbids it, so the correction lives here and
+  is reachable from the §9 card's Amendments row. *(A reader who lands on `:171` or `:645` without
+  passing §9 will still read the unlabelled phrase — recorded as a residual exposure rather than
+  fixed by a body edit this amendment is not authorised to make.)*
+- **It does not touch F7's α band** (`6.83 – 8.73` at `:15`, `:299`, `:472`), which is the *same
+  family of defect* — a prior-`cp_revision` number printed unlabelled — and is separately **OWED**
+  (§9.7.8 F7, `docs/47` §2.5 C1, `docs/47` **O12**). A-P5 will not smuggle that enactment into its
+  own slot, for the reason A-P4 gave when it declined the same thing.
+- **It introduces no band, no threshold and no materiality bar**, and reconstructs none (`docs/52`).
+- **The `docs/23` §13.2 yield embargo is in force.** No gauge-referenced t/km²/yr appears here.
+
+### 9.8.4 — Status pointer (changes nothing registered)
+
+**The guard set has since been exercised.** Stage **C4.3 has run**: `docs/55_c43_verdict.md`
+(2026-08-12) is its deliverable and owns its verdict — **RAILED / EXPLORATORY, not adopted**, the
+in-box optimum on the box floor α = 2.0, median `KGE_ln` −0.118 on estimator (a) and +0.139 on
+estimator (b), unconstrained optimum α ≈ 0.48 below the floor, design-matrix condition number
+**`inf`**. `docs/55` reports in this document's **G6** form — α is the handle on Π and is never
+reported alone. Recorded here **only** so a reader of a frozen pre-registration knows the stage it
+gates is no longer pending. **No guard, threshold, station set, estimator or parameter count is
+altered by this pointer, and no C4.3 number should be quoted from this document — quote `docs/55`.**
+
+### 9.8.5 — Disclosure
+
+- **Files written by this pass:** this §9.8 and the pointer appended to the §9 card's **Amendments**
+  row. **Nothing else in this document.** `docs/33`, `docs/35`, `docs/37`, `docs/45`, `docs/46`,
+  `docs/48`, `docs/51`–`docs/58` were **read and not edited**.
+- **No threshold in §5 or §6 was altered. No §1–§8 text was edited or deleted. No number was
+  recomputed, no fit or simulation was run, no notebook was executed, no engine default was moved,
+  no frozen artifact was opened, and no git command was run. Nothing is backdated.**
+- **Two read-only measurements only:** `DEFAULT_CP_REVISION` and the `load_geometry()` signature in
+  `src/mgb_sediment.py`. Every load figure is quoted from `docs/37` with its section named.

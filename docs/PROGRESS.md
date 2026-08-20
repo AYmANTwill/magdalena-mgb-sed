@@ -11,10 +11,25 @@
 > OPEN** ([docs/37](37_c3_closure.md), four amendments), and **C4.3 — the sediment calibration search
 > — is formally BLOCKED**: [docs/47](47_c4_entry_verdict.md), *"`C4.3-BLOCKED-UNTIL-LS-LANDS`.
 > **C4.3 may not start.**"* — a block upheld by `docs/46` §6.4, `docs/51` §4, `docs/53` and
-> `docs/37` A3.4. **The document index below also stops at 35; the numbered docs now run to 53.**
+> `docs/37` A3.4. **The document index below also stops at 35;** ~~the numbered docs now run to 53~~
+> → **they now run to 59** (44 was never assigned) — widened again 2026-08-19.
 > Per RULE 0 the tracker owns status, so the checklist is **not** restated here item by item — but
 > the *fact* claims and the two open registers have been corrected in place below. Read
 > `progress_map.html`.
+>
+> ⚠ **WIDENED AGAIN 2026-08-19 — the 2026-08-12 widening above is itself two stages behind.**
+> The block it quotes was **discharged**. LS landed (`ls_formulation = buarque_2015_dg`,
+> f_LS = 0.25146 erosion-weighted / 0.2446790094097074 area-weighted), **C4.3 RAN**
+> ([docs/55](55_c43_verdict.md) — verdict **RAILED / EXPLORATORY, NOT adopted**), and
+> **C5 is COMPLETE** ([docs/56](56_c5_enso_application.md) — the model **reproduces** the observed
+> ENSO contrast, 18/18 stations, median rate ratio **3.05×**). **Phase C is COMPLETE.** So
+> `C4.3-BLOCKED-UNTIL-LS-LANDS` above is **history, not the current gate**; it is shown, not quoted
+> as current. Later additions the tree below does not know about: **B5**
+> ([docs/57](57_b5_gauge_expansion.md) — the flux gauge set cannot grow past ~18), the **rainfall
+> ceiling bound** ([docs/58](58_rainfall_ceiling_bound.md) — the last lever is bounded at
+> ≤ +0.006 r, structural, no v3 forcing), and the **cross-implementation comparison**
+> ([docs/59](59_cross_implementation_comparison.md) — an independent *implementation*, **not**
+> independent data; every R2 number is pinned to commit d055561, 2026-08-03).
 
 **What this is.** A single, maintained map of every phase, stage, subtask, document, and
 key artifact in `magdalena-mgb-sed`, with a status marker on each. It is the *index of
@@ -59,8 +74,12 @@ its nine findings (F1–F9) were just corrected in place. Yields (t/km²/yr) rem
 ## Phase C — sediment 🟡 ACTIVE (plan docs/30 + docs/31)
 
 > **Live status is the top banner + `progress_map.html`.** The per-subtask boxes below are the
-> ORIGINAL plan; the stage headers are kept current. As of 2026-08-12: **C0/C1/C2 ✅, C2b ✅ ran,
-> C3.1 enacted (C3 OPEN), C4.3 🔴 BLOCKED — sediment NOT calibrated.**
+> ORIGINAL plan; the stage headers are kept current. ~~As of 2026-08-12: **C0/C1/C2 ✅, C2b ✅ ran,
+> C3.1 enacted (C3 OPEN), C4.3 🔴 BLOCKED — sediment NOT calibrated.**~~
+> **Updated 2026-08-19, at the C5 landing: C0/C1/C2 ✅ · C2b ✅ ran · C3.1 enacted (C3 still OPEN,
+> [docs/37](37_c3_closure.md) A3) · C4.3 ✅ RAN — RAILED / EXPLORATORY, **not adopted**
+> ([docs/55](55_c43_verdict.md)) · C5 ✅ COMPLETE ([docs/56](56_c5_enso_application.md)).
+> Phase C is COMPLETE.** The 2026-08-12 line is left visible above as the state on that date.
 
 ### C0 — freeze & report H2E ✅ **COMPLETE** (docs/26 addendum; `h2e_drivers.npz` 521 MB)
 - [ ] ⬜ C0.1 extract adopted parameter set → `parameters_H2E.csv`
@@ -87,7 +106,7 @@ its nine findings (F1–F9) were just corrected in place. Yields (t/km²/yr) rem
 - [ ] ⬜ C2.4 literature anchor — reconcile vs docs/06 (~145–169 Mt/yr), fetch Restrepo figure
 - [ ] ⬜ C2.5 commit
 
-### C3 — MUSLE hillslope erosion 🟡 **BUILT & RUN — C3 OPEN** (docs/37 A1–A3) · C3.1 LS *formulation* ENACTED (A3: ADOPT-SOURCE `buarque_2015_dg`); basin erosion 299.5387 Mt/yr; C3.5 still 🔴 (musle.py absent)
+### C3 — MUSLE hillslope erosion 🟡 **BUILT & RUN — C3 OPEN** (docs/37 A1–A3) · C3.1 LS *formulation* ENACTED (A3: ADOPT-SOURCE `buarque_2015_dg`); basin **gross hillslope** erosion **299.5387 Mt/yr** @ `volume_convention='williams_m3'` / `k_unit_system='us_customary'` / `cp_revision='cited_central_2026_08_11'` (α, β unfitted — a lower bound; the prior revision `prior_2026_08_11` gave 248.7298 — shown, not quoted as current); C3.5 still 🔴 (musle.py absent)
 - [ ] ⬜ C3.1 LS2D factor from conditioned DEM → `minibacia_ls2d.csv`
 - [ ] ⬜ C3.2 C & P factors from 8 land classes → `urh_cp_factors.csv`
 - [ ] ⬜ C3.3 qpeak proxy — **pre-register** choice + state α<1 bias (slope from nb07 DEM, not shipped)
@@ -95,16 +114,20 @@ its nine findings (F1–F9) were just corrected in place. Yields (t/km²/yr) rem
 - [ ] 🔴 C3.5 cross-check vs impl-B `musle.py` — **file not in repo; acquire first** (F5)
 - [ ] ⬜ C3.6 first uncalibrated basin run — order-of-magnitude gate only
 
-### C4 — channel transport + sediment calibration 🔴 **C4.3 BLOCKED — sediment NOT calibrated** (docs/47 `C4.3-BLOCKED-UNTIL-LS-LANDS`; four blockers in docs/47 §9.2, the LS *level* is the binding one)
+### C4 — channel transport + sediment calibration ✅ **C4.3 RAN — RAILED / EXPLORATORY, NOT adopted** ([docs/55](55_c43_verdict.md): in-box optimum on the box floor at α = 2.0, median KGE_ln −0.118 estimator (a) / +0.139 estimator (b) — same sign, so **not** indeterminate; the unconstrained optimum is α ≈ 0.48, *below* the floor, which is the registered signature of mild upstream over-production — a **diagnosis, not a value to adopt**; design-matrix condition number `inf`, so only the product Π is identifiable)
+> ~~🔴 **C4.3 BLOCKED — sediment NOT calibrated** (docs/47 `C4.3-BLOCKED-UNTIL-LS-LANDS`; four blockers in docs/47 §9.2, the LS *level* is the binding one)~~ — RETIRED / superseded 2026-08-19: the block was discharged when LS landed (`buarque_2015_dg`, f_LS 0.25146). Shown, not quoted as current.
+
 - [ ] ⬜ C4.1 transport + Momposina sink limitation stated in docstring
 - [ ] ⬜ C4.2 **pre-register** cells (α, β, settling); CAL 2012–14; ENSO out-of-sample → `docs/34`
 - [ ] ⬜ C4.3 search, report, verdict (calibrate upstream of Mompós only)
 
-### C5 — the ENSO experiment ⬜ — **the deliverable, 1–2 sessions**
+### C5 — the ENSO experiment ✅ **COMPLETE — the contrast is REPRODUCED** ([docs/56](56_c5_enso_application.md): 18/18 stations, median rate ratio **3.05×**, range 1.62–4.85, robust across β {0.45, 0.56, 0.65} and both window pairs; 3.05× sits at the **lower edge** of the observed ~3–5× primary band and matches estimator (b))
+> ~~⬜ — **the deliverable, 1–2 sessions**~~ — superseded 2026-08-19; it was delivered.
+
 - [ ] ⬜ C5.1 contrast run (both ENSO windows + sensitivity)
 - [ ] ⬜ C5.2 prediction vs C2 target (label out-of-sample; propagate El Niño discharge bias)
 - [ ] ⬜ C5.3 spatial attribution + **pre-registered factor-swap** experiments
-- [ ] ⬜ C5.4 write-up → `docs/35` + figure set
+- [ ] ⬜ C5.4 write-up → ~~`docs/35`~~ → **[`docs/56`](56_c5_enso_application.md)** + figure set (corrected 2026-08-19: `docs/35` is the q_peak pre-registration, not the C5 write-up)
 
 ## Background track 🟡 (bounded, never gating — docs/30 §5, docs/31)
 

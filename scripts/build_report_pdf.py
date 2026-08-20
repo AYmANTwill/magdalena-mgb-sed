@@ -17,8 +17,9 @@ from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER
 from reportlab.platypus import (SimpleDocTemplate, Paragraph, Spacer, PageBreak, Image,
                                 Table, TableStyle, HRFlowable)
 
-OUT = Path("/sessions/epic-sleepy-mendel/mnt/magdalena-mgb-sed/MGB-SED_complete_report.pdf")
-EQD = Path("/sessions/epic-sleepy-mendel/mnt/magdalena-mgb-sed/_eq"); EQD.mkdir(exist_ok=True)
+REPO = Path(__file__).resolve().parent.parent
+OUT = REPO / "MGB-SED_complete_report.pdf"
+EQD = REPO / "_eq"; EQD.mkdir(exist_ok=True)   # regenerable equation-image cache
 
 NAVY = HexColor("#1a3a5c"); STEEL = HexColor("#2e6b8a"); RUST = HexColor("#a8481f")
 LIGHT = HexColor("#eef3f7"); GREY = HexColor("#555555")
@@ -54,7 +55,7 @@ def eq(latex, name, fs=17):
     return Image(str(p), width=tw, height=tw * h / w, hAlign="CENTER")
 
 
-FIGDIR = Path("/sessions/epic-sleepy-mendel/mnt/magdalena-mgb-sed/figures/report")
+FIGDIR = REPO / "figures" / "report"
 
 
 def figimg(name, w=15.6 * cm):
@@ -246,7 +247,12 @@ S.append(Paragraph(
     "stronger on steep, high terrain (ratio ≈ 0.235) than on gentle lowlands (≈ 0.30). Because "
     "erosion concentrates exactly where the reduction is largest (68% of erosion occurs above 1000 m), "
     "the correction genuinely changes the spatial pattern, not just the total. The basin-total gross "
-    "hillslope erosion at the reference parameters is 299.54 million tonnes per year.", BODY))
+    "hillslope erosion at the reference parameters is 299.5387 million tonnes per year — quoted, as "
+    "this project's rule requires, with the conventions it depends on: volume convention "
+    "<b>williams_m3</b>, erodibility units <b>us_customary</b>, cover revision "
+    "<b>cp_revision = cited_central_2026_08_11</b>. At the prior cover revision the same run reads "
+    "248.7298 Mt/yr. It is an unfitted gross <i>hillslope</i> erosion rate, and therefore a lower "
+    "bound; it is never restated as a per-area yield.", BODY))
 S.append(simple(
     "The 'slope' ingredient of the erosion formula was about four times too strong. We fixed it to match "
     "the published method, and the fix cuts hardest exactly on the steep ground that produces most of the "
@@ -388,7 +394,8 @@ S.append(Paragraph("Fig 1. Modelled wet/dry sediment ratio (bars) at all 18 stat
     "against whichever estimator flatters it. Every bar exceeds 1.", CAP))
 S.append(Paragraph(
     "Every station, in the model and in the data, shows more sediment in the wet year; the model's median "
-    "(3.05×) sits squarely inside the observed 3–5× and matches the smoother rating-based estimator (b) "
+    "(3.05×) sits at the lower edge of the observed 3–5× band and matches the smoother rating-based "
+    "estimator (b) "
     "closely. The direction never reverses across three values of β and two window definitions. This is "
     "an out-of-sample test: the ENSO years were never used in the calibration (with the mild edge caveat "
     "of §11).", BODY))
@@ -429,7 +436,8 @@ S.append(Paragraph(
 S.append(Paragraph(
     "The conclusion rests on the convergence of three independent lines — observed flux contrast "
     "(22/22), observed concentration contrast (weaker, same direction), and modelled contrast (18/18) — "
-    "which is more robust than any single larger dataset would be. Absolute sediment yields (tonnes per "
+    "which is more robust than any single larger dataset would be. Area-normalised sediment yields "
+    "(tonnes per "
     "km² per year) are deliberately not reported, because the catchment areas are unreliable and are "
     "under embargo; all results are stated as ratios or as basin-internal fluxes.", BODY))
 S.append(simple(

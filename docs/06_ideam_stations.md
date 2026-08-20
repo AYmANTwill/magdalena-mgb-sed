@@ -1,5 +1,7 @@
 # IDEAM sediment & discharge stations — Magdalena (Q1 findings)
 
+> **STATUS — HISTORICAL (archived in place, 2026-08-19).** This is the first-quarter literature/portal scan of the IDEAM network (2026-07-27), kept because it records *how the station set was first found*. It is **not** a statement of what the network can support: that was later measured. For sediment-station quality and usability read **`docs/19_sediment_qc_audit.md`** and **`docs/32_ssc_qc_audit.md` §R6** (79/79 stations classified, 18 usable, one Magdalena-trunk station `21237020`). See `docs/archive/README.md`.
+
 Findings from a literature scan on 2026-07-27. Data are downloaded from the IDEAM **DHIME** portal.
 
 ## Key stations

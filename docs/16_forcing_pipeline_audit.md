@@ -65,9 +65,20 @@ started. Phase C (sediment) remains blocked on mainstem SSC data.~~
 >   ARRANCAPLUMAS (Magdalena — **the only Magdalena-trunk SSC station in the entire network**)"*,
 >   which §R6 calls *"the quantitative form of 'Phase C is blocked on mainstem SSC'."*
 >
-> For where Phase C stands **today** — including that stage **C4.3, the sediment calibration
+> ~~For where Phase C stands **today** — including that stage **C4.3, the sediment calibration
 > search, is formally BLOCKED** ([docs/47](47_c4_entry_verdict.md):
-> *"`C4.3-BLOCKED-UNTIL-LS-LANDS`. **C4.3 may not start.**"*) — read `progress_map.html` and
+> *"`C4.3-BLOCKED-UNTIL-LS-LANDS`. **C4.3 may not start.**"*)~~ — read `progress_map.html` and
+> [docs/00_INDEX.md](00_INDEX.md), not this document.
+>
+> **⚠ THAT FORWARD-POINTER IS ITSELF SUPERSEDED — REFRESHED 2026-08-19.** It was written
+> 2026-08-12 and was true then; the struck text is kept, not quoted as current. **Where Phase C
+> stands today: PHASE C IS COMPLETE.** **C4.3 RAN** — [docs/55](55_c43_verdict.md), verdict
+> **RAILED / EXPLORATORY, NOT adopted** — and **C5 is COMPLETE** —
+> [docs/56](56_c5_enso_application.md): the model **reproduces** the observed ENSO contrast,
+> **18/18** stations, median rate ratio **3.05×**. The 2026-08-11
+> `C4.3-BLOCKED-UNTIL-LS-LANDS` verdict ([docs/47](47_c4_entry_verdict.md)) was the **entry
+> condition** and has been **discharged** (the LS act landed: `ls_formulation =
+> buarque_2015_dg`). Live status is still `progress_map.html` and
 > [docs/00_INDEX.md](00_INDEX.md), not this document.
 
 ---
@@ -419,6 +430,9 @@ Recorded because several were caught only by diagnostics, not by the sanity chec
 >    volume gate exists inside the merge code."* **No v3 forcing exists.**
 > 4. **Premise superseded** → Phase C is **ACTIVE**; [docs/30](30_phase_c_plan.md) header: *"It
 >    supersedes the 'Phase C blocked' line in older docs."*
+>    **(Refreshed 2026-08-19: "ACTIVE" was the state at this read-out's date. Phase C is now
+>    COMPLETE — C4.3 ran and RAILED, [docs/55](55_c43_verdict.md); C5 is complete,
+>    [docs/56](56_c5_enso_application.md). See the §1 refresh.)**
 
 1. **Discharge dataset QC** — apply the §4.1 methodology (neighbour-relative anomaly detection, not
    just value screening).

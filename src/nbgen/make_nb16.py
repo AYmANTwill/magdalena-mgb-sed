@@ -47,9 +47,19 @@ md(r"""> ### STATUS - annotated 2026-08-12 by agent `nb-banner-1217`. Nothing be
 > published figure, so the two are reported side by side rather than smoothed. **No result
 > moves**: direction, range, every station ratio and every interval reproduce.
 >
-> **Where things have moved since, downstream of this page.** §10 hands forward to C5, and that
-> hand-off has **not** been consumed: **C3 is still OPEN** (`docs/37` **Amendment A1**,
-> 2026-08-11) and **C4.3 is BLOCKED until the LS level lands** (`docs/47`).""")
+> **Where things have moved since, downstream of this page** - updated 2026-08-19. The §10
+> hand-off **has now been consumed, and the model reproduced this target**: stage C5 (`docs/56`,
+> 2026-08-12) reports La Nina > El Nino at **18 of 18** modelled stations, median modelled rate
+> ratio **3.05x** (range 1.62 - 4.85), robust across beta and across both window pairs, and judged
+> against estimator **(b)** as the named reference. **C3 stays OPEN** (`docs/37` Amendment A3,
+> 2026-08-12). **C4.3 is RAILED / EXPLORATORY and NOT adopted** (`docs/55`) - the sediment *level*
+> never settled, but `docs/56` section 2 shows the within-station wet:dry ratio is invariant to
+> alpha and to the LS level, so the C4.3 railing does not touch the result on this page.
+>
+> *RETIRED / superseded - shown, not quoted as current (the 2026-08-12 state of this banner):*
+> ~~"that hand-off has **not** been consumed ... **C4.3 is BLOCKED until the LS level lands**
+> (`docs/47`)"~~ - the adopted LS field has since landed (`ls_formulation = buarque_2015_dg`,
+> f_LS 0.25146 erosion-weighted) and C4.3 then ran to the `docs/55` verdict.""")
 
 # ============================================================ title
 md(r"""# Notebook 16 - the observed ENSO sediment contrast (stage C2)
@@ -2534,8 +2544,12 @@ md(r"""### 9.7 - What a reader must not conclude from this notebook
    separates the ENSO phase from whatever else was different about 2011 and 2015-16 - land use,
    reservoir operation, a single large storm. The unanimity across 7 stations and 24 comparisons argues
    for a common cause; it does not identify it.
-7. **Not a model result, and not yet a model test.** Everything in section 10 about what the model
-   should reproduce is a **prediction**, clearly labelled as such, about work not yet done.""")
+7. **Not a model result.** Nothing on this page is simulated: every number comes from gauge records.
+   Section 10's statements about what a model *should* reproduce were written as **predictions**
+   about work not yet done. That work has since been done and lives elsewhere - stage C5 (`docs/56`,
+   2026-08-12) found **18 of 18** modelled stations wet > dry with a median modelled rate ratio of
+   **3.05x** - so read this notebook as the model-free half of that comparison, and never as
+   evidence for it.""")
 
 # ============================================================ 10
 md(r"""## 10 - What C2 hands to the next stage, and how it must be used
@@ -2677,6 +2691,10 @@ the 1:1 line.
 a C5 comparison needs no new mapping. The caveats are specific and small - one station is not
 calibration-safe and only four are ENSO-pair-ok, so a strict comparison rests on four stations, and a
 four-station comparison of a quantity with a 5.7-fold between-gauge spread (section 5) will be noisy.
+*(Forward note, 2026-08-19: stage C5 did not take that strict route - `docs/56` section 3 compares
+the model against all seven ratio-carrying stations tabulated above, inside a modelled fleet of 18,
+and reports 18 of 18 wet > dry with a median modelled rate ratio of 3.05x. The four-station caution
+stands as written for anyone who wants the ENSO-pair-ok subset alone.)*
 That the areas agree here is worth stating precisely because they do **not** agree everywhere: the
 `docs/23` finding is about the fleet, and this figure documents that these particular seven are not
 affected - which still does not license an area-normalised yield, because the embargo rests on the
@@ -2744,19 +2762,23 @@ md(r"""**The result, at the precision the data supports.**
 > **No mainstem Magdalena contrast exists in these observations**, because the only trunk station with
 > usable SSC loses its discharge record on 2014-12-31.
 
-Everything about what a model should or will reproduce (section 10) is a **prediction** about work not
-yet done. What this notebook establishes is only what the gauges say, and where they are silent.""")
+Section 10's statements about what a model should or will reproduce were **predictions** about work
+not yet done when this page was written. Stage C5 has since done that work (`docs/56`, 2026-08-12:
+**18 of 18** modelled stations wet > dry, median modelled rate ratio **3.05x**, range 1.62 - 4.85,
+with estimator (b) named as the reference against which the model is judged). What *this* notebook
+establishes is unchanged by it: only what the gauges say, and where they are silent.""")
 
 
-def cell(kind, src):
+def cell(kind, src, idx=0):
     c = {"cell_type": kind, "metadata": {},
          "source": src.strip("\n").splitlines(keepends=True)}
+    c["id"] = "c%03d" % idx        # nbformat 5 requires a cell id; deterministic
     if kind == "code":
         c.update({"execution_count": None, "outputs": []})
     return c
 
 
-nb = {"cells": [cell(k, s) for k, s in C],
+nb = {"cells": [cell(k, s, i) for i, (k, s) in enumerate(C)],
       "metadata": {"kernelspec": {"display_name": "Python 3", "language": "python",
                                   "name": "python3"},
                    "language_info": {"name": "python", "version": "3.10"}},

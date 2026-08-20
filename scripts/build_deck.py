@@ -160,7 +160,8 @@ note(s, "This deck stops at our attempts to calibrate the hydrological model: wh
 s, y = slide(2, "The question — and why these two years",
              "The contrast years come from our own data, not from the literature")
 bullets(s, y, [
-    "Magdalena–Cauca: 257,097 km², among the world's highest specific sediment yields",
+    "Magdalena–Cauca: 257,097 km² — among the world's highest specific sediment yields "
+    "(Restrepo 2015: ~690 t km⁻² yr⁻¹ at Calamar; published, not ours)",
     "La Niña 2011 = +1.7σ wet   ·   El Niño 2015–16 = −1σ dry",
     "Objective: reproduce and EXPLAIN the flux difference, with spatial attribution",
 ], size=14)
@@ -177,16 +178,16 @@ s, y = slide(3, "Where we are, honestly")
 table(s, y, [
     ["Phase", "Status"],
     ["A — model inputs", "Complete"],
-    ["B — hydrology", "Calibrated. Three attempts. NOT yet closed — this talk"],
-    ["C — sediment", "Blocked on mainstem SSC data quality"],
+    ["B — hydrology", "CLOSED on H2E — at the r ≈ 0.57 rainfall-input ceiling"],
+    ["C — sediment", "COMPLETE — calibration run; ENSO contrast reproduced (18/18)"],
 ], [2.9, 8.0], size=14)
 bullets(s, Inches(2.7), [
     "MUSLE is driven by RUNOFF, not rainfall — the discharge model is the load-bearing component",
     "Calibrating sediment on an uncalibrated hydrology would fit erosion parameters to "
     "water-balance error",
 ], size=14)
-pic(s, "13_c043_9.png", Inches(3.7), height=Inches(3.2),
-    cap="Simulated mean specific runoff (mm/yr) — the field the sediment module will consume")
+pic(s, "13_c044_9.png", Inches(3.7), height=Inches(3.2),
+    cap="Simulated mean specific runoff (mm/yr) — the field the sediment module consumes")
 note(s, "Say 'not yet closed' out loud. Being explicit buys credibility for what follows.")
 
 # ============================================================== 4  pipeline
@@ -200,7 +201,7 @@ for i, (nm, cap) in enumerate([("07_c005_1.png", "1 — conditioned DEM"),
         left=int(M + i * (BW / 4)), cap=cap)
 pic(s, "08_c010_3.png", Inches(4.42), height=Inches(2.5), left=M,
     cap="URH composition = soil texture × land cover")
-pic(s, "12_c011_2.png", Inches(4.42), height=Inches(2.5), left=int(M + BW * 0.52),
+pic(s, "12_c012_2.png", Inches(4.42), height=Inches(2.5), left=int(M + BW * 0.52),
     cap="Upstream area (log) — outlet 257,097 km²")
 note(s, "8,672 minibacias, 24 URH types = 3 IGAC soil families x 8 hydrological land classes.")
 
@@ -217,7 +218,7 @@ table(s, Inches(2.18), [
     ["Area-monotonicity violating edges", "0"],
     ["URH fractions row-sum error", "8.9 × 10⁻¹⁶"],
 ], [5.6, 5.0], size=12.5)
-pic(s, "13_c011_2.png", Inches(4.12), height=Inches(2.85),
+pic(s, "13_c012_2.png", Inches(4.12), height=Inches(2.85),
     cap="Soil water storage Wm (mm) from IGAC field survey — a measured 19× spatial range, not a constant")
 note(s, "The verification table is the point: geometry is checked two independent ways, "
         "not asserted.")
@@ -234,7 +235,7 @@ table(s, y, [
 callout(s, Inches(3.05), "They agree to ~0.02 KGE — independent codebases, independent forcing "
                          "pipelines, different routing. A cross-validation neither arm could "
                          "produce alone.", GOOD, 14)
-pic(s, "14_c018_1.png", Inches(3.82), height=Inches(3.0),
+pic(s, "14_c019_1.png", Inches(3.82), height=Inches(3.0),
     cap="DDS convergence, 2 configurations × 2 seeds, run as concurrent processes (implementation A)")
 note(s, "A buys search, B buys physics. A 774-run search on B would take 13 days; A does 4,000 "
         "evaluations overnight. Speak about both as OUR work.")
@@ -249,7 +250,7 @@ bullets(s, y, [
     (1, "the ENSO contrast is therefore a prediction, not a fit"),
     (1, "cal→val degradation −0.159, only 0.011 worse than an unfitted model"),
 ], size=14)
-pic(s, "13_c022_5.png", Inches(3.15), height=Inches(3.35),
+pic(s, "13_c023_5.png", Inches(3.15), height=Inches(3.35),
     cap="Warm-up: three mutually incompatible initial states converge to within 0.179 % of mean flow")
 note(s, "Lead with this. Without it the deck is curve-fitting; with it, every later number is "
         "an out-of-sample result.")
@@ -278,7 +279,8 @@ bullets(s, Inches(5.62), [
     "we report the ratio alongside the skill",
 ], size=13.5)
 note(s, "THE argument of the deck. El Nino skill over climatology goes -0.026 -> +0.026 between "
-        "attempts 1 and 2. Present the KGE drop as a deliberate choice.")
+        "attempts 1 and 2 - but say where it ENDED: -0.0005 in the adopted H2E (docs/26 addendum "
+        "A.5). Present the KGE drop as a deliberate choice, and the dry phase as AT climatology.")
 
 # ============================================================== 10 skill over clim
 s, y = slide(10, "Scoring against a benchmark, not raw NSE")
@@ -288,7 +290,9 @@ bullets(s, Inches(5.0), [
     "that window has the record's highest observed variability (CV 0.799)",
     "So NSE is NOT comparable across windows — about a third of the apparent dry-phase failure "
     "was the metric, not the model",
-    "The defensible statement: +0.126 (La Niña) vs +0.026 (El Niño) KGE over climatology",
+    "In the ADOPTED fit (H2E): +0.106 (La Niña) vs −0.0005 (El Niño) KGE over climatology — the "
+    "dry phase sits AT climatology, not above it. Across attempts 2→3→4 the El Niño figure ran "
+    "+0.026 → +0.006 → −0.0005: it got HONESTER, not better",
 ], size=13.5)
 note(s, "This is how we avoided over-diagnosing the dry phase. The asymmetry is real, but it is "
         "not 'worse than the mean'.")
@@ -297,7 +301,7 @@ note(s, "This is how we avoided over-diagnosing the dry phase. The asymmetry is 
 s, y = slide(11, "Did repairing the rainfall help? — a controlled test",
              "Attempt 3 changes ONLY the forcing; matched gauges, matched window")
 pic(s, "gen_h2_h1.png", y, height=Inches(3.3), left=M)
-pic(s, "14_c031_3.png", Inches(1.5), height=Inches(3.3), left=int(M + BW * 0.53),
+pic(s, "14_c032_3.png", Inches(1.5), height=Inches(3.3), left=int(M + BW * 0.53),
     cap="Per-gauge comparison: H2 above the line")
 callout(s, Inches(5.0), "The repair fixed VOLUME and did not touch CORRELATION. We wrote that "
                          "prediction down before running it; r came back +0.003.", ACCENT, 14)
@@ -311,7 +315,7 @@ note(s, "PBIAS 8.85 -> 4.41 %, r +0.0033, KGE -0.022, gauges with KGE>0 +2. The 
 # ============================================================== 12 hydrographs
 s, y = slide(12, "What the calibrated model actually produces",
              "Observed vs simulated daily discharge, gauges spanning three orders of magnitude in area")
-pic(s, "13_c037_7.png", y, height=Inches(4.35))
+pic(s, "13_c038_7.png", y, height=Inches(4.35))
 bullets(s, Inches(6.0), [
     "Largest gauges have the BEST correlation (r 0.91) — they integrate enough area that "
     "rainfall noise averages out; their deficit is in amplitude, not timing",
@@ -327,9 +331,9 @@ bullets(s, y, [
     "anything down: 4.4 mm/day at >90 % reporting vs 11.7 mm/day below 50 %",
     "Our detector uses only the NEIGHBOURS' records, so it has a calibrated null",
 ], size=14)
-pic(s, "10_c003_1.png", Inches(2.5), height=Inches(2.6), left=M,
+pic(s, "10_c004_1.png", Inches(2.5), height=Inches(2.6), left=M,
     cap="The diagnostic that exposed it")
-pic(s, "11_c003_1.png", Inches(2.5), height=Inches(2.6), left=int(M + BW * 0.52),
+pic(s, "11_c004_1.png", Inches(2.5), height=Inches(2.6), left=int(M + BW * 0.52),
     cap="Reporting availability (black = station reporting)")
 table(s, Inches(5.35), [
     ["Selectivity statistic", "Before", "After repair"],
@@ -356,7 +360,7 @@ bullets(s, y, [
     "Two gauges 5 cm apart were NOT duplicates (r = 0.756 over 1,470 shared days) — a "
     "distance-based merge would have destroyed a real record",
 ], size=13.5)
-pic(s, "12_c008_1.png", Inches(4.95), height=Inches(1.8), left=M,
+pic(s, "12_c009_1.png", Inches(4.95), height=Inches(1.8), left=M,
     cap="Join integrity across six tables (0 everywhere = clean)")
 callout(s, Inches(6.85), "Standing guarantees:  mass-balance residual 1.67 × 10⁻¹⁷   ·   two "
                           "independent routing back-ends agree to max |ΔQ| = 0", GOOD, 13,
@@ -367,7 +371,7 @@ note(s, "Without the truncation assertion we would have calibrated on 1,309 of 4
 # ============================================================== 15 the ceiling
 s, y = slide(15, "The model is at its input's ceiling",
              "The scientific contribution")
-pic(s, "11_c014_6.png", y, height=Inches(3.25), left=M)
+pic(s, "11_c015_6.png", y, height=Inches(3.25), left=M)
 table(s, Inches(1.5), [
     ["", "r"],
     ["Model, catchment-scale daily anomaly", "0.476"],
@@ -390,13 +394,15 @@ note(s, "Show this right after slide 8, or the first question is 'why is KGE onl
 # ============================================================== 16 limits
 s, y = slide(16, "What we cannot yet claim", "Say these before you are asked")
 bullets(s, y, [
-    "The calibration is NOT closed — three attempts, none meeting every criterion we set in advance",
+    "Phase B closed by DECISION at a measured input ceiling, not by passing — four configurations, "
+    "none meeting every criterion we set in advance; it then closed a second time on measured "
+    "conflict (H-PEAK refuted, H2E-S failed 2 of 3)",
     "Conventional adequacy not reached: Moriasi et al. (2007) put satisfactory daily NSE above "
     "0.50; ours is +0.16 to +0.26",
-    "The ENSO asymmetry persists: +0.126 vs +0.026 KGE over climatology. We set out to halve "
-    "that ratio; we have not",
-    "Two or three parameters still sit at a bound — the crop coefficient pinned at 2.0, beyond "
-    "any FAO-56 value",
+    "The ENSO asymmetry persists, and in the ADOPTED fit it is starker: skill over climatology is "
+    "+0.106 in La Niña but −0.0005 in El Niño — the dry phase sits AT climatology, not above it",
+    "Parameters still sit at bounds. The FAO-56 threshold form did free the crop coefficient "
+    "(kc_mult 1.662, off the ~2.0 rail H1 hit) but it remains above any FAO-56 value",
     (1, "remaining candidate: ET = ETp·W/Wm throttles evaporation even in moist soil, and a "
         "doubled crop coefficient is exactly that compensation"),
     "No per-gauge specific yield can be published — our two networks' catchment areas disagree "
@@ -405,34 +411,33 @@ bullets(s, y, [
     "is a floodplain-storage SURROGATE, not a physical velocity",
 ], size=13.5)
 pic(s, "06_c046_9.png", Inches(5.22), height=Inches(1.68), left=M,
-    cap="Sediment rating curves — median R² ≈ 0.5, a limit on Phase C too")
+    cap="Sediment rating curves — median R² ≈ 0.5, a stated uncertainty carried into Phase C")
 note(s, "Volunteering the limits makes the positive claims believable. A 2.5x area error is a "
-        "2.5x sediment-yield error, so this blocks Phase C reporting.")
+        "2.5x specific-yield error, so we report absolute flux and RATIOS only — never t/km2/yr.")
 
 # ============================================================== 17 next steps
-s, y = slide(17, "Next steps, in the order the measurements dictate")
+s, y = slide(17, "What we resolved since — and the one item that remains")
 table(s, y, [
     ["#", "Step", "Why this order"],
-    ["1", "Merge satellite rainfall (CHIRPS) with the repaired gauges",
-     "The ONLY lever measured capable of moving r"],
-    ["2", "Replace the ET stress function with the FAO-56 threshold form",
-     "One function; should release the crop coefficient"],
-    ["3", "Add search seeds until the two forcings separate",
-     "Gap 0.011 vs between-seed spread 0.019"],
-    ["4", "Resolve catchment areas against an external source",
-     "Blocks all specific-yield reporting"],
-    ["5", "Phase C — sediment", "Once mainstem SSC quality is settled"],
-], [0.5, 5.8, 4.6], size=12)
+    ["1", "Satellite-rainfall (CHIRPS) merge to lift the r ceiling",
+     "DONE — bounded at +0.006; the ceiling is STRUCTURAL (closed-negative)"],
+    ["2", "FAO-56 ET threshold form", "DONE — adopted in H2E"],
+    ["3", "Search-seed expansion", "DONE — H2E confirmed"],
+    ["4", "Phase C — sediment calibration + ENSO contrast",
+     "DONE — exploratory fit; contrast reproduced 18/18 (docs/55, 56)"],
+    ["5", "Resolve catchment areas against an external source",
+     "OWED — the one real remaining item; unlocks specific-yield reporting"],
+], [0.5, 5.8, 4.6], size=11.5)
 bullets(s, Inches(3.55), [
-    "Volume stays gauge-controlled in step 1; the satellite supplies spatial structure and fills "
-    "the ungauged 17 % (nearest gauge median 16.3 km, max 71.5 km)",
+    "The satellite merge (item 1) was built and validated but bounded to +0.006 r — the r ≈ 0.57 "
+    "ceiling is the information content of the gauge network, not a processing gap (docs/58)",
 ], size=13)
 pic(s, "yb_rs_retrieval_sentinel2_msi_nir.png", Inches(4.3), height=Inches(2.55), left=M,
-    cap="Remote-sensing SSC retrieval — ready for Phase C")
+    cap="Remote-sensing SSC retrieval — an independent avenue, not required for the result")
 pic(s, "yb_demo_synthetic_overview.png", Inches(4.3), height=Inches(2.55),
-    left=int(M + BW * 0.52), cap="Sediment module, synthetic demonstration")
-note(s, "Steps 2 and 3 are cheap and entirely in our control; step 1 decides whether the dry "
-        "phase moves. The Phase C components already exist and are waiting on data quality.")
+    left=int(M + BW * 0.52), cap="Sediment transport module — now run on the real basin (Phase C)")
+note(s, "Only item 5 (catchment areas) genuinely remains; items 1-4 are resolved. Phase C is "
+        "DONE, not waiting on data quality — the sediment result slides follow.")
 
 # ============================================================== 18 PHASE C: water to sediment
 s, y = slide(18, "Phase C — from water to sediment", "the ENSO question, made physical")
@@ -440,7 +445,8 @@ bullets(s, y, [
     "We drove a MUSLE erosion model with the calibrated runoff, and re-derived the slope factor to "
     "the published source method (f_LS = 0.25146 — our original was ~4× too strong)",
     "One question: does the El Niño–La Niña swing change suspended-sediment transport, and by how much?",
-    "Basin gross hillslope erosion at reference parameters: 299.5 Mt/yr — quoted with its convention, "
+    "Basin gross hillslope erosion: 299.5387 Mt/yr @ williams_m3 / us_customary / "
+    "cp_revision=cited_central_2026_08_11 (prior revision 248.7298) — "
     "NEVER as a per-area yield (catchment-area embargo, docs/23 §13.2)",
 ], size=15)
 note(s, "The bridge from the hydrology ceiling to the sediment question. Keep short.")
@@ -459,21 +465,81 @@ bullets(s, y, [
 pic(s, "gen_kge_rail.png", Inches(1.55), height=Inches(3.4),
     left=int(M + BW * 0.5), cap="Median sediment KGE vs α — the fit rails at the box floor")
 
-# ============================================================== 20 the ENSO contrast (the result)
-s, y = slide(20, "The ENSO contrast — the model reproduces it (18 / 18)", "THE RESULT")
-callout(s, Inches(1.45), "La Niña carries about 3× more sediment than El Niño — observed AND "
-                         "modelled, at every station.", GOOD, 16, Inches(0.8))
-bullets(s, Inches(2.5), [
-    "Observed (model-free): 22/22 stations La Niña > El Niño, ~3–5× (est. b 2.84–2.95; est. a 4.62)",
-    "Modelled (this study): 18/18 stations, median 3.05×, robust across β and both window pairs",
-    "It works BECAUSE the wet/dry ratio cancels α and the LS level exactly — immune to the C4.3 railing",
-    "Strictly out-of-sample; CAL window neutral-core (2013) with a stated edge caveat (NOAA ONI)",
-], size=13)
-pic(s, "gen_enso_contrast.png", Inches(4.75), height=Inches(2.5),
-    cap="Modelled wet/dry ratio vs observed, all 18 stations — every bar exceeds 1")
+# ============================================================== 20 the question & mechanism
+s, y = slide(20, "The ENSO–sediment question, and the physical chain", "hypothesis before evidence")
+bullets(s, y, [
+    "ENSO shifts tropical-Pacific sea-surface temperature, which shifts rainfall over Colombia: "
+    "La Niña is wet, El Niño is dry (here, 2011 vs 2015–16)",
+    "The chain is causal and one-directional: SST anomaly → rainfall anomaly → surface runoff → "
+    "hillslope erosion AND transport capacity → suspended-sediment flux at the gauge",
+    "Hypothesis, fixed before looking: the wet phase should carry markedly MORE sediment — because "
+    "the erosive rainfall and the transporting discharge rise together, and MUSLE multiplies them",
+    "The link is documented observationally, but has never been REPRODUCED with a process-based, "
+    "distributed model over the whole basin. That gap is what this section tests.",
+], size=14)
+note(s, "Fix the hypothesis before the data. The section then asks in turn: is it observed? can we "
+        "reproduce it? how robust is it?")
 
-# ============================================================== 21 the limits, quantified
-s, y = slide(21, "The limits, quantified — not hand-waved", "measured, not waved away")
+# ============================================================== 21 what is measurable
+s, y = slide(21, "What is measurable — paired discharge, not SSC, is the binding constraint",
+             "the honest denominator")
+bullets(s, y, [
+    "Sediment FLUX needs concentration AND discharge on the same day at the same station. Of 72 "
+    "station-windows only 38 admit estimator (a) and 39 admit (b); 26 are impossible — no paired "
+    "discharge in the window at all",
+    "SSC exists where discharge does not. The one Magdalena-TRUNK station (ARRANCAPLUMAS) has 195 "
+    "sediment samples in the El Niño window and ZERO discharge days — its record ends 2014-12-31",
+    "Consequence, stated plainly: NO ENSO contrast is computable on the main stem. Every observed "
+    "number that follows is a TRIBUTARY and Cauca-branch result — we say so, rather than implying "
+    "basin-wide coverage",
+], size=14)
+note(s, "This kind of limit builds credibility: report exactly what the data can and cannot support.")
+
+# ============================================================== 22 the observed contrast (figure slide)
+s, y = slide(22, "The observed contrast — model-free evidence", "22 of 22 ratios exceed 1, no counter-examples")
+pic(s, "gen_obs_contrast_detail.png", Inches(1.18), height=Inches(4.35))
+callout(s, Inches(5.72), "Two independent estimators with conservative confidence intervals — the "
+        "wet phase wins at every station. Primary-window median ~3–5×; the sharper ONI-peak windows "
+        "give ~5–9×. The honest statement is a factor of ~3 to ~9, with the window definition worth "
+        "roughly ×2 of that spread — quoting a single number would be false precision.", NAVY, 12.5,
+        Inches(1.15))
+
+# ============================================================== 23 why a weak fit can still test it
+s, y = slide(23, "Why a weak calibration can still test the contrast",
+             "the ratio cancels what we cannot pin down")
+callout(s, Inches(1.5), "The wet/dry ratio removes every factor the calibration could not identify.",
+        ACCENT, 16, Inches(0.75))
+bullets(s, Inches(2.55), [
+    "Sediment = α · LS · (runoff term)^β · K · C · P. The level knob α and the topographic factor "
+    "LS are STATIC multipliers — identical every day, wet or dry",
+    "In a within-station wet/dry ratio they sit identically on top and bottom and CANCEL EXACTLY:  "
+    "R = (α·LS·X_wet)/(α·LS·X_dry) = X_wet ÷ X_dry",
+    "So the C4.3 railing (α is unidentifiable) and the LS-level uncertainty do NOT touch the "
+    "contrast. It depends only on the runoff contrast the rainfall carries between the two regimes",
+    "The methodological point: a model too weak to predict absolute daily tonnage can still be a "
+    "VALID INSTRUMENT for the relative ENSO signal — which is the actual research question",
+], size=13.5)
+
+# ============================================================== 24 the modelled contrast (figure slide)
+s, y = slide(24, "The modelled contrast — reproduced, 18 / 18", "THE RESULT")
+pic(s, "gen_enso_contrast.png", Inches(1.12), height=Inches(4.25))
+callout(s, Inches(5.55), "Modelled median 3.05× — it matches the rating estimator (b) 2.84–2.95 and "
+        "sits below the noisier sample estimator (a) 4.62. Every one of the 18 stations shows La "
+        "Niña > El Niño, the same direction as the data — with NO tuning of α to achieve it.",
+        GOOD, 12.5, Inches(1.1))
+
+# ============================================================== 25 robustness (figure slide)
+s, y = slide(25, "Robustness — not an artefact of a modelling choice", "invariant direction, honest magnitude")
+pic(s, "gen_sensitivity_detail.png", Inches(1.2), height=Inches(3.85))
+bullets(s, Inches(5.32), [
+    "The direction (18/18, La Niña > El Niño) holds across three storm exponents β AND both window "
+    "definitions — six independent cells, with no reversal in any of them",
+    "The magnitude honestly varies (~2.6 to ~5.9×): the sharper ONI-peak windows exclude the ENSO "
+    "shoulders and give the larger contrast — the SAME behaviour the observations show (slide 22)",
+], size=13)
+
+# ============================================================== 26 the limits, quantified
+s, y = slide(26, "The limits, quantified — not hand-waved", "measured, not waved away")
 bullets(s, y, [
     "Gauges: only ~18 have paired sediment + discharge; the 46 sediment-only sites have no discharge "
     "record at all (B5) → the flux set cannot grow. A physical limit of the network",
@@ -484,8 +550,8 @@ bullets(s, y, [
 pic(s, "gen_ceiling_bound.png", Inches(2.2), height=Inches(2.7),
     left=int(M + BW * 0.52), cap="A perfect rainfall repair lifts r by only +0.006")
 
-# ============================================================== 22 the ask
-s, y = slide(22, "The question we need your guidance on")
+# ============================================================== 27 the ask
+s, y = slide(27, "The question we need your guidance on")
 callout(s, Inches(1.55), "Is the input-ceiling result (slide 15) an acceptable closing statement "
                           "for the hydrological phase?", NAVY, 17, Inches(0.85))
 bullets(s, Inches(2.75), [
@@ -499,8 +565,8 @@ callout(s, Inches(5.0), "This changes what \"done\" means for Phase B — the mo
                          "can settle today.", ACCENT, 15)
 note(s, "End here, not on the summary. Asking the scope question is worth more than a recap.")
 
-# ============================================================== 23 contribution
-s, y = slide(23, "What we have contributed")
+# ============================================================== 28 contribution
+s, y = slide(28, "What we have contributed")
 bullets(s, y, [
     "The ENSO sediment contrast REPRODUCED out-of-sample (18/18 stations, ~3×) — plus the proof "
     "that the absolute level is not identifiable from this network: the headline of the whole study",
@@ -515,7 +581,7 @@ bullets(s, y, [
     "A full audit trail: ~300 KB of technical documentation, a register of refuted hypotheses, "
     "and a traps reference",
 ], size=14)
-pic(s, "13_c032_6.png", Inches(4.50), height=Inches(2.42),
+pic(s, "13_c033_6.png", Inches(4.50), height=Inches(2.42),
     cap="Basin water balance components, daily — mass conservation holds to machine precision")
 note(s, "Keep short if time is tight; slide 18 should get the discussion.")
 

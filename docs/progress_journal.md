@@ -2,12 +2,24 @@
 
 > **STATUS — LIVE as a chronology, but it stops at 2026-08-03.** Everything after that date (Phase B's closure, and Phase C stages C0–C3) is recorded in [docs/30](30_phase_c_plan.md)–~~[docs/36](36_peak_deficit_options.md)~~ **[docs/53](53_delta_shape_pretest.md)** and in the live tracker `progress_map.html`. Entry point: [docs/00_INDEX.md](00_INDEX.md).
 >
-> ⚠ **Range widened 2026-08-12.** The numbered docs now run to **53** (44 was never assigned), and
+> ⚠ **Range widened 2026-08-12.** The numbered docs now run to **53** *(→ **59**, see the 2026-08-19 note below)* (44 was never assigned), and
 > the stage list above stops one stage short: Phase C has since reached **C3 (OPEN —
 > [docs/37](37_c3_closure.md), four amendments)** and **C4**, where the entry verdict
 > [docs/47](47_c4_entry_verdict.md) records *"`C4.3-BLOCKED-UNTIL-LS-LANDS`. **C4.3 may not
 > start.**"* **The dated entries below are correct as history and are not edited** — a log records
 > what was understood on its date. Read them for *when* and *why*, never for current status.
+>
+> ⚠ **Range widened AGAIN 2026-08-19 — the 2026-08-12 widening above is itself behind.** ~~The
+> numbered docs now run to **53**~~ → they now run to **59** (44 was never assigned). The
+> `C4.3-BLOCKED-UNTIL-LS-LANDS` quote above is **history, not the current gate**: the block was
+> discharged when LS landed (`ls_formulation = buarque_2015_dg`, f_LS = 0.25146 erosion-weighted),
+> **C4.3 RAN** ([docs/55](55_c43_verdict.md) — **RAILED / EXPLORATORY, NOT adopted**), and **C5
+> COMPLETED** ([docs/56](56_c5_enso_application.md) — the model reproduces the observed ENSO
+> contrast, 18/18 stations, median rate ratio 3.05×). **Phase C is COMPLETE.** Also landed since:
+> [docs/57](57_b5_gauge_expansion.md) (B5 — the flux gauge set cannot grow past ~18),
+> [docs/58](58_rainfall_ceiling_bound.md) (the last rainfall lever bounded at ≤ +0.006 r) and
+> [docs/59](59_cross_implementation_comparison.md) (an independent *implementation*, **not**
+> independent data — every R2 number pinned to commit d055561, 2026-08-03).
 
 Dated log of understanding and realization. **Updated at each new step.** Newest entries on top.
 

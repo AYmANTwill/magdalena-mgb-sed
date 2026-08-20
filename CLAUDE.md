@@ -79,8 +79,10 @@ The rest of this list is the deep reference — read the one the task touches, n
   A2, A3) that carry the live numbers. Read the amendments, not only §1–§6. Basin level **299.539
   Mt/yr** of gross *hillslope* erosion (α, β unfitted — a lower bound), which supersedes 248.730.
   **Never quote a load without its convention *and* its `cp_revision`.**
-- `docs/47_c4_entry_verdict.md` — **the authority on whether stage C4.3 may start, and it says NO:**
-  `C4.3-BLOCKED-UNTIL-LS-LANDS`. Read it before touching sediment calibration. The block is upheld
+- `docs/47_c4_entry_verdict.md` — the C4.3 **entry verdict** as recorded 2026-08-11:
+  ~~`C4.3-BLOCKED-UNTIL-LS-LANDS`~~. **C4.3 has since RUN — the outcome is `docs/55`
+  (RAILED / EXPLORATORY, *not adopted*).** Read 47 for the entry contract and why the block
+  existed; read **55** for what happened when it lifted. The block is upheld
   by `docs/46` §6.4, `docs/51` §4, `docs/53` and `docs/37` A3.4. One bounded exception (§6.3):
   LS-invariant preparation only — no objective evaluation against the α box, no consumption of the
   registered budget. Its companion registrations are `docs/45` (C4.2, frozen) and `docs/42` (the
@@ -105,15 +107,25 @@ The rest of this list is the deep reference — read the one the task touches, n
   adoption with `python3.10 src/report_h2e.py` (gate: F must match 0.25931 to 1e-8).
   **The inherited caveat: El Niño skill-over-climatology is −0.0005 — the dry phase sits AT
   climatology in the adopted fit, not above it** (doc 26 addendum A.5).
-- **Phase C (sediment): ACTIVE** — plan in docs/30, work breakdown in docs/31, live status in
-  `progress_map.html`. Stage state as of 2026-08-12, each from its owning doc:
+- **Phase C (sediment): COMPLETE** — plan in docs/30, work breakdown in docs/31, live status in
+  `progress_map.html`. Stage state as of 2026-08-19, each from its owning doc:
   **C0 complete** (docs/26 addendum) · **C1 complete** (docs/32, nb15 — 79/79 stations classified,
   18 usable) · **C2 complete** (docs/34 — the observed contrast) · **C2b complete** (docs/33 §6–§8)
   · **C3 built, run, and OPEN** (docs/37, four amendments; A3 of 2026-08-12 states "C3 stays OPEN")
-  · **C4: C4.1/C4.2 landed, and C4.3 — the sediment calibration search — is BLOCKED** (docs/47,
-  `C4.3-BLOCKED-UNTIL-LS-LANDS`; **docs/47 owns the block condition — read it, do not restate it
-  from here**) · **C5 not started.** The old "blocked on mainstem SSC" framing is superseded; its
-  exact form is docs/32 §R6 — one Magdalena-trunk SSC station exists, `21237020`.
+  · **C4: C4.1/C4.2 landed and C4.3 HAS RUN** — ~~BLOCKED~~ → **docs/55: RAILED / EXPLORATORY,
+  NOT adopted** (estimator (a) median KGE_ln **−0.118**, (b) **+0.139** — same sign, so *not*
+  indeterminate; α wants ≈ **0.48**, below the box floor; design-matrix condition number `inf`,
+  so only the product **Π** is identifiable). **docs/47 owns the entry condition, docs/55 owns
+  the verdict — read them, do not restate either from here.**
+  · **C5 COMPLETE** — **docs/56: the ENSO contrast is REPRODUCED, 18/18 stations, median rate
+  ratio 3.05×** (1.62–4.85), robust across β and both window pairs. **This is the headline
+  result**, and it holds *because* it is a ratio: α and the LS level cancel exactly.
+  · Three closing limits: **docs/57** (the flux gauge set cannot grow past ~18 — 43 recovered
+  in-basin SSC sites, **zero** with any discharge record), **docs/58** (the last rainfall lever
+  bounded at **≤ +0.006 r**; the ceiling is structural), **docs/59** (an independent second
+  implementation — *independent implementation, NOT independent data*).
+  The old "blocked on mainstem SSC" framing is superseded; its exact form is docs/32 §R6 —
+  one Magdalena-trunk SSC station exists, `21237020`.
 
 ## Pipeline commands
 

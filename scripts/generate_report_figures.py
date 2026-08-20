@@ -1,6 +1,7 @@
 #!/usr/bin/env python3.10
 """Generate the data figures for the final report PDF and deck, from committed results.
-No fit, no engine run — reads the JSON/CSV outputs only.  Writes figures/report/*.png.
+No fit, no engine run — reads the JSON/CSV outputs only.  Writes figures/report/*.png,
+and copies the three the deck also uses into figures/deck/ under their gen_* names.
 """
 import json
 from pathlib import Path
@@ -13,6 +14,17 @@ from matplotlib.patches import Patch
 REPO = Path(__file__).resolve().parent.parent
 PROC = REPO / "data" / "processed"
 FIG = REPO / "figures" / "report"; FIG.mkdir(parents=True, exist_ok=True)
+DECK = REPO / "figures" / "deck"; DECK.mkdir(parents=True, exist_ok=True)
+
+# Three of these figures are also consumed by the deck, under the deck's gen_* naming.
+# Until 2026-08-19 that copy was made by hand and nothing in the repo recorded it, so a
+# clean `figures/deck/` could not rebuild the deck.  Emitting the aliases here closes the
+# chain: `make figures` now produces every gen_* figure `scripts/build_deck.py` asks for.
+DECK_ALIAS = {
+    "fig1_enso_contrast.png":  "gen_enso_contrast.png",
+    "fig2_kge_alpha_rail.png": "gen_kge_rail.png",
+    "fig4_ceiling_bound.png":  "gen_ceiling_bound.png",
+}
 NAVY, STEEL, RUST, GREEN, GREY = "#1a3a5c", "#2e6b8a", "#a8481f", "#2e7d4f", "#777777"
 plt.rcParams.update({"font.size": 10, "axes.edgecolor": "#888", "axes.linewidth": 0.8,
                      "figure.dpi": 150})
@@ -21,6 +33,9 @@ plt.rcParams.update({"font.size": 10, "axes.edgecolor": "#888", "axes.linewidth"
 def save(fig, name):
     fig.savefig(FIG / name, dpi=170, bbox_inches="tight", facecolor="white")
     plt.close(fig)
+    alias = DECK_ALIAS.get(name)
+    if alias:                                   # byte-identical copy under the deck's name
+        (DECK / alias).write_bytes((FIG / name).read_bytes())
 
 
 # ---- Fig 1: ENSO contrast, modelled vs observed, per station
@@ -130,4 +145,5 @@ ax.set_title("Fig 5 — ENSO index (ONI) over the study period: the calibration 
              fontsize=10.5, color=NAVY, weight="bold")
 save(fig, "fig5_oni_windows.png")
 
-print("wrote figures:", *[p.name for p in sorted(FIG.glob("*.png"))])
+print("wrote figures/report:", *[p.name for p in sorted(FIG.glob("*.png"))])
+print("wrote figures/deck aliases:", *sorted(DECK_ALIAS.values()))

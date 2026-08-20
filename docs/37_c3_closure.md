@@ -3,6 +3,17 @@
 **Stage:** C3.6 of `docs/31_phase_c_workplan.md`. **Written 2026-08-11**, after the convention
 amendment of `docs/35` §9.2 was applied to `src/mgb_sediment.py` and the basin decade was re-run.
 
+> **⚠ READ ALONGSIDE Phase C's completion (note added 2026-08-19).** *"C3 is OPEN"* and *"Phase C is
+> COMPLETE"* are **both true and are not a contradiction** — they describe different axes. C3-OPEN is
+> a **validation-status** claim: the LS *level* is UNVALIDATED (`docs/42` **G4.2** — *cited ≠
+> validated ≠ fitted*), and no fit can validate it, so this clause is a **permanent limitation, not
+> a pending task**. Phase C nonetheless **ran to completion** — C4.3 railed (`docs/55`, RAILED /
+> EXPLORATORY) and C5 reproduced the observed ENSO contrast **18/18** (`docs/56`) — precisely
+> **because the headline result is LS-invariant**: a within-station wet/dry ratio cancels α and the
+> LS level exactly, so the sediment phase completed *around* the unvalidated level. **In one line:
+> C3's open item is a permanent limitation, not a blocker; Phase C is done and did not need it
+> closed.** For the operative Phase-C status read `progress_map.html` and `docs/55`–`docs/58`.
+
 C3 is **OPEN**, not closed. Precisely:
 
 | closure condition | status |
@@ -1190,10 +1201,19 @@ components of the residual survive the reclassification, each measured, each wit
   does not, and the C3.1 decision remains unmade. **This clause alone still forbids closure.**
 - **Clause 3 — still NOT MET, upgraded to PARTIAL.** The three lenses of this adjudication did
   constitute an adversarial pass over `docs/35` §6.1 (falsified against its own source), `docs/42`
-  §4.1–§4.2 (fit set CAL 13 → **CAL 8**; `k_min` 0.0096 → **0.0209 /km**) and this document's A1.3.4
+  §4.1–§4.2 (fit set CAL 13 → **CAL 8**; `k_min` ~~0.0096 → **0.0209 /km**~~) and this document's A1.3.4
   (comparison-basis artifact — A2.3). **`docs/41`'s C rows remain unaudited**, and `docs/42` G3.1 is
   measured incapable of auditing them: its minimum detectable class-C error is **≈ 4.2×** on the
   achievable fit set, against a revision of **×1.2043**.
+
+  > ⚠ **A3.10 (2026-08-19).** **Every `k_min` printed in A2 is at the registered σ_r = 0.465 ln and is
+  > superseded by `docs/42` §9.7 (A-P4, 2026-08-12): CAL 8 → 0.0838 /km, all 18 → 0.0066 – 0.0069 /km,
+  > CAL 13 → no corrected value.** See the pointer under A2.4 item 1 for the full restatement. The
+  > clause-3 verdict (**NOT MET, upgraded to PARTIAL**) is unchanged. The **≈ 4.2×** minimum
+  > detectable class-C error is likewise σ_r-scaled and has **NO corrected value** — three passes have
+  > produced three answers, and `docs/42` §9.7.5 row 20 leaves it open with only a qualitative
+  > statement quotable ("too optimistic by roughly the σ_r factor"). **No replacement number is
+  > invented here.**
 - **Clause 4″ — still NOT ESTABLISHED**, unchanged. A1.9's resolver step (1) has not been done.
   **This pass deliberately declines to do it** (A2.6): it is research rather than adjudication, and
   the reading that would settle it favourably — reading B — is the one A1.9 refused *because* it
@@ -1252,13 +1272,42 @@ what A1.6 permits:
    BOCAS, `22017030` BOCAS, `24037390` CAPITANEJO, `26137110` BANANERA LA 6-909, `26127010` EL
    ALAMBRADO AUT, `24027030` NEMIZAQUE, `21197010` EL PROFUNDO. Five of the registered 13 have **no
    paired SSC + observed-Q day** in CAL 2012–14. Consequences, measured: fitted area **10.1 % → 5.4 %**
-   of the basin; `k_min` **0.0096 → 0.0209 /km** (2.2× worse than `docs/42` assumed, **9.7×** worse
+   of the basin; `k_min` ~~**0.0096 → 0.0209 /km**~~ (2.2× worse than `docs/42` assumed, **9.7×** worse
    than the all-18 guard that will judge the fit); surviving CAL-CAL nested pairs **3 → 1**.
+
+   > ⚠ **A3.10 (2026-08-19), enacting `docs/42` §9.7 (A-P4, 2026-08-12) for this line.** Both `k_min`
+   > figures above were computed at the **retired** σ_r = 0.465 ln. At the measured per-station
+   > residual sd the CAL-8 figure is **0.0838 /km** (≈ **173×** over 61.5 km; **0.0883 ⇒ 164×** on
+   > `docs/42` §4.1's printed `Lw` span) and the all-18 figure is **0.0066 – 0.0069 /km**
+   > (≈ **10×** over ~342 km) — `docs/42` §9.7.4, §9.7.5 rows 9–10. **`0.0096` has NO corrected
+   > value**: a CAL-13 residual set does not exist, so that row cannot be σ-corrected and is
+   > superseded by A-P1 outright (`docs/42` §9.7.5 row 12). **The ratios 2.2× and 9.7× SURVIVE
+   > UNCHANGED** — they divide two σ_r-scaled `k_min` values and σ cancels (`docs/42` §9.7.5 row 19,
+   > `docs/48` §5 row 16); they are recorded here so they are not "corrected" by mistake. **The
+   > conclusion — losing the 5 stations costs a factor 2.2 and leaves the fit set far weaker than the
+   > guard that judges it — is unchanged, and A-P4 makes it stronger, not weaker** (`docs/42` §9.5 as
+   > amended).
+
 2. **The parameter count is 2 free + 1 bounded, not 3 free.** Π (the level) is identifiable with
-   SE = 0.465/√8 = **0.1644 ln = ±38 % at 95 %**; **β is identifiable** (SE 0.020, 95 % half-width
+   SE = ~~`0.465/√8` = **0.1644 ln = ±38 % at 95 %**~~ → **0.4775 ln** (estimator a) / **0.6936 ln**
+   (estimator b), and the 95 % band is **not** derived from that SE at all: it is the station
+   bootstrap **`Π̂ × [0.29, 3.73]`** (`docs/48` §3; registered in `docs/45` §8 Amendment 1);
+   **β is identifiable** (SE 0.020, 95 % half-width
    0.039 against a band half-width of 0.10) **but physically confounded with the surface-runoff
    partition**; the **deposition coefficient is NOT identifiable** on this set and must be reported as
    a **bound**, never a value.
+
+   > ⚠ **A3.10 (2026-08-19) — the struck SE, and why.** `0.465` is an **estimator-disagreement**
+   > statistic; A2.4 reused it as the per-station model−observation residual sd, and that reuse is
+   > **RETIRED** by `docs/42` §9.7 (amendment **A-P4**, 2026-08-12), whose §9.7.5 row 7 names *this
+   > line* as **OWED to `docs/37`'s owner** — `docs/48` §5 row 8 repeats the debt and records that it
+   > could only leave a pointer. Measured per-station residual sd on CAL 8: **1.9618 ln** (estimator
+   > b) / **1.3506 ln** (estimator a) ⇒ SE `sd/√8` = **0.6936** / **0.4775 ln** (`docs/48` §3).
+   > **Item 2's conclusion is unchanged** — Π identifiable, β identifiable but confounded, deposition
+   > a bound and never a value; only the width moves, and it moves **wider**. The retired
+   > **0.1644 ln** is shown, not quoted as current, and **is not** a materiality bar here: that use
+   > was struck outright by `docs/52` and nothing replaces it.
+
 3. **A1.6 item 1 / `docs/42` G5 gains a second reason to be load-bearing.** A1.9.4 already showed the
    deposition-free α band (**6.83 – 8.73**) overlaps the reading-B α (**7.92 – 8.86**). A2 adds: since
    `k̂` will be a *weak* bound on the achievable set, **the named claim — an explicit transport sink,
@@ -1278,7 +1327,7 @@ to close. Per A1.9, **there is no gap of known size**.
 |---|---|
 | `docs/40` §8.2's paste-ready corrections to §1 row 4, §2's `< 1` premise, §2's SDR = 0.15 / 0.05 requirement rows, §4's opening residual sizing, and §4 residual 3 | **APPLIED IN PLACE 2026-08-11** as strike-through + dated pointer — **A2.7** |
 | A1.3.4's "short by 1.22 – 2.01× / 1.61 – 2.34×" | **CORRECTED by A2.3** (pointer added; A1.3.4 not rewritten) |
-| `docs/42` §9 — three amendments (fit set CAL 8 + `k_min` 0.0209; the ARRANCAPLUMAS conflict decided explicitly; deposition reported as a bound, 2 free + 1 bounded) | **OWED — blocking on C4's start.** `docs/43` §3.1. Not this pass's file |
+| `docs/42` §9 — three amendments (fit set CAL 8 + `k_min` ~~0.0209~~ → **0.0838 /km**; the ARRANCAPLUMAS conflict decided explicitly; deposition reported as a bound — registered as **2 free + 1 fixed**) | ~~**OWED — blocking on C4's start.** `docs/43` §3.1. Not this pass's file~~ → **DISCHARGED, and recorded here 2026-08-19 (A3.10).** `docs/42` §9.2 **A-P1** (CAL 8), §9.3 **A-P2** (ARRANCAPLUMAS EVALUATION-ONLY), §9.4 **A-P3** (`k` fixed at 0, reported as a bound; 2 free + 1 fixed), plus §9.5 **A-P1.1** and §9.7 **A-P4** — all ENACTED in `docs/42`'s own amendment slot, dated 2026-08-11/2026-08-12. `k_min` moved with A-P4 (§9.7.5 rows 9–11) |
 | A1.7 items 2 and 7 (`tests/test_sediment.py`; `notebooks/18` §6.4/§7 + `src/nbgen/make_nb18.py`) | **OWED**, unchanged |
 | `docs/00_INDEX.md` — a row for `docs/43`, and its "Is stage C3 closed?" answer to point there | **OWED** — not this pass's file |
 
@@ -2458,3 +2507,49 @@ re-open `docs/46` §1–§9, `docs/35` §1–§8, `docs/42` §1–§8 or `docs/4
 close C3 — clauses 3 and 4″ of A1.1's conjunction are untouched, and A3.4's **C4.3 verdict is
 unchanged by this section** (C4.3's own outcome is `docs/55`, RAILED / EXPLORATORY). The
 `docs/23` §13.2 yield embargo is in force: no t/km²/yr appears here.
+
+---
+
+## A3.10 The four σ_r-derivative sites in A2, corrected in place — 2026-08-19
+
+A corpus-wide coherence sweep found that **A2 still printed four numbers that their own owning
+documents had since moved**, and that two of them were explicitly booked as debts *to this file's
+owner* and could not be paid by the passes that found them (`docs/42` §9.7.5 row 7, *"OWED to
+`docs/37`'s owner"*; `docs/48` §5 row 8, *"`docs/37` is closed to this pass, so this is a pointer,
+not an edit"*). They are paid here.
+
+| site | printed in A2 | disposition, and its owner |
+|---|---|---|
+| A2.4 item 2 — the Π SE | SE = `0.465/√8` = **0.1644 ln = ±38 % at 95 %** | **RETIRED.** SE **0.4775 ln** (est. a) / **0.6936 ln** (est. b); the 95 % band is the **station bootstrap `Π̂ × [0.29, 3.73]`**, not a rescaled SE — `docs/42` §9.7 A-P4, measured in `docs/48` §3, registered in `docs/45` §8 Amendment 1 |
+| A2.4 item 1 — `k_min` | **0.0096 → 0.0209 /km** | **SUPERSEDED.** CAL 8 → **0.0838 /km** (≈ 173× over 61.5 km); all 18 → **0.0066 – 0.0069 /km** (≈ 10× over ~342 km); CAL 13 → **no corrected value exists**. `docs/42` §9.7.4, §9.7.5 rows 9–12 |
+| A2.2 clause 3 — the same `k_min` pair | **0.0096 → 0.0209 /km** | same, with one A3.10-level statement covering every `k_min` in A2 |
+| A2.5 — the `docs/42` §9 row | **OWED — blocking on C4's start** | **DISCHARGED** by `docs/42` §9.2–§9.5 and §9.7 (A-P1, A-P2, A-P3, A-P1.1, A-P4), dated 2026-08-11/2026-08-12 in that document's own amendment slot |
+
+**What survives, so it is not "corrected" by mistake.** The **2.2×** and **9.7×** ratios in A2.4
+item 1 divide two σ_r-scaled `k_min` values, so σ_r cancels and they stand unchanged — that is the
+owning document's registered position (`docs/42` §9.7.5 row 19; `docs/48` §5 row 16 and §5.4).
+σ_r = **0.465 ln** itself survives as an *estimator-disagreement* statistic; only its **reuse** as a
+per-station model−observation residual sd is retired.
+
+### A3.10.1 What A3.10 does NOT do
+
+It **changes no verdict**: A2's reclassification stands, A2.2's clauses 2 / 3 / 4″ stand, and **C3
+stays OPEN** on A3 — this section has no standing to close it and does not adjudicate it. It edits
+**no frozen document** (`docs/33`, `docs/35`, `docs/42`, `docs/45`, `docs/46` were read, not written).
+It **introduces no band, threshold or materiality bar and reconstructs none**: the retired
+**0.1644 ln** is shown struck and is *not* reinstated as a bar — that use was struck outright by
+`docs/52` and **nothing replaces it** — and where the owning document offers no corrected value
+(CAL-13 `k_min`; the ≈ 4.2× / ≈ 2.9× minimum detectable class-C error, `docs/42` §9.7.5 row 20) this
+section leaves the gap visible rather than filling it. It **runs no fit, executes no notebook and
+recomputes no headline number**. **No number the project once believed has been deleted**; every one
+is readable inside a strike-through with a dated pointer (the A2.7 pattern).
+
+**One status note, recorded because A3's own title is now dated, not because A3's reasoning changes.**
+A3 is titled *"C4.3 stays BLOCKED"* and that was true when written (2026-08-12). **C4.3 has since
+run**: its verdict is `docs/55` — **RAILED / EXPLORATORY, NOT adopted** (in-box optimum on the box
+floor at α = 2.0; unconstrained optimum α ≈ 0.48, below the floor; median KGE_ln −0.118 estimator (a)
+/ +0.139 estimator (b); design-matrix condition number `inf`, so only Π is identifiable). A3.9.3
+already carries this pointer. **A3's reasoning, its entry conditions and its refusals are left
+exactly as written** — the block was real at its date, and **whether and how it was lifted is for
+`docs/54` (the C4-entry status) and `docs/55` to state, not for this section**: `docs/55` records the
+run and its verdict, not a discharge of A3.4's block, and A3.4's own text is untouched here.
